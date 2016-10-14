@@ -13,31 +13,38 @@
 */
 
 html * {
-	font-family: 'Lalezar', cursive;
+	/*font-family: 'Lalezar', cursive;*/
+	font-family: "Arial Unicode MS";
 }
 
 .Header{
-	background-color: #212832;
-	background-image: url('image.png');
+	background-color: black;
+	//background-image: url('image.png');
 	background-size: 50% 350%;
 	background-position: -30px -200px;
 	text-align: center;	
 	padding-bottom: 30px;
-	font-size: 250%;
+	font-size: 250%!important;
 	font-style: normal;
 	padding-top:30px;
 	padding-right:35%;
 	margin-top:-10px;
-	color: #FFFFFF;
+	color: yellow;
 }
 
+.HeaderImgStyle {
+	width:80px;
+	height:80px;
+	align:bottom;
+}
 .Navigation {
 	box-shadow: 3px 3px 3px #02090f;
 	width:90%;
 	margin-left:5%;
 	margin-right:5%;
 	border-radius: 5px;
-	background-color: #103e69;
+	//background-color: #103e69;
+	background-color: rgb(61,61,61);
 	list-style-type: none;
 	padding:0;
 	float: left;
@@ -115,7 +122,8 @@ content: none;
 }
 
 .Block{
-	background-color: #1f242b;
+	//background-color: #1f242b;
+	background-color: #000;
    border-radius: 5px;
    float: left;
    max-width: 52.5%;
@@ -141,7 +149,8 @@ content: none;
 }
 
 .Current{
-   background-color:#1F242B;
+   //background-color:#1F242B;
+	background-color:black;
    box-shadow: 3px 3px 3px #02090f;
    border-radius: 5px;
    float: left;
@@ -155,12 +164,13 @@ content: none;
 .Current_info{
 	padding-left:20px;
 	font-size:120%;
-	background-color:#353f4d;
+	//background-color:#353f4d;
+	background-color:rgb(61,61,61);
 	padding-top:10px;
 	padding-bottom: 5px;
 }
 .Search{
-   background-color: #1f242b;
+   background-color: black;
    box-shadow: 3px 3px 3px #02090f;
    border-radius: 5px;
    float: left;
@@ -170,7 +180,7 @@ content: none;
    margin-left:2.5%;
 }
 .Panel{
-	background-color: #353f4d;
+	background-color: dimgray;
 	border-radius: 5px;
 	border-top-left-radius: 0px;
 	border-top-right-radius: 0px;
@@ -205,7 +215,7 @@ content: none;
 }
 
 .Network{
-   background-color: #1f242b;
+   background-color: black;
    border-radius: 10px;
    margin-top:2.5%;
    float: right;
@@ -226,7 +236,7 @@ content: none;
 	height: auto;
 	float: left;
 	width: 90%;
-	background-color: #1f242b;
+	background-color: black;
 	margin-left: 5%;
 	margin-bottom: 30px;
 	border-radius: 5px;
@@ -237,14 +247,14 @@ content: none;
 }
 
 .Performance{
-	background-color: #353F4D;
+	background-color: dimgrey;
 	float: left;
-	color:#FFFFFF;	
+	color:#FFFFFF;
 	border-radius:5px;
 	height: 300px;
-	width:27.5%;
-	max-width:27.5%;
-	margin-left:2.5%;
+	width:30.5%;
+	max-width:30.5%;
+	margin-left:1.5%;
 	box-shadow: 3px 3px 3px #02090f;
 }
 .Chaincode{
@@ -293,8 +303,8 @@ content: none;
 .Latency{
 	float:left;
 	margin-left:5%;
-	width:42.5%;
-	max-width:42.5%;
+	width:32.5%;
+	max-width:32.5%;
 }
 .Latency h3{
 	padding-bottom:5%; 
@@ -306,18 +316,34 @@ content: none;
 }
 
 
-.Capacity{
+.TxRate{
 	float:left;
 	margin-left:5%;
-	width:42.5%;
-	max-width:42.5%;
+	width:32.5%;
+	max-width:32.5%;
 }
-.Capacity h3{ 
+.TxRate h3{
 	padding-bottom:5%; 
 	padding-top:5%;
 
 }
-.Capacity hr{ 
+.TxRate hr{
+	margin-bottom:25%;
+	margin-top:15%;
+}
+
+.MineRate{
+	float:left;
+	margin-left:5%;
+	width:32.5%;
+	max-width:32.5%;
+}
+.MineRate h3{
+	padding-bottom:5%;
+	padding-top:5%;
+
+}
+.MineRate hr{
 	margin-bottom:25%;
 	margin-top:15%;
 }
@@ -358,10 +384,11 @@ content: none;
 .Top{
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-	background-color: #103e69;
+	background-color: rgb(61,61,61);
 	padding-top:1px;
 	padding-bottom:1px;
 	border-bottom: 1px solid black;
+	margin-left:-5px;
 }
 
 .Graph2{
@@ -385,11 +412,88 @@ content: none;
 	left: 0;
 }
 
-#line_graph{
+#tx_rate_cont {
+
+	background-color: dimgray;
+	float: left;
+	color:#FFFFFF;
+	border-radius:5px;
+	height: 300px;
+	width:30.5%;
+	max-width:30.5%;
+	margin-left:2.5%;
+	box-shadow: 3px 3px 3px #02090f;
+	padding-left:5px;
+}
+
+#blk_rate_cont {
+
+	background-color: dimgray;
+	float: left;
+	color:#FFFFFF;
+	border-radius:5px;
+	height: 300px;
+	width:30.5%;
+	max-width:30.5%;
+	margin-left:2.5%;
+	box-shadow: 3px 3px 3px #02090f;
+	padding-left:5px;
+}
+
+#blk_tx_cont {
+
+	 background-color: dimgray;
+	 float: left;
+	 color:#FFFFFF;
+	 border-radius:5px;
+	 height: 300px;
+	 width:30.5%;
+	 max-width:30.5%;
+	 margin-left:1.5%;
+	 box-shadow: 3px 3px 3px #02090f;
+	 padding-left:5px;
+	 position:relative;
+	 margin-top:20px;
+	 margin-bottom:20px;
+ }
+
+#ch_tx_cont {
+
+	background-color: dimgray;
+	float: left;
+	color:#FFFFFF;
+	border-radius:5px;
+	height: 300px;
+	width:30.5%;
+	max-width:30.5%;
+	margin-left:2.0%;
+	box-shadow: 3px 3px 3px #02090f;
+	position:relative;
+	margin-top:20px;
+	padding-left:5px;
+}
+
+#appr_tx_cont {
+
+	background-color: dimgray;
+	float: left;
+	color:#FFFFFF;
+	border-radius:5px;
+	height: 300px;
+	width:30.5%;
+	max-width:30.5%;
+	margin-left:2.5%;
+	box-shadow: 3px 3px 3px #02090f;
+	position:relative;
+	margin-top:20px;
+	padding-left:5px;
+}
+
+#tx_rate_1{
 	background: #1F242B;
 	width:90%;
-	height: 400px;
-	width: 500px;
+	height: 200px;
+	width: 200px;
 	margin-left:5%;
 	margin-top:20px;
     box-shadow: 2px 2px 2px #666;
@@ -416,7 +520,7 @@ content: none;
 	border-radius: 5px;
 	float: left;
 	width: 90%;
-	background-color: #1f242b;
+	background-color: black;
 	word-wrap: break-word;
 	margin-left:5%;
 	margin-right:5%;
@@ -462,15 +566,15 @@ content: none;
 	margin: 10% auto;
 	padding: 5px 20px 13px 20px;
 	border-radius: 5px;
-	background: #1F242B;	
+	background: rgb(61,61,61);
 	color:#FFFFFF;			
 }
 
 .close {
 	border:1px solid black;
 	cursor: pointer;
-	background: #344B61;
-	color: #FFFFFF;
+	background: gainsboro;
+	color: #000;
 	line-height: 25px;
 	position: absolute;	
 	width: 24px;
@@ -491,7 +595,9 @@ body{
 	word-wrap: break-word;
 	margin:0;
 	z-index: -1;
-	background-color: #333d47;
+	//background-color: #333d47;
+	background-color: lightgray;
+	color: #000;
 }
 
 footer{
@@ -499,8 +605,8 @@ footer{
 	float: left;
 	width: 100%;
 	height: 70px;
-	background-color:#212832;
-	background-image: url('image.png');
+	background-color:black;
+	//background-image: url('image.png');
 	background-size: 100% 1000%;
 	background-position: -30px -100px;
 }
@@ -525,28 +631,69 @@ table {
     word-wrap: break-word;
     border-radius:6px;
     text-align: center;
-
-
+	border-left: 1px solid rgb(141,141,141);
+	font-family: "Copperplate Gothic Light";
 }
-table th, table td{
+
+table th{
+	 padding: 10px;
+	 background-color: rgb(61,61,61);
+	 color:white;
+ }
+
+table td{
 	padding: 10px;
+}
+
+table tr:hover {
+	background-color: dimgray;
+	color:snow;
+	//font-weight: bold;
 }
 table tr{
   border-bottom: 1px solid black !important;
   border-radius:6px;
 }	
 tr:nth-child(even) {
-	background-color:#1F242B;
-	color:#FFFFFF;	
+	background-color:darkgrey;
+	color:#000;
 }
 tr:nth-child(odd) {
-    background-color:#353F4D;
-    color:#FFFFFF;	
+    background-color:gainsboro;
+    color:#000;
 }
-tr:first-child{
+/*tr:first-child{
 	 background-color:#353F4D;
 	 color:#FFFFFF;	
+}*/
+table.PerfData {
+	 width:100%;
+	color:white;
+	font-size: 120%!important;
+ }
+
+table.PerfData td.param {
+	width:50%;
+	text-align : right;
+	font-weight: bold;
 }
+
+table.PerfData td.val {
+	width:50%;
+	text-align : left;
+}
+table.PerfData tr,table.PerfData tr:nth-child(even),table.PerfData tr:nth-child(odd),table.PerfData tr:first-child {
+	border-bottom: 0px !important;
+	border-radius:6px;
+	background-color:transparent;
+	color:#FFFFFF;
+}
+
+span.measure {
+	color:yellow;
+	font-weight:bold;
+}
+
 button{
 	cursor: pointer;
 }
@@ -572,14 +719,14 @@ button{
 	max-width:42.5% !important;
 	width:42.5% !important;
 }
-.Performance{
+/*.Performance{
 	width:90% !important;
 	max-width: 90% !important;
 	margin-left:5% !important;
 	margin-right:5% !important;
 	height: 200px !important;
 	margin-bottom:2.5%;
-}
+}*/
 .Chaincode{
 	width:90% !important;
 	max-width: 90% !important;
@@ -701,37 +848,69 @@ button{
 }
 
 @-webkit-keyframes color-change {
-    0% { color: white; }
-    25% { color: lightgrey; }
-	50% { color: grey; }
-	75% { color: lightgrey; }
-    100% { color: white; }
+    0% { color: black; }
+    25% { color: brown; }
+	50% { color: green; }
+	75% { color: yellowgreen; }
+    100% { color: darkslategrey; }
 }
 @-moz-keyframes color-change {
-    0% { color: white; }
-    25% { color: lightgrey; }
-	50% { color: grey; }
-	75% { color: lightgrey; }
-    100% { color: white; }
+	0% { color: black; }
+	25% { color: red; }
+	50% { color: black; }
+	75% { color: red; }
+	100% { color: black; }
 }
 @-ms-keyframes color-change {
-   0% { color: white; }
-    25% { color: lightgrey; }
-	50% { color: grey; }
-	75% { color: lightgrey; }
-    100% { color: white; }
+	0% { color: black; }
+	10% { color: darkslategray; }
+	20% { color: dimgray; }
+	30% { color: black; }
+	40% { color: darkslategray; }
+	50% { color: dimgray; }
+	60% { color: black; }
+	70% { color: darkslategray; }
+	80% { color: dimgray; }
+	90% { color: darkslategray; }
+	100% { color: black; }
 }
 @-o-keyframes color-change {
-  0% { color: white; }
-    25% { color: lightgrey; }
-	50% { color: grey; }
-	75% { color: lightgrey; }
-    100% { color: white; }
+	0% { color: black; }
+	10% { color: darkslategray; }
+	20% { color: dimgray; }
+	30% { color: black; }
+	40% { color: darkslategray; }
+	50% { color: dimgray; }
+	60% { color: black; }
+	70% { color: darkslategray; }
+	80% { color: dimgray; }
+	90% { color: darkslategray; }
+	100% { color: black; }
 }
 @keyframes color-change {
-    0% { color: white; }
-    25% { color: lightgrey; }
-	50% { color: grey; }
-	75% { color: lightgrey; }
-    100% { color: white; }
+	0% { color: black; }
+	10% { color: darkslategray; }
+	20% { color: dimgray; }
+	30% { color: black; }
+	40% { color: darkslategray; }
+	50% { color: dimgray; }
+	60% { color: black; }
+	70% { color: darkslategray; }
+	80% { color: dimgray; }
+	90% { color: darkslategray; }
+	100% { color: black; }
+}
+
+button {
+	color: white;
+	border-radius: 4px;
+	text-shadow: 0 1px 1px gray;
+	background: gray;
+}
+
+button:hover {
+	color: white;
+	border-radius: 4px;
+	text-shadow: 0 1px 1px steelblue;
+	background: steelblue;
 }

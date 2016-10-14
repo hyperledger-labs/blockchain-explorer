@@ -17,10 +17,10 @@ var HyperledgerPeerIntf = function() {
 	this.restCall = function(uri,completion) {
 		var obj;
 		async.series( [function (callback) {
-				console.log( ' Querying Hyperledger ' ,uri);
+				//console.log( ' Querying Hyperledger ' ,uri);
 				request(hyperLedgerRESTEndpoint+uri, function (error, response, body) {
 					if (!error && response.statusCode == 200) {
-						console.log( ' resp ' , body);
+						//console.log( ' resp ' , body);
 						if(body == null)
 							callback(null,null);
 						else {

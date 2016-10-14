@@ -7,10 +7,10 @@
     "example": "examples"
   },
   "dependencies": {
+    "chart.js": "^2.3.0-rc.1",
     "dispatcher": "^0.0.2",
     "dot": "^1.0.3",
     "express": "^4.14.0",
-    "hfc": "^0.6.0",
     "http": "^0.0.0",
     "socket.io": "^1.4.8",
     "websocket": "^1.0.23"
