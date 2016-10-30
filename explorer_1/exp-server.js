@@ -141,7 +141,7 @@ var newBlockArrived = true; //initial value is true
 //initial load
 getLedgerInfo( function () {
 	try {
-		//console.log('Ledger data retrieved.');
+		console.log('Ledger data retrieved.');
 		//start listener and Web sockets for updates
 		var server = require('http').createServer(app);
 		var io = require('socket.io')(server);
@@ -192,8 +192,9 @@ getLedgerInfo( function () {
 					"txRateGraph":txRateGraph,
 					"blkRateGraph":blkRateGraph
 				};
-
+				console.log("En el setInterval a ver que pasa...");
 				for (var i = ledgerData.chain.height - 1; i > 0; i--) {
+					console.log("variable i="+i);
 					if(txRateGraph.time.length == 20)
 						break;
 					var block = ledgerData.blocks[i];
@@ -202,7 +203,11 @@ getLedgerInfo( function () {
 
 					if (blkTxGraph.block.length < 20) {
 						blkTxGraph.block.push(i);
-						blkTxGraph.txs.push(block.transactions.length);
+						if (block.transactions) {
+							blkTxGraph.txs.push(block.transactions.length);
+						} else {
+							blkTxGraph.txs.push(0);
+						}
 					}
 					if (endSecs < 0) {
 						endSecs = block.nonHashData.localLedgerCommitTimestamp.seconds;
@@ -212,10 +217,12 @@ getLedgerInfo( function () {
 					}
 					if (block.nonHashData.localLedgerCommitTimestamp.seconds >= (endSecs - 10)) {
 						blkRate++;
-						for (var k = 0; k < block.transactions.length; k++) {
-							txnRate++;
-							txnCount++;
-							txnLatency += (block.nonHashData.localLedgerCommitTimestamp.seconds - block.transactions[k].timestamp.seconds);
+						if(block.transactions) {
+							for (var k = 0; k < block.transactions.length; k++) {
+								txnRate++;
+								txnCount++;
+								txnLatency += (block.nonHashData.localLedgerCommitTimestamp.seconds - block.transactions[k].timestamp.seconds);
+							}
 						}
 					} else {
 						//console.log("new row " , txRateGraph.time.length);
