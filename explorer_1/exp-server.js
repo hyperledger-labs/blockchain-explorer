@@ -141,7 +141,7 @@ var newBlockArrived = true; //initial value is true
 //initial load
 getLedgerInfo( function () {
 	try {
-		console.log('Ledger data retrieved.');
+		//console.log('Ledger data retrieved.');
 		//start listener and Web sockets for updates
 		var server = require('http').createServer(app);
 		var io = require('socket.io')(server);
@@ -192,7 +192,6 @@ getLedgerInfo( function () {
 					"txRateGraph":txRateGraph,
 					"blkRateGraph":blkRateGraph
 				};
-				console.log("En el setInterval a ver que pasa...");
 				for (var i = ledgerData.chain.height - 1; i > 0; i--) {
 					console.log("variable i="+i);
 					if(txRateGraph.time.length == 20)
