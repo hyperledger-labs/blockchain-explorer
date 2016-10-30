@@ -193,7 +193,6 @@ getLedgerInfo( function () {
 					"blkRateGraph":blkRateGraph
 				};
 				for (var i = ledgerData.chain.height - 1; i > 0; i--) {
-					console.log("variable i="+i);
 					if(txRateGraph.time.length == 20)
 						break;
 					var block = ledgerData.blocks[i];
