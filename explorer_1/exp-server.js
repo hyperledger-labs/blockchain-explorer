@@ -197,7 +197,7 @@ getLedgerInfo( function () {
 					if(txRateGraph.time.length == 20)
 						break;
 					var block = ledgerData.blocks[i];
-					if (!block || !block.nonHashData)
+					if (!block || !block.nonHashData || !block.transactions)
 						continue;
 
 					if (blkTxGraph.block.length < 20) {
