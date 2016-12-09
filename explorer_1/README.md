@@ -1,6 +1,7 @@
 #Hyperledger Explorer
 This is the initial release of the Hyperledger explorer which provides a User Interface to explore and examine the current state of the Hyperledger blockchain in a convenient and easy to use manner. Similar to bitcoin explorers or crypto-currency explorers, information such as transaction information, network activity, recent blocks, visuals and search etc. are available that allows for information to be quickly found.
 
+## Installation
 Follow the following installation steps:
 ```
 npm install npm bower grunt-cli graceful-fs@4.1.5 minimatch@3.0.2 -g
@@ -28,4 +29,12 @@ On Windows:
 set HTTP_PORT=<web server port. Default is 9090 if not set>
 set HYP_REST_ENDPOINT=<REST endpoint. Default is http://127.0.0.1:7050 if not set>
 node exp-server.js
+```
+
+## Build Docker image
+
+Build the `hyperledger/blockchain-explorer` image with the following command.
+
+```sh
+$ docker build -t hyperledger/blockchain-explorer .
 ```
