@@ -192,7 +192,6 @@ getLedgerInfo( function () {
 					"txRateGraph":txRateGraph,
 					"blkRateGraph":blkRateGraph
 				};
-
 				for (var i = ledgerData.chain.height - 1; i > 0; i--) {
 					if(txRateGraph.time.length == 20)
 						break;
@@ -202,7 +201,11 @@ getLedgerInfo( function () {
 
 					if (blkTxGraph.block.length < 20) {
 						blkTxGraph.block.push(i);
-						blkTxGraph.txs.push(block.transactions.length);
+						if (block.transactions) {
+							blkTxGraph.txs.push(block.transactions.length);
+						} else {
+							blkTxGraph.txs.push(0);
+						}
 					}
 					if (endSecs < 0) {
 						endSecs = block.nonHashData.localLedgerCommitTimestamp.seconds;
@@ -212,10 +215,12 @@ getLedgerInfo( function () {
 					}
 					if (block.nonHashData.localLedgerCommitTimestamp.seconds >= (endSecs - 10)) {
 						blkRate++;
-						for (var k = 0; k < block.transactions.length; k++) {
-							txnRate++;
-							txnCount++;
-							txnLatency += (block.nonHashData.localLedgerCommitTimestamp.seconds - block.transactions[k].timestamp.seconds);
+						if(block.transactions) {
+							for (var k = 0; k < block.transactions.length; k++) {
+								txnRate++;
+								txnCount++;
+								txnLatency += (block.nonHashData.localLedgerCommitTimestamp.seconds - block.transactions[k].timestamp.seconds);
+							}
 						}
 					} else {
 						//console.log("new row " , txRateGraph.time.length);
