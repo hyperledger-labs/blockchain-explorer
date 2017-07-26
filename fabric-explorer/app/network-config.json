@@ -1,0 +1,52 @@
+{
+	"network-config": {
+		"orderer": [{
+			"url": "grpc://112.124.115.82:7050",
+			"server-hostname": "orderer0.example.com"
+		},{
+			"url": "grpc://112.124.115.82:8050",
+			"server-hostname": "orderer1.example.com"
+		},{
+			"url": "grpc://112.124.115.82:9050",
+			"server-hostname": "orderer2.example.com"
+		}],
+		"org1": {
+			"name": "peerOrg1",
+			"mspid": "Org1MSP",
+			"ca": "http://112.124.115.82:7054",
+			"peer1": {
+				"requests": "grpc://112.124.115.82:7051",
+				"events": "grpc://112.124.115.82:7053",
+				"server-hostname": "peer0.org1.example.com"
+			},
+			"peer2": {
+				"requests": "grpc://112.124.115.82:8051",
+				"events": "grpc://112.124.115.82:8053",
+				"server-hostname": "peer1.org1.example.com"
+			},
+			"admin": {
+				"key": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"cert": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+			}
+		},
+		"org2": {
+			"name": "peerOrg2",
+			"mspid": "Org2MSP",
+			"ca": "http://112.124.115.82:8054",
+			"peer1": {
+				"requests": "grpc://112.124.115.82:9051",
+				"events": "grpc://112.124.115.82:9053",
+				"server-hostname": "peer0.org2.example.com"
+			},
+			"peer2": {
+				"requests": "grpc://112.124.115.82:10051",
+				"events": "grpc://112.124.115.82:10053",
+				"server-hostname": "peer1.org2.example.com"
+			},
+			"admin": {
+				"key": "../artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/5681d5bed252077272137ebbcd141616229862fa4deeedbb9c1cb515e95ed82d_sk",
+				"cert": "../artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+			}
+		}
+	}
+}

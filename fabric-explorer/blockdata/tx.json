@@ -1,0 +1,222 @@
+{
+  "signature": {
+    "type": "Buffer",
+    "data": [
+      48, 69, 2, 33, 0, 156, 68, 198, 28, 231, 179, 31, 244, 85, 119, 242, 35, 55, 105, 40, 119, 214, 7, 136, 6, 168, 198, 148, 97, 185, 225, 9, 18, 91, 153, 201, 128, 2, 32, 98, 193, 44, 87, 143, 161, 92, 48, 155, 223, 47, 173, 99, 219, 11, 53, 106, 15, 220, 177, 152, 114, 25, 209, 59, 225, 154, 217, 142, 225, 62, 34
+    ]
+  },
+  "payload": {
+    "header": {
+      "channel_header": {
+        "type": "ENDORSER_TRANSACTION",
+        "version": 3,
+        "timestamp": "Fri Jun 16 2017 20:51:57 GMT+0800 (CST)",
+        "channel_id": "mychannel",
+        "tx_id": "151a5adaa82171da326b4285ebd4ee7c6dae45012e057ebe5c13cef440f1e53d",
+        "epoch": 0,
+        "extension": {
+          "type": "Buffer",
+          "data": [
+            18, 6, 18, 4, 109, 121, 99, 99
+          ]
+        }
+      },
+      "signature_header": {
+        "creator": {
+          "Mspid": "Org1MSP",
+          "IdBytes": "-----BEGIN -----
+          MIICLzCCAdWgAwIBAgIRAIxnzVPPeas2NV+vfBFb9TwwCgYIKoZIzj0EAwIwczEL
+          MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+          cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh
+          Lm9yZzEuZXhhbXBsZS5jb20wHhcNMTcwNjE2MTI0OTU4WhcNMjcwNjE0MTI0OTU4
+          WjBbMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN
+          U2FuIEZyYW5jaXNjbzEfMB0GA1UEAwwWQWRtaW5Ab3JnMS5leGFtcGxlLmNvbTBZ
+          MBMGByqGSM49AgEGCCqGSM49AwEHA0IABGFBSzvqD34l2U+07UdUIpqE+7E+fkv6
+          Cn4EQnUH2ERkWPdNVAzd6p38ad2yLYCQWsHgNNMoJ+MtdkTgo7/oosqjYjBgMA4G
+          A1UdDwEB/wQEAwIFoDATBgNVHSUEDDAKBggrBgEFBQcDATAMBgNVHRMBAf8EAjAA
+          MCsGA1UdIwQkMCKAIAZF5bKlN6L5HJe6tpOW3/55u3IHSrVNOLUE30Mr8AyWMAoG
+          CCqGSM49BAMCA0gAMEUCIQDvNagHSBgE3i0fWP24Xo7jRK5GibMsr1YytPZXNHlU
+          TAIgDp24zkP7ALgv5BEpJ8LvxMF1uW+caTP3w5L6IbCbwVs=
+          -----END -----
+          "
+        },
+        "nonce": {
+          "type": "Buffer",
+          "data": [
+            52, 203, 177, 97, 191, 157, 19, 12, 77, 91, 203, 177, 69, 250, 32, 95, 241, 48, 135, 235, 61, 50, 85, 130
+          ]
+        }
+      }
+    },
+    "data": {
+      "actions": [
+        {
+          "header": {
+            "creator": {
+              "Mspid": "Org1MSP",
+              "IdBytes": "-----BEGIN -----
+              MIICLzCCAdWgAwIBAgIRAIxnzVPPeas2NV+vfBFb9TwwCgYIKoZIzj0EAwIwczEL
+              MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+              cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh
+              Lm9yZzEuZXhhbXBsZS5jb20wHhcNMTcwNjE2MTI0OTU4WhcNMjcwNjE0MTI0OTU4
+              WjBbMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN
+              U2FuIEZyYW5jaXNjbzEfMB0GA1UEAwwWQWRtaW5Ab3JnMS5leGFtcGxlLmNvbTBZ
+              MBMGByqGSM49AgEGCCqGSM49AwEHA0IABGFBSzvqD34l2U+07UdUIpqE+7E+fkv6
+              Cn4EQnUH2ERkWPdNVAzd6p38ad2yLYCQWsHgNNMoJ+MtdkTgo7/oosqjYjBgMA4G
+              A1UdDwEB/wQEAwIFoDATBgNVHSUEDDAKBggrBgEFBQcDATAMBgNVHRMBAf8EAjAA
+              MCsGA1UdIwQkMCKAIAZF5bKlN6L5HJe6tpOW3/55u3IHSrVNOLUE30Mr8AyWMAoG
+              CCqGSM49BAMCA0gAMEUCIQDvNagHSBgE3i0fWP24Xo7jRK5GibMsr1YytPZXNHlU
+              TAIgDp24zkP7ALgv5BEpJ8LvxMF1uW+caTP3w5L6IbCbwVs=
+              -----END -----
+              "
+            },
+            "nonce": {
+              "type": "Buffer",
+              "data": [
+                52, 203, 177, 97, 191, 157, 19, 12, 77, 91, 203, 177, 69, 250, 32, 95, 241, 48, 135, 235, 61, 50, 85, 130
+              ]
+            }
+          },
+          "payload": {
+            "chaincode_proposal_payload": {
+              "input": "
+              mycc
+              invoke
+              a
+              b
+              10"
+            },
+            "action": {
+              "proposal_response_payload": {
+                "proposal_hash": "25951cc08cd765de998a3fde2ecda58e4102d93ff8b4d1c7f11798440b9b9484",
+                "extension": {
+                  "results": {
+                    "data_model": 0,
+                    "ns_rwset": [
+                      {
+                        "namespace": "lscc",
+                        "rwset": {
+                          "reads": [
+                            {
+                              "key": "mycc",
+                              "version": {
+                                "block_num": {
+                                  "low": 3,
+                                  "high": 0,
+                                  "unsigned": true
+                                },
+                                "tx_num": {
+                                  "low": 0,
+                                  "high": 0,
+                                  "unsigned": true
+                                }
+                              }
+                            }
+                          ],
+                          "range_queries_info": [ ],
+                          "writes": [ ]
+                        }
+                      },
+                      {
+                        "namespace": "mycc",
+                        "rwset": {
+                          "reads": [
+                            {
+                              "key": "a",
+                              "version": {
+                                "block_num": {
+                                  "low": 3,
+                                  "high": 0,
+                                  "unsigned": true
+                                },
+                                "tx_num": {
+                                  "low": 0,
+                                  "high": 0,
+                                  "unsigned": true
+                                }
+                              }
+                            },
+                            {
+                              "key": "b",
+                              "version": {
+                                "block_num": {
+                                  "low": 3,
+                                  "high": 0,
+                                  "unsigned": true
+                                },
+                                "tx_num": {
+                                  "low": 0,
+                                  "high": 0,
+                                  "unsigned": true
+                                }
+                              }
+                            }
+                          ],
+                          "range_queries_info": [ ],
+                          "writes": [
+                            {
+                              "key": "a",
+                              "is_delete": false,
+                              "value": "90"
+                            },
+                            {
+                              "key": "b",
+                              "is_delete": false,
+                              "value": "210"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "events": {
+                    "chaincode_id": "",
+                    "tx_id": "",
+                    "event_name": "",
+                    "payload": {
+                      "type": "Buffer",
+                      "data": [ ]
+                    }
+                  },
+                  "response": {
+                    "status": 200,
+                    "message": "",
+                    "payload": ""
+                  }
+                }
+              },
+              "endorsements": [
+                {
+                  "endorser": {
+                    "Mspid": "Org1MSP",
+                    "IdBytes": "-----BEGIN -----
+                    MIICWjCCAgGgAwIBAgIRANlYb0QbbY/22NED2oJSW+owCgYIKoZIzj0EAwIwczEL
+                    MAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBG
+                    cmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMTE2Nh
+                    Lm9yZzEuZXhhbXBsZS5jb20wHhcNMTcwNjE2MTI0OTU4WhcNMjcwNjE0MTI0OTU4
+                    WjBbMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMN
+                    U2FuIEZyYW5jaXNjbzEfMB0GA1UEAxMWcGVlcjAub3JnMS5leGFtcGxlLmNvbTBZ
+                    MBMGByqGSM49AgEGCCqGSM49AwEHA0IABCg7BMACPGPaDqO5F5P6m7CEJWXX/Tl+
+                    GmkvCz13qv2NaLA8rR9XdhzIQ9bSsnWOC/WmW1ZLxCgSPMbuokLn5rujgY0wgYow
+                    DgYDVR0PAQH/BAQDAgWgMBMGA1UdJQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQC
+                    MAAwKwYDVR0jBCQwIoAgBkXlsqU3ovkcl7q2k5bf/nm7cgdKtU04tQTfQyvwDJYw
+                    KAYDVR0RBCEwH4IWcGVlcjAub3JnMS5leGFtcGxlLmNvbYIFcGVlcjAwCgYIKoZI
+                    zj0EAwIDRwAwRAIgDqQbPsxvEjcvIRvFljDF8dzHkIL7QclqeMkhLGtacEACIH8l
+                    Xq1wBNCNIsHpPrCbH0tj2ShEHowIbGBJVG4cjnbF
+                    -----END -----"
+                  },
+                  "signature": {
+                    "type": "Buffer",
+                    "data": [
+                      48, 69, 2, 33, 0, 172, 127, 154, 129, 215, 58, 58, 168, 149, 27, 223, 7, 5, 203, 206, 185, 230, 28, 236, 176, 145, 171, 148, 120, 199, 165, 1, 131, 83, 157, 13, 227, 2, 32, 122, 239, 30, 36, 119, 246, 151, 99, 246, 164, 141, 86, 239, 149, 142, 204, 134, 205, 222, 107, 158, 254, 92, 92, 207, 53, 25, 253, 100, 141, 192, 126
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "fabric-explorer",
+  "version": "0.0.1",
+  "description": "fabric-explorer",
+  "main": "main.js",
+  "keywords": [
+    "fabric-client sample app",
+    "v1.0 fabric nodesdk sample",
+    "alpha based nodesdk sample app"
+  ],
+  "engines": {
+    "node": ">=6.9.5",
+    "npm": ">=3.10.10"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "co": "^4.6.0",
+    "ejs": "^2.5.6",
+    "express": "^4.15.3",
+    "fabric-ca-client": "^1.0.0",
+    "fabric-client": "^1.0.0",
+    "fast-stats": "0.0.3",
+    "log4js": "^0.6.38",
+    "mysql": "^2.13.0",
+    "prettyjson": "^1.2.1",
+    "socket.io": "^2.0.3",
+    "stomp-broker-js": "^0.1.3",
+    "stompjs": "^2.3.3",
+    "winston": "^2.2.0"
+  },
+  "license": "Apache-2.0"
+}

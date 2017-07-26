@@ -1,0 +1,17 @@
+{
+  "data": {
+    "id": "sadf12341rfcvf231234dwed23r13d13d1d32rd13d13$#$312f31",
+    "type": "channels",
+    "attributes": {
+      "currchannel": "channeltest1",
+      "allchannels":["c1","c2"],
+      "lastblocknum":43321
+    }
+  },
+  "meta": {
+    "version": "1.0",
+    "fabricexplorer-version": "0.9.0",
+    "fabricexplorer-build-id": "d777fa229b452f9675a71399b4111601d46f7438",
+    "fabricexplorer-lastupdate-date": "2017-06-28T16:25:28.043+0000"
+  }
+}
