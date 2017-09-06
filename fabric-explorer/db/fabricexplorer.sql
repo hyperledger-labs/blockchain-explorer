@@ -13,6 +13,11 @@
 
  Date: 07/07/2017 10:14:31 AM
 */
+DROP DATABASE IF EXISTS `fabricexplorer`;
+
+CREATE DATABASE fabricexplorer;
+
+use fabricexplorer;
 
 SET NAMES utf8;
 SET FOREIGN_KEY_CHECKS = 0;
