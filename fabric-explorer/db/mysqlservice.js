@@ -1,7 +1,18 @@
-/**
- * Created by fengxiang on 2017/6/20.
- */
+/*
+ Copyright ONECHAIN 2017 All Rights Reserved.
 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 var mysql = require('mysql');
 var config = require('../config.json');
@@ -9,19 +20,47 @@ var mysqlconfig=config.mysql
 var helper = require('../app/helper.js');
 var logger = helper.getLogger('mysqlservice');
 
-var connection = mysql.createConnection({
-    host: mysqlconfig.host,
-    user: mysqlconfig.username,
-    password: mysqlconfig.passwd,
-    database:mysqlconfig.database
-});
+var connection
 
-//打开连接
+function handleDisconnect() {
+    // Recreate the connection, since
+    // the old one cannot be reused.
+    connection = mysql.createConnection({
+        host: mysqlconfig.host,
+        user: mysqlconfig.username,
+        password: mysqlconfig.passwd,
+        database:mysqlconfig.database
+    });
+
+    connection.connect(function(err) {
+        // The server is either down
+        // or restarting
+        if(err) {
+            // We introduce a delay before attempting to reconnect,
+            // to avoid a hot loop, and to allow our node script to
+            // process asynchronous requests in the meantime.
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000);
+        }
+    });
+    connection.on('error', function(err) {
+        console.log('db error', err);
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnect();
+        }else{
+            throw err;
+        }
+    });
+}
+
+handleDisconnect()
+
+//open connection
 function openconnection() {
     connection.connect()
 }
 
-//关闭连接
+//close connection
 function closeconnection() {
     connection.end()
 }
@@ -281,7 +320,7 @@ function getRowByPk(tablename,column,pkColumn,value){
             // console.log(  `The solution is: ${rows.length }  `  );
             logger.debug(' the getRowByPk ')
 
-            if( rows.length == 0 )
+            if( !rows || rows.length == 0 )
                 resolve(null)
             else
                 resolve(rows[0])
@@ -292,7 +331,7 @@ function getRowByPk(tablename,column,pkColumn,value){
 }
 
 /**
- * 查询一条记录
+ *
  *
  * @param unknown_type sql
  * @param unknown_type DB
@@ -314,7 +353,7 @@ function getRowByPkOne(sql){
             logger.debug(` the getRowByPkOne sql ${sql}`)
 
 
-            if( rows.length == 0 )
+            if( !rows || rows.length == 0 )
                 resolve(null)
             else
                 resolve(rows[0])
@@ -486,8 +525,7 @@ function getRowsBySQlCase(sql){
             // console.log(  `The solution is: ${rows.length }  `  );
             logger.debug(` the getRowsBySQlCase ${sql}`)
 
-
-            if( rows.length == 0 )
+            if( !rows || rows.length == 0 )
                 resolve(null)
             else
                 resolve(rows[0])
@@ -535,7 +573,7 @@ function getSQL2Map(sql,key){
 
 
 /**
- * 根据SQL获取MAP数组
+ *
  *
  * @param unknown_type sql
  * @param unknown_type key
