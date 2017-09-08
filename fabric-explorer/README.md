@@ -47,9 +47,10 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 2. `rm -rf ./artifacts/crypto-config/`
 3. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config ./fabric-explorer/artifacts/crypto-config/`
 
-4. modify config.json,set channel,mysql
+4. modify config.json,set channel,mysql,tls (if you use tls communication, please set  enableTls  true ,if not set false) 
 ```json
  "channelsList": ["mychannel"],
+ "enableTls":true, 
  "mysql":{
       "host":"172.16.10.162",
       "database":"fabricexplorer",
@@ -58,7 +59,7 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
    }
 ```
 
-5. modify app/network-config.json 
+5. modify app/network-config.json or app/network-config-tls.json(if you use tls communication) 
 
 ```json
  {
@@ -107,8 +108,8 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 				"server-hostname": "peer1.org2.example.com"
 			},
 			"admin": {
-				"key": "../artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/5681d5bed252077272137ebbcd141616229862fa4deeedbb9c1cb515e95ed82d_sk",
-				"cert": "../artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+				"key": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
+				"cert": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
 			}
 		}
 	}
