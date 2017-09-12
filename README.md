@@ -9,3 +9,7 @@ community and documented [here](https://docs.google.com/document/d/1Z8uR_w9E9XIT
 Information on what _Incubation_ entails can be found in the [Hyperledger Project Lifecycle
 document](https://goo.gl/4edNRc).
 
+##  Deploy
+
+Support for the two versions which are incompatible of fabric is included in this project.
+The explorer_1 matches the fabric0.6 version,and the fabric-explorer matches the fabric1.0 and its later versions.
