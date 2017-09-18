@@ -23,10 +23,14 @@ var logger = helper.getLogger('mysqlservice');
 var connection
 
 function handleDisconnect() {
+
+    var port = mysql.port?mysql.port:"3306";
+
     // Recreate the connection, since
     // the old one cannot be reused.
     connection = mysql.createConnection({
         host: mysqlconfig.host,
+        port: port,
         user: mysqlconfig.username,
         password: mysqlconfig.passwd,
         database:mysqlconfig.database
