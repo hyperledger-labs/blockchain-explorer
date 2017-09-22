@@ -2,7 +2,7 @@
 
 fabric explorer 是帮助大家学习、管理、监控fabric 的开源项目。
 
-[English document](https://github.com/onechain/fabric-explorer#Demo)
+[English document](https://github.com/hyperledger/blockchain-explorer/blob/master/fabric-explorer/README.md)
 
 ## Demo
 [See live demo here](http://112.124.115.82:8800/)
@@ -10,12 +10,15 @@ fabric explorer 是帮助大家学习、管理、监控fabric 的开源项目。
 
 ## Requirements
 
-* docker 1.12.6
-* docker-compose 1.11.2
-* golang 1.8
-* nodejs 6.9.5
+Please follow the Pre-requisites from [Hyperledger Fabric](http://hyperledger-fabric.readthedocs.io/en/latest/prereqs.html)
+
+Following are the software dependencies required to install and run this fabric-explorer (Please refer to the above link for specific versions)
+* docker-ce 17.06.2-ce
+* docker-compose 1.14.0
+* golang 1.9.x
+* nodejs 6.9.x
 * git
-* mysql
+* mysql 5 or greater
 
 ## 执行创建数据库脚本: db/fabricexplorer.sql
 
@@ -35,10 +38,12 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 ## 启动fabric 浏览器
 
-1. `git clone https://github.com/onechain/fabric-explorer.git`
-2. `rm -rf ./artifacts/crypto-config/`
-3. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config ./fabric-explorer/artifacts/crypto-config/`
-4. 修改config.json,配置channel,mysql
+1. `git clone https://github.com/hyperledger/blockchain-explorer.git`
+2. `cd blockchain-explorer/fabric-explorer`
+3. `mkdir artifacts`
+4. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config artifacts/crypto-config/`
+
+5. modify config.json,set channel,mysql,tls (if you use tls communication, please set  enableTls  true ,if not set false) 
 ```json
  "channelsList": ["mychannel"],
  "mysql":{
@@ -108,3 +113,15 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 6. `npm install`
 7. `./start.sh`
+
+Launch the URL http://localhost:8080 on a browser.
+
+## Screenshots
+
+This is how the fabric-explorer looks like,
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp1.png)
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp.png)
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp3.png)

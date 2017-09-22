@@ -6,7 +6,6 @@ Fabric-explorer is a simple, powerful, easy-to-use, highly maintainable, open so
 ```
 ├── app                    fabric GRPC interface
 ├── artifacts              
-├── blockdata              the fabric data struct sample
 ├── db			   the mysql script and help class
 ├── explorer_client        Web Ui
 ├── listener               websocket listener
@@ -20,12 +19,16 @@ Fabric-explorer is a simple, powerful, easy-to-use, highly maintainable, open so
 
 ## Requirements
 
-* docker 1.12.6
-* docker-compose 1.11.2
-* golang 1.8
-* nodejs 6.9.5
+Please follow the Pre-requisites from [Hyperledger Fabric](http://hyperledger-fabric.readthedocs.io/en/latest/prereqs.html)
+
+Following are the software dependencies required to install and run this fabric-explorer (Please refer to the above link for specific versions)
+* docker-ce 17.06.2-ce
+* docker-compose 1.14.0
+* golang 1.9.x
+* nodejs 6.9.x
 * git
-* mysql
+* mysql 5 or greater
+
 
 ## Database setup
 Run the database setup scripts located under `db/fabricexplorer.sql`
@@ -33,6 +36,10 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 `mysql -u<username> -p < db/fabricexplorer.sql`
 
 ## set fabric docker env
+
+You can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric.
+
+Here is a sample network configuration to start with
 
 1. `git clone https://github.com/onechain/fabric-docker-compose-svt.git`
 2. `mv fabric-docker-compose-svt $GOPATH/src/github.com/hyperledger/fabric/examples/`
@@ -43,11 +50,12 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 ## start fabric-explorer
 
-1. `git clone https://github.com/onechain/fabric-explorer.git`
-2. `rm -rf ./artifacts/crypto-config/`
-3. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config ./fabric-explorer/artifacts/crypto-config/`
+1. `git clone https://github.com/hyperledger/blockchain-explorer.git`
+2. `cd blockchain-explorer/fabric-explorer`
+3. `mkdir artifacts`
+4. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config artifacts/crypto-config/`
 
-4. modify config.json,set channel,mysql,tls (if you use tls communication, please set  enableTls  true ,if not set false) 
+5. modify config.json,set channel,mysql,tls (if you use tls communication, please set  enableTls  true ,if not set false) 
 ```json
  "channelsList": ["mychannel"],
  "enableTls":true, 
@@ -118,3 +126,15 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 6. `npm install`
 7. `./start.sh`
+
+Launch the URL http://localhost:8080 on a browser.
+
+## Screenshots
+
+This is how the fabric-explorer looks like,
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp1.png)
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp.png)
+
+![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp3.png)
