@@ -1,6 +1,6 @@
-# fabric explorer
+# Hyperledger Explorer
 
-Fabric-explorer is a simple, powerful, easy-to-use, highly maintainable, open source fabric browser. Fabric-explorer can reduce the difficulty of learning and using fabric, so that we can intuitively feel the fabric of the powerful features.
+Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, open source browser for viewing activity on the underlying blockchain network.
 
 ## Directory Structure
 ```
@@ -19,16 +19,15 @@ Fabric-explorer is a simple, powerful, easy-to-use, highly maintainable, open so
 
 ## Requirements
 
-Please follow the Pre-requisites from [Hyperledger Fabric](http://hyperledger-fabric.readthedocs.io/en/latest/prereqs.html)
 
-Following are the software dependencies required to install and run this fabric-explorer (Please refer to the above link for specific versions)
-* docker-ce 17.06.2-ce
-* docker-compose 1.14.0
-* golang 1.9.x
-* nodejs 6.9.x
-* git
-* mysql 5 or greater
+Following are the software dependencies required to install and run hyperledger explorer 
+* nodejs 6.9.x (Note that v7.x is not yet supported)
+* mysql 5.7 or greater
 
+
+Hyperledger Explorer works with Hyperledger Fabric 1.0.  Install the following software dependencies to manage fabric network.
+* docker 17.06.2-ce [https://www.docker.com/community-edition]
+* docker-compose 1.14.0 [https://docs.docker.com/compose/]
 
 ## Database setup
 Run the database setup scripts located under `db/fabricexplorer.sql`
