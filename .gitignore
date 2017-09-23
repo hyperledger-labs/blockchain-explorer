@@ -1,3 +1,8 @@
 **/node_modules/
 explorer_1/scripts/bower_components/
 explorer_1/webcontent
+node_modules/*
+.idea/*
+test/*
+explorer_client/node_modules/*
+.log

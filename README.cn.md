@@ -116,12 +116,37 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 Launch the URL http://localhost:8080 on a browser.
 
-## Screenshots
+## 系统截图
 
-This is how the fabric-explorer looks like,
+这是系统的截图
 
 ![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp1.png)
 
 ![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp.png)
 
 ![Fabric Explorer](https://github.com/xspeedcruiser/explorer-images/raw/master/blockchain-exp3.png)
+
+
+## 简单的 REST-API
+
+I provide a simple rest-api
+
+```
+//get block info
+curl -X POST  http://localhost:8080/api/block/json -H 'cache-control: no-cache' -H 'content-type: application/json' -d '{
+    "number":"${block number}"
+}'
+
+//get transcation JOSN
+curl -X POST  http://localhost:8080/api/tx/json -H 'cache-control: no-cache' -H 'content-type: application/json' -d '{
+    "number":"${ Tx hex }"
+}'
+
+
+//get peer status
+curl -X POST  http://localhost:8080/api/status/get -H 'cache-control: no-cache' -H 'content-type: application/json' -d ''
+
+//get chaincode list
+curl -X POST  http://localhost:8080/chaincodelist -H 'cache-control: no-cache' -H 'content-type: application/json' -d ''
+
+```
