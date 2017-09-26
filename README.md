@@ -24,6 +24,11 @@ Following are the software dependencies required to install and run hyperledger 
 * nodejs 6.9.x (Note that v7.x is not yet supported)
 * mysql 5.7 or greater
 
+## Clone Repository
+
+Clone this repository to get the latest using the following command.
+`git clone https://github.com/hyperledger/blockchain-explorer.git`
+`cd blockchain-explorer`
 
 Hyperledger Explorer works with Hyperledger Fabric 1.0.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
@@ -34,27 +39,23 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 `mysql -u<username> -p < db/fabricexplorer.sql`
 
-## set fabric docker env
+## Fabric network setup
 
-You can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric.
+You can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `network-config.json` accordingly.
 
-Here is a sample network configuration to start with
+This repository comes with a sample network configuration to start with
 
-1. `git clone https://github.com/onechain/fabric-docker-compose-svt.git`
-2. `mv fabric-docker-compose-svt $GOPATH/src/github.com/hyperledger/fabric/examples/`
-3. `cd $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt`
-4. `./download_images.sh`
-5. `./start.sh`
+1. `cd fabric-docker-compose-svt`
+2. `./download_images.sh`
+3. `./start.sh`
 
+This brings up a 2 org network with channel name `mychannel` .
 
-## start fabric-explorer
+## Running blockchain-explorer
 
-1. `git clone https://github.com/hyperledger/blockchain-explorer.git`
-2. `cd blockchain-explorer/fabric-explorer`
-3. `mkdir artifacts`
-4. `cp -r $GOPATH/src/github.com/hyperledger/fabric/examples/fabric-docker-compose-svt/crypto-config artifacts/crypto-config/`
-
-5. modify config.json,set channel,mysql,tls (if you use tls communication, please set  enableTls  true ,if not set false) 
+On another terminal, 
+1. `cd blockchain-explorer`
+2. Modify config.json, set channel, mysql, tls (if you use tls communication, please set  enableTls  true , if not set false) 
 ```json
  "channelsList": ["mychannel"],
  "enableTls":true, 
@@ -66,7 +67,7 @@ Here is a sample network configuration to start with
    }
 ```
 
-5. modify app/network-config.json or app/network-config-tls.json(if you use tls communication) 
+3. Modify `app/network-config.json` or `app/network-config-tls.json` (if you use tls communication) 
 
 ```json
  {
@@ -123,8 +124,8 @@ Here is a sample network configuration to start with
 }
 ```
 
-6. `npm install`
-7. `./start.sh`
+4. `npm install`
+5. `./start.sh`
 
 Launch the URL http://localhost:8080 on a browser.
 
@@ -140,7 +141,11 @@ This is how the fabric-explorer looks like,
 
 ## SIMPLE REST-API
 
-I provide a simple rest-api
+This also provides a simple rest-api to access the following
+* Block
+* Transaction
+* Peer Status
+* List of chaincodes deployed
 
 ```
 //get block info

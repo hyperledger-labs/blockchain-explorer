@@ -25,8 +25,8 @@
 				"server-hostname": "peer1.org1.example.com"
 			},
 			"admin": {
-				"key": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
-				"cert": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+				"key": "/fabric-docker-compose-svt/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"cert": "/fabric-docker-compose-svt/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
 			}
 		},
 		"org2": {
@@ -44,8 +44,8 @@
 				"server-hostname": "peer1.org2.example.com"
 			},
 			"admin": {
-				"key": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
-				"cert": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
+				"key": "/fabric-docker-compose-svt/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
+				"cert": "/fabric-docker-compose-svt/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
 			}
 		}
 	}
