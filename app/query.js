@@ -23,6 +23,65 @@ var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
 
+var peerFailures = 0;
+var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, username, org) {
+    var channel = helper.getChannelForOrg(org, channelName);
+    var client = helper.getClientForOrg(org, channelName);
+
+    var target = buildTarget(peer, org);
+    //Let Cahnnel use second peer added
+    if (peerFailures > 0) {
+        let peerToRemove = channel.getPeers()[0];
+        channel.removePeer(peerToRemove);
+        channel.addPeer(peerToRemove);
+    }
+
+    return helper.getRegisteredUsers(username, org).then((user) => {
+        tx_id = client.newTransactionID();
+        // send query
+        var request = {
+            chaincodeId: chaincodeName,
+            txId: tx_id,
+            fcn: fcn,
+            args: args
+        };
+        return channel.queryByChaincode(request, target);
+    }, (err) => {
+        logger.info('Failed to get submitter \'' + username + '\'');
+        return 'Failed to get submitter \'' + username + '\'. Error: ' + err.stack ? err.stack :
+            err;
+    }).then((response_payloads) => {
+        var isPeerDown = response_payloads[0].toString().indexOf('Connect Failed') > -1 || response_payloads[0].toString().indexOf('REQUEST_TIMEOUT') > -1
+        if (isPeerDown && peerFailures < 3) {
+            peerFailures++;
+            logger.debug(' R E T R Y - ' + peerFailures);
+            queryChaincode('peer2', channelName, chaincodeName, fcn, args, username, org);
+        } else {
+            if (isPeerDown) {
+                return 'After 3 retries, peer couldn\' t recover '
+            }
+            if (response_payloads) {
+                peerFailures = 0;
+                for (let i = 0; i < response_payloads.length; i++) {
+                    logger.info('Query Response ' + response_payloads[i].toString('utf8'));
+                    return response_payloads[i].toString('utf8');
+                }
+            } else {
+                logger.error('response_payloads is null');
+                return 'response_payloads is null';
+            }
+        }
+    }, (err) => {
+        logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
+            err);
+        return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+    }).catch((err) => {
+        logger.error('Failed to end to end test with error:' + err.stack ? err.stack :
+            err);
+        return 'Failed to end to end test with error:' + err.stack ? err.stack :
+            err;
+    });
+};
 
 var getBlockByNumber = function(peer,channelName, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
@@ -255,6 +314,7 @@ function buildTarget(peer, org) {
 	return target;
 }
 
+exports.queryChaincode = queryChaincode;
 exports.getBlockByNumber = getBlockByNumber;
 exports.getTransactionByID = getTransactionByID;
 exports.getBlockByHash = getBlockByHash;

@@ -127,7 +127,7 @@ function getKeyStoreForOrg(org) {
 	return config.keyValueStore + '_' + org;
 }
 
-function newRemotes(urls, forPeers, userOnewRemoterg) {
+function newRemotes(urls, forPeers, userOrg, channelName) {
 	var targets = [];
 	// find the peer that match the urls
 	outer:
@@ -205,12 +205,12 @@ var getClientForOrg = function(org) {
 	return clients[org];
 };
 
-var newPeers = function(urls) {
-	return newRemotes(urls, true);
+var newPeers = function(urls,channelName) {
+	return newRemotes(urls, true,'',channelName);
 };
 
-var newEventHubs = function(urls, org) {
-	return newRemotes(urls, false, org);
+var newEventHubs = function(urls, org,channelName) {
+	return newRemotes(urls, false, org,channelName);
 };
 
 var getMspID = function(org) {

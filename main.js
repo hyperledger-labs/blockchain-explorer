@@ -20,9 +20,12 @@ var ledgerMgr=require('./utils/ledgerMgr.js')
 
 var statusMertics=require('./service/metricservice.js')
 
+var channelsRouter=require('./router/channels.js')
+
 app.use(express.static(path.join(__dirname,'explorer_client')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/apis',channelsRouter)
 
 var query=require('./app/query.js')
 var sql=require('./db/mysqlservice.js')
@@ -30,6 +33,8 @@ var sql=require('./db/mysqlservice.js')
 var config = require('./config.json');
 var host = process.env.HOST || config.host;
 var port = process.env.PORT || config.port;
+
+
 // =======================   controller  ===================
 
 app.post("/api/tx/getinfo", function(req, res) {
