@@ -41,8 +41,8 @@
 				"tags": [
 					"Channel"
 				],
-				"summary": "channel",
-				"description": "Query to get BlockCount on a channel",
+				"summary": "Query to fetch channels",
+				"description": "Query to fetch channels",
 				"parameters": [
 					{
 						"name": "peer",
@@ -71,7 +71,7 @@
 				"tags": [
 					"Channel"
 				],
-				"summary": "channel",
+				"summary": "Create/Update Channel",
 				"description": "Create/Update Channel",
 				"consumes": [
 					"application/json",
@@ -124,7 +124,7 @@
 				"tags": [
 					"Channel"
 				],
-				"summary": "channel",
+				"summary": "Query to get BlockCount on a channel",
 				"description": "Query to get BlockCount on a channel",
 				"parameters": [
 					{
@@ -156,7 +156,7 @@
 				"tags": [
 					"Chaincodes"
 				],
-				"summary": "chaincodes",
+				"summary": "Query to fetch all Installed/instantiated chaincodes",
 				"description": "Query to fetch all Installed/instantiated chaincodes",
 				"parameters": [
 					{
@@ -200,7 +200,7 @@
 				"tags": [
 					"Chaincodes"
 				],
-				"summary": "Chaincodes",
+				"summary": "Install chaincode on target peers",
 				"description": "Install chaincode on target peers",
 				"consumes": [
 					"application/json",
@@ -263,7 +263,7 @@
 				"tags": [
 					"Channel"
 				],
-				"summary": "channel",
+				"summary": "Query for Channel Information",
 				"description": "Query for Channel Information",
 				"parameters": [
 					{
@@ -302,7 +302,7 @@
 				"tags": [
 					"Blocks"
 				],
-				"summary": "blocks",
+				"summary": "Query Get Block by Hash",
 				"description": "Query Get Block by Hash",
 				"parameters": [
 					{
@@ -348,7 +348,7 @@
 				"tags": [
 					"Transactions"
 				],
-				"summary": "Transactions",
+				"summary": "Query Get Transaction by Transaction ID",
 				"description": "Query Get Transaction by Transaction ID",
 				"parameters": [
 					{
@@ -394,7 +394,7 @@
 				"tags": [
 					"Blocks"
 				],
-				"summary": "Blocks",
+				"summary": "Query Get Block by BlockNumber",
 				"description": "Query Get Block by BlockNumber",
 				"parameters": [
 					{
@@ -440,7 +440,7 @@
 				"tags": [
 					"Chaincodes"
 				],
-				"summary": "Chaincodes",
+				"summary": "Query on chaincode on target peers",
 				"description": "Query on chaincode on target peers",
 				"parameters": [
 					{
@@ -498,7 +498,7 @@
 				"tags": [
 					"Chaincodes"
 				],
-				"summary": "Chaincodes",
+				"summary": "Invoke transaction on chaincode on target peers",
 				"description": "Invoke transaction on chaincode on target peers",
 				"consumes": [
 					"application/x-www-form-urlencoded"
@@ -570,7 +570,7 @@
 				"tags": [
 					"Chaincodes"
 				],
-				"summary": "Chaincodes",
+				"summary": "Instantiate chaincode on target peers",
 				"description": "Instantiate chaincode on target peers",
 				"consumes": [
 					"application/json",
@@ -640,7 +640,7 @@
 				"tags": [
 					"Channel"
 				],
-				"summary": "channel",
+				"summary": "Join Channel",
 				"description": "Join Channel",
 				"consumes": [
 					"application/json",
