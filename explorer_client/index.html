@@ -30,7 +30,7 @@
 		<header>
 			<nav class="tower-navigation">
 				<div class="tower-logo-container">
-					<img src="https://avatars1.githubusercontent.com/u/7657900?v=3&s=45"/>
+					<img src="https://avatars1.githubusercontent.com/u/7657900?v=3&s=45" />
 					<a href="#" class="tower-logo"> - FABRIC EXPLORER </a>
 					<!-- <a href="#" class="tower-toggle-btn pull-right"><i class="fa fa-bars"></i></a> -->
 				</div>
@@ -40,7 +40,7 @@
 						Select Channel
 						<b class="caret"></b>
 					</a>
-					<ul id="selectchannel" class="dropdown-menu" role="menu" >
+					<ul id="selectchannel" class="dropdown-menu" role="menu">
 					</ul>
 				</div>
 			</nav>
@@ -69,13 +69,13 @@
 					</a>
 				</li>
 			</ul>
-			<div style="margin-top: 200px;">
+			<!--<div style="margin-top: 200px;">
 				<div class="version-info">fabric-explorer 0.01</div>
-				
+
 				<div class="version-info" title=""><a href="http://www.blockchainbrother.com" target="_blank">HELP</a></div>
-			<!--	<div class="version-info" title=""><a href="https://github.com/onechain/fabric-explorer" target="_blank">github</a></div>
-				-->
-			</div>
+					<div class="version-info" title=""><a href="https://github.com/onechain/fabric-explorer" target="_blank">github</a></div>
+				
+			</div>-->
 		</nav>
 	</aside>
 
@@ -142,51 +142,48 @@
 
 
 	<p style="width: 1px; height: 1px;">
-		<input type="text" id="_clipboard"/>
+		<input type="text" id="_clipboard" />
 		<button id="_clipboard_button" data-copytarget="#_clipboard">copy</button>
 	</p>
 
 </body>
 <script type="text/javascript">
+	function openblockdetail(blockid) {
 
-	function openblockdetail(blockid){
-
-		var titleinfo = " #["+blockid+"]";
+		var titleinfo = " #[" + blockid + "]";
 
 		$.layer({
 
-			type:2,
+			type: 2,
 			border: [0],
-			area : ['950px' , '700px'],
-			offset : ['10px',''],
+			area: ['950px', '700px'],
+			offset: ['10px', ''],
 
-			title:titleinfo,
-			iframe:{src: 'json.html?bocknum='+blockid+'&type=block'}
+			title: titleinfo,
+			iframe: { src: 'json.html?bocknum=' + blockid + '&type=block' }
 
 		});
 
 	}
 
-	function opentxdetail(txid){
+	function opentxdetail(txid) {
 
-		var titleinfo = " #["+txid+"]";
+		var titleinfo = " #[" + txid + "]";
 
 		$.layer({
 
-			type:2,
+			type: 2,
 			border: [0],
-			area : ['950px' , '700px'],
-			offset : ['10px',''],
+			area: ['950px', '700px'],
+			offset: ['10px', ''],
 
-			title:titleinfo,
-			iframe:{src: 'json.html?txid='+txid+'&type=tx'}
+			title: titleinfo,
+			iframe: { src: 'json.html?txid=' + txid + '&type=tx' }
 
 		});
 
 	}
-
-
-
 
 </script>
+
 </html>
