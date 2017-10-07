@@ -23,6 +23,7 @@ services:
   kafka0:
     image: hyperledger/fabric-kafka
     environment:
+      - KAFKA_LOG_RETENTION_MS=-1
       - KAFKA_BROKER_ID=0
       - KAFKA_DEFAULT_REPLICATION_FACTOR=3
       - KAFKA_MESSAGE_MAX_BYTES=103809024
@@ -36,6 +37,7 @@ services:
   kafka1:
     image: hyperledger/fabric-kafka
     environment:
+      - KAFKA_LOG_RETENTION_MS=-1
       - KAFKA_BROKER_ID=1
       - KAFKA_DEFAULT_REPLICATION_FACTOR=3
       - KAFKA_MESSAGE_MAX_BYTES=103809024
@@ -49,6 +51,7 @@ services:
   kafka2:
     image: hyperledger/fabric-kafka
     environment:
+      - KAFKA_LOG_RETENTION_MS=-1
       - KAFKA_BROKER_ID=2
       - KAFKA_DEFAULT_REPLICATION_FACTOR=3
       - KAFKA_MESSAGE_MAX_BYTES=103809024
@@ -62,6 +65,7 @@ services:
   kafka3:
     image: hyperledger/fabric-kafka
     environment:
+      - KAFKA_LOG_RETENTION_MS=-1
       - KAFKA_BROKER_ID=3
       - KAFKA_DEFAULT_REPLICATION_FACTOR=3
       - KAFKA_MESSAGE_MAX_BYTES=103809024
@@ -93,7 +97,7 @@ services:
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
-    command: orderer
+    command: /bin/bash -c 'sleep 10 && orderer'
     volumes:
        - ../channel-artifacts/orderer.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
        - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/orderer/msp
@@ -121,7 +125,7 @@ services:
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
-    command: orderer
+    command: /bin/bash -c 'sleep 10  && orderer'
     volumes:
        - ../channel-artifacts/orderer.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
        - ../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/msp:/var/hyperledger/orderer/msp
@@ -149,7 +153,7 @@ services:
       - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
       - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
-    command: orderer
+    command: /bin/bash -c 'sleep 10 && orderer'
     volumes:
        - ../channel-artifacts/orderer.genesis.block:/var/hyperledger/orderer/orderer.genesis.block
        - ../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp
