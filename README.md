@@ -7,7 +7,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 ├── app                    fabric GRPC interface
 ├── db			   the mysql script and help class
 ├── explorer_client        Web Ui
-├── fabric-docker-compose-svt	Basic fabric network setup
+├── first-network	Basic fabric network setup
 ├── listener               websocket listener
 ├── metrics                metrics about tx count per minute and block count per minute
 ├── service                the service 
@@ -41,13 +41,15 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 ## Fabric network setup
 
-You can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `network-config.json` accordingly.
-
 This repository comes with a sample network configuration to start with
 
-1. `cd fabric-docker-compose-svt`
-2. `./download_images.sh`
-3. `./start.sh`
+1. `cd first-network`
+2. `./bootstrap-1.0.2.sh` - This is going to download the necessary
+binaries and hyperledger docker images.
+3. `./byfn.sh -m generate -c mychannel`
+4. `./byfn.sh -m up -c mychannel`
+
+Alternatively you can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `network-config.json` accordingly.
 
 This brings up a 2 org network with channel name `mychannel` .
 
