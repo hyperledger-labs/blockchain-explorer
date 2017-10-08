@@ -5,15 +5,15 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 ## Directory Structure
 ```
 ├── app                    fabric GRPC interface
-├── artifacts              
 ├── db			   the mysql script and help class
 ├── explorer_client        Web Ui
+├── fabric-docker-compose-svt	Basic fabric network setup
 ├── listener               websocket listener
 ├── metrics                metrics about tx count per minute and block count per minute
 ├── service                the service 
 ├── socket		   push real time data to front end
-├── timer                    
-└── utils                    
+├── timer                  Timer to post information periodically  
+└── utils                  Various utility scripts 
 ```
 
 
@@ -24,15 +24,15 @@ Following are the software dependencies required to install and run hyperledger 
 * nodejs 6.9.x (Note that v7.x is not yet supported)
 * mysql 5.7 or greater
 
-## Clone Repository
-
-Clone this repository to get the latest using the following command.
-`git clone https://github.com/hyperledger/blockchain-explorer.git`
-`cd blockchain-explorer`
-
 Hyperledger Explorer works with Hyperledger Fabric 1.0.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
 * docker-compose 1.14.0 [https://docs.docker.com/compose/]
+
+## Clone Repository
+
+Clone this repository to get the latest using the following command.
+1. `git clone https://github.com/hyperledger/blockchain-explorer.git`
+2. `cd blockchain-explorer`
 
 ## Database setup
 Run the database setup scripts located under `db/fabricexplorer.sql`
@@ -55,7 +55,10 @@ This brings up a 2 org network with channel name `mychannel` .
 
 On another terminal, 
 1. `cd blockchain-explorer`
-2. Modify config.json, set channel, mysql, tls (if you use tls communication, please set  enableTls  true , if not set false) 
+2. Modify config.json to update the values for 
+	* channels
+	* mysql host, username, password details
+	* tls 	
 ```json
  "channelsList": ["mychannel"],
  "enableTls":true, 
@@ -66,66 +69,8 @@ On another terminal,
       "passwd":"123456"
    }
 ```
-
-3. Modify `app/network-config.json` or `app/network-config-tls.json` (if you use tls communication) 
-
-```json
- {
-	"network-config": {
-		"orderer": [{
-			"url": "grpc://112.124.115.82:7050",
-			"server-hostname": "orderer0.example.com"
-		},{
-			"url": "grpc://112.124.115.82:8050",
-			"server-hostname": "orderer1.example.com"
-		},{
-			"url": "grpc://112.124.115.82:9050",
-			"server-hostname": "orderer2.example.com"
-		}],
-		"org1": {
-			"name": "peerOrg1",
-			"mspid": "Org1MSP",
-			"ca": "http://112.124.115.82:7054",
-			"peer1": {
-				"requests": "grpc://112.124.115.82:7051",
-				"events": "grpc://112.124.115.82:7053",
-				"server-hostname": "peer0.org1.example.com"
-			},
-			"peer2": {
-				"requests": "grpc://112.124.115.82:8051",
-				"events": "grpc://112.124.115.82:8053",
-				"server-hostname": "peer1.org1.example.com"
-			},
-			"admin": {
-				"key": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
-				"cert": "/artifacts/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
-			}
-		},
-		"org2": {
-			"name": "peerOrg2",
-			"mspid": "Org2MSP",
-			"ca": "http://112.124.115.82:8054",
-			"peer1": {
-				"requests": "grpc://112.124.115.82:9051",
-				"events": "grpc://112.124.115.82:9053",
-				"server-hostname": "peer0.org2.example.com"
-			},
-			"peer2": {
-				"requests": "grpc://112.124.115.82:10051",
-				"events": "grpc://112.124.115.82:10053",
-				"server-hostname": "peer1.org2.example.com"
-			},
-			"admin": {
-				"key": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
-				"cert": "/artifacts/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
-			}
-		}
-	}
-}
-```
-
-4. `npm install`
-5. `./start.sh`
+3. `npm install`
+4. `./start.sh`
 
 Launch the URL http://localhost:8080 on a browser.
 
