@@ -9,7 +9,7 @@
 			"server-hostname": "orderer1.example.com",
 			"tls_cacerts": "/fabric-docker-compose-svt/crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/ca.crt"
 		},{
-			"url": "grpcs://127.0.0.1:9050"
+			"url": "grpcs://127.0.0.1:9050",
 			"server-hostname": "orderer2.example.com",
 			"tls_cacerts": "/fabric-docker-compose-svt/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/ca.crt"
 		}],
