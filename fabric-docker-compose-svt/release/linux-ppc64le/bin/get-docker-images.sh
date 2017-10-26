@@ -8,8 +8,8 @@
 # set the default Docker namespace and tag
 DOCKER_NS=hyperledger
 ARCH=ppc64le
-VERSION=1.0.0-rc1
-BASE_DOCKER_TAG=x86_64-0.3.1
+VERSION=1.0.4-snapshot-52261887
+BASE_DOCKER_TAG=x86_64-0.3.2
 
 # set of Hyperledger Fabric images
 FABRIC_IMAGES=(fabric-peer fabric-orderer fabric-ccenv fabric-javaenv fabric-kafka fabric-zookeeper \
