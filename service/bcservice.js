@@ -18,10 +18,15 @@ var path=require('path')
 
 
 var hfc = require('fabric-client');
-hfc.addConfigFile(path.join(__dirname, '/app/network-config.json'));
-var ORGS = hfc.getConfigSetting('network-config');
-
 var config = require('../config.json');
+if(config.enableTls){
+    hfc.addConfigFile(path.join(__dirname, '/app/network-config-tls.json'));
+}else{
+    hfc.addConfigFile(path.join(__dirname, '/app/network-config.json'));
+}
+
+
+var ORGS = hfc.getConfigSetting('network-config');
 
 var query=require('../app/query.js')
 var logger = helper.getLogger('bcservice');
@@ -88,8 +93,13 @@ function getallPeers () {
     var peerArray=[]
     for (let key in ORGS) {
         if (key.indexOf('org') === 0) {
-            let peerName = ORGS[key].peer1.requests;
-            peerArray.push(peerName)
+            let orgproperty = ORGS[key];
+            for ( let orgkey in orgproperty){
+                if(  orgkey.indexOf('peer') === 0 ){
+                    let peerName = ORGS[key][orgkey].requests;
+                    peerArray.push(peerName);
+                }
+            }
         }
     }
     return peerArray
