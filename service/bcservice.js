@@ -15,25 +15,18 @@
  */
 var helper=require('../app/helper.js')
 var path=require('path')
-
-
-var hfc = require('fabric-client');
 var config = require('../config.json');
+var hfc = require('fabric-client');
+
 if(config.enableTls){
-    hfc.addConfigFile(path.join(__dirname, '/app/network-config-tls.json'));
+	hfc.addConfigFile(path.join(__dirname, 'network-config-tls.json'));
 }else{
-    hfc.addConfigFile(path.join(__dirname, '/app/network-config.json'));
+	hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
 }
 
-
 var ORGS = hfc.getConfigSetting('network-config');
-
 var query=require('../app/query.js')
 var logger = helper.getLogger('bcservice');
-
-// var bcserver = require('./bcservice');
-
-
 
 /**
  * 获取所有的组织
@@ -73,16 +66,6 @@ function getAllPeerRequest() {
     }
 
     return peerArray;
-
-
-}
-
-/**
- * 获取所有的账本
- */
-function getAllChannels(){
-
-
 }
 
 /**
@@ -104,6 +87,25 @@ function getallPeers () {
     }
     return peerArray
 
+}
+
+function getAllPeerList() {    
+    var peerArray = []
+    for (let key in ORGS) {
+        if (key.indexOf('org') === 0) {
+            let orgproperty = ORGS[key]
+            let peer = orgproperty.name;
+            let mspid = orgproperty.mspid;
+            for ( let orgkey in orgproperty){
+                if(  orgkey.indexOf('peer') === 0 ){                        
+                    let request = orgproperty[orgkey].requests;
+                    var peerbean = {'peer':peer,'mspid':mspid,'request':request,'org':key}
+                    peerArray.push(peerbean)
+                }
+            }
+        }
+    }    
+    return peerArray;    
 }
 
 /**
@@ -201,4 +203,4 @@ module.exports.getChainInfo=getChainInfo
 module.exports.getBlock4Channel=getBlock4Channel
 module.exports.getBlockRange=getBlockRange
 module.exports.getTx=getTx
-
+module.exports.getAllPeerList = getAllPeerList

@@ -46,7 +46,7 @@ This repository comes with a sample network configuration to start with
 1. `cd first-network`
 2. `./bootstrap-1.0.2.sh` - This is going to download the necessary
 binaries and hyperledger docker images.
-3. `mkdir -p ./channel_artifacts`
+3. `mkdir -p ./channel-artifacts`
 4. `./byfn.sh -m generate -c mychannel`
 5. `./byfn.sh -m up -c mychannel`
 
@@ -66,7 +66,7 @@ On another terminal,
  "channelsList": ["mychannel"],
  "enableTls":true, 
  "mysql":{
-      "host":"172.16.10.162",
+      "host":"127.0.0.1",
       "database":"fabricexplorer",
       "username":"root",
       "passwd":"123456"

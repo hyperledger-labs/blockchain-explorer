@@ -23,7 +23,11 @@ var EventHub = require('fabric-client/lib/EventHub.js');
 var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('instantiate-chaincode');
-hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
+if(config.enableTls){
+	hfc.addConfigFile(path.join(__dirname, 'network-config-tls.json'));
+}else{
+	hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
+}
 var ORGS = hfc.getConfigSetting('network-config');
 var tx_id = null;
 var eh = null;

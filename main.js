@@ -160,6 +160,11 @@ app.post('/channellist',function(req,res){
     res.send({'channelList':ledgerMgr.getChannellist()})
 })
 
+app.post("/peerlist", function(req, res) {
+    statusMertics.getPeerList(ledgerMgr.getCurrChannel(),function(data){
+        res.send(data)
+    })
+});
 
 // ============= start server =======================
 

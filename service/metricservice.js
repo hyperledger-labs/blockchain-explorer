@@ -37,6 +37,10 @@ function getPeerCount(){
     return bcservice.getallPeers().length
 }
 
+function getPeerData(){
+    return bcservice.getAllPeerList();
+}
+
 function* getTxPerChaincodeGenerate(channelName){
     let txArray=[]
     var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
@@ -73,15 +77,14 @@ function getStatus(channelName ,cb){
     })
 }
 
-/*
-getStatus('mychannel',function (data) {
-    console.info(data)
-})
-*/
-
-/*getTxPerChaincode('mychannel',function (data) {
-    console.info(data)
-})*/
+function getPeerList(channelName ,cb){
+    co(getPeerData,channelName).then(data=>{
+        cb(data)
+    }).catch(err=>{
+        logger.error(err)
+    })
+}
 
 exports.getStatus=getStatus
 exports.getTxPerChaincode=getTxPerChaincode
+exports.getPeerList=getPeerList

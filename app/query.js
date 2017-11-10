@@ -35,137 +35,33 @@ var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, usern
         channel.removePeer(peerToRemove);
         channel.addPeer(peerToRemove);
     }
-
-    return helper.getRegisteredUsers(username, org).then((user) => {
-        tx_id = client.newTransactionID();
-        // send query
-        var request = {
-            chaincodeId: chaincodeName,
-            txId: tx_id,
-            fcn: fcn,
-            args: args
-        };
-        return channel.queryByChaincode(request, target);
-    }, (err) => {
-        logger.info('Failed to get submitter \'' + username + '\'');
-        return 'Failed to get submitter \'' + username + '\'. Error: ' + err.stack ? err.stack :
-            err;
-    }).then((response_payloads) => {
-        var isPeerDown = response_payloads[0].toString().indexOf('Connect Failed') > -1 || response_payloads[0].toString().indexOf('REQUEST_TIMEOUT') > -1
-        if (isPeerDown && peerFailures < 3) {
-            peerFailures++;
-            logger.debug(' R E T R Y - ' + peerFailures);
-            queryChaincode('peer2', channelName, chaincodeName, fcn, args, username, org);
-        } else {
-            if (isPeerDown) {
-                return 'After 3 retries, peer couldn\' t recover '
-            }
-            if (response_payloads) {
-                peerFailures = 0;
-                for (let i = 0; i < response_payloads.length; i++) {
-                    logger.info('Query Response ' + response_payloads[i].toString('utf8'));
-                    return response_payloads[i].toString('utf8');
-                }
-            } else {
-                logger.error('response_payloads is null');
-                return 'response_payloads is null';
-            }
-        }
-    }, (err) => {
-        logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-            err);
-        return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-    }).catch((err) => {
-        logger.error('Failed to end to end test with error:' + err.stack ? err.stack :
-            err);
-        return 'Failed to end to end test with error:' + err.stack ? err.stack :
-            err;
-    });
+	tx_id = client.newTransactionID();
+	// send query
+	var request = {
+		chaincodeId: chaincodeName,
+		txId: tx_id,
+		fcn: fcn,
+		args: args
+	};
+	return channel.queryByChaincode(request, target);
 };
 
 var getBlockByNumber = function(peer,channelName, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org,channelName);
-
-	return helper.getRegisteredUsers(username, org).then((member) => {
-		return channel.queryBlock(parseInt(blockNumber), target);
-	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
-	}).then((response_payloads) => {
-		if (response_payloads) {
-			//logger.debug(response_payloads);
-			// logger.debug(response_payloads);
-			return response_payloads; //response_payloads.data.data[0].buffer;
-		} else {
-			logger.error('response_payloads is null');
-			return 'response_payloads is null';
-		}
-	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-	}).catch((err) => {
-		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
-	});
+	return channel.queryBlock(parseInt(blockNumber), target);	
 };
 
 
 var getTransactionByID = function(peer,channelName, trxnID, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org,channelName);
-
-	return helper.getRegisteredUsers(username, org).then((member) => {
-		return channel.queryTransaction(trxnID, target);
-	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
-	}).then((response_payloads) => {
-		if (response_payloads) {
-			 logger.debug(response_payloads);
-			return response_payloads;
-		} else {
-			logger.error('response_payloads is null');
-			return 'response_payloads is null';
-		}
-	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-	}).catch((err) => {
-		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
-	});
+	return channel.queryTransaction(trxnID, target);	
 };
 var getBlockByHash = function(peer, hash, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
-
-	return helper.getRegisteredUsers(username, org).then((member) => {
-		return channel.queryBlockByHash(new Buffer(hash,"hex"), target);
-	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
-	}).then((response_payloads) => {
-		if (response_payloads) {
-			// logger.debug(response_payloads);
-			return response_payloads;
-		} else {
-			logger.error('response_payloads is null');
-			return 'response_payloads is null';
-		}
-	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-	}).catch((err) => {
-		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
-	});
+	return channel.queryBlockByHash(new Buffer(hash,"hex"), target);	
 };
 var getChainInfo = function(peer,channelName, username, org) {
 	var target = buildTarget(peer, org);
@@ -263,35 +159,7 @@ var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
 	var client = helper.getClientForOrg(org);
-
-	return helper.getRegisteredUsers(username, org).then((member) => {
-		//channel.setPrimaryPeer(targets[0]);
-		return client.queryChannels(target);
-	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
-			err.stack : err;
-	}).then((response) => {
-		if (response) {
-			logger.debug('<<< channels >>>');
-			var channelNames = [];
-			for (let i = 0; i < response.channels.length; i++) {
-				channelNames.push('channel id: ' + response.channels[i].channel_id);
-			}
-			logger.debug(channelNames);
-			return response;
-		} else {
-			logger.error('response_payloads is null');
-			return 'response_payloads is null';
-		}
-	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-	}).catch((err) => {
-		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
-	});
+	return client.queryChannels(target);	
 };
 
 var getChannelHeight=function(peer,channelName,username,org){

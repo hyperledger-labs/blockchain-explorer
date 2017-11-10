@@ -13,6 +13,9 @@ module.exports = {
 	  aggregateTimeout: 300,
 	  poll: 1000
   },
+  node : {
+    child_process: 'empty'
+  },
   devServer: {
 	  historyApiFallback: true,
 	  hot: true,
