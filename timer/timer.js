@@ -13,7 +13,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-
+var ledgerMgr=require('../utils/ledgerMgr.js')
+var helper=require('../app/helper.js')
 var Metrics=require('../metrics/metrics.js')
 var blockListener=require('../listener/blocklistener.js').blockListener()
 
@@ -25,8 +26,6 @@ var stomp=require('../socket/websocketserver.js').stomp()
 
 var statusMertics=require('../service/metricservice.js')
 
-var ledgerMgr=require('../utils/ledgerMgr.js')
-
 var ledgerEvent=ledgerMgr.ledgerEvent
 ledgerEvent.on('channgelLedger',function(){
     blockPerMinMeter.clean()
@@ -36,6 +35,7 @@ ledgerEvent.on('channgelLedger',function(){
 
 function start() {
 
+    helper.createDefault(ledgerMgr.getCurrChannel());
     
     setInterval(function () {
         blockPerMinMeter.push(0)
@@ -69,8 +69,10 @@ function start() {
     },1000)*/
 
     //同步区块
-    blockListener.emit('syncChaincodes', ledgerMgr.getCurrChannel())
-    blockListener.emit('syncBlock', ledgerMgr.getCurrChannel())
+    blockListener.emit('syncChaincodes')
+    blockListener.emit('syncPeerlist')
+    blockListener.emit('syncBlock')
+    
 
 }
 

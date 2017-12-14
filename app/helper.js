@@ -25,13 +25,8 @@ var User = require('fabric-client/lib/User.js');
 var crypto = require('crypto');
 var FabricCAService = require('fabric-ca-client');
 var config = require('../config.json');
-
 var hfc = require('fabric-client');
-if(config.enableTls){
-	hfc.addConfigFile(path.join(__dirname, 'network-config-tls.json'));
-}else{
-	hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
-}
+hfc.addConfigFile(path.join(__dirname, '../config.json'));
 hfc.setLogger(logger);
 var ORGS = hfc.getConfigSetting('network-config');
 
@@ -40,48 +35,36 @@ var channels = {};
 var caClients = {};
 
 // set up the client and channel objects for each org
-for (let key in ORGS) {
-    if (key.indexOf('org') === 0) {
-        let client = new hfc();
 
-        let cryptoSuite = hfc.newCryptoSuite();
-        cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
-        client.setCryptoSuite(cryptoSuite);
-        channels[key] = {};
-        for (let index in config.channelsList) {
-            let channelName = config.channelsList[index];
-            let channel = client.newChannel(channelName);
-            //Add all the orderers
-            newOrderer(client, channel)
-            clients[key] = client;
-            channels[key][channelName] = channel;
-
-            setupPeers(channel, key, client);
-        }
-        let caUrl = ORGS[key].ca;
-        caClients[key] = new FabricCAService(caUrl, null /*defautl TLS opts*/, '' /* default CA */, cryptoSuite);
-    }
+function createDefault (channelName){
+	console.log("default-----"+channelName);
+	for (let key in ORGS) {
+		if (key.indexOf('org') === 0) {
+			let client = new hfc();	
+			let cryptoSuite = hfc.newCryptoSuite();
+			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
+			client.setCryptoSuite(cryptoSuite);
+			channels[key] = {};
+			let channel = client.newChannel(channelName);
+			clients[key] = client;
+			channels[key][channelName] = channel;
+			setupPeers(channel, key, client);
+		}
+	}	
 }
 
 function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
 		if (key.indexOf('peer') === 0) {
             let peer
-			if(config.enableTls){
-                let data = fs.readFileSync(path.join(__dirname,"../", ORGS[org][key]['tls_cacerts']));
-                peer = client.newPeer(
-                    ORGS[org][key].requests,
-                    {
-                        pem: Buffer.from(data).toString(),
-                        'ssl-target-name-override': ORGS[org][key]['server-hostname']
-                    }
-                );
-			}else{
-				peer = client.newPeer(
-					ORGS[org][key].requests
-				);
-			}
-
+			let data = fs.readFileSync(path.join(__dirname,"../", ORGS[org][key]['tls_cacerts']));
+			peer = client.newPeer(
+				ORGS[org][key].requests,
+				{
+					pem: Buffer.from(data).toString(),
+					'ssl-target-name-override': ORGS[org][key]['server-hostname']
+				}
+			);
 			channel.addPeer(peer);
 		}
 	}
@@ -90,7 +73,7 @@ function setupPeers(channel, org, client) {
 function newOrderer(client, channel) {
 	for (let index in ORGS['orderer']) {
         let newOrderer
-		if(config.enableTls){
+		//if(config.enableTls){
             let data = fs.readFileSync(path.join(__dirname,"../", ORGS.orderer[index]['tls_cacerts']));
             newOrderer = client.newOrderer(
                 ORGS.orderer[index].url,
@@ -99,11 +82,11 @@ function newOrderer(client, channel) {
                     'ssl-target-name-override': ORGS.orderer[index]['server-hostname']
                 }
             );
-		}else{
+		/*}else{
 			newOrderer = client.newOrderer(
 				ORGS.orderer[index].url
 			);
-		}
+		}*/
 		channel.addOrderer(newOrderer);
 	}
 }
@@ -151,28 +134,28 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 						if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
 							// found a peer matching the subject url
 							if (forPeers) {
-								if(config.enableTls){
+								//if(config.enableTls){
                                     let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
                                     targets.push(client.newPeer('grpcs://' + peerUrl, {
                                         pem: Buffer.from(data).toString(),
                                         'ssl-target-name-override': org[prop]['server-hostname']
                                     }));
-								}else{
+								/*}else{
 									targets.push(client.newPeer('grpc://' + peerUrl));
-								}
+								}*/
 
 								continue outer;
 							} else {
 								let eh = client.newEventHub();
-								if(config.enableTls){
+								//if(config.enableTls){
                                     let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
                                     eh.setPeerAddr(org[prop]['events'], {
                                         pem: Buffer.from(data).toString(),
                                         'ssl-target-name-override': org[prop]['server-hostname']
                                     });
-								}else{
+								/*}else{
 									eh.setPeerAddr(org[prop]['events']);
-								}
+								}*/
 								targets.push(eh);
 
 								continue outer;
@@ -195,10 +178,9 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 // APIs
 //-------------------------------------//
 var getChannelForOrg = function(org, channelName) {
-    if (channelName == undefined ) {
-        channelName = config.channelsList[0];
-    }
-    return channels[org][channelName];
+   if(channels[org][channelName] == undefined)
+		createDefault(channelName);
+   return channels[org][channelName];
 };
 
 var getClientForOrg = function(org) {
@@ -218,7 +200,7 @@ var getMspID = function(org) {
 	return ORGS[org].mspid;
 };
 
-var getAdminUser = function(userOrg) {
+/*var getAdminUser = function(userOrg) {
 	var users = config.users;
 	var username = users[0].username;
 	var password = users[0].secret;
@@ -327,7 +309,7 @@ var getRegisteredUsers = function(username, userOrg, isJson) {
 		logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
 		return '' + err;
 	});
-};
+}; */
 
 var getOrgAdmin = function(userOrg) {
 	var admin = ORGS[userOrg].admin;
@@ -371,10 +353,10 @@ var getLogger = function(moduleName) {
 
 var getPeerAddressByName = function(org, peer) {
 	var address = ORGS[org][peer].requests;
-	if(config.enableTls){
+	//if(config.enableTls){
         return address.split('grpcs://')[1];
-	}
-	return address.split('grpc://')[1];
+	/*}
+	return address.split('grpc://')[1];*/
 };
 
 var getOrgs=function(){
@@ -406,8 +388,9 @@ exports.ORGS = ORGS;
 exports.newPeers = newPeers;
 exports.newEventHubs = newEventHubs;
 exports.getPeerAddressByName = getPeerAddressByName;
-exports.getRegisteredUsers = getRegisteredUsers;
+//exports.getRegisteredUsers = getRegisteredUsers;
 exports.getOrgAdmin = getOrgAdmin;
-exports.getAdminUser=getAdminUser;
+//exports.getAdminUser=getAdminUser;
 exports.getOrgs=getOrgs;
 exports.getPeersByOrg=getPeersByOrg;
+exports.createDefault=createDefault;

@@ -19,16 +19,9 @@ var fs = require('fs');
 var util = require('util');
 var hfc = require('fabric-client');
 var Peer = require('fabric-client/lib/Peer.js');
-var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 var EventHub = require('fabric-client/lib/EventHub.js');
-if(config.enableTls){
-	hfc.addConfigFile(path.join(__dirname, 'network-config-tls.json'));
-}else{
-	hfc.addConfigFile(path.join(__dirname, 'network-config.json'));
-}
-var ORGS = hfc.getConfigSetting('network-config');
 
 var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, username, org) {
     logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));

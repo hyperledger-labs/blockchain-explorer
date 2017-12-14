@@ -23,10 +23,12 @@ var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
 
+var FabricCAService = require('fabric-ca-client');
+
 var peerFailures = 0;
 var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, username, org) {
     var channel = helper.getChannelForOrg(org, channelName);
-    var client = helper.getClientForOrg(org, channelName);
+    var client = helper.getClientForOrg(org);
 
     var target = buildTarget(peer, org);
     //Let Cahnnel use second peer added
@@ -48,15 +50,35 @@ var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, usern
 
 var getBlockByNumber = function(peer,channelName, blockNumber, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org,channelName);
-	return channel.queryBlock(parseInt(blockNumber), target);	
+	var channel = helper.getChannelForOrg(org,channelName);		
+	return helper.getOrgAdmin(org).then((member) => {
+		return channel.queryBlock(parseInt(blockNumber), target);
+	}, (err) => {
+		logger.info('Failed to get submitter "' + username + '"');
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+			err.stack : err;
+	}).then((channelinfo) => {
+		if (channelinfo) {			
+			return channelinfo;
+		} else {
+			logger.error('response_payloads is null');
+			return 'response_payloads is null';
+		}
+	}, (err) => {
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
+			err);
+		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+	}).catch((err) => {
+		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
+		return 'Failed to query with error:' + err.stack ? err.stack : err;
+	});
 };
 
 
 var getTransactionByID = function(peer,channelName, trxnID, username, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org,channelName);
-	return channel.queryTransaction(trxnID, target);	
+	return channel.queryTransaction(trxnID, target);
 };
 var getBlockByHash = function(peer, hash, username, org) {
 	var target = buildTarget(peer, org);
@@ -65,9 +87,9 @@ var getBlockByHash = function(peer, hash, username, org) {
 };
 var getChainInfo = function(peer,channelName, username, org) {
 	var target = buildTarget(peer, org);
+	var client = helper.getClientForOrg(org);	
 	var channel = helper.getChannelForOrg(org,channelName);
-
-	return helper.getRegisteredUsers(username, org).then((member) => {
+	return helper.getOrgAdmin(org).then((member) => {
 		return channel.queryInfo(target);
 	}, (err) => {
 		logger.info('Failed to get submitter "' + username + '"');
@@ -95,18 +117,6 @@ var getChainInfo = function(peer,channelName, username, org) {
 	});
 };
 
-var getChannelConfig=function(org,channelName){
-    var channel = helper.getChannelForOrg(org,channelName);
-
-    return helper.getOrgAdmin(org).then((member) => {
-        return channel.getChannelConfig()
-    }).then((response) => {
-        return response
-    }).catch((err) => {
-        logger.error(err)
-    });
-
-}
 //getInstalledChaincodes
 var getInstalledChaincodes = function(peer,channelName, type, username, org) {
 	var target = buildTarget(peer, org);
@@ -155,11 +165,42 @@ var getInstalledChaincodes = function(peer,channelName, type, username, org) {
 		return 'Failed to query with error:' + err.stack ? err.stack : err;
 	});
 };
+
+var getOrganizations = function(org,channelName){
+	var channel = helper.getChannelForOrg(org,channelName);
+	return channel.getOrganizations();		
+};
+
 var getChannels = function(peer, username, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
-	var client = helper.getClientForOrg(org);
-	return client.queryChannels(target);	
+	var client = helper.getClientForOrg(org);	
+	return helper.getOrgAdmin(org).then((member) => {
+		return client.queryChannels(target);
+	}, (err) => {
+		logger.info('Failed to get submitter "' + username + '"');
+		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+			err.stack : err;
+	}).then((channelinfo) => {
+		if (channelinfo) {			
+			return channelinfo;
+		} else {
+			logger.error('response_payloads is null');
+			return 'response_payloads is null';
+		}
+	}, (err) => {
+		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
+			err);
+		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+	}).catch((err) => {
+		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
+		return 'Failed to query with error:' + err.stack ? err.stack : err;
+	});
+};
+
+var getPeerList = function(org,channelName){
+	var client = helper.getClientForOrg(org);		
+	var channel = helper.getChannelForOrg(org,channelName);
+	return channel.getPeers();	
 };
 
 var getChannelHeight=function(peer,channelName,username,org){
@@ -190,4 +231,5 @@ exports.getChainInfo = getChainInfo;
 exports.getInstalledChaincodes = getInstalledChaincodes;
 exports.getChannels = getChannels;
 exports.getChannelHeight=getChannelHeight;
-exports.getChannelConfig=getChannelConfig;
+exports.getPeerList = getPeerList;
+exports.getOrganizations=getOrganizations;

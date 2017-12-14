@@ -1,11 +1,28 @@
 {
+    "network-config": {	
+		"org1": {
+			"name": "peerOrg1",
+			"mspid": "Org1MSP",
+			"peer1": {
+				"requests": "grpcs://127.0.0.1:7051",
+				"events": "grpcs://127.0.0.1:7053",
+				"server-hostname": "peer0.org1.example.com",
+				"tls_cacerts": "/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+			},			
+			"admin": {
+				"key": "/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"cert": "/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+			}
+		}		
+	},
    "host":"localhost",
    "port":"8080",
-   "channelsList": ["mychannel"],
+   "channel": "mychannel",
    "GOPATH":"../artifacts",
    "keyValueStore":"/tmp/fabric-client-kvs",
    "eventWaitTime":"30000",
-   "enableTls":true,
+   "peer":"peer1",
+   "org":["org1"],
    "users":[
       {
          "username":"admin",

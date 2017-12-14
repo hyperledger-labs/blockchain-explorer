@@ -22,6 +22,10 @@ var query=require('../app/query.js')
 var invoke=require('../app/invoke-transaction.js')
 var instantiate=require('../app/instantiate-chaincode.js')
 var install=require('../app/install-chaincode.js')
+var config=require('../config.json')
+
+var username = config.users[0].username;
+var org =  config.org[0];
 
 /*
 router.get('/', function(req, res, next) {
@@ -43,8 +47,8 @@ function getErrorMessage(field) {
 
 router.use(function(req, res, next) {
 
-    req.username = req.query.username || 'admin';
-    req.orgname = req.query.orgname || 'org1';
+    req.username = req.query.username || username;
+    req.orgname = req.query.orgname || org;
 
     console.info('=================================')
     console.info(`${req.username}, ${req.orgname}`)

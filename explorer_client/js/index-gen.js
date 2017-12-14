@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "3e5cd91b6593214aba20"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "bffc8f3376c9e340ebe2"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -713,25 +713,25 @@
 
 	__webpack_require__(217);
 
+	__webpack_require__(327);
+
 	__webpack_require__(328);
 
-	__webpack_require__(329);
-
-	__webpack_require__(327);
+	__webpack_require__(326);
 
 	var _common = __webpack_require__(278);
 
 	var _common2 = _interopRequireDefault(_common);
 
-	__webpack_require__(330);
+	__webpack_require__(329);
 
-	__webpack_require__(331);
+	__webpack_require__(330);
 
 	var _utils = __webpack_require__(316);
 
 	var _utils2 = _interopRequireDefault(_utils);
 
-	__webpack_require__(332);
+	__webpack_require__(331);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -770,15 +770,14 @@
 
 	            'chaincodelist': __webpack_require__(318),
 	            // 'metrix_choc_tx'	: require('./widgets/metrix_choc_tx'),
-	            'metrix_block_min': __webpack_require__(320),
-	            'metrix_txn_sec': __webpack_require__(323),
-	            'metrix_txn_min': __webpack_require__(322),
-	            'peerlist': __webpack_require__(324),
+	            'metrix_block_min': __webpack_require__(319),
+	            'metrix_txn_sec': __webpack_require__(322),
+	            'metrix_txn_min': __webpack_require__(321),
+	            'peerlist': __webpack_require__(323),
 	            'blockview': __webpack_require__(317),
 	            'blocklist': __webpack_require__(279),
 	            'blockinfo': __webpack_require__(277),
-	            'txdetail': __webpack_require__(325),
-	            'doc-frame': __webpack_require__(319)
+	            'txdetail': __webpack_require__(324)
 
 	        });
 
@@ -889,9 +888,9 @@
 	            _jquery2.default.when(_utils2.default.load({ url: 'channellist' }) //channellist
 	            ).done(function (data) {
 	                var channelsel = [];
-	                var channels = data.channelList;
+	                var channels = data.channels;
 	                channels.forEach(function (item) {
-	                    channelsel.push(channelListTemplate({ channlename: item }));
+	                    channelsel.push(channelListTemplate({ channlename: item.channel_id }));
 	                });
 
 	                (0, _jquery2.default)('#selectchannel').html(channelsel.join(''));
@@ -924,14 +923,7 @@
 
 	            // opens the section and pass in the widgets that it needs
 	            Dashboard.showSection('peers', widgets);
-	        },
-
-	        'api': function api() {
-	            var widgets = [{ widgetId: 'doc-frame' }];
-
-	            Dashboard.showSection('api', widgets);
 	        }
-
 	    },
 
 	    debug: function debug(message) {
@@ -964,43 +956,16 @@
 	        (0, _jquery2.default)("#channel").click();
 	    });
 
-	    // Menu (burger) handler
-	    (0, _jquery2.default)('.tower-toggle-btn').on('click', function () {
-	        (0, _jquery2.default)('.tower-logo-container').toggleClass('tower-nav-min');
-	        (0, _jquery2.default)('.tower-sidebar').toggleClass('tower-nav-min');
-	        (0, _jquery2.default)('.tower-body-wrapper').toggleClass('tower-nav-min');
-	    });
-
 	    (0, _jquery2.default)('#reset').on('click', function () {
 	        Dashboard.reset();
-	    });
-
-	    // Navigation menu handler
-	    (0, _jquery2.default)('.tower-sidebar li').click(function (e) {
-	        var id = (0, _jquery2.default)(this).attr('id');
-	        if (id === 'help') {
-	            (0, _jquery2.default)(document).trigger('StartTour');
-	            Tower.tour.start(true);
-	            return;
-	        }
-
-	        e.preventDefault();
-
-	        Tower.current = id;
-
-	        (0, _jquery2.default)('.tower-sidebar li').removeClass('active');
-	        (0, _jquery2.default)(this).addClass('active');
-
-	        Tower.section[Tower.current]();
-
-	        (0, _jquery2.default)('.tower-page-title').html((0, _jquery2.default)('<span>', { html: (0, _jquery2.default)(this).find('.tower-sidebar-item').html() }));
 	    });
 
 	    // ---------- INIT -----------
 	    Tower.init();
 
 	    // Setting 'peers' as first section
-	    (0, _jquery2.default)('.tower-sidebar li').first().click();
+	    Tower.section['channel']();
+	    (0, _jquery2.default)('.tower-page-title').html((0, _jquery2.default)('<span>', { html: 'Channel' }));
 	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
@@ -14867,7 +14832,7 @@
 	var d3Voronoi = __webpack_require__(90);
 	var d3Zoom = __webpack_require__(91);
 
-	var version = "4.11.0";
+	var version = "4.12.0";
 
 	exports.version = version;
 	Object.keys(d3Array).forEach(function (key) { exports[key] = d3Array[key]; });
@@ -16616,7 +16581,7 @@
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-selection/ Version 1.1.0. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-selection/ Version 1.2.0. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports) :
 		typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -17578,6 +17543,7 @@
 	exports.mouse = mouse;
 	exports.namespace = namespace;
 	exports.namespaces = namespaces;
+	exports.clientPoint = point;
 	exports.select = select;
 	exports.selectAll = selectAll;
 	exports.selection = selection;
@@ -17598,7 +17564,7 @@
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-interpolate/ Version 1.1.5. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-interpolate/ Version 1.1.6. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(27)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-color'], factory) :
@@ -17725,7 +17691,7 @@
 	var array = function(a, b) {
 	  var nb = b ? b.length : 0,
 	      na = a ? Math.min(nb, a.length) : 0,
-	      x = new Array(nb),
+	      x = new Array(na),
 	      c = new Array(nb),
 	      i;
 
@@ -18678,7 +18644,7 @@
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-transition/ Version 1.1.0. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-transition/ Version 1.1.1. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(25), __webpack_require__(23), __webpack_require__(29), __webpack_require__(26), __webpack_require__(27), __webpack_require__(30)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-selection', 'd3-dispatch', 'd3-timer', 'd3-interpolate', 'd3-color', 'd3-ease'], factory) :
@@ -18716,20 +18682,20 @@
 	};
 
 	function init(node, id) {
-	  var schedule = node.__transition;
-	  if (!schedule || !(schedule = schedule[id]) || schedule.state > CREATED) throw new Error("too late");
+	  var schedule = get(node, id);
+	  if (schedule.state > CREATED) throw new Error("too late; already scheduled");
 	  return schedule;
 	}
 
 	function set(node, id) {
-	  var schedule = node.__transition;
-	  if (!schedule || !(schedule = schedule[id]) || schedule.state > STARTING) throw new Error("too late");
+	  var schedule = get(node, id);
+	  if (schedule.state > STARTING) throw new Error("too late; already started");
 	  return schedule;
 	}
 
 	function get(node, id) {
 	  var schedule = node.__transition;
-	  if (!schedule || !(schedule = schedule[id])) throw new Error("too late");
+	  if (!schedule || !(schedule = schedule[id])) throw new Error("transition not found");
 	  return schedule;
 	}
 
@@ -20497,7 +20463,7 @@
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-dsv/ Version 1.0.7. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-dsv/ Version 1.0.8. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports) :
 		typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -20548,7 +20514,7 @@
 	      if (convert) return convert(row, i - 1);
 	      columns = row, convert = f ? customConverter(row, f) : objectConverter(row);
 	    });
-	    rows.columns = columns;
+	    rows.columns = columns || [];
 	    return rows;
 	  }
 
@@ -21772,7 +21738,7 @@
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-format/ Version 1.2.0. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-format/ Version 1.2.1. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports) :
 		typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -22109,7 +22075,7 @@
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-geo/ Version 1.8.1. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-geo/ Version 1.9.0. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(20)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-array'], factory) :
@@ -24349,33 +24315,49 @@
 	  polygonEnd: function() { this.stream.polygonEnd(); }
 	};
 
-	function fitExtent(projection, extent, object) {
-	  var w = extent[1][0] - extent[0][0],
-	      h = extent[1][1] - extent[0][1],
-	      clip = projection.clipExtent && projection.clipExtent();
-
-	  projection
-	      .scale(150)
-	      .translate([0, 0]);
-
+	function fit(projection, fitBounds, object) {
+	  var clip = projection.clipExtent && projection.clipExtent();
+	  projection.scale(150).translate([0, 0]);
 	  if (clip != null) projection.clipExtent(null);
-
 	  geoStream(object, projection.stream(boundsStream$1));
-
-	  var b = boundsStream$1.result(),
-	      k = Math.min(w / (b[1][0] - b[0][0]), h / (b[1][1] - b[0][1])),
-	      x = +extent[0][0] + (w - k * (b[1][0] + b[0][0])) / 2,
-	      y = +extent[0][1] + (h - k * (b[1][1] + b[0][1])) / 2;
-
+	  fitBounds(boundsStream$1.result());
 	  if (clip != null) projection.clipExtent(clip);
+	  return projection;
+	}
 
-	  return projection
-	      .scale(k * 150)
-	      .translate([x, y]);
+	function fitExtent(projection, extent, object) {
+	  return fit(projection, function(b) {
+	    var w = extent[1][0] - extent[0][0],
+	        h = extent[1][1] - extent[0][1],
+	        k = Math.min(w / (b[1][0] - b[0][0]), h / (b[1][1] - b[0][1])),
+	        x = +extent[0][0] + (w - k * (b[1][0] + b[0][0])) / 2,
+	        y = +extent[0][1] + (h - k * (b[1][1] + b[0][1])) / 2;
+	    projection.scale(150 * k).translate([x, y]);
+	  }, object);
 	}
 
 	function fitSize(projection, size, object) {
 	  return fitExtent(projection, [[0, 0], size], object);
+	}
+
+	function fitWidth(projection, width, object) {
+	  return fit(projection, function(b) {
+	    var w = +width,
+	        k = w / (b[1][0] - b[0][0]),
+	        x = (w - k * (b[1][0] + b[0][0])) / 2,
+	        y = -k * b[0][1];
+	    projection.scale(150 * k).translate([x, y]);
+	  }, object);
+	}
+
+	function fitHeight(projection, height, object) {
+	  return fit(projection, function(b) {
+	    var h = +height,
+	        k = h / (b[1][1] - b[0][1]),
+	        x = -k * b[0][0],
+	        y = (h - k * (b[1][1] + b[0][1])) / 2;
+	    projection.scale(150 * k).translate([x, y]);
+	  }, object);
 	}
 
 	var maxDepth = 16;
@@ -24570,6 +24552,14 @@
 	    return fitSize(projection, size, object);
 	  };
 
+	  projection.fitWidth = function(width, object) {
+	    return fitWidth(projection, width, object);
+	  };
+
+	  projection.fitHeight = function(height, object) {
+	    return fitHeight(projection, height, object);
+	  };
+
 	  function recenter() {
 	    projectRotate = compose(rotate = rotateRadians(deltaLambda, deltaPhi, deltaGamma), project);
 	    var center = project(lambda, phi);
@@ -24742,6 +24732,14 @@
 
 	  albersUsa.fitSize = function(size, object) {
 	    return fitSize(albersUsa, size, object);
+	  };
+
+	  albersUsa.fitWidth = function(width, object) {
+	    return fitWidth(albersUsa, width, object);
+	  };
+
+	  albersUsa.fitHeight = function(height, object) {
+	    return fitHeight(albersUsa, height, object);
 	  };
 
 	  function reset() {
@@ -24984,6 +24982,12 @@
 	    },
 	    fitSize: function(size, object) {
 	      return fitSize(projection, size, object);
+	    },
+	    fitWidth: function(width, object) {
+	      return fitWidth(projection, width, object);
+	    },
+	    fitHeight: function(height, object) {
+	      return fitHeight(projection, height, object);
 	    }
 	  };
 	};
@@ -35626,7 +35630,7 @@
 /* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-scale/ Version 1.0.6. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-scale/ Version 1.0.7. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(20), __webpack_require__(33), __webpack_require__(26), __webpack_require__(37), __webpack_require__(87), __webpack_require__(88), __webpack_require__(27)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-array', 'd3-collection', 'd3-interpolate', 'd3-format', 'd3-time', 'd3-time-format', 'd3-color'], factory) :
@@ -36391,7 +36395,7 @@
 	        step = i[1];
 	        interval = i[0];
 	      } else {
-	        step = d3Array.tickStep(start, stop, interval);
+	        step = Math.max(d3Array.tickStep(start, stop, interval), 1);
 	        interval = millisecond;
 	      }
 	    }
@@ -36557,7 +36561,7 @@
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-time/ Version 1.0.7. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-time/ Version 1.0.8. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports) :
 		typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -36590,11 +36594,12 @@
 	  };
 
 	  interval.range = function(start, stop, step) {
-	    var range = [];
+	    var range = [], previous;
 	    start = interval.ceil(start);
 	    step = step == null ? 1 : Math.floor(step);
 	    if (!(start < stop) || !(step > 0)) return range; // also handles Invalid Date
-	    do range.push(new Date(+start)); while (offseti(start, step), floori(start), start < stop)
+	    do range.push(previous = new Date(+start)), offseti(start, step), floori(start);
+	    while (previous < start && start < stop);
 	    return range;
 	  };
 
@@ -36947,7 +36952,7 @@
 /* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-time-format/ Version 2.0.5. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-time-format/ Version 2.1.1. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(87)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-time'], factory) :
@@ -37005,6 +37010,7 @@
 	    "c": null,
 	    "d": formatDayOfMonth,
 	    "e": formatDayOfMonth,
+	    "f": formatMicroseconds,
 	    "H": formatHour24,
 	    "I": formatHour12,
 	    "j": formatDayOfYear,
@@ -37012,9 +37018,13 @@
 	    "m": formatMonthNumber,
 	    "M": formatMinutes,
 	    "p": formatPeriod,
+	    "Q": formatUnixTimestamp,
+	    "s": formatUnixTimestampSeconds,
 	    "S": formatSeconds,
+	    "u": formatWeekdayNumberMonday,
 	    "U": formatWeekNumberSunday,
-	    "w": formatWeekdayNumber,
+	    "V": formatWeekNumberISO,
+	    "w": formatWeekdayNumberSunday,
 	    "W": formatWeekNumberMonday,
 	    "x": null,
 	    "X": null,
@@ -37032,6 +37042,7 @@
 	    "c": null,
 	    "d": formatUTCDayOfMonth,
 	    "e": formatUTCDayOfMonth,
+	    "f": formatUTCMicroseconds,
 	    "H": formatUTCHour24,
 	    "I": formatUTCHour12,
 	    "j": formatUTCDayOfYear,
@@ -37039,9 +37050,13 @@
 	    "m": formatUTCMonthNumber,
 	    "M": formatUTCMinutes,
 	    "p": formatUTCPeriod,
+	    "Q": formatUnixTimestamp,
+	    "s": formatUnixTimestampSeconds,
 	    "S": formatUTCSeconds,
+	    "u": formatUTCWeekdayNumberMonday,
 	    "U": formatUTCWeekNumberSunday,
-	    "w": formatUTCWeekdayNumber,
+	    "V": formatUTCWeekNumberISO,
+	    "w": formatUTCWeekdayNumberSunday,
 	    "W": formatUTCWeekNumberMonday,
 	    "x": null,
 	    "X": null,
@@ -37059,6 +37074,7 @@
 	    "c": parseLocaleDateTime,
 	    "d": parseDayOfMonth,
 	    "e": parseDayOfMonth,
+	    "f": parseMicroseconds,
 	    "H": parseHour24,
 	    "I": parseHour24,
 	    "j": parseDayOfYear,
@@ -37066,9 +37082,13 @@
 	    "m": parseMonthNumber,
 	    "M": parseMinutes,
 	    "p": parsePeriod,
+	    "Q": parseUnixTimestamp,
+	    "s": parseUnixTimestampSeconds,
 	    "S": parseSeconds,
+	    "u": parseWeekdayNumberMonday,
 	    "U": parseWeekNumberSunday,
-	    "w": parseWeekdayNumber,
+	    "V": parseWeekNumberISO,
+	    "w": parseWeekdayNumberSunday,
 	    "W": parseWeekNumberMonday,
 	    "x": parseLocaleDate,
 	    "X": parseLocaleTime,
@@ -37117,16 +37137,38 @@
 	  function newParse(specifier, newDate) {
 	    return function(string) {
 	      var d = newYear(1900),
-	          i = parseSpecifier(d, specifier, string += "", 0);
+	          i = parseSpecifier(d, specifier, string += "", 0),
+	          week, day;
 	      if (i != string.length) return null;
+
+	      // If a UNIX timestamp is specified, return it.
+	      if ("Q" in d) return new Date(d.Q);
 
 	      // The am-pm flag is 0 for AM, and 1 for PM.
 	      if ("p" in d) d.H = d.H % 12 + d.p * 12;
 
 	      // Convert day-of-week and week-of-year to day-of-year.
-	      if ("W" in d || "U" in d) {
-	        if (!("w" in d)) d.w = "W" in d ? 1 : 0;
-	        var day = "Z" in d ? utcDate(newYear(d.y)).getUTCDay() : newDate(newYear(d.y)).getDay();
+	      if ("V" in d) {
+	        if (d.V < 1 || d.V > 53) return null;
+	        if (!("w" in d)) d.w = 1;
+	        if ("Z" in d) {
+	          week = utcDate(newYear(d.y)), day = week.getUTCDay();
+	          week = day > 4 || day === 0 ? d3Time.utcMonday.ceil(week) : d3Time.utcMonday(week);
+	          week = d3Time.utcDay.offset(week, (d.V - 1) * 7);
+	          d.y = week.getUTCFullYear();
+	          d.m = week.getUTCMonth();
+	          d.d = week.getUTCDate() + (d.w + 6) % 7;
+	        } else {
+	          week = newDate(newYear(d.y)), day = week.getDay();
+	          week = day > 4 || day === 0 ? d3Time.timeMonday.ceil(week) : d3Time.timeMonday(week);
+	          week = d3Time.timeDay.offset(week, (d.V - 1) * 7);
+	          d.y = week.getFullYear();
+	          d.m = week.getMonth();
+	          d.d = week.getDate() + (d.w + 6) % 7;
+	        }
+	      } else if ("W" in d || "U" in d) {
+	        if (!("w" in d)) d.w = "u" in d ? d.u % 7 : "W" in d ? 1 : 0;
+	        day = "Z" in d ? utcDate(newYear(d.y)).getUTCDay() : newDate(newYear(d.y)).getDay();
 	        d.m = 0;
 	        d.d = "W" in d ? (d.w + 6) % 7 + d.W * 7 - (day + 5) % 7 : d.w + d.U * 7 - (day + 6) % 7;
 	      }
@@ -37270,7 +37312,7 @@
 	var pads = {"-": "", "_": " ", "0": "0"};
 	var numberRe = /^\s*\d+/;
 	var percentRe = /^%/;
-	var requoteRe = /[\\\^\$\*\+\?\|\[\]\(\)\.\{\}]/g;
+	var requoteRe = /[\\^$*+?|[\]().{}]/g;
 
 	function pad(value, fill, width) {
 	  var sign = value < 0 ? "-" : "",
@@ -37293,18 +37335,28 @@
 	  return map;
 	}
 
-	function parseWeekdayNumber(d, string, i) {
+	function parseWeekdayNumberSunday(d, string, i) {
 	  var n = numberRe.exec(string.slice(i, i + 1));
 	  return n ? (d.w = +n[0], i + n[0].length) : -1;
 	}
 
+	function parseWeekdayNumberMonday(d, string, i) {
+	  var n = numberRe.exec(string.slice(i, i + 1));
+	  return n ? (d.u = +n[0], i + n[0].length) : -1;
+	}
+
 	function parseWeekNumberSunday(d, string, i) {
-	  var n = numberRe.exec(string.slice(i));
+	  var n = numberRe.exec(string.slice(i, i + 2));
 	  return n ? (d.U = +n[0], i + n[0].length) : -1;
 	}
 
+	function parseWeekNumberISO(d, string, i) {
+	  var n = numberRe.exec(string.slice(i, i + 2));
+	  return n ? (d.V = +n[0], i + n[0].length) : -1;
+	}
+
 	function parseWeekNumberMonday(d, string, i) {
-	  var n = numberRe.exec(string.slice(i));
+	  var n = numberRe.exec(string.slice(i, i + 2));
 	  return n ? (d.W = +n[0], i + n[0].length) : -1;
 	}
 
@@ -37319,7 +37371,7 @@
 	}
 
 	function parseZone(d, string, i) {
-	  var n = /^(Z)|([+-]\d\d)(?:\:?(\d\d))?/.exec(string.slice(i, i + 6));
+	  var n = /^(Z)|([+-]\d\d)(?::?(\d\d))?/.exec(string.slice(i, i + 6));
 	  return n ? (d.Z = n[1] ? 0 : -(n[2] + (n[3] || "00")), i + n[0].length) : -1;
 	}
 
@@ -37358,9 +37410,24 @@
 	  return n ? (d.L = +n[0], i + n[0].length) : -1;
 	}
 
+	function parseMicroseconds(d, string, i) {
+	  var n = numberRe.exec(string.slice(i, i + 6));
+	  return n ? (d.L = Math.floor(n[0] / 1000), i + n[0].length) : -1;
+	}
+
 	function parseLiteralPercent(d, string, i) {
 	  var n = percentRe.exec(string.slice(i, i + 1));
 	  return n ? i + n[0].length : -1;
+	}
+
+	function parseUnixTimestamp(d, string, i) {
+	  var n = numberRe.exec(string.slice(i));
+	  return n ? (d.Q = +n[0], i + n[0].length) : -1;
+	}
+
+	function parseUnixTimestampSeconds(d, string, i) {
+	  var n = numberRe.exec(string.slice(i));
+	  return n ? (d.Q = (+n[0]) * 1000, i + n[0].length) : -1;
 	}
 
 	function formatDayOfMonth(d, p) {
@@ -37383,6 +37450,10 @@
 	  return pad(d.getMilliseconds(), p, 3);
 	}
 
+	function formatMicroseconds(d, p) {
+	  return formatMilliseconds(d, p) + "000";
+	}
+
 	function formatMonthNumber(d, p) {
 	  return pad(d.getMonth() + 1, p, 2);
 	}
@@ -37395,11 +37466,22 @@
 	  return pad(d.getSeconds(), p, 2);
 	}
 
+	function formatWeekdayNumberMonday(d) {
+	  var day = d.getDay();
+	  return day === 0 ? 7 : day;
+	}
+
 	function formatWeekNumberSunday(d, p) {
 	  return pad(d3Time.timeSunday.count(d3Time.timeYear(d), d), p, 2);
 	}
 
-	function formatWeekdayNumber(d) {
+	function formatWeekNumberISO(d, p) {
+	  var day = d.getDay();
+	  d = (day >= 4 || day === 0) ? d3Time.timeThursday(d) : d3Time.timeThursday.ceil(d);
+	  return pad(d3Time.timeThursday.count(d3Time.timeYear(d), d) + (d3Time.timeYear(d).getDay() === 4), p, 2);
+	}
+
+	function formatWeekdayNumberSunday(d) {
 	  return d.getDay();
 	}
 
@@ -37442,6 +37524,10 @@
 	  return pad(d.getUTCMilliseconds(), p, 3);
 	}
 
+	function formatUTCMicroseconds(d, p) {
+	  return formatUTCMilliseconds(d, p) + "000";
+	}
+
 	function formatUTCMonthNumber(d, p) {
 	  return pad(d.getUTCMonth() + 1, p, 2);
 	}
@@ -37454,11 +37540,22 @@
 	  return pad(d.getUTCSeconds(), p, 2);
 	}
 
+	function formatUTCWeekdayNumberMonday(d) {
+	  var dow = d.getUTCDay();
+	  return dow === 0 ? 7 : dow;
+	}
+
 	function formatUTCWeekNumberSunday(d, p) {
 	  return pad(d3Time.utcSunday.count(d3Time.utcYear(d), d), p, 2);
 	}
 
-	function formatUTCWeekdayNumber(d) {
+	function formatUTCWeekNumberISO(d, p) {
+	  var day = d.getUTCDay();
+	  d = (day >= 4 || day === 0) ? d3Time.utcThursday(d) : d3Time.utcThursday.ceil(d);
+	  return pad(d3Time.utcThursday.count(d3Time.utcYear(d), d) + (d3Time.utcYear(d).getUTCDay() === 4), p, 2);
+	}
+
+	function formatUTCWeekdayNumberSunday(d) {
 	  return d.getUTCDay();
 	}
 
@@ -37482,7 +37579,15 @@
 	  return "%";
 	}
 
-	var locale$1;
+	function formatUnixTimestamp(d) {
+	  return +d;
+	}
+
+	function formatUnixTimestampSeconds(d) {
+	  return Math.floor(+d / 1000);
+	}
+
+	var locale;
 
 
 
@@ -37500,12 +37605,12 @@
 	});
 
 	function defaultLocale(definition) {
-	  locale$1 = formatLocale(definition);
-	  exports.timeFormat = locale$1.format;
-	  exports.timeParse = locale$1.parse;
-	  exports.utcFormat = locale$1.utcFormat;
-	  exports.utcParse = locale$1.utcParse;
-	  return locale$1;
+	  locale = formatLocale(definition);
+	  exports.timeFormat = locale.format;
+	  exports.timeParse = locale.parse;
+	  exports.utcFormat = locale.utcFormat;
+	  exports.utcParse = locale.utcParse;
+	  return locale;
 	}
 
 	var isoSpecifier = "%Y-%m-%dT%H:%M:%S.%LZ";
@@ -40487,7 +40592,7 @@
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	// https://d3js.org/d3-zoom/ Version 1.6.0. Copyright 2017 Mike Bostock.
+	// https://d3js.org/d3-zoom/ Version 1.7.1. Copyright 2017 Mike Bostock.
 	(function (global, factory) {
 		 true ? factory(exports, __webpack_require__(23), __webpack_require__(24), __webpack_require__(26), __webpack_require__(25), __webpack_require__(28)) :
 		typeof define === 'function' && define.amd ? define(['exports', 'd3-dispatch', 'd3-drag', 'd3-interpolate', 'd3-selection', 'd3-transition'], factory) :
@@ -40596,17 +40701,25 @@
 	  return "ontouchstart" in this;
 	}
 
+	function defaultConstrain(transform$$1, extent, translateExtent) {
+	  var dx0 = transform$$1.invertX(extent[0][0]) - translateExtent[0][0],
+	      dx1 = transform$$1.invertX(extent[1][0]) - translateExtent[1][0],
+	      dy0 = transform$$1.invertY(extent[0][1]) - translateExtent[0][1],
+	      dy1 = transform$$1.invertY(extent[1][1]) - translateExtent[1][1];
+	  return transform$$1.translate(
+	    dx1 > dx0 ? (dx0 + dx1) / 2 : Math.min(0, dx0) || Math.max(0, dx1),
+	    dy1 > dy0 ? (dy0 + dy1) / 2 : Math.min(0, dy0) || Math.max(0, dy1)
+	  );
+	}
+
 	var zoom = function() {
 	  var filter = defaultFilter,
 	      extent = defaultExtent,
+	      constrain = defaultConstrain,
 	      wheelDelta = defaultWheelDelta,
 	      touchable = defaultTouchable,
-	      k0 = 0,
-	      k1 = Infinity,
-	      x0 = -k1,
-	      x1 = k1,
-	      y0 = x0,
-	      y1 = x1,
+	      scaleExtent = [0, Infinity],
+	      translateExtent = [[-Infinity, -Infinity], [Infinity, Infinity]],
 	      duration = 250,
 	      interpolate = d3Interpolate.interpolateZoom,
 	      gestures = [],
@@ -40661,7 +40774,7 @@
 	          p0 = centroid(e),
 	          p1 = t0.invert(p0),
 	          k1 = typeof k === "function" ? k.apply(this, arguments) : k;
-	      return constrain(translate(scale(t0, k1), p0, p1), e);
+	      return constrain(translate(scale(t0, k1), p0, p1), e, translateExtent);
 	    });
 	  };
 
@@ -40670,7 +40783,7 @@
 	      return constrain(this.__zoom.translate(
 	        typeof x === "function" ? x.apply(this, arguments) : x,
 	        typeof y === "function" ? y.apply(this, arguments) : y
-	      ), extent.apply(this, arguments));
+	      ), extent.apply(this, arguments), translateExtent);
 	    });
 	  };
 
@@ -40682,29 +40795,18 @@
 	      return constrain(identity.translate(p[0], p[1]).scale(t.k).translate(
 	        typeof x === "function" ? -x.apply(this, arguments) : -x,
 	        typeof y === "function" ? -y.apply(this, arguments) : -y
-	      ), e);
+	      ), e, translateExtent);
 	    });
 	  };
 
 	  function scale(transform$$1, k) {
-	    k = Math.max(k0, Math.min(k1, k));
+	    k = Math.max(scaleExtent[0], Math.min(scaleExtent[1], k));
 	    return k === transform$$1.k ? transform$$1 : new Transform(k, transform$$1.x, transform$$1.y);
 	  }
 
 	  function translate(transform$$1, p0, p1) {
 	    var x = p0[0] - p1[0] * transform$$1.k, y = p0[1] - p1[1] * transform$$1.k;
 	    return x === transform$$1.x && y === transform$$1.y ? transform$$1 : new Transform(transform$$1.k, x, y);
-	  }
-
-	  function constrain(transform$$1, extent) {
-	    var dx0 = transform$$1.invertX(extent[0][0]) - x0,
-	        dx1 = transform$$1.invertX(extent[1][0]) - x1,
-	        dy0 = transform$$1.invertY(extent[0][1]) - y0,
-	        dy1 = transform$$1.invertY(extent[1][1]) - y1;
-	    return transform$$1.translate(
-	      dx1 > dx0 ? (dx0 + dx1) / 2 : Math.min(0, dx0) || Math.max(0, dx1),
-	      dy1 > dy0 ? (dy0 + dy1) / 2 : Math.min(0, dy0) || Math.max(0, dy1)
-	    );
 	  }
 
 	  function centroid(extent) {
@@ -40783,7 +40885,7 @@
 	    if (!filter.apply(this, arguments)) return;
 	    var g = gesture(this, arguments),
 	        t = this.__zoom,
-	        k = Math.max(k0, Math.min(k1, t.k * Math.pow(2, wheelDelta.apply(this, arguments)))),
+	        k = Math.max(scaleExtent[0], Math.min(scaleExtent[1], t.k * Math.pow(2, wheelDelta.apply(this, arguments)))),
 	        p = d3Selection.mouse(this);
 
 	    // If the mouse is in the same location as before, reuse it.
@@ -40807,7 +40909,7 @@
 
 	    noevent();
 	    g.wheel = setTimeout(wheelidled, wheelDelay);
-	    g.zoom("mouse", constrain(translate(scale(t, k), g.mouse[0], g.mouse[1]), g.extent));
+	    g.zoom("mouse", constrain(translate(scale(t, k), g.mouse[0], g.mouse[1]), g.extent, translateExtent));
 
 	    function wheelidled() {
 	      g.wheel = null;
@@ -40835,7 +40937,7 @@
 	        var dx = d3Selection.event.clientX - x0, dy = d3Selection.event.clientY - y0;
 	        g.moved = dx * dx + dy * dy > clickDistance2;
 	      }
-	      g.zoom("mouse", constrain(translate(g.that.__zoom, g.mouse[0] = d3Selection.mouse(g.that), g.mouse[1]), g.extent));
+	      g.zoom("mouse", constrain(translate(g.that.__zoom, g.mouse[0] = d3Selection.mouse(g.that), g.mouse[1]), g.extent, translateExtent));
 	    }
 
 	    function mouseupped() {
@@ -40852,7 +40954,7 @@
 	        p0 = d3Selection.mouse(this),
 	        p1 = t0.invert(p0),
 	        k1 = t0.k * (d3Selection.event.shiftKey ? 0.5 : 2),
-	        t1 = constrain(translate(scale(t0, k1), p0, p1), extent.apply(this, arguments));
+	        t1 = constrain(translate(scale(t0, k1), p0, p1), extent.apply(this, arguments), translateExtent);
 
 	    noevent();
 	    if (duration > 0) d3Selection.select(this).transition().duration(duration).call(schedule, t1, p0);
@@ -40916,7 +41018,7 @@
 	    }
 	    else if (g.touch0) p = g.touch0[0], l = g.touch0[1];
 	    else return;
-	    g.zoom("touch", constrain(translate(t, p, l), g.extent));
+	    g.zoom("touch", constrain(translate(t, p, l), g.extent, translateExtent));
 	  }
 
 	  function touchended() {
@@ -40954,11 +41056,15 @@
 	  };
 
 	  zoom.scaleExtent = function(_) {
-	    return arguments.length ? (k0 = +_[0], k1 = +_[1], zoom) : [k0, k1];
+	    return arguments.length ? (scaleExtent[0] = +_[0], scaleExtent[1] = +_[1], zoom) : [scaleExtent[0], scaleExtent[1]];
 	  };
 
 	  zoom.translateExtent = function(_) {
-	    return arguments.length ? (x0 = +_[0][0], x1 = +_[1][0], y0 = +_[0][1], y1 = +_[1][1], zoom) : [[x0, y0], [x1, y1]];
+	    return arguments.length ? (translateExtent[0][0] = +_[0][0], translateExtent[1][0] = +_[1][0], translateExtent[0][1] = +_[0][1], translateExtent[1][1] = +_[1][1], zoom) : [[translateExtent[0][0], translateExtent[0][1]], [translateExtent[1][0], translateExtent[1][1]]];
+	  };
+
+	  zoom.constrain = function(_) {
+	    return arguments.length ? (constrain = _, zoom) : constrain;
 	  };
 
 	  zoom.duration = function(_) {
@@ -56251,7 +56357,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
-	//! version : 2.19.1
+	//! version : 2.19.3
 	//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 	//! license : MIT
 	//! momentjs.com
@@ -56911,7 +57017,7 @@
 
 	// any word (or two) characters or numbers including two/three word month in arabic.
 	// includes scottish gaelic two word and hyphenated months
-	var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+	var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 	var regexes = {};
@@ -57066,7 +57172,7 @@
 
 	function set$1 (mom, unit, value) {
 	    if (mom.isValid() && !isNaN(value)) {
-	        if (unit === 'FullYear' && isLeapYear(mom.year())) {
+	        if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
 	            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
 	        }
 	        else {
@@ -58172,10 +58278,11 @@
 
 	function updateLocale(name, config) {
 	    if (config != null) {
-	        var locale, parentConfig = baseConfig;
+	        var locale, tmpLocale, parentConfig = baseConfig;
 	        // MERGE
-	        if (locales[name] != null) {
-	            parentConfig = locales[name]._config;
+	        tmpLocale = loadLocale(name);
+	        if (tmpLocale != null) {
+	            parentConfig = tmpLocale._config;
 	        }
 	        config = mergeConfigs(parentConfig, config);
 	        locale = new Locale(config);
@@ -60729,7 +60836,7 @@
 	// Side effect imports
 
 
-	hooks.version = '2.19.1';
+	hooks.version = '2.19.3';
 
 	setHookCallback(createLocal);
 
@@ -64244,7 +64351,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	//! moment.js locale configuration
-	//! locale : Spanish(United State) [es-us]
+	//! locale : Spanish (United States) [es-us]
 	//! author : bustta : https://github.com/bustta
 
 	;(function (global, factory) {
@@ -65921,8 +66028,7 @@
 
 	var weekEndings = 'vasárnap hétfőn kedden szerdán csütörtökön pénteken szombaton'.split(' ');
 	function translate(number, withoutSuffix, key, isFuture) {
-	    var num = number,
-	        suffix;
+	    var num = number;
 	    switch (key) {
 	        case 's':
 	            return (isFuture || withoutSuffix) ? 'néhány másodperc' : 'néhány másodperce';
@@ -96762,24 +96868,22 @@
 		"./blockview.js": 317,
 		"./chaincodelist": 318,
 		"./chaincodelist.js": 318,
-		"./doc-frame": 319,
-		"./doc-frame.js": 319,
-		"./metrix_block_min": 320,
-		"./metrix_block_min.js": 320,
-		"./metrix_choc_tx": 321,
-		"./metrix_choc_tx.js": 321,
-		"./metrix_txn_min": 322,
-		"./metrix_txn_min.js": 322,
-		"./metrix_txn_sec": 323,
-		"./metrix_txn_sec.js": 323,
-		"./peerlist": 324,
-		"./peerlist.js": 324,
-		"./txdetail": 325,
-		"./txdetail.js": 325,
-		"./weather": 326,
-		"./weather.js": 326,
-		"./widget-root": 327,
-		"./widget-root.js": 327
+		"./metrix_block_min": 319,
+		"./metrix_block_min.js": 319,
+		"./metrix_choc_tx": 320,
+		"./metrix_choc_tx.js": 320,
+		"./metrix_txn_min": 321,
+		"./metrix_txn_min.js": 321,
+		"./metrix_txn_sec": 322,
+		"./metrix_txn_sec.js": 322,
+		"./peerlist": 323,
+		"./peerlist.js": 323,
+		"./txdetail": 324,
+		"./txdetail.js": 324,
+		"./weather": 325,
+		"./weather.js": 325,
+		"./widget-root": 326,
+		"./widget-root.js": 326
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -103089,47 +103193,6 @@
 /* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(_, $) {'use strict';
-
-	module.exports = function () {
-		var extended = {
-			name: 'doc-frame',
-			title: 'API Documentation',
-			size: 'large',
-
-			hideLink: true,
-			hideRefresh: true,
-
-			template: _.template('<div class="form-group">' + '	<iframe src="api.html" style="width: 100%; height: 550px;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>' + '</div>'),
-
-			getVisible: function getVisible() {
-				return $(window).height() - 350;
-			},
-
-			render: function render() {
-				$('#grounds').append(this.shell.tpl);
-
-				$('#widget-' + this.shell.id).css({
-					'height': (this.getVisible() > 600 ? this.getVisible() : '600') + 'px',
-					'margin-bottom': '10px',
-					'overflow': 'auto'
-				}).html(this.template({}));
-
-				$('#widget-' + this.shell.id + ' button').click(this._handler);
-			}
-		};
-
-		var widget = _.extend({}, widgetRoot, extended);
-
-		// register presence with screen manager
-		Dashboard.addWidget(widget);
-	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
-
-/***/ }),
-/* 320 */
-/***/ (function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function($, _) {'use strict';
 
 	var _utils = __webpack_require__(316);
@@ -103187,7 +103250,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(4)))
 
 /***/ }),
-/* 321 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, _) {'use strict';
@@ -103201,7 +103264,7 @@
 	module.exports = function (id) {
 		var extended = {
 			name: 'metrix_choc_tx',
-			title: 'chaincode transtion',
+			title: 'chaincode transaction',
 			size: 'large',
 			widgetId: id, //needed for dashboard
 
@@ -103250,7 +103313,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(4)))
 
 /***/ }),
-/* 322 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, _) {'use strict';
@@ -103264,7 +103327,7 @@
 	module.exports = function (id) {
 	    var extended = {
 	        name: 'metrix_txn_min',
-	        title: 'transtion min',
+	        title: 'transactions/min',
 	        size: 'medium',
 	        widgetId: id, //needed for dashboard
 
@@ -103312,7 +103375,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(4)))
 
 /***/ }),
-/* 323 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, _) {'use strict';
@@ -103326,7 +103389,7 @@
 	module.exports = function (id) {
 		var extended = {
 			name: 'metrix_txn_sec',
-			title: 'transtion sec',
+			title: 'transactions/sec',
 			size: 'large',
 			widgetId: id, //needed for dashboard
 
@@ -103374,7 +103437,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(4)))
 
 /***/ }),
-/* 324 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_, $) {'use strict';
@@ -103388,9 +103451,9 @@
 			url: 'peerlist',
 			hideLink: true,
 
-			template: _.template('<div class="info-table"> ' + '<table style="width: 100%; table-layout: fixed;" class="table table-striped">' + '<thead style="font-weight: bold;">' + '<tr><td width="20%">name</td><td  width="20%">org</td><td  width="20%">mspid</td><td width="40%">request</td></tr></thead>' + '<tbody><%= rows %></tbody>' + ' </table> <div>'),
+			template: _.template('<div class="info-table"> ' + '<table style="table-layout: fixed;" class="table table-striped">' + '<thead style="font-weight: bold;">' + '<tr><td width="20%">org</td><td width="20%">request</td></tr></thead>' + '<tbody><%= rows %></tbody>' + ' </table> <div>'),
 
-			templateRow: _.template('<tr> <td><%= org %></td> <td><%= peer %></td><td><%= mspid %></td> <td><%= request %></td></tr>'),
+			templateRow: _.template('<tr> <td><%=server_hostname%></td><td><%= requests %></td></tr>'),
 			fetch: function fetch() {
 				var _this = this;
 				var rows = [];
@@ -103414,7 +103477,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 325 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_, $) {'use strict';
@@ -103523,7 +103586,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 326 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_, $) {'use strict';
@@ -103563,7 +103626,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 327 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -103657,7 +103720,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 328 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -103727,7 +103790,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 329 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_) {'use strict';
@@ -103778,7 +103841,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 330 */
+/* 329 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -104019,7 +104082,7 @@
 	}).call(undefined);
 
 /***/ }),
-/* 331 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(_, $) {"use strict";
@@ -104105,7 +104168,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 332 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -104116,9 +104179,9 @@
 
 	__webpack_require__(217);
 
-	__webpack_require__(328);
+	__webpack_require__(327);
 
-	__webpack_require__(329);
+	__webpack_require__(328);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

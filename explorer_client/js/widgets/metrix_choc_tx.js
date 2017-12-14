@@ -3,7 +3,7 @@ import utils from '../utils';
 module.exports = function(id) {
 	var extended = {
 		name: 'metrix_choc_tx',
-		title: 'chaincode transtion',
+		title: 'chaincode transaction',
 		size: 'large',
 		widgetId: id, //needed for dashboard
 

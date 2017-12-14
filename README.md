@@ -50,7 +50,7 @@ binaries and hyperledger docker images.
 4. `./byfn.sh -m generate -c mychannel`
 5. `./byfn.sh -m up -c mychannel`
 
-Alternatively you can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `network-config.json` accordingly.
+Alternatively you can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `config.json` accordingly.
 
 This brings up a 2 org network with channel name `mychannel` .
 
@@ -61,10 +61,8 @@ On another terminal,
 2. Modify config.json to update the values for 
 	* channels
 	* mysql host, username, password details
-	* tls 	
 ```json
- "channelsList": ["mychannel"],
- "enableTls":true, 
+ "channel": "mychannel",
  "mysql":{
       "host":"127.0.0.1",
       "database":"fabricexplorer",

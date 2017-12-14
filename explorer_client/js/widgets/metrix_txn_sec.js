@@ -3,7 +3,7 @@ import utils from '../utils';
 module.exports = function(id) {
 	var extended = {
 		name: 'metrix_txn_sec',
-		title: 'transtion sec',
+		title: 'transactions/sec',
 		size: 'large',
 		widgetId: id, //needed for dashboard
 

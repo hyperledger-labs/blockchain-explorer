@@ -20,14 +20,19 @@ var helper=require('../app/helper.js')
 var co=require('co')
 var stomp=require('../socket/websocketserver.js').stomp()
 var logger = helper.getLogger('blockscanner');
+var ledgerMgr=require('../utils/ledgerMgr.js')
+var config=require('../config.json')
 
 var blockListener
+var username = config.users[0].username;
+var peer = config.peer;
+var org =  config.org[0];
 
-
-function  syncBlock(channelName) {
+function  syncBlock() {
+    var channelName = ledgerMgr.getCurrChannel();
     let maxBlockNum
     let curBlockNum
-    Promise.all([
+    Promise.all([        
         getMaxBlockNum(channelName),
         getCurBlockNum(channelName)
     ]).then(datas=>{
@@ -47,7 +52,7 @@ function  syncBlock(channelName) {
 
 function* saveBlockRange(channelName,start,end){
     while(start<end){
-        let block=yield query.getBlockByNumber('peer1',channelName,start,'admin','org1')
+        let block=yield query.getBlockByNumber(peer,channelName,start,username,org)
         blockListener.emit('createBlock',block)
         yield sql.saveRow('blocks',
             {
@@ -88,7 +93,7 @@ function* saveBlockRange(channelName,start,end){
 
 
 function getMaxBlockNum(channelName){
-    return query.getChannelHeight('peer1',channelName,'admin','org1').then(data=>{
+    return query.getChannelHeight(peer,channelName,username,org).then(data=>{
         return data
     }).catch(err=>{
         logger.error(err)
@@ -115,12 +120,12 @@ function getCurBlockNum(channelName){
 
 // ====================chaincodes=====================================
 function* saveChaincodes(channelName){
-    let chaincodes=yield query.getInstalledChaincodes('peer1',channelName,'installed','admin','org1')
+    let chaincodes=yield query.getInstalledChaincodes(peer,channelName,'installed',username,org)
     let len=chaincodes.length
     if(typeof chaincodes ==='string'){
         logger.debug(chaincodes)
         return
-    }
+    }   
     for(let i=0;i<len;i++){
         let chaincode=chaincodes[i]
         chaincode.channelname=channelName
@@ -132,7 +137,32 @@ function* saveChaincodes(channelName){
 
 }
 
-function syncChaincodes(channelName){
+function* savePeerlist(channelName){
+    var array = config.org;
+    var peerlists;
+    array.forEach(function(element) {
+        var peerlist=query.getPeerList(element,channelName);
+        if(peerlists!=undefined)
+            peerlists = peerlists.concat(peerlist);
+        else
+            peerlists = peerlist;
+    });
+    let peerlen=peerlists.length   
+    for(let i=0;i<peerlen;i++){
+        var peers ={};
+        let peerlist=peerlists[i]
+        peers.name=channelName;
+        peers.requests = peerlist._url;
+        peers.server_hostname = peerlist._options["grpc.default_authority"];
+        let c= yield sql.getRowByPkOne(`select count(1) as c from peer where name='${peers.name}' and requests='${peers.requests}' and server_hostname='${peers.server_hostname}' `)
+        if(c.c==0){
+            yield sql.saveRow('peer',peers)
+        }
+    }
+}
+
+function syncChaincodes(){
+    var channelName = ledgerMgr.getCurrChannel();
     co(saveChaincodes,channelName).then(()=>{
         blockListener.emit('syncChaincodes', channelName)
     }).catch(err=>{
@@ -140,10 +170,18 @@ function syncChaincodes(channelName){
     })
 }
 
-// syncChaincodes('mychannel')
+function syncPeerlist(){
+    var channelName = ledgerMgr.getCurrChannel();
+    co(savePeerlist,channelName).then(()=>{
+        blockListener.emit('syncPeerlist', channelName)
+    }).catch(err=>{
+        logger.error(err)
+    })
+}
 
 exports.syncBlock=syncBlock
 exports.syncChaincodes=syncChaincodes
+exports.syncPeerlist=syncPeerlist
 
 exports.setBlockListener=function(blisten){
     blockListener=blisten

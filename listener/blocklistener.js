@@ -33,15 +33,21 @@ blockListener.on('createBlock',function (block) {
     stomp.send('/topic/metrics/txnPerSec',{},JSON.stringify({timestamp:new Date().getTime()/1000,value:block.data.data.length/10}))
 })
 
-blockListener.on('syncBlock',function (channelName) {
+blockListener.on('syncChaincodes',function () {
     setTimeout(function () {
-        blockScanner.syncBlock(channelName)
+        blockScanner.syncChaincodes()
     },1000)
 })
 
-blockListener.on('syncChaincodes',function (channelName) {
+blockListener.on('syncPeerlist',function () {
     setTimeout(function () {
-        blockScanner.syncChaincodes(channelName)
+        blockScanner.syncPeerlist()
+    },1000)
+})
+
+blockListener.on('syncBlock',function () {
+    setTimeout(function () {
+        blockScanner.syncBlock()
     },1000)
 })
 

@@ -65,7 +65,6 @@ window.Tower = {
             'blocklist'			: require('./widgets/blocklist'),
             'blockinfo'			: require('./widgets/blockinfo'),
             'txdetail'			: require('./widgets/txdetail'),
-            'doc-frame'         : require('./widgets/doc-frame'),
 
         });
 
@@ -179,9 +178,9 @@ window.Tower = {
                 utils.load({ url: 'channellist' }),//channellist
             ).done(function(data) {
                 var channelsel = [];
-                var channels = data.channelList;
+                var channels = data.channels;
                 channels.forEach(function(item){
-                    channelsel.push( channelListTemplate ( { channlename: item } ) );
+                    channelsel.push( channelListTemplate ( { channlename: item.channel_id } ) );
 				})
 
                 $('#selectchannel').html( channelsel.join('') );
@@ -232,16 +231,7 @@ window.Tower = {
 
 			// opens the section and pass in the widgets that it needs
 			Dashboard.showSection('peers', widgets);
-		},
-
-        'api': function() {
-            var widgets = [
-                { widgetId: 'doc-frame' }
-            ];
-
-            Dashboard.showSection('api', widgets);
-        }
-
+		}
 	},
 
 
@@ -281,44 +271,15 @@ $(function() {
 		$("#channel").click();
 	});
 
-	// Menu (burger) handler
-	$('.tower-toggle-btn').on('click', function() {
-		$('.tower-logo-container').toggleClass('tower-nav-min');
-		$('.tower-sidebar').toggleClass('tower-nav-min');
-		$('.tower-body-wrapper').toggleClass('tower-nav-min');
-	});
-
-
 	$('#reset').on('click', function() {
 		Dashboard.reset();
 	})
 
-
-    // Navigation menu handler
-    $('.tower-sidebar li').click(function(e) {
-        var id = $(this).attr('id');
-        if (id === 'help') {
-            $(document).trigger('StartTour');
-            Tower.tour.start(true);
-            return;
-        }
-
-        e.preventDefault();
-
-        Tower.current = id;
-
-        $('.tower-sidebar li').removeClass('active');
-        $(this).addClass('active');
-
-        Tower.section[Tower.current]();
-
-        $('.tower-page-title').html( $('<span>', { html: $(this).find('.tower-sidebar-item').html() }) );
-    });
-
-
-	// ---------- INIT -----------
+    // ---------- INIT -----------
 	Tower.init();
 
 	// Setting 'peers' as first section
-	$('.tower-sidebar li').first().click();
+    Tower.section['channel']();
+    $('.tower-page-title').html( $('<span>', { html: 'Channel' }) );
+    
 });
