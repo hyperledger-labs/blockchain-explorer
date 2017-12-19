@@ -100,7 +100,6 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 	outer:
 	for (let index in urls) {
 		let peerUrl = urls[index];
-
 		let found = false;
 		for (let key in ORGS) {
 			if (key.indexOf('org') === 0) {
@@ -120,12 +119,12 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 							if (forPeers) {
 								if(org[prop]['tls_cacerts']!=undefined){
                                     let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
-                                    targets.push(client.newPeer('grpcs://' + peerUrl, {
+                                    targets.push(client.newPeer(peerUrl, {
                                         pem: Buffer.from(data).toString(),
                                         'ssl-target-name-override': org[prop]['server-hostname']
                                     }));
 								}else{
-									targets.push(client.newPeer('grpc://' + peerUrl));
+									targets.push(client.newPeer(peerUrl));
 								}
 
 								continue outer;
@@ -175,10 +174,6 @@ var newPeers = function(urls,channelName) {
 	return newRemotes(urls, true,'',channelName);
 };
 
-var newEventHubs = function(urls, org,channelName) {
-	return newRemotes(urls, false, org,channelName);
-};
-
 var getMspID = function(org) {
 	logger.debug('Msp ID : ' + ORGS[org].mspid);
 	return ORGS[org].mspid;
@@ -225,12 +220,8 @@ var getLogger = function(moduleName) {
 };
 
 var getPeerAddressByName = function(org, peer) {
-	var address = ORGS[org][peer].requests;
-	var tls_cacerts = ORGS[org][peer].tls_cacerts;
-	if(tls_cacerts!=undefined){
-        return address.split('grpcs://')[1];
-	}
-	return address.split('grpc://')[1];
+	var address = ORGS[org][peer].requests;	
+	return address;
 };
 
 var getOrgs=function(){
@@ -260,7 +251,6 @@ exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getMspID = getMspID;
 exports.ORGS = ORGS;
 exports.newPeers = newPeers;
-exports.newEventHubs = newEventHubs;
 exports.getPeerAddressByName = getPeerAddressByName;
 exports.getOrgAdmin = getOrgAdmin;
 exports.getOrgs=getOrgs;
