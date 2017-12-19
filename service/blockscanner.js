@@ -24,7 +24,6 @@ var ledgerMgr=require('../utils/ledgerMgr.js')
 var config=require('../config.json')
 
 var blockListener
-var username = config.users[0].username;
 var peer = config.peer;
 var org =  config.org[0];
 
@@ -52,7 +51,7 @@ function  syncBlock() {
 
 function* saveBlockRange(channelName,start,end){
     while(start<end){
-        let block=yield query.getBlockByNumber(peer,channelName,start,username,org)
+        let block=yield query.getBlockByNumber(peer,channelName,start,org)
         blockListener.emit('createBlock',block)
         yield sql.saveRow('blocks',
             {
@@ -93,7 +92,7 @@ function* saveBlockRange(channelName,start,end){
 
 
 function getMaxBlockNum(channelName){
-    return query.getChannelHeight(peer,channelName,username,org).then(data=>{
+    return query.getChannelHeight(peer,channelName,org).then(data=>{
         return data
     }).catch(err=>{
         logger.error(err)
@@ -120,7 +119,7 @@ function getCurBlockNum(channelName){
 
 // ====================chaincodes=====================================
 function* saveChaincodes(channelName){
-    let chaincodes=yield query.getInstalledChaincodes(peer,channelName,'installed',username,org)
+    let chaincodes=yield query.getInstalledChaincodes(peer,channelName,'installed',org)
     let len=chaincodes.length
     if(typeof chaincodes ==='string'){
         logger.debug(chaincodes)

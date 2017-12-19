@@ -22,18 +22,12 @@
    "keyValueStore":"/tmp/fabric-client-kvs",
    "eventWaitTime":"30000",
    "peer":"peer1",
-   "org":["org1"],
-   "users":[
-      {
-         "username":"admin",
-         "secret":"adminpw"
-      }
-   ],
+   "org":["org1"],  
    "mysql":{
       "host":"127.0.0.1",
       "port":"3306",
       "database":"fabricexplorer",
       "username":"root",
-      "passwd":"123456"
+      "passwd":"jeeva"
    }
 }

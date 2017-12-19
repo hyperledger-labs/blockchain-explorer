@@ -10,7 +10,7 @@ module.exports = function(id) {
 
 
 		template: _.template('<div class="info-table"> '+
-			'<table style="table-layout: fixed;" class="table table-striped">' +
+			'<table style="width: 100%; table-layout: fixed;" class="table table-striped">' +
 			'<thead style="font-weight: bold;">'+
 			'<tr><td width="20%">org</td><td width="20%">request</td></tr></thead>'+
 			'<tbody><%= rows %></tbody>'+

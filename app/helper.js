@@ -37,7 +37,6 @@ var caClients = {};
 // set up the client and channel objects for each org
 
 function createDefault (channelName){
-	console.log("default-----"+channelName);
 	for (let key in ORGS) {
 		if (key.indexOf('org') === 0) {
 			let client = new hfc();	
@@ -56,7 +55,8 @@ function createDefault (channelName){
 function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
 		if (key.indexOf('peer') === 0) {
-            let peer
+			let peer
+			if(ORGS[org][key]['tls_cacerts']!=undefined){
 			let data = fs.readFileSync(path.join(__dirname,"../", ORGS[org][key]['tls_cacerts']));
 			peer = client.newPeer(
 				ORGS[org][key].requests,
@@ -65,29 +65,13 @@ function setupPeers(channel, org, client) {
 					'ssl-target-name-override': ORGS[org][key]['server-hostname']
 				}
 			);
+		}else{
+			peer = client.newPeer(
+				ORGS[org][key].requests
+			);
+		}
 			channel.addPeer(peer);
 		}
-	}
-}
-
-function newOrderer(client, channel) {
-	for (let index in ORGS['orderer']) {
-        let newOrderer
-		//if(config.enableTls){
-            let data = fs.readFileSync(path.join(__dirname,"../", ORGS.orderer[index]['tls_cacerts']));
-            newOrderer = client.newOrderer(
-                ORGS.orderer[index].url,
-                {
-                    pem: Buffer.from(data).toString(),
-                    'ssl-target-name-override': ORGS.orderer[index]['server-hostname']
-                }
-            );
-		/*}else{
-			newOrderer = client.newOrderer(
-				ORGS.orderer[index].url
-			);
-		}*/
-		channel.addOrderer(newOrderer);
 	}
 }
 
@@ -134,28 +118,28 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 						if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
 							// found a peer matching the subject url
 							if (forPeers) {
-								//if(config.enableTls){
+								if(org[prop]['tls_cacerts']!=undefined){
                                     let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
                                     targets.push(client.newPeer('grpcs://' + peerUrl, {
                                         pem: Buffer.from(data).toString(),
                                         'ssl-target-name-override': org[prop]['server-hostname']
                                     }));
-								/*}else{
+								}else{
 									targets.push(client.newPeer('grpc://' + peerUrl));
-								}*/
+								}
 
 								continue outer;
 							} else {
 								let eh = client.newEventHub();
-								//if(config.enableTls){
+								if(org[prop]['tls_cacerts']!=undefined){
                                     let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
                                     eh.setPeerAddr(org[prop]['events'], {
                                         pem: Buffer.from(data).toString(),
                                         'ssl-target-name-override': org[prop]['server-hostname']
                                     });
-								/*}else{
+								}else{
 									eh.setPeerAddr(org[prop]['events']);
-								}*/
+								}
 								targets.push(eh);
 
 								continue outer;
@@ -200,117 +184,6 @@ var getMspID = function(org) {
 	return ORGS[org].mspid;
 };
 
-/*var getAdminUser = function(userOrg) {
-	var users = config.users;
-	var username = users[0].username;
-	var password = users[0].secret;
-	var member;
-	var client = getClientForOrg(userOrg);
-
-	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(getOrgName(userOrg))
-	}).then((store) => {
-		client.setStateStore(store);
-		// clearing the user context before switching
-		client._userContext = null;
-		return client.getUserContext(username, true).then((user) => {
-			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member from persistence');
-				return user;
-			} else {
-				let caClient = caClients[userOrg];
-				// need to enroll it with CA server
-				return caClient.enroll({
-					enrollmentID: username,
-					enrollmentSecret: password
-				}).then((enrollment) => {
-					logger.info('Successfully enrolled user \'' + username + '\'');
-					member = new User(username);
-					member.setCryptoSuite(client.getCryptoSuite());
-					return member.setEnrollment(enrollment.key, enrollment.certificate, getMspID(userOrg));
-				}).then(() => {
-					return client.setUserContext(member);
-				}).then(() => {
-					return member;
-				}).catch((err) => {
-					logger.error('Failed to enroll and persist user. Error: ' + err.stack ?
-						err.stack : err);
-					return null;
-				});
-			}
-		});
-	});
-};
-
-var getRegisteredUsers = function(username, userOrg, isJson) {
-	var member;
-	var client = getClientForOrg(userOrg);
-	var enrollmentSecret = null;
-	return hfc.newDefaultKeyValueStore({
-		path: getKeyStoreForOrg(getOrgName(userOrg))
-	}).then((store) => {
-		client.setStateStore(store);
-		// clearing the user context before switching
-		client._userContext = null;
-		return client.getUserContext(username, true).then((user) => {
-			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member from persistence');
-				return user;
-			} else {
-				let caClient = caClients[userOrg];
-				return getAdminUser(userOrg).then(function(adminUserObj) {
-					member = adminUserObj;
-					return caClient.register({
-						enrollmentID: username,
-						affiliation: userOrg + '.department1'
-					}, member);
-				}).then((secret) => {
-					enrollmentSecret = secret;
-					logger.debug(username + ' registered successfully');
-					return caClient.enroll({
-						enrollmentID: username,
-						enrollmentSecret: secret
-					});
-				}, (err) => {
-					logger.debug(username + ' failed to register');
-					return '' + err;
-					//return 'Failed to register '+username+'. Error: ' + err.stack ? err.stack : err;
-				}).then((message) => {
-					if (message && typeof message === 'string' && message.includes(
-							'Error:')) {
-						logger.error(username + ' enrollment failed');
-						return message;
-					}
-					logger.debug(username + ' enrolled successfully');
-
-					member = new User(username);
-					member._enrollmentSecret = enrollmentSecret;
-					return member.setEnrollment(message.key, message.certificate, getMspID(userOrg));
-				}).then(() => {
-					client.setUserContext(member);
-					return member;
-				}, (err) => {
-					logger.error(util.format('%s enroll failed: %s', username, err.stack ? err.stack : err));
-					return '' + err;
-				});;
-			}
-		});
-	}).then((user) => {
-		if (isJson && isJson === true) {
-			var response = {
-				success: true,
-				secret: user._enrollmentSecret,
-				message: username + ' enrolled Successfully',
-			};
-			return response;
-		}
-		return user;
-	}, (err) => {
-		logger.error(util.format('Failed to get registered user: %s, error: %s', username, err.stack ? err.stack : err));
-		return '' + err;
-	});
-}; */
-
 var getOrgAdmin = function(userOrg) {
 	var admin = ORGS[userOrg].admin;
 	var keyPath = path.join(__dirname,"../",admin.key);
@@ -353,10 +226,11 @@ var getLogger = function(moduleName) {
 
 var getPeerAddressByName = function(org, peer) {
 	var address = ORGS[org][peer].requests;
-	//if(config.enableTls){
+	var tls_cacerts = ORGS[org][peer].tls_cacerts;
+	if(tls_cacerts!=undefined){
         return address.split('grpcs://')[1];
-	/*}
-	return address.split('grpc://')[1];*/
+	}
+	return address.split('grpc://')[1];
 };
 
 var getOrgs=function(){
@@ -388,9 +262,7 @@ exports.ORGS = ORGS;
 exports.newPeers = newPeers;
 exports.newEventHubs = newEventHubs;
 exports.getPeerAddressByName = getPeerAddressByName;
-//exports.getRegisteredUsers = getRegisteredUsers;
 exports.getOrgAdmin = getOrgAdmin;
-//exports.getAdminUser=getAdminUser;
 exports.getOrgs=getOrgs;
 exports.getPeersByOrg=getPeersByOrg;
 exports.createDefault=createDefault;

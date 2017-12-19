@@ -23,7 +23,7 @@ var logger = helper.getLogger('install-chaincode');
 var tx_id = null;
 //function installChaincode(org) {
 var installChaincode = function(peers, chaincodeName, chaincodePath,
-                                chaincodeVersion, username, org) {
+                                chaincodeVersion, org) {
     logger.debug(
         '\n============ Install chaincode on organizations ============\n');
     helper.setupChaincodeDeploy();
@@ -39,8 +39,8 @@ var installChaincode = function(peers, chaincodeName, chaincodePath,
         };
         return client.installChaincode(request);
     }, (err) => {
-        logger.error('Failed to enroll user \'' + username + '\'. ' + err);
-        throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
+        logger.error('Failed to enroll user  ' + err);
+        throw new Error('Failed to enroll user ' + err);
     }).then((results) => {
         var proposalResponses = results[0];
         var proposal = results[1];

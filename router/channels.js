@@ -24,18 +24,7 @@ var instantiate=require('../app/instantiate-chaincode.js')
 var install=require('../app/install-chaincode.js')
 var config=require('../config.json')
 
-var username = config.users[0].username;
 var org =  config.org[0];
-
-/*
-router.get('/', function(req, res, next) {
-    res.send('hello world!');
-});
-
-router.get('/:channelName', function(req, res, next) {
-    res.send(`hello world! ${req.params.channelName}`);
-});
-*/
 
 function getErrorMessage(field) {
     var response = {
@@ -47,17 +36,16 @@ function getErrorMessage(field) {
 
 router.use(function(req, res, next) {
 
-    req.username = req.query.username || username;
     req.orgname = req.query.orgname || org;
 
     console.info('=================================')
-    console.info(`${req.username}, ${req.orgname}`)
+    console.info(`${req.orgname}`)
 
     next()
 });
 
 // Create/Update Channel
-router.post('/channels', function(req, res) {
+/*router.post('/channels', function(req, res) {
     var configUpdate = req.body.configUpdate;
     if (!configUpdate) {
         logger.info('<<<<<<<<<<<<<<<<< C R E A T E  C H A N N E L >>>>>>>>>>>>>>>>>');
@@ -81,9 +69,9 @@ router.post('/channels', function(req, res) {
         .then(function(message) {
             res.send(message);
         });
-});
+});*/
 // Join Channel
-router.post('/channels/:channelName/peers', function(req, res) {
+/*router.post('/channels/:channelName/peers', function(req, res) {
     logger.info('<<<<<<<<<<<<<<<<< J O I N  C H A N N E L >>>>>>>>>>>>>>>>>');
     var channelName = req.params.channelName;
     var peers = req.body.peers;
@@ -102,7 +90,7 @@ router.post('/channels/:channelName/peers', function(req, res) {
         .then(function(message) {
             res.send(message);
         });
-});
+});*/
 // Install chaincode on target peers
 router.post('/chaincodes', function(req, res) {
     logger.debug('==================== INSTALL CHAINCODE ==================');
@@ -131,7 +119,7 @@ router.post('/chaincodes', function(req, res) {
         return;
     }
 
-    install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, req.username, req.orgname)
+    install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -188,20 +176,20 @@ router.post('/channels/:channelName/chaincodes', function(req, res) {
         return;
     }
     if (isUpgrade) {
-        install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, req.username, req.orgname)
+        install.installChaincode(peers, chaincodeName, chaincodePath, chaincodeVersion, req.orgname)
             .then(function(message) {
                 // TODO: Avoid this hardcoding ?
                 if (!message || !message.includes('Successfully Installed chaincode')) {
                     res.send('Chaincode upgarde failed while installing chaincode with version '+chaincodeVersion);
                 }else {
-                    instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.username, req.orgname, isUpgrade)
+                    instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.orgname, isUpgrade)
                         .then(function(message) {
                             res.send(message);
                         });
                 }
             });
     } else {
-        instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.username, req.orgname)
+        instantiate.instantiateChaincode(channelName, chaincodeName, chaincodeVersion, functionName, args, req.orgname)
             .then(function(message) {
                 res.send(message);
             });
@@ -240,7 +228,7 @@ router.post('/channels/:channelName/chaincodes/:chaincodeName', function(req, re
         return;
     }
 
-    invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.username, req.orgname)
+    invoke.invokeChaincode(peers, channelName, chaincodeName, fcn, args, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -279,7 +267,7 @@ router.get('/channels/:channelName/chaincodes/:chaincodeName', function(req, res
     args = JSON.parse(args);
     logger.debug(args);
 
-    query.queryChaincode(peer, channelName, chaincodeName, fcn, args, req.username, req.orgname)
+    query.queryChaincode(peer, channelName, chaincodeName, fcn, args, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -298,7 +286,7 @@ router.get('/channels/:channelName/blocks/:blockId', function(req, res) {
         return;
     }
 
-    query.getBlockByNumber(peer, channelName, blockId, req.username, req.orgname)
+    query.getBlockByNumber(peer, channelName, blockId, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -318,7 +306,7 @@ router.get('/channels/:channelName/transactions/:trxnId', function(req, res) {
         return;
     }
 
-    query.getTransactionByID(peer, channelName, trxnId, req.username, req.orgname)
+    query.getTransactionByID(peer, channelName, trxnId, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -336,7 +324,7 @@ router.get('/channels/:channelName/blocks', function(req, res) {
         return;
     }
 
-    query.getBlockByHash(peer, hash, req.username, req.orgname, channelName).then(
+    query.getBlockByHash(peer, hash, req.orgname, channelName).then(
         function(message) {
             res.send(message);
         });
@@ -348,7 +336,7 @@ router.get('/channels/:channelName', function(req, res) {
     let peer = req.query.peer;
     let channelName = req.params.channelName;
     logger.debug('channelName : ' + channelName);
-    query.getChainInfo(peer, channelName, req.username, req.orgname).then(
+    query.getChainInfo(peer, channelName, req.orgname).then(
         function(message) {
             res.send(message);
         });
@@ -367,7 +355,7 @@ router.get('/chaincodes', function(req, res) {
             '================ GET INSTANTIATED CHAINCODES ======================');
     }
 
-    query.getInstalledChaincodes(peer, channelName, installType, req.username, req.orgname)
+    query.getInstalledChaincodes(peer, channelName, installType, req.orgname)
         .then(function(message) {
             res.send(message);
         });
@@ -382,7 +370,7 @@ router.get('/channels', function(req, res) {
         return;
     }
 
-    query.getChannels(peer, req.username, req.orgname)
+    query.getChannels(peer, req.orgname)
         .then(function(
             message) {
             res.send(message);
@@ -396,7 +384,7 @@ router.get('/channels/:channelName/height', function(req, res) {
     let channelName = req.params.channelName;
     logger.debug('channelName : ' + channelName);
 
-    query.getChannelHeight(peer, channelName,req.username, req.orgname ).then(
+    query.getChannelHeight(peer, channelName, req.orgname ).then(
         function(message) {
             res.send(message);
         });

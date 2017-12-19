@@ -26,7 +26,7 @@ var logger = helper.getLogger('Query');
 var FabricCAService = require('fabric-ca-client');
 
 var peerFailures = 0;
-var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, username, org) {
+var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, org) {
     var channel = helper.getChannelForOrg(org, channelName);
     var client = helper.getClientForOrg(org);
 
@@ -48,14 +48,14 @@ var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, usern
 	return channel.queryByChaincode(request, target);
 };
 
-var getBlockByNumber = function(peer,channelName, blockNumber, username, org) {
+var getBlockByNumber = function(peer,channelName, blockNumber, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org,channelName);		
 	return helper.getOrgAdmin(org).then((member) => {
 		return channel.queryBlock(parseInt(blockNumber), target);
 	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+		logger.info('Failed to get submitter ');
+		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((channelinfo) => {
 		if (channelinfo) {			
@@ -75,25 +75,25 @@ var getBlockByNumber = function(peer,channelName, blockNumber, username, org) {
 };
 
 
-var getTransactionByID = function(peer,channelName, trxnID, username, org) {
+var getTransactionByID = function(peer,channelName, trxnID, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org,channelName);
 	return channel.queryTransaction(trxnID, target);
 };
-var getBlockByHash = function(peer, hash, username, org) {
+var getBlockByHash = function(peer, hash, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
 	return channel.queryBlockByHash(new Buffer(hash,"hex"), target);	
 };
-var getChainInfo = function(peer,channelName, username, org) {
+var getChainInfo = function(peer,channelName, org) {
 	var target = buildTarget(peer, org);
 	var client = helper.getClientForOrg(org);	
 	var channel = helper.getChannelForOrg(org,channelName);
 	return helper.getOrgAdmin(org).then((member) => {
 		return channel.queryInfo(target);
 	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+		logger.info('Failed to get submitter ');
+		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((blockchainInfo) => {
 		if (blockchainInfo) {
@@ -118,11 +118,10 @@ var getChainInfo = function(peer,channelName, username, org) {
 };
 
 //getInstalledChaincodes
-var getInstalledChaincodes = function(peer,channelName, type, username, org) {
+var getInstalledChaincodes = function(peer,channelName, type, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org,channelName);
 	var client = helper.getClientForOrg(org);
-
+	var channel = helper.getChannelForOrg(org,channelName);
 	return helper.getOrgAdmin(org).then((member) => {
 		if (type === 'installed') {
 			return client.queryInstalledChaincodes(target);
@@ -130,8 +129,8 @@ var getInstalledChaincodes = function(peer,channelName, type, username, org) {
 			return channel.queryInstantiatedChaincodes(target);
 		}
 	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+		logger.info('Failed to get submitter ');
+		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((response) => {
 		if (response) {
@@ -171,14 +170,13 @@ var getOrganizations = function(org,channelName){
 	return channel.getOrganizations();		
 };
 
-var getChannels = function(peer, username, org) {
+var getChannels = function(peer, org) {
 	var target = buildTarget(peer, org);
 	var client = helper.getClientForOrg(org);	
 	return helper.getOrgAdmin(org).then((member) => {
 		return client.queryChannels(target);
 	}, (err) => {
-		logger.info('Failed to get submitter "' + username + '"');
-		return 'Failed to get submitter "' + username + '". Error: ' + err.stack ?
+		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((channelinfo) => {
 		if (channelinfo) {			
@@ -203,8 +201,8 @@ var getPeerList = function(org,channelName){
 	return channel.getPeers();	
 };
 
-var getChannelHeight=function(peer,channelName,username,org){
-	return getChainInfo(peer,channelName,username,org).then(response=>{
+var getChannelHeight=function(peer,channelName,org){
+	return getChainInfo(peer,channelName,org).then(response=>{
 		if(response){
 			logger.debug('<<<<<<<<<< channel height >>>>>>>>>')
 			logger.debug(response.height.low)

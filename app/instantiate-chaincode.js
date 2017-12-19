@@ -28,7 +28,7 @@ var ORGS = hfc.getConfigSetting('network-config');
 var tx_id = null;
 var eh = null;
 
-var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion, functionName, args, username, org) {
+var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion, functionName, args, org) {
     logger.debug('\n============ Instantiate chaincode on organization ' + org +
         ' ============\n');
 
@@ -41,8 +41,8 @@ var instantiateChaincode = function(channelName, chaincodeName, chaincodeVersion
         // organizations
         return channel.initialize();
     }, (err) => {
-        logger.error('Failed to enroll user \'' + username + '\'. ' + err);
-        throw new Error('Failed to enroll user \'' + username + '\'. ' + err);
+        logger.error('Failed to enroll user  ' + err);
+        throw new Error('Failed to enroll user ' + err);
     }).then((success) => {
         tx_id = client.newTransactionID();
         // send proposal to endorser

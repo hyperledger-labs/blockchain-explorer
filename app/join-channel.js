@@ -30,7 +30,7 @@ var allEventhubs = [];
 //
 //Attempt to send a request to the orderer with the sendCreateChain method
 //
-var joinChannel = function(channelName, peers, username, org) {
+var joinChannel = function(channelName, peers, org) {
     // on process exit, always disconnect the event hub
     var closeConnections = function(isSuccess) {
         if (isSuccess) {
@@ -109,10 +109,9 @@ var joinChannel = function(channelName, peers, username, org) {
         let sendPromise = channel.joinChannel(request);
         return Promise.all([sendPromise].concat(eventPromises));
     }, (err) => {
-        logger.error('Failed to enroll user \'' + username + '\' due to error: ' +
+        logger.error('Failed to enroll user due to error: ' +
         err.stack ? err.stack : err);
-        throw new Error('Failed to enroll user \'' + username +
-        '\' due to error: ' + err.stack ? err.stack : err);
+        throw new Error('Failed to enroll user due to error: ' + err.stack ? err.stack : err);
     }).then((results) => {
         logger.debug(util.format('Join Channel R E S P O N S E : %j', results));
         if (results[0] && results[0][0] && results[0][0].response && results[0][0].response.status == 200) {

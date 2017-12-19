@@ -23,7 +23,7 @@ var helper = require('./helper.js');
 var logger = helper.getLogger('invoke-chaincode');
 var EventHub = require('fabric-client/lib/EventHub.js');
 
-var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, username, org) {
+var invokeChaincode = function(peersUrls, channelName, chaincodeName, fcn, args, org) {
     logger.debug(util.format('\n============ invoke transaction on organization %s ============\n', org));
     var client = helper.getClientForOrg(org);
     var channel = helper.getChannelForOrg(org, channelName);

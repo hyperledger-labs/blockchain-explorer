@@ -13,7 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-var util = require('util');
+/*var util = require('util');
 var fs = require('fs');
 var path = require('path');
 var config = require('../config.json');
@@ -72,4 +72,4 @@ var createChannel = function(channelName, channelConfigPath, username, orgName) 
 	});
 };
 
-exports.createChannel = createChannel;
+exports.createChannel = createChannel;*/

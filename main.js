@@ -34,7 +34,6 @@ var config = require('./config.json');
 var host = process.env.HOST || config.host;
 var port = process.env.PORT || config.port;
 
-var username = config.users[0].username;
 var peer = config.peer;
 var org =  config.org[0];
 
@@ -44,7 +43,7 @@ app.post("/api/tx/getinfo", function(req, res) {
 
     let  txid = req.body.txid
     if( txid != '0' ){
-    query.getTransactionByID(peer,ledgerMgr.getCurrChannel(),txid,username,org).then(response_payloads=>{
+    query.getTransactionByID(peer,ledgerMgr.getCurrChannel(),txid,org).then(response_payloads=>{
 
         var header = response_payloads['transactionEnvelope']['payload']['header']
         var data = response_payloads['transactionEnvelope']['payload']['data']
@@ -69,7 +68,7 @@ app.post("/api/tx/json", function(req, res) {
 
     let  txid = req.body.number
     if( txid != '0' ){
-        query.getTransactionByID(peer,ledgerMgr.getCurrChannel(),txid,username,org).then(response_payloads=>{
+        query.getTransactionByID(peer,ledgerMgr.getCurrChannel(),txid,org).then(response_payloads=>{
 
             var header = response_payloads['transactionEnvelope']['payload']['header']
             var data = response_payloads['transactionEnvelope']['payload']['data']
@@ -92,7 +91,7 @@ app.post("/api/tx/json", function(req, res) {
 app.post("/api/block/json", function(req, res) {
 
     let number=req.body.number
-    query.getBlockByNumber(peer,ledgerMgr.getCurrChannel(),parseInt(number),username,org).then(block=>{
+    query.getBlockByNumber(peer,ledgerMgr.getCurrChannel(),parseInt(number),org).then(block=>{
 
         var blockjsonstr = JSON.stringify(block)
 
@@ -104,7 +103,7 @@ app.post("/api/block/json", function(req, res) {
 app.post("/api/block/getinfo", function(req, res) {
 
     let number=req.body.number
-    query.getBlockByNumber(peer,ledgerMgr.getCurrChannel(),parseInt(number),username,org).then(block=>{
+    query.getBlockByNumber(peer,ledgerMgr.getCurrChannel(),parseInt(number),org).then(block=>{
         res.send({
             'number':block.header.number.toString(),
             'previous_hash':block.header.previous_hash,
@@ -114,15 +113,6 @@ app.post("/api/block/getinfo", function(req, res) {
     })
 });
 
-/*app.post("/api/block/get", function(req, res) {
-    let number=req.body.number
-    query.getBlockByNumber(peer,ledgerMgr.getCurrChannel(),parseInt(number),username,org).then(block=>{
-        res.send({
-            'number':number,
-            'txCount':block.data.data.length
-        })
-    })
-});*/
 app.post("/api/block/get", function(req, res) {
     let number=req.body.number
     sql.getRowByPkOne(`select blocknum ,txcount from blocks where channelname='${ledgerMgr.getCurrChannel()}' and blocknum='${number}'`).then(row=>{
@@ -160,7 +150,7 @@ app.post('/curChannel',function(req,res){
 })
 
 app.post('/channellist',function(req,res){
-    query.getChannels(peer,username,org).then(channel=>{
+    query.getChannels(peer,org).then(channel=>{
         res.send(channel);
     })
 })

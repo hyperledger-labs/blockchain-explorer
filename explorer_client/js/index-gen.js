@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "bffc8f3376c9e340ebe2"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "22362218b5b61337ba2b"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -103164,7 +103164,7 @@
 
 			template: _.template('<div class="info-table"> <table style="width: 100%; " class="table table-striped">' + '<thead style="font-weight: bold;"><tr><td>name</td><td>version</td><td>path</td><td>trans</td></tr></thead>' + '<tbody><%= rows %></tbody> </table> <div>'),
 
-			templateRow: _.template('<tr> <td><%= channelName %></td> <td><%= version %></td><td><%= path %></td> <td><%= txCount %></td></tr>'),
+			templateRow: _.template('<tr> <td><%= chaincodename %></td> <td><%= version %></td><td><%= path %></td> <td><%= txCount %></td></tr>'),
 
 			fetch: function fetch() {
 				var _this = this;
@@ -103451,7 +103451,7 @@
 			url: 'peerlist',
 			hideLink: true,
 
-			template: _.template('<div class="info-table"> ' + '<table style="table-layout: fixed;" class="table table-striped">' + '<thead style="font-weight: bold;">' + '<tr><td width="20%">org</td><td width="20%">request</td></tr></thead>' + '<tbody><%= rows %></tbody>' + ' </table> <div>'),
+			template: _.template('<div class="info-table"> ' + '<table style="width: 100%; table-layout: fixed;" class="table table-striped">' + '<thead style="font-weight: bold;">' + '<tr><td width="20%">org</td><td width="20%">request</td></tr></thead>' + '<tbody><%= rows %></tbody>' + ' </table> <div>'),
 
 			templateRow: _.template('<tr> <td><%=server_hostname%></td><td><%= requests %></td></tr>'),
 			fetch: function fetch() {
