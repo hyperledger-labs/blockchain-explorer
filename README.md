@@ -69,8 +69,9 @@ On another terminal,
       "passwd":"123456"
    }
 ```
-If you are connecting to a non TLS fabric network, please modify the 
-protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`
+If you are connecting to a non TLS fabric peer, please modify the 
+protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+
 3. `npm install`
 4. `./start.sh`
 
