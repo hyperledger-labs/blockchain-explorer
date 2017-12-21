@@ -24,8 +24,13 @@ var ledgerMgr=require('../utils/ledgerMgr.js')
 var config=require('../config.json')
 
 var blockListener
-var peer = config.peer;
-var org =  config.org[0];
+
+var networkConfig = config["network-config"];
+var org = Object.keys(networkConfig)[0];
+var orgObj = config["network-config"][org];
+var orgKey = Object.keys(orgObj);
+var index = orgKey.indexOf("peer1");
+var peer = orgKey[index];
 
 function  syncBlock() {
     var channelName = ledgerMgr.getCurrChannel();
@@ -137,7 +142,7 @@ function* saveChaincodes(channelName){
 }
 
 function* savePeerlist(channelName){
-    var array = config.org;
+    var array = Object.keys(networkConfig);
     var peerlists;
     array.forEach(function(element) {
         var peerlist=query.getPeerList(element,channelName);

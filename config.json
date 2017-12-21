@@ -20,14 +20,12 @@
    "channel": "mychannel",
    "GOPATH":"../artifacts",
    "keyValueStore":"/tmp/fabric-client-kvs",
-   "eventWaitTime":"30000",
-   "peer":"peer1",
-   "org":["org1"],  
+   "eventWaitTime":"30000",     
    "mysql":{
       "host":"127.0.0.1",
       "port":"3306",
       "database":"fabricexplorer",
       "username":"root",
-      "passwd":"jeeva"
+      "passwd":"123456"
    }
 }

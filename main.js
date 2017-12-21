@@ -20,12 +20,9 @@ var ledgerMgr=require('./utils/ledgerMgr.js')
 
 var statusMertics=require('./service/metricservice.js')
 
-var channelsRouter=require('./router/channels.js')
-
 app.use(express.static(path.join(__dirname,'explorer_client')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/apis',channelsRouter)
 
 var query=require('./app/query.js')
 var sql=require('./db/mysqlservice.js')
@@ -34,8 +31,12 @@ var config = require('./config.json');
 var host = process.env.HOST || config.host;
 var port = process.env.PORT || config.port;
 
-var peer = config.peer;
-var org =  config.org[0];
+var networkConfig = config["network-config"];
+var org = Object.keys(networkConfig)[0];
+var orgObj = config["network-config"][org];
+var orgKey = Object.keys(orgObj);
+var index = orgKey.indexOf("peer1");
+var peer = orgKey[index];
 
 // =======================   controller  ===================
 
