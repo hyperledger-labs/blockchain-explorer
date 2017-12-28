@@ -42,7 +42,7 @@ function getBlockCount(channelName){
 
 function* getPeerData(channelName){
     let peerArray=[]
-    var c1 = yield sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
+    var c1 = yield sql.getRowsBySQlNoCondtion(`select DISTINCT c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
     for (var i = 0, len = c1.length; i < len; i++) {
         var item = c1[i];
         peerArray.push({'name':item.channelname,'requests':item.requests,'server_hostname':item.server_hostname})
