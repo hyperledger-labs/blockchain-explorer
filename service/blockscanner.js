@@ -158,7 +158,7 @@ function* savePeerlist(channelName){
         peers.name=channelName;
         peers.requests = peerlist._url;
         peers.server_hostname = peerlist._options["grpc.default_authority"];
-        let c= yield sql.getRowByPkOne(`select count(1) as c from peer where name='${peers.name}' and requests='${peers.requests}' and server_hostname='${peers.server_hostname}' `)
+        let c= yield sql.getRowByPkOne(`select count(1) as c from peer where name='${peers.name}' and requests='${peers.requests}' `)
         if(c.c==0){
             yield sql.saveRow('peer',peers)
         }
