@@ -9,3 +9,6 @@ explorer_client/node_modules/*
 fabric-docker-compose-svt/channel-artifacts
 fabric-docker-compose-svt/crypto-config
 first-network/channel-artifacts/*
+.vscode
+log.log
+

@@ -36,12 +36,12 @@ var caClients = {};
 
 // set up the client and channel objects for each org
 
-function createDefault (channelName){
+function createDefault(channelName) {
 	for (let key in ORGS) {
 		if (key.indexOf('org') === 0) {
-			let client = new hfc();	
+			let client = new hfc();
 			let cryptoSuite = hfc.newCryptoSuite();
-			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(ORGS[key].name)}));
+			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: getKeyStoreForOrg(ORGS[key].name) }));
 			client.setCryptoSuite(cryptoSuite);
 			channels[key] = {};
 			let channel = client.newChannel(channelName);
@@ -49,27 +49,27 @@ function createDefault (channelName){
 			channels[key][channelName] = channel;
 			setupPeers(channel, key, client);
 		}
-	}	
+	}
 }
 
 function setupPeers(channel, org, client) {
 	for (let key in ORGS[org]) {
 		if (key.indexOf('peer') === 0) {
 			let peer
-			if(ORGS[org][key]['tls_cacerts']!=undefined){
-			let data = fs.readFileSync(path.join(__dirname,"../", ORGS[org][key]['tls_cacerts']));
-			peer = client.newPeer(
-				ORGS[org][key].requests,
-				{
-					pem: Buffer.from(data).toString(),
-					'ssl-target-name-override': ORGS[org][key]['server-hostname']
-				}
-			);
-		}else{
-			peer = client.newPeer(
-				ORGS[org][key].requests
-			);
-		}
+			if (ORGS[org][key]['tls_cacerts'] != undefined) {
+				let data = fs.readFileSync(ORGS[org][key]['tls_cacerts']);
+				peer = client.newPeer(
+					ORGS[org][key].requests,
+					{
+						pem: Buffer.from(data).toString(),
+						'ssl-target-name-override': ORGS[org][key]['server-hostname']
+					}
+				);
+			} else {
+				peer = client.newPeer(
+					ORGS[org][key].requests
+				);
+			}
 			channel.addPeer(peer);
 		}
 	}
@@ -79,7 +79,7 @@ function readAllFiles(dir) {
 	var files = fs.readdirSync(dir);
 	var certs = [];
 	files.forEach((file_name) => {
-		let file_path = path.join(dir,file_name);
+		let file_path = path.join(dir, file_name);
 		let data = fs.readFileSync(file_path);
 		certs.push(data);
 	});
@@ -117,26 +117,26 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 						if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
 							// found a peer matching the subject url
 							if (forPeers) {
-								if(org[prop]['tls_cacerts']!=undefined){
-                                    let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
-                                    targets.push(client.newPeer(peerUrl, {
-                                        pem: Buffer.from(data).toString(),
-                                        'ssl-target-name-override': org[prop]['server-hostname']
-                                    }));
-								}else{
+								if (org[prop]['tls_cacerts'] != undefined) {
+									let data = fs.readFileSync(org[prop]['tls_cacerts']);
+									targets.push(client.newPeer(peerUrl, {
+										pem: Buffer.from(data).toString(),
+										'ssl-target-name-override': org[prop]['server-hostname']
+									}));
+								} else {
 									targets.push(client.newPeer(peerUrl));
 								}
 
 								continue outer;
 							} else {
 								let eh = client.newEventHub();
-								if(org[prop]['tls_cacerts']!=undefined){
-                                    let data = fs.readFileSync(path.join(__dirname,"../", org[prop]['tls_cacerts']));
-                                    eh.setPeerAddr(org[prop]['events'], {
-                                        pem: Buffer.from(data).toString(),
-                                        'ssl-target-name-override': org[prop]['server-hostname']
-                                    });
-								}else{
+								if (org[prop]['tls_cacerts'] != undefined) {
+									let data = fs.readFileSync(org[prop]['tls_cacerts']);
+									eh.setPeerAddr(org[prop]['events'], {
+										pem: Buffer.from(data).toString(),
+										'ssl-target-name-override': org[prop]['server-hostname']
+									});
+								} else {
 									eh.setPeerAddr(org[prop]['events']);
 								}
 								targets.push(eh);
@@ -160,36 +160,36 @@ function newRemotes(urls, forPeers, userOrg, channelName) {
 //-------------------------------------//
 // APIs
 //-------------------------------------//
-var getChannelForOrg = function(org, channelName) {
-   if(channels[org][channelName] == undefined)
+var getChannelForOrg = function (org, channelName) {
+	if (channels[org][channelName] == undefined)
 		createDefault(channelName);
-   return channels[org][channelName];
+	return channels[org][channelName];
 };
 
-var getClientForOrg = function(org) {
+var getClientForOrg = function (org) {
 	return clients[org];
 };
 
-var newPeers = function(urls,channelName) {
-	return newRemotes(urls, true,'',channelName);
+var newPeers = function (urls, channelName) {
+	return newRemotes(urls, true, '', channelName);
 };
 
-var getMspID = function(org) {
+var getMspID = function (org) {
 	logger.debug('Msp ID : ' + ORGS[org].mspid);
 	return ORGS[org].mspid;
 };
 
-var getOrgAdmin = function(userOrg) {
+var getOrgAdmin = function (userOrg) {
 	var admin = ORGS[userOrg].admin;
-	var keyPath = path.join(__dirname,"../",admin.key);
+	var keyPath = admin.key;
 	var keyPEM = Buffer.from(readAllFiles(keyPath)[0]).toString();
-	var certPath = path.join(__dirname,"../",admin.cert);
+	var certPath = admin.cert;
 	var certPEM = readAllFiles(certPath)[0].toString();
 
 	var client = getClientForOrg(userOrg);
 	var cryptoSuite = hfc.newCryptoSuite();
 	if (userOrg) {
-		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({path: getKeyStoreForOrg(getOrgName(userOrg))}));
+		cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: getKeyStoreForOrg(getOrgName(userOrg)) }));
 		client.setCryptoSuite(cryptoSuite);
 	}
 
@@ -199,7 +199,7 @@ var getOrgAdmin = function(userOrg) {
 		client.setStateStore(store);
 
 		return client.createUser({
-			username: 'peer'+userOrg+'Admin',
+			username: 'peer' + userOrg + 'Admin',
 			mspid: getMspID(userOrg),
 			cryptoContent: {
 				privateKeyPEM: keyPEM,
@@ -209,50 +209,45 @@ var getOrgAdmin = function(userOrg) {
 	});
 };
 
-var setupChaincodeDeploy = function() {
-	process.env.GOPATH = path.join(__dirname, config.GOPATH);
-};
-
-var getLogger = function(moduleName) {
+var getLogger = function (moduleName) {
 	var logger = log4js.getLogger(moduleName);
 	logger.setLevel('INFO');
 	return logger;
 };
 
-var getPeerAddressByName = function(org, peer) {
-	var address = ORGS[org][peer].requests;	
+var getPeerAddressByName = function (org, peer) {
+	var address = ORGS[org][peer].requests;
 	return address;
 };
 
-var getOrgs=function(){
-	let orgList=[]
-    for (let key in ORGS) {
-        if (key.indexOf('org') === 0) {
+var getOrgs = function () {
+	let orgList = []
+	for (let key in ORGS) {
+		if (key.indexOf('org') === 0) {
 			orgList.push(key)
-        }
-    }
-    return orgList
+		}
+	}
+	return orgList
 }
 
 var getPeersByOrg = function (org) {
-    let peerList = []
-    for (let key in ORGS[org]) {
-        if (key.indexOf('peer') === 0) {
-            peerList.push(key);
-        }
-    }
-    return peerList;
+	let peerList = []
+	for (let key in ORGS[org]) {
+		if (key.indexOf('peer') === 0) {
+			peerList.push(key);
+		}
+	}
+	return peerList;
 };
 
 exports.getChannelForOrg = getChannelForOrg;
 exports.getClientForOrg = getClientForOrg;
 exports.getLogger = getLogger;
-exports.setupChaincodeDeploy = setupChaincodeDeploy;
 exports.getMspID = getMspID;
 exports.ORGS = ORGS;
 exports.newPeers = newPeers;
 exports.getPeerAddressByName = getPeerAddressByName;
 exports.getOrgAdmin = getOrgAdmin;
-exports.getOrgs=getOrgs;
-exports.getPeersByOrg=getPeersByOrg;
-exports.createDefault=createDefault;
+exports.getOrgs = getOrgs;
+exports.getPeersByOrg = getPeersByOrg;
+exports.createDefault = createDefault;

@@ -41,24 +41,16 @@ Run the database setup scripts located under `db/fabricexplorer.sql`
 
 ## Fabric network setup
 
-This repository comes with a sample network configuration to start with
-
-1. `cd first-network`
-2. `./bootstrap-1.0.2.sh` - This is going to download the necessary
-binaries and hyperledger docker images.
-3. `mkdir -p ./channel-artifacts`
-4. `./byfn.sh -m generate -c mychannel`
-5. `./byfn.sh -m up -c mychannel`
-
-This brings up a 2 org network with channel name `mychannel` .
-
-Alternatively you can setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `config.json` accordingly.
+ Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `config.json` accordingly. 
 
 ## Running blockchain-explorer
 
 On another terminal, 
 1. `cd blockchain-explorer`
-2. Modify config.json to update one of the channel 
+2. Modify config.json to update network-config
+Change "fabric-path" to your fabric network path, example "/home/user1/workspace/fabric-samples" for the following keys: "tls_cacerts", "key", "cert".
+Final path for key "tls_cacerts" will be "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+3. Modify config.json to update one of the channel 
 	* mysql host, username, password details
 ```json
  "channel": "mychannel",
