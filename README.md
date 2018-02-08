@@ -68,12 +68,3 @@ protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the
 4. `./start.sh`
 
 Launch the URL http://localhost:8080 on a browser.
-
-## Screenshots
-
-This is how the blockchain-explorer looks like,
-
-![Blockchain Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer1.png)
-
-![Blockchain Explorer](https://raw.githubusercontent.com/JeevaSang/blockchainimage/master/explorer2.png)
- 
