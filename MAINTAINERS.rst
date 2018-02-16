@@ -6,21 +6,11 @@ Maintainers
 +===========================+=====================+==================+================+================================+
 | David Huffman             | dshuffma            |                  |                | dshuffma@us.ibm.com            |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Jeeva Sankarapandian      | jeevas              |                  |                | jsankarapandian@dtcc.com       |
+| Jeeva Sankarapandian      | jeevas              | jeevasang        | jeevas         | jsankarapandian@dtcc.com       |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Jason Stollings           | jstollings          |                  |                | jstollings@yahoo.com           |
+| Satheesh Kathamuthu       | satheeshk           | xspeedcruiser    | satheeshk      | satheesh.ceg@gmail.com         |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Mahesh Gutala             | mgutala             |                  |                | mgutala@dtcc.com               |
+| Nik Frunza                | nfrunza             | nickfrunza       | nfrunza        | nfrunza@gmail.com              |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Navaneethan Venugopal     | nvenugopal          |                  |                | nvenugopal1@dtcc.com           |
-+---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Piotr Czerniawski         | piotrc              |                  |                | pczerniawski1@gmail.com        |
-+---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Satheesh Kathamuthu       | satheeshk           |                  |                | satheesh.ceg@gmail.com         |
-+---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Svetlana Fleishman        | sfleishman          |                  |                | sfleishman@dtcc.com            |
-+---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Thomas Martin             | tmartin             |                  |                | tmartin001@gmail.com           |
-+---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Raynaldo Ruiz             | tumbleleaf          |                  |                | rruiz@dtcc.com                 |
+| Vinita Chinoy             | vchinoy             | vchinoy-da       | vchinoy        | vniitachinoy@yahoo.com         |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
