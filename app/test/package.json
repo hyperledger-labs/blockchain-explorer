@@ -1,17 +1,19 @@
 {
-  "name": "test-blockchain-explorer",
-  "version": "0.0.1",
-  "description": "blockchain explorer testing",
+  "name": "hyperledger-explorer-test",
+  "version": "0.3.0",
+  "description": "hyperledger-explorer-test",
   "main": "test.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha *.js  --exit",
     "coverage": "nyc mocha --timeout=3000"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
     "mocha": "^5.0.0",
     "nyc": "11.4.1"
-  }
+  },
+  "dependencies": {}
 }

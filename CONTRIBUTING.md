@@ -21,4 +21,18 @@ The code is structured into two main categories
 
 All the patches should be submitted to gerrit for review. Follow the general guidelines on getting Linux foundation account and submitting patches [here](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account.html)
 
+
+### Copyright Notices
+
+There should be a single LICENSE file in the top-level directory that contains the full text of the Apache License [here] (http://www.apache.org/licenses/LICENSE-2.0).
+In the individual files, please use the following line:
+
+SPDX-License-Identifier: Apache-2.0
+
+Regarding copyright notices, we generally find that copyright notices in headers fall out of date quickly. The contributor data is stored in git and determining "copyright" requires an analysis that becomes quite complex after the initial commit.
+
+DO NOT remove copyright notices that are already in a file unless they're removed by the copyright owner.
+
+If it is a new file that does not have a copyright notice, you can say something like "Copyright Hyperledger and its contributors."
+
 Finally, thank you for reading this document and your future contributions.

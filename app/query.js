@@ -26,17 +26,17 @@ var logger = helper.getLogger('Query');
 var FabricCAService = require('fabric-ca-client');
 
 var peerFailures = 0;
-var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, org) {
-    var channel = helper.getChannelForOrg(org, channelName);
-    var client = helper.getClientForOrg(org);
+var queryChaincode = function (peer, channelName, chaincodeName, fcn, args, org) {
+	var channel = helper.getChannelForOrg(org, channelName);
+	var client = helper.getClientForOrg(org);
 
-    var target = buildTarget(peer, org);
-    //Let Cahnnel use second peer added
-    if (peerFailures > 0) {
-        let peerToRemove = channel.getPeers()[0];
-        channel.removePeer(peerToRemove);
-        channel.addPeer(peerToRemove);
-    }
+	var target = buildTarget(peer, org);
+	//Let Cahnnel use second peer added
+	if (peerFailures > 0) {
+		let peerToRemove = channel.getPeers()[0];
+		channel.removePeer(peerToRemove);
+		channel.addPeer(peerToRemove);
+	}
 	tx_id = client.newTransactionID();
 	// send query
 	var request = {
@@ -48,9 +48,9 @@ var queryChaincode = function(peer, channelName, chaincodeName, fcn, args, org) 
 	return channel.queryByChaincode(request, target);
 };
 
-var getBlockByNumber = function(peer,channelName, blockNumber, org) {
+var getBlockByNumber = function (peer, channelName, blockNumber, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org,channelName);		
+	var channel = helper.getChannelForOrg(org, channelName);
 	return helper.getOrgAdmin(org).then((member) => {
 		return channel.queryBlock(parseInt(blockNumber), target);
 	}, (err) => {
@@ -58,7 +58,7 @@ var getBlockByNumber = function(peer,channelName, blockNumber, org) {
 		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((channelinfo) => {
-		if (channelinfo) {			
+		if (channelinfo) {
 			return channelinfo;
 		} else {
 			logger.error('response_payloads is null');
@@ -75,20 +75,25 @@ var getBlockByNumber = function(peer,channelName, blockNumber, org) {
 };
 
 
-var getTransactionByID = function(peer,channelName, trxnID, org) {
+var getTransactionByID = function (peer, channelName, trxnID, org) {
+	if (trxnID) {
+
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org,channelName);
+	var channel = helper.getChannelForOrg(org, channelName);
 	return channel.queryTransaction(trxnID, target);
+	}
+	return {};
+
 };
-var getBlockByHash = function(peer, hash, org) {
+var getBlockByHash = function (peer, hash, org) {
 	var target = buildTarget(peer, org);
 	var channel = helper.getChannelForOrg(org);
-	return channel.queryBlockByHash(new Buffer(hash,"hex"), target);	
+	return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
 };
-var getChainInfo = function(peer,channelName, org) {
+var getChainInfo = function (peer, channelName, org) {
 	var target = buildTarget(peer, org);
-	var client = helper.getClientForOrg(org);	
-	var channel = helper.getChannelForOrg(org,channelName);
+	var client = helper.getClientForOrg(org);
+	var channel = helper.getChannelForOrg(org, channelName);
 	return helper.getOrgAdmin(org).then((member) => {
 		return channel.queryInfo(target);
 	}, (err) => {
@@ -118,10 +123,10 @@ var getChainInfo = function(peer,channelName, org) {
 };
 
 //getInstalledChaincodes
-var getInstalledChaincodes = function(peer,channelName, type, org) {
+var getInstalledChaincodes = function (peer, channelName, type, org) {
 	var target = buildTarget(peer, org);
 	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org,channelName);
+	var channel = helper.getChannelForOrg(org, channelName);
 	return helper.getOrgAdmin(org).then((member) => {
 		if (type === 'installed') {
 			return client.queryInstalledChaincodes(target);
@@ -141,14 +146,14 @@ var getInstalledChaincodes = function(peer,channelName, type, org) {
 			}
 			var details = [];
 			for (let i = 0; i < response.chaincodes.length; i++) {
-				let detail={}
+				let detail = {}
 				logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
 					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
 				);
-                detail.name=response.chaincodes[i].name
-				detail.version=response.chaincodes[i].version
-				detail.path=response.chaincodes[i].path
-                details.push(detail);
+				detail.name = response.chaincodes[i].name
+				detail.version = response.chaincodes[i].version
+				detail.path = response.chaincodes[i].path
+				details.push(detail);
 			}
 			return details;
 		} else {
@@ -165,21 +170,21 @@ var getInstalledChaincodes = function(peer,channelName, type, org) {
 	});
 };
 
-var getOrganizations = function(org,channelName){
-	var channel = helper.getChannelForOrg(org,channelName);
-	return channel.getOrganizations();		
+var getOrganizations = function (org, channelName) {
+	var channel = helper.getChannelForOrg(org, channelName);
+	return channel.getOrganizations();
 };
 
-var getChannels = function(peer, org) {
+var getChannels = function (peer, org) {
 	var target = buildTarget(peer, org);
-	var client = helper.getClientForOrg(org);	
+	var client = helper.getClientForOrg(org);
 	return helper.getOrgAdmin(org).then((member) => {
 		return client.queryChannels(target);
 	}, (err) => {
 		return 'Failed to get submitter Error: ' + err.stack ?
 			err.stack : err;
 	}).then((channelinfo) => {
-		if (channelinfo) {			
+		if (channelinfo) {
 			return channelinfo;
 		} else {
 			logger.error('response_payloads is null');
@@ -195,18 +200,21 @@ var getChannels = function(peer, org) {
 	});
 };
 
-var getPeerList = function(org,channelName){
-	var client = helper.getClientForOrg(org);		
-	var channel = helper.getChannelForOrg(org,channelName);
-	return channel.getPeers();	
+var getPeerList = function (org, channelName) {
+	var client = helper.getClientForOrg(org);
+	var channel = helper.getChannelForOrg(org, channelName);
+	return channel.getPeers();
 };
 
-var getChannelHeight=function(peer,channelName,org){
-	return getChainInfo(peer,channelName,org).then(response=>{
-		if(response){
+var getChannelHeight = function (peer, channelName, org) {
+	return getChainInfo(peer, channelName, org).then(response => {
+		if (response) {
 			logger.debug('<<<<<<<<<< channel height >>>>>>>>>')
-			logger.debug(response.height.low)
-			return response.height.low.toString()
+			if (response.height.low) {
+				logger.debug("response.height.low ", response.height.low);
+				return response.height.low.toString()
+			}
+			return "0";
 		}
 	})
 }
@@ -228,6 +236,6 @@ exports.getBlockByHash = getBlockByHash;
 exports.getChainInfo = getChainInfo;
 exports.getInstalledChaincodes = getInstalledChaincodes;
 exports.getChannels = getChannels;
-exports.getChannelHeight=getChannelHeight;
+exports.getChannelHeight = getChannelHeight;
 exports.getPeerList = getPeerList;
-exports.getOrganizations=getOrganizations;
+exports.getOrganizations = getOrganizations;

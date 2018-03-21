@@ -1,0 +1,191 @@
+#root > div > div:nth-child(1) > nav > a
+{
+font-size: 30pt;
+margin-left: 600px;
+font-weight: 300;
+}
+/* Navigation bar */
+ div.menuItems > nav > ul{
+    margin-left: 160px!important;
+}
+ div.menuItems > nav > ul > li{
+padding-left: 100px;
+padding-right:60px;
+font-size:16pt;
+color:#BFBFBF
+}
+.menuItems > nav > ul > li.active{
+    color:#22313F;
+    font-weight: bolder;
+}
+div.menuItems > nav{
+    border-top: 2px #000000 solid;
+    border-bottom: 2px #000000 solid;
+}
+/* Dashboard */
+ .count-card{
+     min-width: 320px;
+     min-height: 100px;
+     padding-left: 5px;
+     margin-left: 5px;
+     text-align: center;
+ }
+.card-body > h1{
+    font-size: 25pt;
+}
+ .dark-card{
+     /* background-color:#BFBFBF; */
+    /* background-color: #bdc3c7; */
+     /* background-color: #cfcfce; */
+     background-color: #6d6d6c;
+     color:#f7f7f7;
+ }
+ .light-card{
+     background-color: #F2F1EF;
+ }
+.chart-stats{
+    margin-top: 10px;
+}
+.lower-dash{
+    margin-top:10px;
+}
+.activity-stream{
+    width: 633px;
+}
+.timeline{
+    height: 320px;
+}
+.timeline-event{
+
+}
+.timeline-items{
+    background-color:#cfcfce;
+    padding: 5px;
+}
+.card-header{
+    background-color: #6d6d6c;
+     color:#f7f7f7;
+     font:bold;
+}
+/* Table and List  */
+#root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table{
+    min-width: 970px;
+    border: 1px #bdc3c7 solid;
+}
+.table thead th{
+    border-bottom-color: #bdc3c7!important;
+}
+
+#root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table th> tbody td {
+    border-color: #bdc3c7!important;
+}
+
+
+#blockList{
+    border: 1px #bdc3c7 solid;
+    width: 1090px;
+}
+#blockDetails{
+    border: 1px #bdc3c7 solid;
+    min-width: 730px;
+}
+#blockDetails > a{
+    text-decoration: none;
+}
+.hash-hide{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+}
+#txDetails{
+    border: 1px #bdc3c7 solid;
+    min-width: 730px;
+}
+.container{
+    padding-left: 280px;
+}
+.peerList{
+    margin-left: 300px;
+    max-width: 550px;
+}
+.scrollTable{
+    /* height: 750px; */
+    /* overflow: auto; */
+    width: 1200px;
+}
+.fixed-header thead >tr{
+    position: relative;
+}
+/* Landing page css */
+.landing{
+    margin-top: 450px;
+    margin-left: 550px;
+}
+.landing > h1{
+    font-size: 40pt;
+}
+.dashboard{
+    margin-left: 300px;
+}
+.wip{
+    color:#bdc3c7;
+    font-size:16pt;
+}
+/* Peer Graph  */
+ .peer-graph{
+    width: 633px;
+}
+
+div.custom-container {
+	background-color: #242424;
+}
+
+svg.custom .node circle {
+	fill: #F3F3FF;
+	stroke: #2593B8;
+	stroke-width: 1.5px;
+}
+
+svg.custom .node text {
+	font-size: 14px;
+	background-color: #444;
+	/* fill: #F4F4F4; */
+	fill: #000000;
+	/* text-shadow: 0 1px 4px black; */
+}
+
+svg.custom .node {
+	cursor: pointer;
+}
+
+svg.custom path.link {
+	fill: none;
+	stroke: #2593B8;
+	stroke-width: 1.5px;
+}
+
+/* Pagination */
+
+.pagination li {
+    float: left;
+    padding: 2px 8px;
+    text-decoration: none;
+    font-size: 12pt;
+    border-radius: 3px;
+    margin-left: 3px;
+    border:solid #bdc3c7 2px;
+}
+.pagination li > a{
+    color: black;
+}
+.pagination li.active {
+    background-color: #22313F;
+    color: white;
+    border-radius: 3px;
+    border:solid #bdc3c7 2px;
+}
+.pagination li.active a{
+    color: white;
+
+}

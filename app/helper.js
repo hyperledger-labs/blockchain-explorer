@@ -240,6 +240,25 @@ var getPeersByOrg = function (org) {
 	return peerList;
 };
 
+var getOrgMapFromConfig = function (networkConfig) {
+	var orgs = Object.keys(networkConfig);
+	var peerlist = [];
+	orgs.forEach(ele => {
+		var org = networkConfig[ele];
+		var properties = Object.keys(org);
+		properties.forEach(prop => {
+			if (typeof org[prop] === 'object' && 'requests' in org[prop] && 'events' in org[prop]
+				&& 'server-hostname' in org[prop] && 'tls_cacerts' in org[prop])
+				peerlist.push({
+					key: ele,
+					value: prop
+				});
+		});
+	});
+
+	return peerlist;
+}
+
 exports.getChannelForOrg = getChannelForOrg;
 exports.getClientForOrg = getClientForOrg;
 exports.getLogger = getLogger;
@@ -251,3 +270,4 @@ exports.getOrgAdmin = getOrgAdmin;
 exports.getOrgs = getOrgs;
 exports.getPeersByOrg = getPeersByOrg;
 exports.createDefault = createDefault;
+exports.getOrgMapFromConfig = getOrgMapFromConfig;
