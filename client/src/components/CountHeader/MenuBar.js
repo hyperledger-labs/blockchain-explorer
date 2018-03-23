@@ -158,13 +158,13 @@ class MenuBar extends Component {
               <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
               <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
-              <NavItem >SMART CONTRACTS</NavItem>
+              <NavItem >CHAINCODES</NavItem>
             </Nav>
           </Navbar>
         </div>
 
 
-        <div style={{ position: 'absolute', top: 210, left: 30, zIndex: 1000 }}>
+        <div style={{ position: 'absolute', top: 190, left: 30, zIndex: 1000 }}>
           {currentView}
         </div>
       </div>

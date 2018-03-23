@@ -32,7 +32,7 @@ class LandingPage extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (nextProps.channel.currentChannel != this.props.channel.currentChannel) {
+        if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
             this.props.getPeerList(nextProps.channel.currentChannel);
             this.props.getHeaderCount(nextProps.channel.currentChannel);
             this.props.getTxPerHour(nextProps.channel.currentChannel);

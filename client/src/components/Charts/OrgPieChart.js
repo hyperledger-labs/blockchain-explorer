@@ -8,7 +8,7 @@ class OrgPieChart extends Component {
         super(props);
         this.state = {
             data: [
-                { value: 40, name: "Org1", fill: "#0353A4" },
+                { value: 40, name: "Org1", fill: "#396EAC" },
                 { value: 60, name: "Org2", fill: "#7C7C7C" }
             ]
 

@@ -1,7 +1,7 @@
 #root > div > div:nth-child(1) > nav > a
 {
 font-size: 30pt;
-margin-left: 600px;
+/* margin-left: 670px; */
 font-weight: 300;
 }
 /* Navigation bar */
@@ -22,6 +22,12 @@ div.menuItems > nav{
     border-top: 2px #000000 solid;
     border-bottom: 2px #000000 solid;
 }
+.logo{
+    /* width: 496px;
+    height: 95px; */
+    width: 365px;
+    height: 70px;
+}
 /* Dashboard */
  .count-card{
      min-width: 320px;
@@ -37,11 +43,14 @@ div.menuItems > nav{
      /* background-color:#BFBFBF; */
     /* background-color: #bdc3c7; */
      /* background-color: #cfcfce; */
-     background-color: #6d6d6c;
-     color:#f7f7f7;
+     /* background-color: #6d6d6c; */
+     background-color: #24272a;
+     color:#f3f9f9;
  }
  .light-card{
-     background-color: #F2F1EF;
+    /* background-color: #F2F1EF; */
+    background-color: #5F6164;
+    color:#f3f9f9;
  }
 .chart-stats{
     margin-top: 10px;
@@ -63,7 +72,7 @@ div.menuItems > nav{
     padding: 5px;
 }
 .card-header{
-    background-color: #6d6d6c;
+    background-color: #24272a;
      color:#f7f7f7;
      font:bold;
 }

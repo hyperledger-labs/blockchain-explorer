@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { Nav, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
+import Logo from '../../static/images/Explorer_Logo.svg';
 
 class HeaderView extends Component {
   constructor(props, context) {
@@ -30,7 +31,7 @@ class HeaderView extends Component {
       })
     });
 
-    this.setState({channels: arr});
+    this.setState({ channels: arr });
 
     this.setState({ selectedOption: arr[0] })
 
@@ -48,7 +49,8 @@ class HeaderView extends Component {
     return (
       <div>
         <Navbar color="faded" light expand="md">
-          <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand>
+          <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
+          {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
             <div className='channel-dropdown'>

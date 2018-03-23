@@ -42,7 +42,7 @@ class DashboardView extends Component {
                         <Card className="count-card light-card" >
                             <CardBody>
                                 <h1>TBA</h1>
-                                <h4><FontAwesome name="handshake-o" />Smart Contracts</h4>
+                                <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
                             </CardBody>
                         </Card>
                     </Row>
