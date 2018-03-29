@@ -15,3 +15,4 @@ export const BLOCK_CHART_HOUR = `${namespaces}/BLOCK_CHART_HOUR`;
 export const TX_CHART_MIN = `${namespaces}/TX_CHART_MIN`;
 export const TX_CHART_HOUR = `${namespaces}/TX_CHART_HOUR`;
 export const COUNT_HEADER_POST = `${namespaces}/COUNT_HEADER_POST`;
+export const CHAINCODE_LIST = `${namespaces}/CHAINCODE_LIST`;

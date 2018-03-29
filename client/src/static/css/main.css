@@ -4,6 +4,11 @@ font-size: 30pt;
 /* margin-left: 670px; */
 font-weight: 300;
 }
+#root > div > div:nth-child(1) > nav{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 75px;
+}
 /* Navigation bar */
  div.menuItems > nav > ul{
     margin-left: 160px!important;
@@ -23,10 +28,10 @@ div.menuItems > nav{
     border-bottom: 2px #000000 solid;
 }
 .logo{
-    /* width: 496px;
-    height: 95px; */
-    width: 365px;
-    height: 70px;
+    /* width: 365px;
+    height: 70px; */
+    width: 260px;
+    height: 50px;
 }
 /* Dashboard */
  .count-card{
@@ -133,6 +138,9 @@ div.menuItems > nav{
 }
 .landing > h1{
     font-size: 40pt;
+}
+.landing > div {
+    margin-left: 150px;
 }
 .dashboard{
     margin-left: 300px;

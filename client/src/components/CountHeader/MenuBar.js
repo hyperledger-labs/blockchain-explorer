@@ -164,7 +164,7 @@ class MenuBar extends Component {
         </div>
 
 
-        <div style={{ position: 'absolute', top: 190, left: 30, zIndex: 1000 }}>
+        <div style={{ position: 'absolute', top: 140, left: 30, zIndex: 1000 }}>
           {currentView}
         </div>
       </div>

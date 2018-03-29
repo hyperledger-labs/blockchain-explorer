@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
+import Logo from '../../static/images/Explorer_Logo.svg';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getPeerList as getPeerListCreator } from '../../store/actions/peer/action-creators';
 import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
@@ -13,7 +14,7 @@ import { getTxPerHour as getTxPerHourCreator } from '../../store/actions/charts/
 import { getChannelList as getChannelListCreator } from '../../store/actions/chanelList/action-creators';
 import { getChannel as getChannelCreator } from '../../store/actions/channel/action-creators';
 import { getHeaderCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
-
+import {getChaincodes as getChaincodesCreator} from '../../store/actions/chaincodes/action-creators';
 class LandingPage extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +29,10 @@ class LandingPage extends Component {
                 speed: 500,
                 slidesToShow: 1,
                 slidesToScroll: 1
+            },
+            logoStyle :{
+                width: '520px',
+                height: '100px'
             }
         }
     }
@@ -41,6 +46,7 @@ class LandingPage extends Component {
             this.props.getBlocksPerMin(nextProps.channel.currentChannel);
             this.props.getTransactionList(nextProps.channel.currentChannel,0);
             this.props.getBlockList(nextProps.channel.currentChannel, 0);
+            this.props.getChaincodes(nextProps.channel.currentChannel);
         }
     }
     componentDidMount() {
@@ -48,7 +54,8 @@ class LandingPage extends Component {
     render() {
         return (
             <div className="landing" >
-                <h1>PREPARING EXPLORER</h1>
+                {/* <h1>PREPARING EXPLORER</h1> */}
+                <img src={Logo} style={this.state.logoStyle} alt="Hyperledger Logo" />
                 <Slider {...this.state.settings}>
                     <div><h3>ACCESSING THE NETWORK</h3></div>
                     <div><h3>CONNECTING TO CHANNEL</h3></div>
@@ -68,7 +75,8 @@ const mapDispatchToProps = (dispatch) => ({
     getBlocksPerMin: (curChannel) => dispatch(getBlocksPerMinCreator(curChannel)),
     getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset)),
     getBlockList: (curChannel, offset) => dispatch(getBlockListCreator(curChannel, offset)),
-    getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel))
+    getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel)),
+    getChaincodes: (curChannel) => dispatch(getChaincodesCreator(curChannel))
 });
 const mapStateToProps = state => ({
     countHeader: state.countHeader,

@@ -41,7 +41,7 @@ class DashboardView extends Component {
                         </Card>
                         <Card className="count-card light-card" >
                             <CardBody>
-                                <h1>TBA</h1>
+                                <h1>{this.props.countHeader.countHeader.chaincodeCount}</h1>
                                 <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
                             </CardBody>
                         </Card>
