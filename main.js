@@ -201,9 +201,11 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
                 'tx_id': header.channel_header.tx_id,
                 'timestamp': header.channel_header.timestamp,
                 'channel_id': header.channel_header.channel_id,
-                'type': header.channel_header.type,
+                'type': header.channel_header.typeString,
                 'creator_msp': header.signature_header.creator.Mspid,
                 'chaincode_id': String.fromCharCode.apply(null, new Uint8Array(header.channel_header.extension)),
+                'endorsements': data.actions[0].payload.action.endorsements.map(i=> {return i.endorser}),
+                'read_write_set': data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset.filter(x => x['namespace'] != 'lscc'),
             })
         })
 
