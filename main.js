@@ -194,6 +194,7 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
             var header = response_payloads['transactionEnvelope']['payload']['header']
             var data = response_payloads['transactionEnvelope']['payload']['data']
             var signature = response_payloads['transactionEnvelope']['signature'].toString("hex")
+            var rwset = data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
 
             res.send({
                 status: 200,
@@ -204,8 +205,9 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
                 'type': header.channel_header.typeString,
                 'creator_msp': header.signature_header.creator.Mspid,
                 'chaincode_id': String.fromCharCode.apply(null, new Uint8Array(header.channel_header.extension)),
-                'endorsements': data.actions[0].payload.action.endorsements.map(i=> {return i.endorser}),
-                'read_write_set': data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset.filter(x => x['namespace'] != 'lscc'),
+                'endorsements': data.actions[0].payload.action.endorsements.map(i=> {return i.endorser.Mspid}),
+                'reads': rwset.map(i=> {return {'chaincode':i.namespace,'set':i.rwset.reads}}),
+                'writes': rwset.map(i=> {return {'chaincode':i.namespace,'set':i.rwset.writes}}),
             })
         })
 
