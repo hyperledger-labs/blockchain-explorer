@@ -7,6 +7,8 @@ import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
 import DashboardView from '../View/DashboardView';
 import Channels from '../Lists/Channels';
+import Chaincodes from '../Lists/Chaincodes';
+import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
 import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
 import { getTransactionInfo as getTransactionInfoCreator } from '../../store/actions/transaction/action-creators';
 import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
@@ -41,7 +43,7 @@ class MenuBar extends Component {
     super(props);
     this.state = {
       activeView: 'DashboardView',
-      activeTab: { dashboardTab: true, peersTab: false, blocksTab: false },
+      activeTab: { dashboardTab: true, peersTab: false, blocksTab: false, chaincodesTab: false },
       countHeader: { countHeader: this.props.getCountHeader() }
     }
 
@@ -84,8 +86,8 @@ class MenuBar extends Component {
         dashboardTab: false,
         peersTab: false,
         blocksTab: false,
-        txTab: true
-      }
+        txTab: true,
+        chaincodesTab: false      }
     });
   }
   handleClickBlockView() {
@@ -95,7 +97,8 @@ class MenuBar extends Component {
         dashboardTab: false,
         peersTab: false,
         blocksTab: true,
-        txTab: false
+        txTab: false,
+        chaincodesTab: false
       }
     });
   }
@@ -109,7 +112,8 @@ class MenuBar extends Component {
         dashboardTab: false,
         peersTab: true,
         blocksTab: false,
-        txTab: false
+        txTab: false,
+        chaincodesTab: false
       }
     });
   }
@@ -120,7 +124,20 @@ class MenuBar extends Component {
         dashboardTab: true,
         peersTab: false,
         blocksTab: false,
-        txTab: false
+        txTab: false,
+        chaincodesTab: false
+      }
+    });
+  }
+  handleClickChaincodeView = () => {
+    this.setState({ activeView: 'ChaincodeView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: false,
+        peersTab: false,
+        blocksTab: false,
+        txTab: false,
+        chaincodesTab: true
       }
     });
   }
@@ -144,6 +161,9 @@ class MenuBar extends Component {
       case 'DashboardView':
         currentView = <DashboardView />;
         break;
+      case 'ChaincodeView':
+        currentView = <Chaincodes />
+        break;
       default:
         currentView = <DashboardView />;
         break;
@@ -158,7 +178,7 @@ class MenuBar extends Component {
               <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
               <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
-              <NavItem >CHAINCODES</NavItem>
+              <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickChaincodeView }>CHAINCODES</NavItem>
             </Nav>
           </Navbar>
         </div>

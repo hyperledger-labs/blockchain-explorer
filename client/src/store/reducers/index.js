@@ -11,6 +11,7 @@ import blockPerMin from './blockPerMin';
 import blockPerHour from './blockPerHour';
 import txPerMin from './txPerMin';
 import txPerHour from './txPerHour';
+import chaincodes from './chaincodes';
 export default combineReducers({
     peerList,
     channelList,
@@ -23,5 +24,6 @@ export default combineReducers({
     blockPerMin,
     blockPerHour,
     txPerMin,
-    txPerHour
+    txPerHour,
+    chaincodes
 })
