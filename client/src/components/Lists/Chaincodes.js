@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import { Table, Container, Row, Col, Tooltip } from 'reactstrap';
+import { Table, Container, Row, Col } from 'reactstrap';
 import Pagination from "react-js-pagination";
 import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
 

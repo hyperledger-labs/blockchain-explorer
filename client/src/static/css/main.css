@@ -9,6 +9,21 @@ font-weight: 300;
     padding-bottom: 0px;
     height: 75px;
 }
+.admin-buttons{
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-right: 15px;
+}
+.bell{
+    margin-top: 36px;
+    color: #5F6164;
+    font-size: 18pt;
+}
+.bell:hover{
+    margin-top: 36px;
+    color: #24272a;
+    font-size: 18pt;
+}
 /* Navigation bar */
  div.menuItems > nav > ul{
     margin-left: 160px!important;
@@ -205,4 +220,16 @@ svg.custom path.link {
 .pagination li.active a{
     color: white;
 
+}
+
+/* Admin Panel */
+/* .admin-panel{
+    width: 450px;
+} */
+.select-channel{
+    width: 200px;
+}
+.channel-form{
+    display: flex;
+    flex-wrap: wrap;
 }

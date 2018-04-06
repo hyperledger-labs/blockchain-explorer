@@ -20,7 +20,7 @@ var pgconfig = config.pg
 var helper = require('../helper.js');
 var logger = helper.getLogger('pgservice');
 
-const connectionString = 'postgres://' + pgconfig.username + ':' + pgconfig.passwd + '@localhost:' + pgconfig.port + '/' + pgconfig.database;
+const connectionString = 'postgres://' + pgconfig.username + ':' + pgconfig.passwd + '@' +pgconfig.host +':' + pgconfig.port + '/' + pgconfig.database;
 console.log(connectionString);
 const client = new Client({
     connectionString: connectionString,
