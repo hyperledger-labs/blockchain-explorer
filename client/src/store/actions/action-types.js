@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 const namespaces = 'hyperledger-explorer';
 
 export const PEER_LIST_POST = `${namespaces}/PEER_LIST_POST`;

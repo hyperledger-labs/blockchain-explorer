@@ -1,5 +1,5 @@
 /**
- * see https://facebook.github.io/jest/docs/en/tutorial-async.html
+ *    SPDX-License-Identifier: Apache-2.0
  */
 
 // TODO add request mocks

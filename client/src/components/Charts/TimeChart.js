@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React from 'react';
 import { ScatterChart,Scatter, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import Card, { CardContent } from 'material-ui/Card';

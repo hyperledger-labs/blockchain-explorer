@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 #root > div > div:nth-child(1) > nav > a
 {
 font-size: 30pt;

@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 import '../../static/css/main.css';
 import Main from '../Main';

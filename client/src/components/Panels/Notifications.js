@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem,  ListItemText } from 'material-ui/List';

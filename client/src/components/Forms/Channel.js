@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 // import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import Button from 'material-ui/Button';

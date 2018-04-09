@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 \c fabricexplorer;
 
 ALTER TABLE Blocks ADD COLUMN prev_blockhash character varying(256) default NOT NULL;

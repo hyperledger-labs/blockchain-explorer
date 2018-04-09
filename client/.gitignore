@@ -1,4 +1,6 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
+#
+#    SPDX-License-Identifier: Apache-2.0
+#
 
 # dependencies
 /node_modules

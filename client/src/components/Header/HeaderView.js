@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import 'react-select/dist/react-select.css';
 
 import React, { Component } from 'react';

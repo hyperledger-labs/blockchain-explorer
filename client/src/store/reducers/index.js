@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import { combineReducers } from 'redux'
 import peerList from './peerList.js'
 import channelList from './channelList.js'

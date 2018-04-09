@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 // import Card, { CardContent } from 'material-ui/Card';
 import { Card, CardHeader, CardBody } from 'reactstrap';

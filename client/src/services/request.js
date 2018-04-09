@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import agent from 'superagent';
 export const post = (uri, payload) =>
     new Promise((resolve, reject) => {
