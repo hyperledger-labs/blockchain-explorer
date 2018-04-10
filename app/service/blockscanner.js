@@ -15,13 +15,13 @@
  */
 
 
-var query=require('../query.js')
+var query = require('../query.js')
 var helper = require('../helper.js')
 var co = require('co')
 var stomp = require('../socket/websocketserver.js').stomp()
 var logger = helper.getLogger('blockscanner');
 var ledgerMgr = require('../utils/ledgerMgr.js')
-var config=require('../../config.json')
+var config = require('../../config.json')
 var sql = require('../db/pgservice.js');
 
 var blockListener
@@ -58,12 +58,13 @@ function syncBlock() {
 function* saveBlockRange(channelName, start, end) {
     while (start < end) {
         let block = yield query.getBlockByNumber(peer, channelName, start, org)
-         /** block creation timestamp is not in the latest fabric API,
-         will use the first transaction timestamp */
-         let firstTxTimestamp = block.data.data[0].payload.header.channel_header.timestamp;
-         if (!firstTxTimestamp) {
-             firstTxTimestamp = null
-         }
+
+        /** block creation timestamp is not in the latest fabric API,
+        will use the first transaction timestamp */
+        let firstTxTimestamp = block.data.data[0].payload.header.channel_header.timestamp;
+        if (!firstTxTimestamp) {
+            firstTxTimestamp = null
+        }
         blockListener.emit('createBlock', block)
         yield sql.saveRow('blocks',
             {
@@ -88,15 +89,53 @@ function* saveBlockRange(channelName, start, end) {
             } catch (err) {
                 chaincode = ""
             }
-            console.dir(tx.payload.header.signature_header.creator.Mspid);
+
+            let rwset
+            let readSet
+            let writeSet
+            try {
+                rwset = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
+                readSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.reads } })
+                writeSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.writes } })
+            } catch (err) {
+            }
+
+            let chaincodeID
+            try {
+                let chaincodeID =
+                    new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
+            } catch (err) {
+            }
+
+            let status
+            try {
+                status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
+            } catch (err) {
+            }
+
+            let mspId
+
+            try {
+                mspId = tx.payload.data.actions[0].payload.action.endorsements[0].endorser.Mspid
+            } catch (err) {
+            }
+
             yield sql.saveRow('transaction',
                 {
                     'channelname': channelName,
                     'blockid': block.header.number.toString(),
                     'txhash': tx.payload.header.channel_header.tx_id,
                     'createdt': new Date(tx.payload.header.channel_header.timestamp),
-                    'chaincodename': chaincode
+                    'chaincodename': chaincode,
+                    'chaincode_id': String.fromCharCode.apply(null, chaincodeID),
+                    'status': status,
+                    'creator_msp_id': tx.payload.header.signature_header.creator.Mspid,
+                    'endorser_msp_id': mspId,
+                    'type': tx.payload.header.channel_header.typeString,
+                    'read_set': JSON.stringify(readSet, null, 2),
+                    'write_set': JSON.stringify(writeSet, null, 2)
                 })
+
             yield sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${chaincode}' and channelname='${channelName}' `)
         }
 
