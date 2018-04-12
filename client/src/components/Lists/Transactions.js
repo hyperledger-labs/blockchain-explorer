@@ -3,11 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import compose from 'recompose/compose';
-import { connect } from 'react-redux';
 import { Table, Container, Row, Col } from 'reactstrap';
 import Pagination from "react-js-pagination";
-import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
+
 class Transactions extends Component {
     constructor(props) {
         super(props);
@@ -41,9 +39,7 @@ class Transactions extends Component {
         this.setState({ totalBlocks: this.props.countHeader.txCount });
     }
     componentDidMount() {
-        // setInterval(() => {
-        //     this.props.getBlockList(this.state.currentOffset);
-        // }, 60000)
+
     }
     render() {
         return (
@@ -99,15 +95,5 @@ class Transactions extends Component {
         );
     }
 };
-const mapDispatchToProps = (dispatch) => ({
-    getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset)),
-});
-const mapStateToProps = state => ({
-    transactionList: state.transactionList.transactionList.rows,
-    countHeader: state.countHeader.countHeader,
-    channel: state.channel.channel
-});
 
-export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
-)(Transactions);;
+export default Transactions;

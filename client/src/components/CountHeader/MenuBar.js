@@ -17,6 +17,8 @@ import { getBlockList as getBlockListCreator } from '../../store/actions/block/a
 import { getTransactionInfo as getTransactionInfoCreator } from '../../store/actions/transaction/action-creators';
 import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
+
 
 import {
   Navbar,
@@ -151,10 +153,10 @@ class MenuBar extends Component {
 
     switch (this.state.activeView) {
       case 'TransactionView':
-        currentView = <Transactions />;
+        currentView = <Transactions channel={this.props.channel} countHeader={this.props.countHeader} transactionList={this.props.transactionList.rows} getTransactionList={this.props.getTransactionList} />;
         break;
       case 'BlockView':
-        currentView = <Blocks />;
+        currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList}/>;
         break;
       case 'ChannelView':
         currentView = <Channels channelList={this.props.channelList} />;
@@ -166,7 +168,7 @@ class MenuBar extends Component {
         currentView = <DashboardView />;
         break;
       case 'ChaincodeView':
-        currentView = <Chaincodes />
+        currentView = <Chaincodes channel={this.props.channel} countHeader={this.props.countHeader} chaincodes={this.props.chaincodes} getChaincodes={this.props.getChaincodes}/>
         break;
       default:
         currentView = <DashboardView />;
@@ -182,7 +184,7 @@ class MenuBar extends Component {
               <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
               <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
-              <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickChaincodeView }>CHAINCODES</NavItem>
+              <NavItem active={this.state.activeTab.chaincodesTab} onClick={this.handleClickChaincodeView }>CHAINCODES</NavItem>
             </Nav>
           </Navbar>
         </div>
@@ -197,22 +199,25 @@ class MenuBar extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  getBlockList: (channel,offset) => dispatch(getBlockListCreator(channel,offset)),
+  getChaincodes: (channel,offset) => dispatch(getChaincodesCreator(channel,offset)),
   getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
   getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
-  getBlockList: (channel,offset) => dispatch(getBlockListCreator(channel,offset)),
-  getTransactionInfo: (tx_id) => dispatch(getTransactionInfoCreator(tx_id))
+  getTransactionInfo: (tx_id) => dispatch(getTransactionInfoCreator(tx_id)),
+  getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset))
 });
 
 
 const mapStateToProps = state => ({
-  countHeader: state.countHeader,
-  peerList: state.peerList.peerList,
-  blockList: state.blockList.blockList,
-  transactionList: state.transactionList.transactionList,
-  channelList: state.channelList.channelList,
   block: state.block.block,
+  blockList: state.blockList.blockList,
+  chaincodes: state.chaincodes.chaincodes,
+  channel: state.channel.channel,
+  channelList: state.channelList.channelList,
+  countHeader: state.countHeader.countHeader,
+  peerList: state.peerList.peerList,
   transaction: state.transaction.transaction,
-  channel: state.channel.channel
+  transactionList: state.transactionList.transactionList,
 });
 
 
