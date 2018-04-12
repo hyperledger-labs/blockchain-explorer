@@ -6,7 +6,7 @@
   "main": "main.js",
   "keywords": [
     "fabric-client sample app",
-    "v1.0 fabric nodesdk sample",
+    "v1.1.1 fabric nodesdk sample",
     "alpha based nodesdk sample app"
   ],
   "engines": {
@@ -19,8 +19,8 @@
     "co": "^4.6.0",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
-    "fabric-ca-client": "^1.0.0",
-    "fabric-client": "^1.0.0",
+    "fabric-ca-client": "^1.1.0",
+    "fabric-client": "^1.1.0",
     "fast-stats": "0.0.3",
     "http-status-codes": "^1.3.0",
     "log4js": "^0.6.38",

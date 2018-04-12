@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 // import Card, { CardContent } from 'material-ui/Card';
 import { Card, CardHeader, CardBody } from 'reactstrap';
@@ -8,7 +12,7 @@ class OrgPieChart extends Component {
         super(props);
         this.state = {
             data: [
-                { value: 40, name: "Org1", fill: "#0353A4" },
+                { value: 40, name: "Org1", fill: "#5bc5c2" },
                 { value: 60, name: "Org2", fill: "#7C7C7C" }
             ]
 

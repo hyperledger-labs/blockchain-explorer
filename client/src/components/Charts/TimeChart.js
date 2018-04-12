@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React from 'react';
 import { ScatterChart,Scatter, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import Card, { CardContent } from 'material-ui/Card';
@@ -28,7 +32,7 @@ const TimeChart = ({ chartData }) => {
             <XAxis dataKey="datetime" />
             <YAxis domain={[0, dataMax]} dataKey="count" />
             <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-            <Scatter data={displayData} fill="#0353A4" line={{stroke: '#8884d8', strokeWidth: 2}} />
+            <Scatter data={displayData} fill="#5bc5c2" line={{stroke: '#5bc5c2', strokeWidth: 2}} />
           </ScatterChart>
         </CardContent>
       </Card>

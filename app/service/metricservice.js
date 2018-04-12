@@ -14,7 +14,6 @@
  limitations under the License.
  */
 
-//var bcservice=require('./bcservice.js')
 var co = require('co')
 var helper = require('../helper.js');
 var query = require('../query.js');
@@ -333,25 +332,6 @@ function getBlocksByYear(channelName, years) {
     return sql.getRowsBySQlQuery(sqlPerYear);
 }
 
-function getBlockAndTxList(channelName, blockNum, limitRows, offset) {
-  let sqlBlockTxList = ` select blocks.*,(
-  SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum
-   group by transaction.blockid )  from blocks where
-   blocks.channelname ='${channelName}' and blocknum >= ${blockNum}
-   order by blocks.blocknum desc limit ${limitRows} offset ${offset} `;
-  return sql.getRowsBySQlQuery(sqlBlockTxList);
-
-}
-
-
-function getTxList(channelName, blockNum, txid, limitRows, offset) {
-  let sqlTxList = ` select * from transaction where  blockid >= ${blockNum} and id >= ${txid} and
-   channelname = '${channelName}'  order by  transaction.id desc limit ${limitRows}
-   offset ${offset} `;
-  return sql.getRowsBySQlQuery(sqlTxList);
-
-}
-
 exports.getStatus = getStatus
 exports.getTxPerChaincode = getTxPerChaincode
 exports.getPeerList = getPeerList
@@ -367,5 +347,3 @@ exports.getBlocksByDay = getBlocksByDay
 exports.getBlocksByWeek = getBlocksByWeek
 exports.getBlocksByMonth = getBlocksByMonth
 exports.getBlocksByYear = getBlocksByYear
-exports.getBlockAndTxList = getBlockAndTxList
-exports.getTxList = getTxList

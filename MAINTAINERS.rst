@@ -1,20 +1,26 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 Maintainers
 -----------
 
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
 | Name                      | Gerrit              | GitHub           | RocketChat     | email                          |
 +===========================+=====================+==================+================+================================+
+| Adam Kwan                 | adamk1230           | adamk1230        | adamk1230      | adamk1230@gmail.com            |
++---------------------------+---------------------+------------------+----------------+--------------------------------+
 | David Huffman             | dshuffma            |                  |                | dshuffma@us.ibm.com            |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
 | Jeeva Sankarapandian      | jeevas              | jeevasang        | jeevas         | jsankarapandian@dtcc.com       |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Nik Frunza                | nfrunza             | nickfrunza       | nfrunza        | nfrunza@gmail.com              |
+| Mekia Edwards             | edwardsm26          | edwardsm26       | edwardsm26     | dev.edwardsm@gmail.com         |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Robert Feng               | robert.feng         | robertfeng1980   | robert.feng    | fx19800215@163.com             |
+| Nik Frunza                | nfrunza             | nickfrunza       | nfrunza        | nfrunza@gmail.com              |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
 | Satheesh Kathamuthu       | satheeshk           | xspeedcruiser    | satheeshk      | satheesh.ceg@gmail.com         |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Shouhe Wu                 | gcc2ge              | gcc2ge           | daniel.wu      | 1414786333@qq.com              |
+| Umapathi Madiraju         | umadiraj            | umadiraju        | umadiraj       | umapathi.madiraju@gmail.com    |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+
-| Vinita Chinoy             | vchinoy             | vchinoy-da       | vchinoy        | vniitachinoy@yahoo.com         |
+| Vinita Chinoy             | vchinoy             | vchinoy-da       | vchinoy        | vinitachinoy@yahoo.com         |
 +---------------------------+---------------------+------------------+----------------+--------------------------------+

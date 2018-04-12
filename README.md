@@ -46,6 +46,7 @@ Connect to PostgreSQL database.
 Run create database script.
 
 - `\i app/db/explorerpg.sql`
+- `\i app/db/updatepg.sql`
 
 Run db status commands.
 
@@ -104,3 +105,7 @@ From new terminal.
 - `./start.sh`  (it will have the backend up).
 - `tail -f log.log` (view log)
 - Launch the URL http://localhost:8080 on a browser.
+
+## License
+
+Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__", and "mockData" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.

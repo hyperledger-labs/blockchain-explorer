@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React from "react";
 import { mount, shallow } from "enzyme";
 import Adapter from 'enzyme-adapter-react-16';

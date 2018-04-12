@@ -52,5 +52,6 @@
 		"database": "fabricexplorer",
 		"username": "hppoc",
 		"passwd": "password"
-	}
+	},
+	"license": "Apache-2.0"
 }

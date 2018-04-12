@@ -1,8 +1,32 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 #root > div > div:nth-child(1) > nav > a
 {
 font-size: 30pt;
-margin-left: 600px;
+/* margin-left: 670px; */
 font-weight: 300;
+}
+#root > div > div:nth-child(1) > nav{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 75px;
+}
+.admin-buttons{
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-right: 15px;
+}
+.bell{
+    margin-top: 36px;
+    color: #5F6164;
+    font-size: 18pt;
+}
+.bell:hover{
+    margin-top: 36px;
+    color: #24272a;
+    font-size: 18pt;
 }
 /* Navigation bar */
  div.menuItems > nav > ul{
@@ -22,6 +46,12 @@ div.menuItems > nav{
     border-top: 2px #000000 solid;
     border-bottom: 2px #000000 solid;
 }
+.logo{
+    /* width: 365px;
+    height: 70px; */
+    width: 260px;
+    height: 50px;
+}
 /* Dashboard */
  .count-card{
      min-width: 320px;
@@ -37,11 +67,14 @@ div.menuItems > nav{
      /* background-color:#BFBFBF; */
     /* background-color: #bdc3c7; */
      /* background-color: #cfcfce; */
-     background-color: #6d6d6c;
-     color:#f7f7f7;
+     /* background-color: #6d6d6c; */
+     background-color: #24272a;
+     color:#f3f9f9;
  }
  .light-card{
-     background-color: #F2F1EF;
+    /* background-color: #F2F1EF; */
+    background-color: #5F6164;
+    color:#f3f9f9;
  }
 .chart-stats{
     margin-top: 10px;
@@ -63,7 +96,7 @@ div.menuItems > nav{
     padding: 5px;
 }
 .card-header{
-    background-color: #6d6d6c;
+    background-color: #24272a;
      color:#f7f7f7;
      font:bold;
 }
@@ -124,6 +157,9 @@ div.menuItems > nav{
 }
 .landing > h1{
     font-size: 40pt;
+}
+.landing > div {
+    margin-left: 150px;
 }
 .dashboard{
     margin-left: 300px;
@@ -188,4 +224,16 @@ svg.custom path.link {
 .pagination li.active a{
     color: white;
 
+}
+
+/* Admin Panel */
+/* .admin-panel{
+    width: 450px;
+} */
+.select-channel{
+    width: 200px;
+}
+.channel-form{
+    display: flex;
+    flex-wrap: wrap;
 }

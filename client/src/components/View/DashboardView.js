@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
@@ -41,8 +45,8 @@ class DashboardView extends Component {
                         </Card>
                         <Card className="count-card light-card" >
                             <CardBody>
-                                <h1>TBA</h1>
-                                <h4><FontAwesome name="handshake-o" />Smart Contracts</h4>
+                                <h1>{this.props.countHeader.countHeader.chaincodeCount}</h1>
+                                <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
                             </CardBody>
                         </Card>
                     </Row>
