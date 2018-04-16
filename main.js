@@ -429,6 +429,45 @@ app.get("/api/blocksByHour/:channel/:days", function (req, res) {
     }
 });
 
+/***
+    An API to create a channel
+POST /api/channel
+curl -s -X POST http://localhost:8080/api/channel
+Response: {"status":"SUCCESS","info":""}
+*/
+app.post('/api/channel',function(req,res){
+    var channelName = req.body.channelName;
+    var channelConfigPath = req.body.channelConfigPath;
+    var orgName = req.body.orgName;
+    var orgPath = req.body.orgPath;
+    var networkCfgPath = req.body.networkCfgPath;
+
+    //Validate inputs
+    if (!channelName) {
+    	res.json(getErrorMessage('\'channelName\''));
+        return;
+    }
+    if (!channelConfigPath) {
+    	res.json(getErrorMessage('\'channelConfigPath\''));
+    	return;
+    }
+    if (!orgName) {
+        res.json(getErrorMessage('\'orgName\''));
+        return;
+    }
+    if (!orgPath) {
+        res.json(getErrorMessage('\'orgPath\''));
+        return;
+    }
+    if (!networkCfgPath) {
+        res.json(getErrorMessage('\'networkCfgPath\''));
+        return;
+    }
+
+    let resMess = channelService.createChannel(channelName, channelConfigPath, orgName, orgPath, networkCfgPath);
+    res.send(resMess);
+});
+
 // ============= start server =======================
 
 var server = http.listen(port, function () {
