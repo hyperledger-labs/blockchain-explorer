@@ -113,10 +113,10 @@ function* saveBlockRange(channelName, start, end) {
             } catch (err) {
             }
 
-            let mspId
+            let mspId = []
 
             try {
-                mspId = tx.payload.data.actions[0].payload.action.endorsements[0].endorser.Mspid
+                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
             } catch (err) {
             }
 

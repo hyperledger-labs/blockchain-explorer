@@ -192,9 +192,9 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
     let txid = req.params.txid
     let channelName = req.params.channel
     if (txid && txid != '0' && channelName) {
-        txModel.getTransactionByID(channelName, txid).then(rows => {
-            if (rows) {
-                return res.send({ status: 200, rows })
+        txModel.getTransactionByID(channelName, txid).then(row => {
+            if (row) {
+                return res.send({ status: 200, row })
             }
         })
     } else {

@@ -9,8 +9,7 @@ var sql = require('../db/pgservice.js');
 
 function getTransactionByID(channelName, txhash) {
     let sqlTxById = ` select * from TRANSACTION where txhash = '${txhash}' `;
-    console.log(sqlTxById)
-    return sql.getRowsBySQlQuery(sqlTxById);
+    return sql.getRowByPkOne(sqlTxById);
 }
 
 function getTxList(channelName, blockNum, txid, limitRows, offset) {
@@ -19,7 +18,7 @@ function getTxList(channelName, blockNum, txid, limitRows, offset) {
      offset ${offset} `;
     return sql.getRowsBySQlQuery(sqlTxList);
 
-  }
+}
 
 exports.getTransactionByID = getTransactionByID
 exports.getTxList = getTxList

@@ -1,3 +1,7 @@
+/*
+    SPDX-License-Identifier: Apache-2.0
+*/
+
 /**
  *
  * Created by Cam Mach on 6/8/17.

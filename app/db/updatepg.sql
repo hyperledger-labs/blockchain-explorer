@@ -9,7 +9,7 @@ ALTER TABLE Blocks ADD COLUMN blockhash character varying(256) DEFAULT NULL;
 
 ALTER TABLE Transaction ADD COLUMN status  integer DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN creator_msp_id character varying(128) DEFAULT NULL;
-ALTER TABLE Transaction ADD COLUMN endorser_msp_id character varying(128) DEFAULT NULL;
+ALTER TABLE Transaction ADD COLUMN endorser_msp_id character varying(800) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN chaincode_id character varying(256) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN type character varying(128) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN read_set  json default NULL;

@@ -46,6 +46,12 @@
 	"channel": "mychannel",
 	"keyValueStore": "/tmp/fabric-client-kvs",
 	"eventWaitTime": "30000",
+	"users":[
+		{
+		   "username":"admin",
+		   "secret":"adminpw"
+		}
+	 ],
 	"pg": {
 		"host": "127.0.0.1",
 		"port": "5432",
