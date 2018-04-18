@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { Table, Container, Row, Col, Tooltip } from 'reactstrap';
 import Pagination from "react-js-pagination";
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import TransactionView from '../View/TransactionView';
 
 class Blocks extends Component {
     constructor(props) {
@@ -12,6 +14,7 @@ class Blocks extends Component {
         this.state = {
             toolTipOpen: false,
             toolTipOpen2: false,
+            dialogOpen: false,
             loading: false,
             limitrows: 10,
             totalBlocks: this.props.countHeader.latestBlock,
@@ -21,7 +24,8 @@ class Blocks extends Component {
         this.toggle1 = this.toggle1.bind(this);
         this.toggle2 = this.toggle2.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
-
+        this.handleDialogOpen = this.handleDialogOpen.bind(this);
+        this.handleDialogClose = this.handleDialogClose.bind(this);
     }
     toggle1() {
         this.setState({
@@ -37,7 +41,14 @@ class Blocks extends Component {
     handlePageChange(pageNumber) {
         var newOffset = (pageNumber - 1) * this.state.limitrows;
         this.setState({ activePage: pageNumber, currentOffset: newOffset });
-        this.props.getBlockList(this.props.channel.currentChannel,newOffset);
+        this.props.getBlockList(this.props.channel.currentChannel, newOffset);
+    }
+    handleDialogOpen(tid) {
+        this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
+        this.setState({ dialogOpen: true });
+    }
+    handleDialogClose() {
+        this.setState({ dialogOpen: false });
     }
     componentWillMount() {
 
@@ -50,7 +61,7 @@ class Blocks extends Component {
 
     componentDidMount() {
         setInterval(() => {
-            this.props.getBlockList(this.props.channel.currentChannel,this.state.currentOffset);
+            this.props.getBlockList(this.props.channel.currentChannel, this.state.currentOffset);
         }, 60000)
     }
 
@@ -91,8 +102,8 @@ class Blocks extends Component {
                                                 <td>
                                                     <ul>
                                                         {block.txhash.map(tid =>
-                                                            <li  >
-                                                                <a href="#">  {tid}</a>
+                                                            <li onClick={() => this.handleDialogOpen(tid)} >
+                                                                <a href="#" >  {tid}</a>
                                                             </li>)
                                                         }
                                                     </ul>
@@ -114,7 +125,13 @@ class Blocks extends Component {
                         </Col>
                     </Row>
                 </Container>
-            </div>
+                <Dialog open={this.state.dialogOpen}
+                    onClose={this.handleDialogClose}
+                    fullWidth={true}
+                    maxWidth={'md'}>
+                    <TransactionView transaction={this.props.transaction} />
+                </Dialog>
+            </div >
         );
     }
 };

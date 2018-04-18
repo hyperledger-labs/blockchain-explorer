@@ -156,7 +156,7 @@ class MenuBar extends Component {
         currentView = <Transactions channel={this.props.channel} countHeader={this.props.countHeader} transactionList={this.props.transactionList.rows} getTransactionList={this.props.getTransactionList} />;
         break;
       case 'BlockView':
-        currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList}/>;
+        currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo} />;
         break;
       case 'ChannelView':
         currentView = <Channels channelList={this.props.channelList} />;
@@ -203,7 +203,7 @@ const mapDispatchToProps = (dispatch) => ({
   getChaincodes: (channel,offset) => dispatch(getChaincodesCreator(channel,offset)),
   getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
   getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
-  getTransactionInfo: (tx_id) => dispatch(getTransactionInfoCreator(tx_id)),
+  getTransactionInfo: (channel,tx_id) => dispatch(getTransactionInfoCreator(channel,tx_id)),
   getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset))
 });
 

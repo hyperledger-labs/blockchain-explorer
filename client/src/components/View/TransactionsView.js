@@ -37,19 +37,30 @@ const styles = theme => ({
     }
 });
 
-function TransactionsView(props) {
-    const { classes } = props;
-    return (
-        <Card className={classes.card} >
-            <CardContent>
-                <Typography className={classes.title}>Transactions </Typography>
-                <CardContent className={classes.content}>
-                    Transactions details goes here
-                </CardContent>
-            </CardContent>
-        </Card>
+class TransactionsView extends Component {
+    constructor(props, context) {
+        super(props, context);
+    }
+    render() {
+        const { classes } = this.props;
 
-    );
+        return (
+            <Card className={classes.card} >
+                <CardContent>
+                    <Typography className={classes.title}>Transactions </Typography>
+                    <CardContent className={classes.content}>
+                        Transactions details goes here
+                        <Typography className={classes.content} >
+                            tx_id:{this.props.transaction.tx_id} <br />
+                            creator_msp:{this.props.transaction.creator_msp} <br />
+                            endsorments: needed! <br />
+                        </Typography>
+                    </CardContent>
+                </CardContent>
+            </Card>
+
+        );
+    }
 }
 
 

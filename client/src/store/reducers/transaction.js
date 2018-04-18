@@ -15,7 +15,7 @@ const InitialState = new Record({
 const transaction = handleActions({
     [actionTypes.TRANSACTION_POST]: (state = InitialState(), action) => state
         .set('loaded', true)
-        .set('transaction', action.payload)
+        .set('transaction', action.payload.row)
         .set('errors', action.error),
 
 }, new InitialState());
