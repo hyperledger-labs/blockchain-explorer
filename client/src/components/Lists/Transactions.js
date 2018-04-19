@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { Table, Container, Row, Col } from 'reactstrap';
 import Pagination from "react-js-pagination";
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import TransactionView from '../View/TransactionView';
 
 class Transactions extends Component {
     constructor(props) {
@@ -14,12 +16,11 @@ class Transactions extends Component {
             limitrows: 10,
             totalBlocks: this.props.countHeader.txCount,
             activePage: 1,
-            currentOffset: 0
+            currentOffset: 0,
+            dialogOpen: false
         }
-        this.handlePageChange = this.handlePageChange.bind(this);
-        this.convertTime = this.convertTime.bind(this);
     }
-    convertTime(date) {
+    convertTime = (date) => {
         var hold = new Date(date);
         var hours = hold.getHours();
         var minutes = hold.getMinutes();
@@ -30,11 +31,20 @@ class Transactions extends Component {
         var strTime = hours + ':' + minutes + ' ' + ampm;
         return strTime;
       }
-    handlePageChange(pageNumber) {
+    handlePageChange = (pageNumber) => {
         var newOffset = (pageNumber - 1) * this.state.limitrows;
         this.setState({ activePage: pageNumber, currentOffset: newOffset });
         this.props.getTransactionList(this.props.channel.currentChannel,newOffset);
     }
+
+    handleDialogOpen = (tid) => {
+        this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
+        this.setState({ dialogOpen: true });
+    }
+    handleDialogClose = () => {
+        this.setState({ dialogOpen: false });
+    }
+
     componentWillReceiveProps(nextProps) {
         this.setState({ totalBlocks: this.props.countHeader.txCount });
     }
@@ -50,28 +60,22 @@ class Transactions extends Component {
                             <div className="scrollTable" >
                                 <Table>
                                     <thead>
-                                        <th>Tx Id</th>
                                         <th>Creator</th>
                                         <th>Channel </th>
+                                        <th>Tx Id</th>
                                         <th>Type</th>
-                                        <th>Payload</th>
                                         <th>Chaincode</th>
                                         <th>Timestamp</th>
-                                        <th>Read</th>
-                                        <th>Write</th>
                                     </thead>
                                     <tbody>
                                         {this.props.transactionList.map(tx =>
-                                            <tr key={tx.id} >
-                                                <td> <p className="hash-hide" >{tx.txhash}</p> </td>
-                                                <td> </td>
+                                            <tr key={tx.id}>
+                                                <td>{tx.creator_msp_id} </td>
                                                 <td>{tx.channelname} </td>
-                                                <td>  </td>
-                                                <td>  </td>
+                                                <td><a onClick={() => this.handleDialogOpen(tx.txhash)} href="#" >{tx.txhash}</a></td>
+                                                <td>{tx.type}</td>
                                                 <td>{tx.chaincodename} </td>
                                                 <td>{this.convertTime(tx.createdt)} </td>
-                                                <td>  </td>
-                                                <td>  </td>
                                             </tr>
                                         )}
 
@@ -91,6 +95,12 @@ class Transactions extends Component {
                         </Col>
                     </Row>
                 </Container>
+                <Dialog open={this.state.dialogOpen}
+                    onClose={this.handleDialogClose}
+                    fullWidth={true}
+                    maxWidth={'md'}>
+                    <TransactionView transaction={this.props.transaction} />
+                </Dialog>
             </div>
         );
     }

@@ -67,7 +67,7 @@ function start() {
         })
     },1000)*/
 
-    //同步区块
+    //Sync Block
     blockListener.emit('syncChaincodes')
     blockListener.emit('syncPeerlist')
     blockListener.emit('syncBlock')

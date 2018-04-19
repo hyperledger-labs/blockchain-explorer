@@ -14,11 +14,19 @@ const InitialState = new Record({
 })
 
 const transactionList = handleActions({
-    [actionTypes.TX_LIST]: (state = InitialState(), action) => state
+    [actionTypes.TX_LIST]: (state = InitialState(), action) => {
+        action.payload.rows.forEach( element => {
+            element.read_set = JSON.stringify(element.read_set);
+            element.write_set = JSON.stringify(element.write_set)
+        })
+        return (
+        state
         .set('transactionList', action.payload)
         .set('loaded', true)
         .set('errors', action.error)
+        )
 
+}
 }, new InitialState());
 
 

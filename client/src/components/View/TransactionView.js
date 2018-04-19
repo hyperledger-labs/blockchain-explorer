@@ -96,7 +96,7 @@ class TransactionView extends Component {
                                                 var tx_num = '';
                                                 if (x.version !== null) {
                                                     block_num = x.version.block_num;
-                                                    block_num = x.version.tx_num;
+                                                    tx_num = x.version.tx_num;
                                                 }
                                                 return x === null ? '' : <li>key:{x.key} ,version:( block:{block_num},tx:{tx_num})  </li>
                                             })}</ul>
