@@ -13,6 +13,7 @@
     "lodash": "^4.17.4",
     "material-ui": "^1.0.0-beta.29",
     "material-ui-icons": "^1.0.0-beta.17",
+    "moment-timezone": "^0.5.16",
     "pg": "^7.4.1",
     "react": "^16.2.0",
     "react-d3-graph": "^1.0.1",

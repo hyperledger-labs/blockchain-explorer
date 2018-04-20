@@ -12,6 +12,7 @@ import {
     DialogContentText,
     DialogTitle,
 } from 'material-ui/Dialog';
+import moment from 'moment-timezone';
 
 const styles = theme => ({
     root: {
@@ -78,7 +79,7 @@ class TransactionView extends Component {
                             <b>Endorsor:</b> {this.props.transaction.endorser_msp_id} <br />
                             <b>Chaincode Name:</b> {this.props.transaction.chaincodename} <br />
                             <b>Type:</b> {this.props.transaction.type} <br />
-                            <b>Time:</b> {this.props.transaction.createdt} <br />
+                            <b>Time:</b> {moment(this.props.transaction.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")} <br />
                             {/* <ul>
                                 <b>Endorsements</b>
                                 {this.props.transaction.endorsements.map(function (item) {

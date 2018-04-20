@@ -7,6 +7,7 @@ import { Table, Container, Row, Col } from 'reactstrap';
 import Pagination from "react-js-pagination";
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import TransactionView from '../View/TransactionView';
+import moment from 'moment-timezone'
 
 class Transactions extends Component {
     constructor(props) {
@@ -75,7 +76,7 @@ class Transactions extends Component {
                                                 <td><a onClick={() => this.handleDialogOpen(tx.txhash)} href="#" >{tx.txhash}</a></td>
                                                 <td>{tx.type}</td>
                                                 <td>{tx.chaincodename} </td>
-                                                <td>{this.convertTime(tx.createdt)} </td>
+                                                <td>{moment(tx.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")}</td>
                                             </tr>
                                         )}
 
