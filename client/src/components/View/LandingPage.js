@@ -18,7 +18,8 @@ import { getTxPerHour as getTxPerHourCreator } from '../../store/actions/charts/
 import { getChannelList as getChannelListCreator } from '../../store/actions/chanelList/action-creators';
 import { getChannel as getChannelCreator } from '../../store/actions/channel/action-creators';
 import { getHeaderCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
-import {getChaincodes as getChaincodesCreator} from '../../store/actions/chaincodes/action-creators';
+import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
+import { getTxByOrg as getTxByOrgCreator } from '../../store/actions/charts/action-creators';
 class LandingPage extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +35,7 @@ class LandingPage extends Component {
                 slidesToShow: 1,
                 slidesToScroll: 1
             },
-            logoStyle :{
+            logoStyle: {
                 width: '520px',
                 height: '100px'
             }
@@ -48,9 +49,10 @@ class LandingPage extends Component {
             this.props.getTxPerMin(nextProps.channel.currentChannel);
             this.props.getBlocksPerHour(nextProps.channel.currentChannel);
             this.props.getBlocksPerMin(nextProps.channel.currentChannel);
-            this.props.getTransactionList(nextProps.channel.currentChannel,0);
+            this.props.getTransactionList(nextProps.channel.currentChannel, 0);
             this.props.getBlockList(nextProps.channel.currentChannel, 0);
             this.props.getChaincodes(nextProps.channel.currentChannel);
+            this.props.getTxByOrg(nextProps.channel.currentChannel);
         }
     }
     componentDidMount() {
@@ -77,10 +79,12 @@ const mapDispatchToProps = (dispatch) => ({
     getTxPerMin: (curChannel) => dispatch(getTxPerMinCreator(curChannel)),
     getBlocksPerHour: (curChannel) => dispatch(getBlocksPerHourCreator(curChannel)),
     getBlocksPerMin: (curChannel) => dispatch(getBlocksPerMinCreator(curChannel)),
-    getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset)),
+    getTransactionList: (curChannel, offset) => dispatch(getTransactionListCreator(curChannel, offset)),
     getBlockList: (curChannel, offset) => dispatch(getBlockListCreator(curChannel, offset)),
     getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel)),
-    getChaincodes: (curChannel) => dispatch(getChaincodesCreator(curChannel))
+    getChaincodes: (curChannel) => dispatch(getChaincodesCreator(curChannel)),
+    getTxByOrg: (curChannel) => dispatch(getTxByOrgCreator(curChannel))
+
 });
 const mapStateToProps = state => ({
     countHeader: state.countHeader,

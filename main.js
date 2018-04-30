@@ -11,15 +11,15 @@
 var express = require("express");
 var path = require('path');
 var app = express();
-var http = require('http').Server(app);
+var http = require('http');
 var bodyParser = require('body-parser');
 var helper = require('./app/helper');
 var requtil = require('./app/utils/requestutils.js')
 var logger = helper.getLogger('main');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
-
-require('./app/socket/websocketserver.js')(http)
+var url = require('url');
+var WebSocket = require('ws');
 
 var timer = require('./app/timer/timer.js')
 timer.start()
@@ -430,12 +430,35 @@ app.get("/api/blocksByHour/:channel/:days", function (req, res) {
 });
 
 /***
+ Transactions by Organization(s)
+GET /api/txByOrg
+curl -i 'http://<host>:<port>/api/txByOrg/<channel>'
+Response:
+{"rows":[{"count":"4","creator_msp_id":"Org1"}]}
+
+*/
+app.get("/api/txByOrg/:channel", function (req, res) {
+    let channelName = req.params.channel;
+
+    if (channelName) {
+        statusMetrics.getTxByOrgs(channelName)
+            .then(rows => {
+                if (rows) {
+                    return res.send({ status: 200, rows })
+                }
+                return requtil.notFound(req, res)
+            })
+    } else {
+        return requtil.invalidRequest(req, res)
+    }
+});
+/***
     An API to create a channel
 POST /api/channel
 curl -s -X POST http://localhost:8080/api/channel
 Response: {"status":"SUCCESS","info":""}
 */
-app.post('/api/channel',function(req,res){
+app.post('/api/channel', function (req, res) {
     var channelName = req.body.channelName;
     var channelConfigPath = req.body.channelConfigPath;
     var orgName = req.body.orgName;
@@ -444,12 +467,12 @@ app.post('/api/channel',function(req,res){
 
     //Validate inputs
     if (!channelName) {
-    	res.json(getErrorMessage('\'channelName\''));
+        res.json(getErrorMessage('\'channelName\''));
         return;
     }
     if (!channelConfigPath) {
-    	res.json(getErrorMessage('\'channelConfigPath\''));
-    	return;
+        res.json(getErrorMessage('\'channelConfigPath\''));
+        return;
     }
     if (!orgName) {
         res.json(getErrorMessage('\'orgName\''));
@@ -467,10 +490,31 @@ app.post('/api/channel',function(req,res){
     let resMess = channelService.createChannel(channelName, channelConfigPath, orgName, orgPath, networkCfgPath);
     res.send(resMess);
 });
+//============ web socket ==============//
+var server = http.createServer(app);
+var wss = new WebSocket.Server({ server });
+wss.on('connection', function connection(ws, req) {
+    const location = url.parse(req.url, true);
+    // You might use location.query.access_token to authenticate or share sessions
+    // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
+    ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+    });
+
+});
+
+function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(data));
+        }
+    });
+};
+exports.wss = wss;
+exports.broadcast = broadcast;
 // ============= start server =======================
-
-var server = http.listen(port, function () {
+server.listen(port, function () {
     console.log(`Please open web browser to access ：http://${host}:${port}/`);
 });
 

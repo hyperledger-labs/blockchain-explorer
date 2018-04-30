@@ -11,6 +11,7 @@ import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import { Card, Row, Col, CardBody } from 'reactstrap';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+import { getTxByOrg as getTxByOrgCreator} from '../../store/actions/charts/action-creators';
 import FontAwesome from 'react-fontawesome';
 class DashboardView extends Component {
     constructor(props) {
@@ -19,6 +20,9 @@ class DashboardView extends Component {
         }
     }
     componentDidMount() {
+        setInterval(() => {
+            this.props.getTxByOrg(this.props.channel.currentChannel);
+        }, 60000)
     }
     render() {
         return (
@@ -56,7 +60,7 @@ class DashboardView extends Component {
                         <ChartStats />
                     </Col>
                     <Col lg="6">
-                        <OrgPieChart />
+                        <OrgPieChart txByOrg={this.props.txByOrg} />
                     </Col>
                 </Row>
                 <Row className="lower-dash">
@@ -74,9 +78,12 @@ class DashboardView extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
     getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
+    getTxByOrg: (curChannel) => dispatch(getTxByOrgCreator(curChannel) )
 });
 const mapStateToProps = state => ({
     countHeader: state.countHeader,
+    txByOrg : state.txByOrg.txByOrg,
+    channel : state.channel.channel
 });
 export default compose(
     connect(mapStateToProps, mapDispatchToProps),

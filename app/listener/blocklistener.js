@@ -16,41 +16,37 @@
 var EventEmitter = require('events').EventEmitter;
 var blockListener = new EventEmitter();
 
-var blockScanner=require('../service/blockscanner.js')
+var blockScanner = require('../service/blockscanner.js')
 blockScanner.setBlockListener(blockListener)
 
-var blockMetrics=require('../metrics/metrics').blockMetrics
-var txMetrics=require('../metrics/metrics').txMetrics
+var blockMetrics = require('../metrics/metrics').blockMetrics
+var txMetrics = require('../metrics/metrics').txMetrics
 
-var stomp=require('../socket/websocketserver.js').stomp()
 
-blockListener.on('createBlock',function (block) {
+blockListener.on('createBlock', function (block) {
     blockMetrics.push(1)
     txMetrics.push(block.data.data.length)
 
-    stomp.send('/topic/block',{},JSON.stringify({'number':block.header.number.toString(),'txCount':block.data.data.length}))
-
-    stomp.send('/topic/metrics/txnPerSec',{},JSON.stringify({timestamp:new Date().getTime()/1000,value:block.data.data.length/10}))
 })
 
-blockListener.on('syncChaincodes',function () {
+blockListener.on('syncChaincodes', function () {
     setTimeout(function () {
         blockScanner.syncChaincodes()
-    },1000)
+    }, 1000)
 })
 
-blockListener.on('syncPeerlist',function () {
+blockListener.on('syncPeerlist', function () {
     setTimeout(function () {
         blockScanner.syncPeerlist()
-    },1000)
+    }, 1000)
 })
 
-blockListener.on('syncBlock',function () {
+blockListener.on('syncBlock', function () {
     setTimeout(function () {
         blockScanner.syncBlock()
-    },1000)
+    }, 1000)
 })
 
-exports.blockListener=function () {
+exports.blockListener = function () {
     return blockListener
 }

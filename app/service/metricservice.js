@@ -24,85 +24,85 @@ var peerList;
 
 //==========================query counts ==========================
 function getChaincodeCount(channelName) {
-    return sql.getRowsBySQlCase(`select count(1) c from chaincodes where channelname='${channelName}' `)
+  return sql.getRowsBySQlCase(`select count(1) c from chaincodes where channelname='${channelName}' `)
 }
 
 function getPeerlistCount(channelName) {
-    return sql.getRowsBySQlCase(`select count(1) c from peer where name='${channelName}' `)
+  return sql.getRowsBySQlCase(`select count(1) c from peer where name='${channelName}' `)
 }
 
 function getTxCount(channelName) {
-    return sql.getRowsBySQlCase(`select count(1) c from transaction where channelname='${channelName}'`)
+  return sql.getRowsBySQlCase(`select count(1) c from transaction where channelname='${channelName}'`)
 }
 
 function getBlockCount(channelName) {
-    return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where channelname='${channelName}'`)
+  return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where channelname='${channelName}'`)
 }
 
 function* getPeerData(channelName) {
-    let peerArray = []
-    var c1 = yield sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
-    for (var i = 0, len = c1.length; i < len; i++) {
-        var item = c1[i];
-        peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname })
-    }
-    return peerArray
+  let peerArray = []
+  var c1 = yield sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
+  for (var i = 0, len = c1.length; i < len; i++) {
+    var item = c1[i];
+    peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname })
+  }
+  return peerArray
 }
 
 function* getTxPerChaincodeGenerate(channelName) {
-    let txArray = []
-    var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
-    c.forEach((item, index) => {
-        txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
-    })
-    return txArray
+  let txArray = []
+  var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
+  c.forEach((item, index) => {
+    txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
+  })
+  return txArray
 
 }
 
 function getTxPerChaincode(channelName, cb) {
-    co(getTxPerChaincodeGenerate, channelName).then(txArray => {
-        cb(txArray)
-    }).catch(err => {
-        logger.error(err)
-        cb([])
-    })
+  co(getTxPerChaincodeGenerate, channelName).then(txArray => {
+    cb(txArray)
+  }).catch(err => {
+    logger.error(err)
+    cb([])
+  })
 }
 
 function* getStatusGenerate(channelName) {
-    var chaincodeCount = yield getChaincodeCount(channelName)
-    if (!chaincodeCount) chaincodeCount = 0
-    var txCount = yield getTxCount(channelName)
-    if (!txCount) txCount = 0
-    var blockCount = yield getBlockCount(channelName)
-    if (!blockCount) blockCount = 0
-    blockCount.c = blockCount.c ? blockCount.c : 0
-    var peerCount = yield getPeerlistCount(channelName)
-    if (!peerCount) peerCount = 0
-    peerCount.c = peerCount.c ? peerCount.c : 0
-    return { 'chaincodeCount': chaincodeCount.c, 'txCount': txCount.c, 'latestBlock': blockCount.c, 'peerCount': peerCount.c }
+  var chaincodeCount = yield getChaincodeCount(channelName)
+  if (!chaincodeCount) chaincodeCount = 0
+  var txCount = yield getTxCount(channelName)
+  if (!txCount) txCount = 0
+  var blockCount = yield getBlockCount(channelName)
+  if (!blockCount) blockCount = 0
+  blockCount.c = blockCount.c ? blockCount.c : 0
+  var peerCount = yield getPeerlistCount(channelName)
+  if (!peerCount) peerCount = 0
+  peerCount.c = peerCount.c ? peerCount.c : 0
+  return { 'chaincodeCount': chaincodeCount.c, 'txCount': txCount.c, 'latestBlock': blockCount.c, 'peerCount': peerCount.c }
 }
 
 function getStatus(channelName, cb) {
-    co(getStatusGenerate, channelName).then(data => {
-        cb(data)
-    }).catch(err => {
-        logger.error(err)
-    })
+  co(getStatusGenerate, channelName).then(data => {
+    cb(data)
+  }).catch(err => {
+    logger.error(err)
+  })
 }
 
 function getPeerList(channelName, cb) {
-    co(getPeerData, channelName).then(peerArray => {
-        cb(peerArray)
-    }).catch(err => {
-        logger.error(err)
-        cb([])
-    })
+  co(getPeerData, channelName).then(peerArray => {
+    cb(peerArray)
+  }).catch(err => {
+    logger.error(err)
+    cb([])
+  })
 }
 
 //transaction metrics
 
 function getTxByMinute(channelName, hours) {
-    let sqlPerMinute = ` with minutes as (
+  let sqlPerMinute = ` with minutes as (
         select generate_series(
           date_trunc('min', now()) - '${hours}hour'::interval,
           date_trunc('min', now()),
@@ -117,11 +117,11 @@ function getTxByMinute(channelName, hours) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerMinute);
+  return sql.getRowsBySQlQuery(sqlPerMinute);
 }
 
 function getTxByHour(channelName, day) {
-    let sqlPerHour = ` with hours as (
+  let sqlPerHour = ` with hours as (
         select generate_series(
           date_trunc('hour', now()) - '${day}day'::interval,
           date_trunc('hour', now()),
@@ -136,11 +136,11 @@ function getTxByHour(channelName, day) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerHour);
+  return sql.getRowsBySQlQuery(sqlPerHour);
 }
 
 function getTxByDay(channelName, days) {
-    let sqlPerDay = ` with days as (
+  let sqlPerDay = ` with days as (
         select generate_series(
           date_trunc('day', now()) - '${days}day'::interval,
           date_trunc('day', now()),
@@ -155,11 +155,11 @@ function getTxByDay(channelName, days) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerDay);
+  return sql.getRowsBySQlQuery(sqlPerDay);
 }
 
 function getTxByWeek(channelName, weeks) {
-    let sqlPerWeek = ` with weeks as (
+  let sqlPerWeek = ` with weeks as (
         select generate_series(
           date_trunc('week', now()) - '${weeks}week'::interval,
           date_trunc('week', now()),
@@ -174,11 +174,11 @@ function getTxByWeek(channelName, weeks) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerWeek);
+  return sql.getRowsBySQlQuery(sqlPerWeek);
 }
 
 function getTxByMonth(channelName, months) {
-    let sqlPerMonth = ` with months as (
+  let sqlPerMonth = ` with months as (
         select generate_series(
           date_trunc('month', now()) - '${months}month'::interval,
           date_trunc('month', now()),
@@ -194,11 +194,11 @@ function getTxByMonth(channelName, months) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerMonth);
+  return sql.getRowsBySQlQuery(sqlPerMonth);
 }
 
 function getTxByYear(channelName, years) {
-    let sqlPerYear = ` with years as (
+  let sqlPerYear = ` with years as (
         select generate_series(
           date_trunc('year', now()) - '${years}year'::interval,
           date_trunc('year', now()),
@@ -213,13 +213,13 @@ function getTxByYear(channelName, years) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerYear);
+  return sql.getRowsBySQlQuery(sqlPerYear);
 }
 
 // block metrics API
 
 function getBlocksByMinute(channelName, hours) {
-    let sqlPerMinute = ` with minutes as (
+  let sqlPerMinute = ` with minutes as (
         select generate_series(
           date_trunc('min', now()) - '${hours} hour'::interval,
           date_trunc('min', now()),
@@ -234,11 +234,11 @@ function getBlocksByMinute(channelName, hours) {
       group by 1
       order by 1  `;
 
-    return sql.getRowsBySQlQuery(sqlPerMinute);
+  return sql.getRowsBySQlQuery(sqlPerMinute);
 }
 
 function getBlocksByHour(channelName, days) {
-    let sqlPerHour = ` with hours as (
+  let sqlPerHour = ` with hours as (
         select generate_series(
           date_trunc('hour', now()) - '${days}day'::interval,
           date_trunc('hour', now()),
@@ -253,11 +253,11 @@ function getBlocksByHour(channelName, days) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerHour);
+  return sql.getRowsBySQlQuery(sqlPerHour);
 }
 
 function getBlocksByDay(channelName, days) {
-    let sqlPerDay = `  with days as (
+  let sqlPerDay = `  with days as (
         select generate_series(
           date_trunc('day', now()) - '${days}day'::interval,
           date_trunc('day', now()),
@@ -272,11 +272,11 @@ function getBlocksByDay(channelName, days) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerDay);
+  return sql.getRowsBySQlQuery(sqlPerDay);
 }
 
 function getBlocksByWeek(channelName, weeks) {
-    let sqlPerWeek = ` with weeks as (
+  let sqlPerWeek = ` with weeks as (
         select generate_series(
           date_trunc('week', now()) - '${weeks}week'::interval,
           date_trunc('week', now()),
@@ -291,11 +291,11 @@ function getBlocksByWeek(channelName, weeks) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerWeek);
+  return sql.getRowsBySQlQuery(sqlPerWeek);
 }
 
 function getBlocksByMonth(channelName, months) {
-    let sqlPerMonth = `  with months as (
+  let sqlPerMonth = `  with months as (
         select generate_series(
           date_trunc('month', now()) - '${months}month'::interval,
           date_trunc('month', now()),
@@ -310,11 +310,11 @@ function getBlocksByMonth(channelName, months) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerMonth);
+  return sql.getRowsBySQlQuery(sqlPerMonth);
 }
 
 function getBlocksByYear(channelName, years) {
-    let sqlPerYear = ` with years as (
+  let sqlPerYear = ` with years as (
         select generate_series(
           date_trunc('year', now()) - '${years}year'::interval,
           date_trunc('year', now()),
@@ -329,7 +329,16 @@ function getBlocksByYear(channelName, years) {
       group by 1
       order by 1 `;
 
-    return sql.getRowsBySQlQuery(sqlPerYear);
+  return sql.getRowsBySQlQuery(sqlPerYear);
+}
+
+function getTxByOrgs(channelName) {
+  let sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
+  from transaction
+  where channelname ='${channelName}'
+  group by  creator_msp_id`;
+
+  return sql.getRowsBySQlQuery(sqlPerOrg);
 }
 
 exports.getStatus = getStatus
@@ -347,3 +356,4 @@ exports.getBlocksByDay = getBlocksByDay
 exports.getBlocksByWeek = getBlocksByWeek
 exports.getBlocksByMonth = getBlocksByMonth
 exports.getBlocksByYear = getBlocksByYear
+exports.getTxByOrgs = getTxByOrgs

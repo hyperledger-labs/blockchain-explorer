@@ -76,16 +76,10 @@ class TransactionView extends Component {
 
                             <b>Tx:</b>{this.props.transaction.txhash} <br />
                             <b>Creator MSP:</b> {this.props.transaction.creator_msp_id} <br />
-                            <b>Endorsor:</b> {this.props.transaction.endorser_msp_id} <br />
+                            <b>Endorser:</b> {this.props.transaction.endorser_msp_id} <br />
                             <b>Chaincode Name:</b> {this.props.transaction.chaincodename} <br />
                             <b>Type:</b> {this.props.transaction.type} <br />
                             <b>Time:</b> {moment(this.props.transaction.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")} <br />
-                            {/* <ul>
-                                <b>Endorsements</b>
-                                {this.props.transaction.endorsements.map(function (item) {
-                                    return item === null ? '' : <li>{item}</li>;
-                                })}
-                            </ul> */}
                             <b>Reads:</b>
                              <ul>
                                 {this.props.transaction.read_set.map(function (item) {
