@@ -3,8 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import { Table, Container, Row, Col } from 'reactstrap';
-import Pagination from "react-js-pagination";
+import { Container, Row, Col } from 'reactstrap';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
 
 class Chaincodes extends Component {
     constructor(props) {
@@ -13,12 +15,8 @@ class Chaincodes extends Component {
             toolTipOpen: false,
             toolTipOpen2: false,
             loading: false,
-            limitrows: 10,
             chaincodeCount: this.props.countHeader.chaincodeCount,
-            activePage: 1,
-            currentOffset: 0
         }
-
     }
 
     componentWillMount() {
@@ -29,7 +27,6 @@ class Chaincodes extends Component {
         this.setState({ totalBlocks: this.props.countHeader.latestBlock });
     }
 
-
     componentDidMount() {
         setInterval(() => {
             this.props.getChaincodes(this.props.channel.currentChannel,this.state.currentOffset);
@@ -38,45 +35,61 @@ class Chaincodes extends Component {
 
     componentDidUpdate(prevProps, prevState) {
     }
+
     render() {
+
+        const columnHeaders = [
+            {
+              Header: "Chaincode Name",
+              accessor: "chaincodename",
+              filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+              filterAll: true
+            },
+            {
+              Header: "Channel Name",
+              accessor: "channelName",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["channelName"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            },
+            {
+              Header: "Path",
+              accessor: "path",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["path"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            },
+            {
+              Header: "Transaction Count",
+              accessor: "txCount",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["txCount"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            },
+            {
+              Header: "Version",
+              accessor: "version",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["version"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            }
+          ];
+
         return (
             <div className="blockPage">
                 <Container>
                     <Row>
                         <Col >
                             <div className="scrollTable" >
-                                <Table id="blockList">
-                                    <thead className='fixed-header'>
-                                        <tr>
-                                            <th>Chaincode Name</th>
-                                            <th>Channel Name</th>
-                                            <th>Path</th>
-                                            <th>Transaction Count</th>
-                                            <th>Version</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.props.chaincodes.map((chaincode, index)  =>
-                                            <tr key={chaincode.chaincodename + index}>
-                                                <td>  {chaincode.chaincodename} </td>
-                                                <td>{chaincode.channelName} </td>
-                                                <td>{chaincode.path}</td>
-                                                <td>{chaincode.txCount}</td>
-                                                <td>{chaincode.version}</td>
-                                            </tr>)}
-                                    </tbody>
-                                </Table>
+                            <ReactTable
+                                data={this.props.chaincodes}
+                                columns={columnHeaders}
+                                defaultPageSize={5}
+                                className="-striped -highlight"
+                                filterable
+                            />
                             </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm="12" md={{ size: 8, offset: 6 }}>
-                            {/* <Pagination
-                                activePage={this.state.activePage}
-                                itemsCountPerPage={this.state.limitrows}
-                                totalItemsCount={this.state.totalBlocks}
-                                pageRangeDisplayed={5}
-                                onChange={this.handlePageChange} /> */}
                         </Col>
                     </Row>
                 </Container>

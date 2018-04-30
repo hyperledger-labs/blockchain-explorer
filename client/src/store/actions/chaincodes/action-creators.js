@@ -7,7 +7,7 @@ import * as actionTypes from '../action-types'
 import { get } from '../../../services/request.js';
 
 export const getChaincodes = (channel) => dispatch => {
-    get('/api/chaincode/' + channel)
+    get(`/api/chaincode/${channel}`)
         .then(resp => {
             dispatch(createAction(actionTypes.CHAINCODE_LIST)(resp))
         }).catch((error) => {

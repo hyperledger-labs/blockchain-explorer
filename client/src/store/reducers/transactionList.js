@@ -5,6 +5,7 @@
 import { handleActions } from 'redux-actions'
 import { Record } from 'immutable'
 import * as actionTypes from '../actions/action-types'
+import moment from 'moment-timezone';
 
 const InitialState = new Record({
     loaded: false,
@@ -16,8 +17,7 @@ const InitialState = new Record({
 const transactionList = handleActions({
     [actionTypes.TX_LIST]: (state = InitialState(), action) => {
         action.payload.rows.forEach( element => {
-            element.read_set = JSON.stringify(element.read_set);
-            element.write_set = JSON.stringify(element.write_set)
+            element.createdt = moment(element.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")
         })
         return (
         state
@@ -25,9 +25,7 @@ const transactionList = handleActions({
         .set('loaded', true)
         .set('errors', action.error)
         )
-
 }
 }, new InitialState());
-
 
 export default transactionList

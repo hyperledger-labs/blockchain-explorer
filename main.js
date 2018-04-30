@@ -212,20 +212,17 @@ Response:
 "txhash":"c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8",
 "createdt":"2018-03-09T19:40:59.000Z","chaincodename":"mycc"}]}
  */
-app.get("/api/txList/:channel/:blocknum/:txid/:limitrows/:offset", function (req, res) {
+app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
     let txid = parseInt(req.params.txid);
-    let limitRows = parseInt(req.params.limitrows);
-    let offset = parseInt(req.params.offset);
-    if (isNaN(offset)) {
-        offset = 0;
-    }
+
     if (isNaN(txid)) {
         txid = 0;
     }
-    if (channelName && !isNaN(limitRows)) {
-        txModel.getTxList(channelName, blockNum, txid, limitRows, offset)
+    if (channelName) {
+        txModel.getTxList(channelName, blockNum, txid)
             .then(rows => {
                 if (rows) {
                     return res.send({ status: 200, rows })
@@ -298,16 +295,13 @@ Response:
  *
  */
 
-app.get("/api/blockAndTxList/:channel/:blocknum/:limitrows/:offset", function (req, res) {
+app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
-    let limitRows = parseInt(req.params.limitrows);
-    let offSet = parseInt(req.params.offset);
-    if (isNaN(offSet)) {
-        offSet = 0;
-    }
-    if (channelName && !isNaN(blockNum) && !isNaN(limitRows)) {
-        blocksModel.getBlockAndTxList(channelName, blockNum, limitRows, offSet)
+
+    if (channelName && !isNaN(blockNum)) {
+        blocksModel.getBlockAndTxList(channelName, blockNum)
             .then(rows => {
                 if (rows) {
                     return res.send({ status: 200, rows })

@@ -3,108 +3,123 @@
  */
 
 import React, { Component } from 'react';
-import { Table, Container, Row, Col } from 'reactstrap';
-import Pagination from "react-js-pagination";
+import { Container, Row, Col } from 'reactstrap';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import TransactionView from '../View/TransactionView';
-import moment from 'moment-timezone'
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
 
 class Transactions extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading: false,
-            limitrows: 10,
-            totalBlocks: this.props.countHeader.txCount,
-            activePage: 1,
-            currentOffset: 0,
-            dialogOpen: false
-        }
-    }
-    convertTime = (date) => {
-        var hold = new Date(date);
-        var hours = hold.getHours();
-        var minutes = hold.getMinutes();
-        var ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        var strTime = hours + ':' + minutes + ' ' + ampm;
-        return strTime;
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      totalBlocks: this.props.countHeader.txCount,
+      dialogOpen: false
+    };
+  }
+
+  convertTime = date => {
+    var hold = new Date(date);
+    var hours = hold.getHours();
+    var minutes = hold.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  };
+
+  handleDialogOpen = tid => {
+    this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ totalBlocks: this.props.countHeader.txCount });
+  }
+
+  componentDidMount() {
+
+  }
+
+  render() {
+
+    const columnHeaders = [
+      {
+        Header: "Creator",
+        accessor: "creator_msp_id",
+        filterMethod: (filter, rows) =>
+          matchSorter(rows, filter.value, { keys: ["creator_msp_id"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+        filterAll: true
+      },
+      {
+        Header: "Tx Id",
+        accessor: "txhash",
+        Cell: row => (
+          <a onClick={() => this.handleDialogOpen(row.value)} href="#" >{row.value}</a>
+        ),
+        filterMethod: (filter, rows) =>
+        matchSorter(rows, filter.value, { keys: ["txhash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+      filterAll: true
+      },
+      {
+        Header: "Type",
+        accessor: "type",
+        filterMethod: (filter, rows) =>
+        matchSorter(rows, filter.value, { keys: ["type"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+      filterAll: true
+      },
+      {
+        Header: "Chaincode",
+        accessor: "chaincodename",
+        filterMethod: (filter, rows) =>
+        matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+      filterAll: true
+      },
+      {
+        Header: "Timestamp",
+        accessor: "createdt",
+        filterMethod: (filter, rows) =>
+        matchSorter(rows, filter.value, { keys: ["createdt"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+      filterAll: true
       }
-    handlePageChange = (pageNumber) => {
-        var newOffset = (pageNumber - 1) * this.state.limitrows;
-        this.setState({ activePage: pageNumber, currentOffset: newOffset });
-        this.props.getTransactionList(this.props.channel.currentChannel,newOffset);
-    }
+    ];
 
-    handleDialogOpen = (tid) => {
-        this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
-        this.setState({ dialogOpen: true });
-    }
-    handleDialogClose = () => {
-        this.setState({ dialogOpen: false });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({ totalBlocks: this.props.countHeader.txCount });
-    }
-    componentDidMount() {
-
-    }
-    render() {
-        return (
-            <div>
-                <Container>
-                    <Row>
-                        <Col>
-                            <div className="scrollTable" >
-                                <Table>
-                                    <thead>
-                                        <th>Creator</th>
-                                        <th>Channel </th>
-                                        <th>Tx Id</th>
-                                        <th>Type</th>
-                                        <th>Chaincode</th>
-                                        <th>Timestamp</th>
-                                    </thead>
-                                    <tbody>
-                                        {this.props.transactionList.map(tx =>
-                                            <tr key={tx.id}>
-                                                <td>{tx.creator_msp_id} </td>
-                                                <td>{tx.channelname} </td>
-                                                <td><a onClick={() => this.handleDialogOpen(tx.txhash)} href="#" >{tx.txhash}</a></td>
-                                                <td>{tx.type}</td>
-                                                <td>{tx.chaincodename} </td>
-                                                <td>{moment(tx.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")}</td>
-                                            </tr>
-                                        )}
-
-                                    </tbody>
-                                </Table>
-                            </div >
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm="12" md={{ size: 8, offset: 6 }}>
-                            <Pagination
-                                activePage={this.state.activePage}
-                                itemsCountPerPage={this.state.limitrows}
-                                totalItemsCount={this.state.totalBlocks}
-                                pageRangeDisplayed={5}
-                                onChange={this.handlePageChange} />
-                        </Col>
-                    </Row>
-                </Container>
-                <Dialog open={this.state.dialogOpen}
-                    onClose={this.handleDialogClose}
-                    fullWidth={true}
-                    maxWidth={'md'}>
-                    <TransactionView transaction={this.props.transaction} />
-                </Dialog>
-            </div>
-        );
-    }
+    return (
+      <div>
+        <Container>
+          <Row>
+            <Col>
+              <div className="scrollTable">
+                <ReactTable
+                  data={this.props.transactionList}
+                  columns={columnHeaders}
+                  defaultPageSize={10}
+                  className="-striped -highlight"
+                  filterable
+                />
+              </div>
+            </Col>
+          </Row>
+        </Container>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <TransactionView transaction={this.props.transaction} />
+        </Dialog>
+      </div>
+    );
+  }
 };
 
 export default Transactions;

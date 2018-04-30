@@ -3,10 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { Table, Container, Row, Col, Tooltip } from 'reactstrap';
-import Pagination from "react-js-pagination";
+import { Container, Row, Col, Tooltip } from 'reactstrap';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import TransactionView from '../View/TransactionView';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
 
 class Blocks extends Component {
     constructor(props) {
@@ -16,40 +18,36 @@ class Blocks extends Component {
             toolTipOpen2: false,
             dialogOpen: false,
             loading: false,
-            limitrows: 10,
-            totalBlocks: this.props.countHeader.latestBlock,
-            activePage: 1,
-            currentOffset: 0
+            totalBlocks: this.props.countHeader.latestBlock
         }
         this.toggle1 = this.toggle1.bind(this);
         this.toggle2 = this.toggle2.bind(this);
-        this.handlePageChange = this.handlePageChange.bind(this);
         this.handleDialogOpen = this.handleDialogOpen.bind(this);
         this.handleDialogClose = this.handleDialogClose.bind(this);
     }
+
     toggle1() {
         this.setState({
             toolTipOpen1: !this.state.toolTipOpen1
         });
     }
+
     toggle2() {
         // console.log("changed toggle",num);
         this.setState({
             toolTipOpen2: !this.state.toolTipOpen2
         });
     }
-    handlePageChange(pageNumber) {
-        var newOffset = (pageNumber - 1) * this.state.limitrows;
-        this.setState({ activePage: pageNumber, currentOffset: newOffset });
-        this.props.getBlockList(this.props.channel.currentChannel, newOffset);
-    }
+
     handleDialogOpen(tid) {
         this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
         this.setState({ dialogOpen: true });
     }
+
     handleDialogClose() {
         this.setState({ dialogOpen: false });
     }
+
     componentWillMount() {
 
     }
@@ -57,7 +55,6 @@ class Blocks extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({ totalBlocks: this.props.countHeader.latestBlock });
     }
-
 
     componentDidMount() {
         setInterval(() => {
@@ -67,61 +64,73 @@ class Blocks extends Component {
 
     componentDidUpdate(prevProps, prevState) {
     }
+
     render() {
+
+        const columnHeaders = [
+            {
+              Header: "Block Number",
+              accessor: "blocknum",
+              filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["blocknum"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+              filterAll: true,
+              width: 150
+            },
+            {
+              Header: "Number of Tx",
+              accessor: "txcount",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["txcount"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true,
+            width: 150
+            },
+            {
+              Header: "Data",
+              accessor: "datahash",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["datahash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            },
+            {
+              Header: "Previous Hash",
+              accessor: "prehash",
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["prehash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true,
+            width: 150
+            },
+            {
+              Header: "Transactions",
+              accessor: "txhash",
+              Cell: row => (
+               <ul>
+                    {row.value.map( tid =>
+                        <li style={{overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>
+                             <a className="hash-hide"  onClick={() => this.handleDialogOpen(tid)} href="#" >{tid}</a>
+                        </li>
+                    )}
+               </ul>
+              ),
+              filterMethod: (filter, rows) =>
+              matchSorter(rows, filter.value, { keys: ["txhash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+            }
+          ];
+
         return (
             <div className="blockPage">
                 <Container>
                     <Row>
                         <Col >
                             <div className="scrollTable" >
-                                <Table id="blockList">
-                                    <thead className='fixed-header'>
-                                        <tr>
-                                            <th>Block Number</th>
-                                            <th>Number of Tx</th>
-                                            <th>Data</th>
-                                            <th>Previous Hash</th>
-                                            <th>Transactions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {this.props.blockList.map(block =>
-                                            <tr key={block.blocknum}>
-                                                <td>  {block.blocknum} </td>
-                                                <td>{block.txcount} </td>
-                                                <td><p className="hash-hide" id={'Tooltip-' + block.blocknum}>{block.datahash}</p>
-                                                    <Tooltip placement="right" isOpen={this.state.toolTipOpen1} target={'Tooltip-' + block.blocknum} toggle={this.toggle1} >
-                                                        {block.datahash}
-                                                    </Tooltip>
-                                                </td>
-                                                <td><p className="hash-hide" id={'Tooltip2-' + block.blocknum}>{block.prehash}</p>
-                                                    <Tooltip placement="right" isOpen={this.state.toolTipOpen2} target={'Tooltip2-' + block.blocknum} toggle={this.toggle2} >
-                                                        {block.prehash}
-                                                    </Tooltip>
-                                                </td>
-                                                <td>
-                                                    <ul>
-                                                        {block.txhash.map(tid =>
-                                                            <li onClick={() => this.handleDialogOpen(tid)} >
-                                                                <a href="#" >  {tid}</a>
-                                                            </li>)
-                                                        }
-                                                    </ul>
-                                                </td>
-                                            </tr>)}
-                                    </tbody>
-                                </Table>
+                                <ReactTable
+                                    data={this.props.blockList}
+                                    columns={columnHeaders}
+                                    defaultPageSize={10}
+                                    className="-striped -highlight"
+                                    filterable
+                                />
                             </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm="12" md={{ size: 8, offset: 6 }}>
-                            <Pagination
-                                activePage={this.state.activePage}
-                                itemsCountPerPage={this.state.limitrows}
-                                totalItemsCount={this.state.totalBlocks}
-                                pageRangeDisplayed={5}
-                                onChange={this.handlePageChange} />
                         </Col>
                     </Row>
                 </Container>
