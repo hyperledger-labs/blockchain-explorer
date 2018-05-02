@@ -17,6 +17,9 @@ var ledgerMgr=require('../utils/ledgerMgr.js')
 var helper=require('../helper.js')
 var Metrics=require('../metrics/metrics.js')
 var blockListener=require('../listener/blocklistener.js').blockListener()
+var fabricClientProxy = require('../FabricClientProxy.js')
+var configuration = require('../FabricConfiguration.js')
+
 
 var blockPerMinMeter=Metrics.blockMetrics
 var txnPerSecMeter=Metrics.txnPerSecMeter
@@ -25,6 +28,7 @@ var txnPerMinMeter=Metrics.txMetrics
 // var stomp=require('../socket/websocketserver.js').stomp()
 
 var statusMertics=require('../service/metricservice.js')
+
 
 var ledgerEvent=ledgerMgr.ledgerEvent
 ledgerEvent.on('channgelLedger',function(){
@@ -35,7 +39,6 @@ ledgerEvent.on('channgelLedger',function(){
 
 function start() {
 
-    helper.createDefault(ledgerMgr.getCurrChannel());
     setInterval(function () {
         blockPerMinMeter.push(0)
         txnPerSecMeter.push(0)

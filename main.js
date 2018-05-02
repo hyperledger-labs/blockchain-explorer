@@ -18,14 +18,17 @@ var requtil = require('./app/utils/requestutils.js')
 var logger = helper.getLogger('main');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
+var configuration = require('./app/FabricConfiguration.js')
 var url = require('url');
 var WebSocket = require('ws');
+
+
+var query = require('./app/query.js');
+var ledgerMgr = require('./app/utils/ledgerMgr.js')
 
 var timer = require('./app/timer/timer.js')
 timer.start()
 
-var query = require('./app/query.js');
-var ledgerMgr = require('./app/utils/ledgerMgr.js')
 
 var statusMetrics = require('./app/service/metricservice.js')
 
@@ -97,7 +100,7 @@ Response:
 
 app.get('/api/channels', function (req, res) {
     var channels = [], counter = 0;
-    const orgs_peers = helper.getOrgMapFromConfig(networkConfig);
+    const orgs_peers = configuration.getOrgMapFromConfig();
 
     orgs_peers.forEach(function (org) {
         query.getChannels(org['value'], org['key']).then(channel => {

@@ -19,16 +19,17 @@ var util = require('util');
 var hfc = require('fabric-client');
 var Peer = require('fabric-client/lib/Peer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
-var config = require('../config.json');
 var helper = require('./helper.js');
 var logger = helper.getLogger('Query');
+var fabricClientProxy = require('./FabricClientProxy.js');
+var configuration = require('./FabricConfiguration.js');
 
 var FabricCAService = require('fabric-ca-client');
 
 var peerFailures = 0;
 var queryChaincode = function (peer, channelName, chaincodeName, fcn, args, org) {
-	var channel = helper.getChannelForOrg(org, channelName);
-	var client = helper.getClientForOrg(org);
+	var channel = fabricClientProxy.getChannelForOrg(org);
+	var client = fabricClientProxy.getClientForOrg(org);
 
 	var target = buildTarget(peer, org);
 	//Let Cahnnel use second peer added
@@ -50,14 +51,8 @@ var queryChaincode = function (peer, channelName, chaincodeName, fcn, args, org)
 
 var getBlockByNumber = function (peer, channelName, blockNumber, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org, channelName);
-	return helper.getOrgAdmin(org).then((member) => {
-		return channel.queryBlock(parseInt(blockNumber), target);
-	}, (err) => {
-		logger.info('Failed to get submitter ');
-		return 'Failed to get submitter Error: ' + err.stack ?
-			err.stack : err;
-	}).then((channelinfo) => {
+	var channel = fabricClientProxy.getChannelForOrg(org);
+	return channel.queryBlock(parseInt(blockNumber), target).then((channelinfo) => {
 		if (channelinfo) {
 			return channelinfo;
 		} else {
@@ -79,7 +74,7 @@ var getTransactionByID = function (peer, channelName, trxnID, org) {
 	if (trxnID) {
 
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org, channelName);
+	var channel = fabricClientProxy.getChannelForOrg(org);
 	return channel.queryTransaction(trxnID, target);
 	}
 	return {};
@@ -87,20 +82,14 @@ var getTransactionByID = function (peer, channelName, trxnID, org) {
 };
 var getBlockByHash = function (peer, hash, org) {
 	var target = buildTarget(peer, org);
-	var channel = helper.getChannelForOrg(org);
+	var channel = fabricClientProxy.getChannelForOrg(org);
 	return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
 };
 var getChainInfo = function (peer, channelName, org) {
 	var target = buildTarget(peer, org);
-	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org, channelName);
-	return helper.getOrgAdmin(org).then((member) => {
-		return channel.queryInfo(target);
-	}, (err) => {
-		logger.info('Failed to get submitter ');
-		return 'Failed to get submitter Error: ' + err.stack ?
-			err.stack : err;
-	}).then((blockchainInfo) => {
+	var client = fabricClientProxy.getClientForOrg(org);
+	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
+	return channel.queryInfo(target, true).then((blockchainInfo) => {
 		if (blockchainInfo) {
 			// FIXME: Save this for testing 'getBlockByHash'  ?
 			logger.debug('===========================================');
@@ -125,19 +114,15 @@ var getChainInfo = function (peer, channelName, org) {
 //getInstalledChaincodes
 var getInstalledChaincodes = function (peer, channelName, type, org) {
 	var target = buildTarget(peer, org);
-	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org, channelName);
-	return helper.getOrgAdmin(org).then((member) => {
+	var client = fabricClientProxy.getClientForOrg(org);
+	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
+	return (function() {
 		if (type === 'installed') {
-			return client.queryInstalledChaincodes(target);
+			return client.queryInstalledChaincodes(target, true);
 		} else {
-			return channel.queryInstantiatedChaincodes(target);
+			return channel.queryInstantiatedChaincodes(target, true);
 		}
-	}, (err) => {
-		logger.info('Failed to get submitter ');
-		return 'Failed to get submitter Error: ' + err.stack ?
-			err.stack : err;
-	}).then((response) => {
+	}()).then((response) => {
 		if (response) {
 			if (type === 'installed') {
 				logger.debug('<<< Installed Chaincodes >>>');
@@ -171,19 +156,14 @@ var getInstalledChaincodes = function (peer, channelName, type, org) {
 };
 
 var getOrganizations = function (org, channelName) {
-	var channel = helper.getChannelForOrg(org, channelName);
+	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
 	return channel.getOrganizations();
 };
 
 var getChannels = function (peer, org) {
 	var target = buildTarget(peer, org);
-	var client = helper.getClientForOrg(org);
-	return helper.getOrgAdmin(org).then((member) => {
-		return client.queryChannels(target);
-	}, (err) => {
-		return 'Failed to get submitter Error: ' + err.stack ?
-			err.stack : err;
-	}).then((channelinfo) => {
+	var client = fabricClientProxy.getClientForOrg(org);
+	return client.queryChannels(target).then((channelinfo) => {
 		if (channelinfo) {
 			return channelinfo;
 		} else {
@@ -201,8 +181,8 @@ var getChannels = function (peer, org) {
 };
 
 var getPeerList = function (org, channelName) {
-	var client = helper.getClientForOrg(org);
-	var channel = helper.getChannelForOrg(org, channelName);
+	var client = fabricClientProxy.getClientForOrg(org);
+	var channel = fabricClientProxy.getChannelForOrg(org);
 	return channel.getPeers();
 };
 
@@ -222,7 +202,7 @@ var getChannelHeight = function (peer, channelName, org) {
 function buildTarget(peer, org) {
 	var target = null;
 	if (typeof peer !== 'undefined') {
-		let targets = helper.newPeers([helper.getPeerAddressByName(org, peer)]);
+		let targets = fabricClientProxy.newPeers([configuration.getPeerAddressByName(org, peer)]);
 		if (targets && targets.length > 0) target = targets[0];
 	}
 
