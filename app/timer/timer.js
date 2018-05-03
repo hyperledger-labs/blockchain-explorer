@@ -17,14 +17,18 @@ var ledgerMgr=require('../utils/ledgerMgr.js')
 var helper=require('../helper.js')
 var Metrics=require('../metrics/metrics.js')
 var blockListener=require('../listener/blocklistener.js').blockListener()
+var fabricClientProxy = require('../FabricClientProxy.js')
+var configuration = require('../FabricConfiguration.js')
+
 
 var blockPerMinMeter=Metrics.blockMetrics
 var txnPerSecMeter=Metrics.txnPerSecMeter
 var txnPerMinMeter=Metrics.txMetrics
 
-var stomp=require('../socket/websocketserver.js').stomp()
+// var stomp=require('../socket/websocketserver.js').stomp()
 
 var statusMertics=require('../service/metricservice.js')
+
 
 var ledgerEvent=ledgerMgr.ledgerEvent
 ledgerEvent.on('channgelLedger',function(){
@@ -35,39 +39,14 @@ ledgerEvent.on('channgelLedger',function(){
 
 function start() {
 
-    helper.createDefault(ledgerMgr.getCurrChannel());
     setInterval(function () {
         blockPerMinMeter.push(0)
         txnPerSecMeter.push(0)
         txnPerMinMeter.push(0)
     },500)
 
-    /*
-    * /topic/metrics/txnPerSec
-    * /topic/block/all
-    * /topic/transaction/all
-    */
-    //pushTxnPerMin pushBlockPerMin /topic/metrics/
-    setInterval(function () {
-        stomp.send('/topic/metrics/blockPerMinMeter',{},JSON.stringify({timestamp:new Date().getTime()/1000,value:blockPerMinMeter.sum()}))
-        stomp.send('/topic/metrics/txnPerMinMeter',{},JSON.stringify({timestamp:new Date().getTime()/1000,value:txnPerMinMeter.sum()}))
-    },1000)
 
-    //push status
-    setInterval(function () {
-        statusMertics.getStatus(ledgerMgr.getCurrChannel(),function (status) {
-            stomp.send('/topic/metrics/status',{},JSON.stringify(status))
-        })
-    },1000)
-
-    //push chaincode per tx
- /*   setInterval(function(){
-        statusMertics.getTxPerChaincode(ledgerMgr.getCurrChannel(),function(txArray){
-            stomp.send('/topic/metrics/txPerChaincode',{},JSON.stringify(txArray))
-        })
-    },1000)*/
-
-    //同步区块
+    //Sync Block
     blockListener.emit('syncChaincodes')
     blockListener.emit('syncPeerlist')
     blockListener.emit('syncBlock')

@@ -57,9 +57,9 @@ class AdminPanel extends Component {
                                     <MenuItem value="">
                                         <em>None</em>
                                     </MenuItem>
-                                    <MenuItem value={10}>Ten</MenuItem>
+                                    <MenuItem value={10}>mock1</MenuItem>
                                     <MenuItem value={20}>mychannel</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
+                                    <MenuItem value={30}>mock2</MenuItem>
                                 </Select>
                                 <FormHelperText>select a channel</FormHelperText>
 

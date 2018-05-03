@@ -11,21 +11,24 @@
 var express = require("express");
 var path = require('path');
 var app = express();
-var http = require('http').Server(app);
+var http = require('http');
 var bodyParser = require('body-parser');
 var helper = require('./app/helper');
 var requtil = require('./app/utils/requestutils.js')
 var logger = helper.getLogger('main');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
+var configuration = require('./app/FabricConfiguration.js')
+var url = require('url');
+var WebSocket = require('ws');
 
-require('./app/socket/websocketserver.js')(http)
+
+var query = require('./app/query.js');
+var ledgerMgr = require('./app/utils/ledgerMgr.js')
 
 var timer = require('./app/timer/timer.js')
 timer.start()
 
-var query = require('./app/query.js');
-var ledgerMgr = require('./app/utils/ledgerMgr.js')
 
 var statusMetrics = require('./app/service/metricservice.js')
 
@@ -97,7 +100,7 @@ Response:
 
 app.get('/api/channels', function (req, res) {
     var channels = [], counter = 0;
-    const orgs_peers = helper.getOrgMapFromConfig(networkConfig);
+    const orgs_peers = configuration.getOrgMapFromConfig();
 
     orgs_peers.forEach(function (org) {
         query.getChannels(org['value'], org['key']).then(channel => {
@@ -192,9 +195,9 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
     let txid = req.params.txid
     let channelName = req.params.channel
     if (txid && txid != '0' && channelName) {
-        txModel.getTransactionByID(channelName, txid).then(rows => {
-            if (rows) {
-                return res.send({ status: 200, rows })
+        txModel.getTransactionByID(channelName, txid).then(row => {
+            if (row) {
+                return res.send({ status: 200, row })
             }
         })
     } else {
@@ -212,20 +215,17 @@ Response:
 "txhash":"c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8",
 "createdt":"2018-03-09T19:40:59.000Z","chaincodename":"mycc"}]}
  */
-app.get("/api/txList/:channel/:blocknum/:txid/:limitrows/:offset", function (req, res) {
+app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
     let txid = parseInt(req.params.txid);
-    let limitRows = parseInt(req.params.limitrows);
-    let offset = parseInt(req.params.offset);
-    if (isNaN(offset)) {
-        offset = 0;
-    }
+
     if (isNaN(txid)) {
         txid = 0;
     }
-    if (channelName && !isNaN(limitRows)) {
-        txModel.getTxList(channelName, blockNum, txid, limitRows, offset)
+    if (channelName) {
+        txModel.getTxList(channelName, blockNum, txid)
             .then(rows => {
                 if (rows) {
                     return res.send({ status: 200, rows })
@@ -298,16 +298,13 @@ Response:
  *
  */
 
-app.get("/api/blockAndTxList/:channel/:blocknum/:limitrows/:offset", function (req, res) {
+app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
+
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
-    let limitRows = parseInt(req.params.limitrows);
-    let offSet = parseInt(req.params.offset);
-    if (isNaN(offSet)) {
-        offSet = 0;
-    }
-    if (channelName && !isNaN(blockNum) && !isNaN(limitRows)) {
-        blocksModel.getBlockAndTxList(channelName, blockNum, limitRows, offSet)
+
+    if (channelName && !isNaN(blockNum)) {
+        blocksModel.getBlockAndTxList(channelName, blockNum)
             .then(rows => {
                 if (rows) {
                     return res.send({ status: 200, rows })
@@ -429,9 +426,92 @@ app.get("/api/blocksByHour/:channel/:days", function (req, res) {
     }
 });
 
-// ============= start server =======================
+/***
+ Transactions by Organization(s)
+GET /api/txByOrg
+curl -i 'http://<host>:<port>/api/txByOrg/<channel>'
+Response:
+{"rows":[{"count":"4","creator_msp_id":"Org1"}]}
 
-var server = http.listen(port, function () {
+*/
+app.get("/api/txByOrg/:channel", function (req, res) {
+    let channelName = req.params.channel;
+
+    if (channelName) {
+        statusMetrics.getTxByOrgs(channelName)
+            .then(rows => {
+                if (rows) {
+                    return res.send({ status: 200, rows })
+                }
+                return requtil.notFound(req, res)
+            })
+    } else {
+        return requtil.invalidRequest(req, res)
+    }
+});
+/***
+    An API to create a channel
+POST /api/channel
+curl -s -X POST http://localhost:8080/api/channel
+Response: {"status":"SUCCESS","info":""}
+*/
+app.post('/api/channel', function (req, res) {
+    var channelName = req.body.channelName;
+    var channelConfigPath = req.body.channelConfigPath;
+    var orgName = req.body.orgName;
+    var orgPath = req.body.orgPath;
+    var networkCfgPath = req.body.networkCfgPath;
+
+    //Validate inputs
+    if (!channelName) {
+        res.json(getErrorMessage('\'channelName\''));
+        return;
+    }
+    if (!channelConfigPath) {
+        res.json(getErrorMessage('\'channelConfigPath\''));
+        return;
+    }
+    if (!orgName) {
+        res.json(getErrorMessage('\'orgName\''));
+        return;
+    }
+    if (!orgPath) {
+        res.json(getErrorMessage('\'orgPath\''));
+        return;
+    }
+    if (!networkCfgPath) {
+        res.json(getErrorMessage('\'networkCfgPath\''));
+        return;
+    }
+
+    let resMess = channelService.createChannel(channelName, channelConfigPath, orgName, orgPath, networkCfgPath);
+    res.send(resMess);
+});
+//============ web socket ==============//
+var server = http.createServer(app);
+var wss = new WebSocket.Server({ server });
+wss.on('connection', function connection(ws, req) {
+    const location = url.parse(req.url, true);
+    // You might use location.query.access_token to authenticate or share sessions
+    // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
+
+    ws.on('message', function incoming(message) {
+        console.log('received: %s', message);
+    });
+
+});
+
+function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(data));
+        }
+    });
+};
+exports.wss = wss;
+exports.broadcast = broadcast;
+// ============= start server =======================
+server.listen(port, function () {
     console.log(`Please open web browser to access ：http://${host}:${port}/`);
 });
 

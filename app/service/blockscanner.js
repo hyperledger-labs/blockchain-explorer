@@ -18,12 +18,11 @@
 var query = require('../query.js')
 var helper = require('../helper.js')
 var co = require('co')
-var stomp = require('../socket/websocketserver.js').stomp()
 var logger = helper.getLogger('blockscanner');
 var ledgerMgr = require('../utils/ledgerMgr.js')
 var config = require('../../config.json')
 var sql = require('../db/pgservice.js');
-
+var wss = require('../../main.js');
 var blockListener
 
 var networkConfig = config["network-config"];
@@ -76,7 +75,13 @@ function* saveBlockRange(channelName, start, end) {
                 'createdt': new Date(firstTxTimestamp)
             })
         //push last block
-        stomp.send('/topic/block/all', {}, start)
+        var notify = {
+            'title': 'Block Added',
+            'type': 'block',
+            'message': 'Block ' + start + ' established with ' + block.data.data.length + ' tx',
+            'time': new Date(firstTxTimestamp)
+        };
+        wss.broadcast(notify);
         start++
 
         //////////tx/////////////////////////
@@ -113,10 +118,10 @@ function* saveBlockRange(channelName, start, end) {
             } catch (err) {
             }
 
-            let mspId
+            let mspId = []
 
             try {
-                mspId = tx.payload.data.actions[0].payload.action.endorsements[0].endorser.Mspid
+                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
             } catch (err) {
             }
 
@@ -140,7 +145,6 @@ function* saveBlockRange(channelName, start, end) {
         }
 
     }
-    stomp.send('/topic/metrics/txnPerSec', {}, JSON.stringify({ timestamp: new Date().getTime() / 1000, value: 0 }))
 }
 
 

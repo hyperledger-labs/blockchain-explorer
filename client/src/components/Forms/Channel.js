@@ -3,10 +3,7 @@
  */
 
 import React, { Component } from 'react';
-// import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import Button from 'material-ui/Button';
-import Input, { InputLabel } from 'material-ui/Input';
-import FormGroup, { FormControl, FormHelperText } from 'material-ui/Form';
 import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles';
 
@@ -15,10 +12,18 @@ const styles = theme => ({
         display: 'flex',
         flexWrap: 'wrap',
     },
+    container2: {
+        width: 310
+    },
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
         width: 130,
+    },
+    fileField: {
+        marginLeft: theme.spacing.unit,
+        marginRight: theme.spacing.unit,
+        width: 300,
     },
     menu: {
         width: 200,
@@ -43,27 +48,36 @@ class ChannelForm extends Component {
                         margin="normal"
                     />
                     <TextField
-                        id="path"
-                        label="Path"
+                        id="org-name"
+                        label="Org Name"
                         className={classes.textField}
-                        helperText="path to config"
                         margin="normal"
                     />
                 </form>
                 <br />
-                <form className={classes.container}>
+                <form className={classes.container2}>
                     <TextField
-                        id="peer"
-                        label="Peer"
-                        className={classes.textField}
-                        helperText="consensus type"
+                        type='file'
+                        id="org-path"
+                        label="Org Path"
+                        className={classes.fileField}
+                        helperText="path to org config"
                         margin="normal"
                     />
                     <TextField
-                        id="type"
-                        label="Type"
-                        className={classes.textField}
-                        helperText="consensus type"
+                        type='file'
+                        id="channel-path"
+                        label="Channel Path"
+                        className={classes.fileField}
+                        helperText="path to channel config"
+                        margin="normal"
+                    />
+                     <TextField
+                        type='file'
+                        id="network-path"
+                        label="Network Path"
+                        className={classes.fileField}
+                        helperText="path to network config"
                         margin="normal"
                     />
                     <Button size="small" color="primary">Submit</Button>

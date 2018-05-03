@@ -8,16 +8,16 @@ import * as actionTypes from '../actions/action-types';
 
 const InitialState = new Record({
     loaded: false,
-    transaction: {},
+    notification: {},
     errors: {},
 });
 
-const transaction = handleActions({
-    [actionTypes.TRANSACTION_POST]: (state = InitialState(), action) => state
+const notification = handleActions({
+    [actionTypes.NOTIFICATION_LOAD]: (state = InitialState(), action) => state
         .set('loaded', true)
-        .set('transaction', action.payload.row)
+        .set('notification', action.payload)
         .set('errors', action.error),
 
 }, new InitialState());
 
-export default transaction
+export default notification
