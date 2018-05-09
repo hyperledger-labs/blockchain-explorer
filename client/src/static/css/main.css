@@ -95,6 +95,14 @@ div.menuItems > nav{
     background-color:#cfcfce;
     padding: 5px;
 }
+.scrollable-card{
+    height: 300px;
+    overflow-y: scroll;
+}
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
 .card-header{
     background-color: #24272a;
      color:#f7f7f7;

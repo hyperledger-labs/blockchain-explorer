@@ -76,10 +76,12 @@ function* saveBlockRange(channelName, start, end) {
             })
         //push last block
         var notify = {
-            'title': 'Block Added',
+            'title': 'Block '+start+ ' Added',
             'type': 'block',
             'message': 'Block ' + start + ' established with ' + block.data.data.length + ' tx',
-            'time': new Date(firstTxTimestamp)
+            'time': new Date(firstTxTimestamp),
+            'txcount': block.data.data.length,
+            'datahash':block.header.data_hash,
         };
         wss.broadcast(notify);
         start++
