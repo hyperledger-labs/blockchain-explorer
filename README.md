@@ -23,7 +23,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 ## Requirements
 
 Following are the software dependencies required to install and run hyperledger explorer
-* nodejs 6.9.x (Note that v7.x is not yet supported)
+* nodejs 8.9.x (Note that v9.x is not yet supported)
 * PostgreSQL 9.5 or greater
 
 Hyperledger Explorer works with Hyperledger Fabric 1.0.  Install the following software dependencies to manage fabric network.

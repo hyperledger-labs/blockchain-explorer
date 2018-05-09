@@ -42,9 +42,10 @@ function syncBlock() {
     ]).then(datas => {
         maxBlockNum = parseInt(datas[0])
         curBlockNum = parseInt(datas[1]) + 1
-        co(saveBlockRange, channelName, curBlockNum, maxBlockNum).then(() => {
-            blockListener.emit('syncBlock', channelName)
+        co(getBlockByNumber, channelName, curBlockNum, maxBlockNum).then(() => {
+            console.log("getBlock")
         }).catch(err => {
+            console.log(err.stack);
             logger.error(err)
         })
     }).catch(err => {
@@ -54,20 +55,38 @@ function syncBlock() {
 
 }
 
-function* saveBlockRange(channelName, start, end) {
+function* getBlockByNumber(channelName, start, end) {
     while (start < end) {
         let block = yield query.getBlockByNumber(peer, channelName, start, org)
+        co(saveBlockRange, block).then(() => {
+            console.log("success block")
+        }).catch(err => {
+            console.log(err.stack);
+            logger.error(err)
+        })
+        start++
+    }
+}
 
-        /** block creation timestamp is not in the latest fabric API,
-        will use the first transaction timestamp */
-        let firstTxTimestamp = block.data.data[0].payload.header.channel_header.timestamp;
-        if (!firstTxTimestamp) {
-            firstTxTimestamp = null
-        }
-        blockListener.emit('createBlock', block)
+function* saveBlockRange(block) {
+    let first_tx = block.data.data[0]; //get the first Transaction
+    let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
+    let channelName = header.channel_header.channel_id;
+    let blockNum = block.header.number.toString();
+    let firstTxTimestamp = header.channel_header.timestamp;
+    let preHash = block.header.previous_hash;
+    let dataHash = block.header.data_hash;
+    let txCount = block.data.data.length;
+    if (!firstTxTimestamp) {
+        firstTxTimestamp = null
+    }
+
+    let c = yield sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${blockNum}' and txcount='${txCount}' and prehash='${preHash}' and datahash='${dataHash}' and channelname='${channelName}' `)
+    if (c.c == 0) {
+        //blockListener.emit('createBlock', block)
         yield sql.saveRow('blocks',
             {
-                'blocknum': start,
+                'blocknum': block.header.number,
                 'channelname': channelName,
                 'prehash': block.header.previous_hash,
                 'datahash': block.header.data_hash,
@@ -78,12 +97,13 @@ function* saveBlockRange(channelName, start, end) {
         var notify = {
             'title': 'Block Added',
             'type': 'block',
-            'message': 'Block ' + start + ' established with ' + block.data.data.length + ' tx',
+            'message': 'Block ' + block.header.number + ' established with ' + block.data.data.length + ' tx',
             'time': new Date(firstTxTimestamp)
         };
         wss.broadcast(notify);
-        start++
 
+        //////////chaincode//////////////////
+        syncChaincodes();
         //////////tx/////////////////////////
         let txLen = block.data.data.length
         for (let i = 0; i < txLen; i++) {
@@ -143,7 +163,8 @@ function* saveBlockRange(channelName, start, end) {
 
             yield sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${chaincode}' and channelname='${channelName}' `)
         }
-
+    } else {
+        console.log("Already exists blocks");
     }
 }
 
@@ -218,7 +239,7 @@ function* savePeerlist(channelName) {
 function syncChaincodes() {
     var channelName = ledgerMgr.getCurrChannel();
     co(saveChaincodes, channelName).then(() => {
-        blockListener.emit('syncChaincodes', channelName)
+        // blockListener.emit('syncChaincodes', channelName)
     }).catch(err => {
         logger.error(err)
     })
@@ -227,7 +248,7 @@ function syncChaincodes() {
 function syncPeerlist() {
     var channelName = ledgerMgr.getCurrChannel();
     co(savePeerlist, channelName).then(() => {
-        blockListener.emit('syncPeerlist', channelName)
+        // blockListener.emit('syncPeerlist', channelName)
     }).catch(err => {
         logger.error(err)
     })
@@ -236,6 +257,7 @@ function syncPeerlist() {
 exports.syncBlock = syncBlock
 exports.syncChaincodes = syncChaincodes
 exports.syncPeerlist = syncPeerlist
+exports.saveBlockRange = saveBlockRange
 
 exports.setBlockListener = function (blisten) {
     blockListener = blisten
