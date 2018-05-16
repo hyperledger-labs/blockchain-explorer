@@ -37,7 +37,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var config = require('./config.json');
-var query = require('./app/query.js');
 var sql = require('./app/db/pgservice.js');
 
 var host = process.env.HOST || config.host;
@@ -197,7 +196,9 @@ app.get("/api/transaction/:channel/:txid", function (req, res) {
     if (txid && txid != '0' && channelName) {
         txModel.getTransactionByID(channelName, txid).then(row => {
             if (row) {
-                return res.send({ status: 200, row })
+                return res.send({ status: 200, data: row })
+            } else {
+                return res.send({ status: 404 })
             }
         })
     } else {
@@ -228,7 +229,7 @@ app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
         txModel.getTxList(channelName, blockNum, txid)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
             })
     } else {
@@ -307,7 +308,7 @@ app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
         blocksModel.getBlockAndTxList(channelName, blockNum)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
                 return requtil.notFound(req, res)
             })
@@ -336,7 +337,7 @@ app.get("/api/txByMinute/:channel/:hours", function (req, res) {
         statusMetrics.getTxByMinute(channelName, hours)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
                 return requtil.notFound(req, res)
             })
@@ -362,7 +363,7 @@ app.get("/api/txByHour/:channel/:days", function (req, res) {
         statusMetrics.getTxByHour(channelName, days)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
                 return requtil.notFound(req, res)
             })
@@ -390,7 +391,7 @@ app.get("/api/blocksByMinute/:channel/:hours", function (req, res) {
         statusMetrics.getBlocksByMinute(channelName, hours)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
                 return requtil.notFound(req, res)
             })
@@ -417,7 +418,7 @@ app.get("/api/blocksByHour/:channel/:days", function (req, res) {
         statusMetrics.getBlocksByHour(channelName, days)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data; rows })
                 }
                 return requtil.notFound(req, res)
             })
@@ -441,7 +442,7 @@ app.get("/api/txByOrg/:channel", function (req, res) {
         statusMetrics.getTxByOrgs(channelName)
             .then(rows => {
                 if (rows) {
-                    return res.send({ status: 200, rows })
+                    return res.send({ status: 200, data: rows })
                 }
                 return requtil.notFound(req, res)
             })
