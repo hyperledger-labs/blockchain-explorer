@@ -51,7 +51,7 @@ function* getPeerData(channelName) {
 
 function* getTxPerChaincodeGenerate(channelName) {
   let txArray = []
-  var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
+  var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname, c.name as chaincodename, c.version as version, c.path as path, COALESCE(t.txcount, 0) as c from (SELECT * FROM chaincodes where channelname='${channelName}') cc LEFT OUTER JOIN (SELECT chaincode_id, count(*) as txcount from transaction GROUP BY chaincode_id) t ON cc.name = t.chaincode_id;`);
   c.forEach((item, index) => {
     txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
   })
