@@ -95,10 +95,12 @@ function* saveBlockRange(block) {
             })
         //push last block
         var notify = {
-            'title': 'Block Added',
+            'title': 'Block '+block.header.number + ' Added',
             'type': 'block',
             'message': 'Block ' + block.header.number + ' established with ' + block.data.data.length + ' tx',
-            'time': new Date(firstTxTimestamp)
+            'time': new Date(firstTxTimestamp),
+            'txcount': block.data.data.length,
+            'datahash':block.header.data_hash
         };
         wss.broadcast(notify);
 

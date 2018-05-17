@@ -66,7 +66,6 @@ class MenuBar extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (JSON.stringify(nextProps.countHeader) !== JSON.stringify(this.props.countHeader)) {
-      // console.log('nextProps.countHeader !== this.props.countHeader')
       this.setState({ countHeader: nextProps.countHeader });
     }
   }
@@ -156,7 +155,7 @@ class MenuBar extends Component {
         currentView = <Transactions channel={this.props.channel} countHeader={this.props.countHeader} transactionList={this.props.transactionList.rows} getTransactionList={this.props.getTransactionList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo}/>;
         break;
       case 'BlockView':
-        currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo} />;
+        currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo}/>;
         break;
       case 'ChannelView':
         currentView = <Channels channelList={this.props.channelList} />;
@@ -165,7 +164,7 @@ class MenuBar extends Component {
         currentView = <Peers peerList={this.props.peerList} />;
         break;
       case 'DashboardView':
-        currentView = <DashboardView />;
+        currentView = <DashboardView blockList={this.props.blockList}/>;
         break;
       case 'ChaincodeView':
         currentView = <Chaincodes channel={this.props.channel} countHeader={this.props.countHeader} chaincodes={this.props.chaincodes} getChaincodes={this.props.getChaincodes}/>
@@ -218,6 +217,7 @@ const mapStateToProps = state => ({
   peerList: state.peerList.peerList,
   transaction: state.transaction.transaction,
   transactionList: state.transactionList.transactionList,
+  notification: state.notification.notification
 });
 
 
