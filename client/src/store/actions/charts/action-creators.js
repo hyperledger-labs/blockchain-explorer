@@ -5,15 +5,8 @@
 import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
 import { get } from '../../../services/request.js';
-export const getBlocksPerMin = (curChannel) => dispatch => {
-    get('/api/blocksByMinute/' + curChannel + '/1')
-        .then(resp => {
-            dispatch(createAction(actionTypes.BLOCK_CHART_MIN)(resp))
-        }).catch((error) => {
-            console.error(error);
-        })
-}
-export const getBlocksPerHour = (curChannel) => dispatch => {
+
+export const blocksPerHour = (curChannel) => dispatch => {
     get('/api/blocksByHour/' + curChannel + '/1')
         .then(resp => {
             dispatch(createAction(actionTypes.BLOCK_CHART_HOUR)(resp))
@@ -21,18 +14,29 @@ export const getBlocksPerHour = (curChannel) => dispatch => {
             console.error(error);
         })
 }
-export const getTxPerMin = (curChannel) => dispatch => {
-    get('/api/txByMinute/' + curChannel + '/1')
+
+export const blocksPerMin = (curChannel) => dispatch => {
+    get('/api/blocksByMinute/' + curChannel + '/1')
         .then(resp => {
-            dispatch(createAction(actionTypes.TX_CHART_MIN)(resp))
+            dispatch(createAction(actionTypes.BLOCK_CHART_MIN)(resp))
         }).catch((error) => {
             console.error(error);
         })
 }
-export const getTxPerHour = (curChannel) => dispatch => {
+
+export const txPerHour = (curChannel) => dispatch => {
     get('/api/txByHour/' + curChannel + '/1')
         .then(resp => {
             dispatch(createAction(actionTypes.TX_CHART_HOUR)(resp))
+        }).catch((error) => {
+            console.error(error);
+        })
+}
+
+export const txPerMin = (curChannel) => dispatch => {
+    get('/api/txByMinute/' + curChannel + '/1')
+        .then(resp => {
+            dispatch(createAction(actionTypes.TX_CHART_MIN)(resp))
         }).catch((error) => {
             console.error(error);
         })

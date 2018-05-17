@@ -10,7 +10,6 @@ import Peers from '../Lists/Peers';
 import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
 import DashboardView from '../View/DashboardView';
-import Channels from '../Lists/Channels';
 import Chaincodes from '../Lists/Chaincodes';
 import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
 import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
@@ -18,8 +17,6 @@ import { getTransactionInfo as getTransactionInfoCreator } from '../../store/act
 import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
-
-
 import {
   Navbar,
   Nav,
@@ -41,7 +38,6 @@ const styles = theme => ({
     top: 60,
     fontSize: 18,
   },
-
 });
 
 class MenuBar extends Component {
@@ -52,16 +48,6 @@ class MenuBar extends Component {
       activeTab: { dashboardTab: true, peersTab: false, blocksTab: false, chaincodesTab: false },
       countHeader: { countHeader: this.props.getCountHeader() }
     }
-
-    this.handleClickTransactionView = this.handleClickTransactionView.bind(this);
-    this.handleClickBlockView = this.handleClickBlockView.bind(this);
-    this.handleClickChannelView = this.handleClickChannelView.bind(this);
-    this.handleClickPeerView = this.handleClickPeerView.bind(this);
-    this.handleClickDashboardView = this.handleClickDashboardView.bind(this);
-  }
-
-  componentWillMount() {
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,21 +56,14 @@ class MenuBar extends Component {
     }
   }
 
-
   componentDidMount() {
-
-
     setInterval(() => {
       this.props.getCountHeader(this.props.channel.currentChannel);
       this.props.getLatestBlock(this.props.channel.currentChannel,0);
     }, 3000)
-
   }
 
-  componentDidUpdate(prevProps, prevState) {
-  }
-
-  handleClickTransactionView() {
+  handleClickTransactionView = () => {
     this.setState({ activeView: 'TransactionView' });
     this.setState({
       activeTab: {
@@ -95,7 +74,8 @@ class MenuBar extends Component {
         chaincodesTab: false      }
     });
   }
-  handleClickBlockView() {
+
+  handleClickBlockView = () => {
     this.setState({ activeView: 'BlockView' });
     this.setState({
       activeTab: {
@@ -107,10 +87,8 @@ class MenuBar extends Component {
       }
     });
   }
-  handleClickChannelView() {
-    this.setState({ activeView: 'ChannelView' });
-  }
-  handleClickPeerView() {
+
+  handleClickPeerView = () => {
     this.setState({ activeView: 'PeerView' });
     this.setState({
       activeTab: {
@@ -122,7 +100,8 @@ class MenuBar extends Component {
       }
     });
   }
-  handleClickDashboardView() {
+
+  handleClickDashboardView = () => {
     this.setState({ activeView: 'DashboardView' });
     this.setState({
       activeTab: {
@@ -134,6 +113,7 @@ class MenuBar extends Component {
       }
     });
   }
+
   handleClickChaincodeView = () => {
     this.setState({ activeView: 'ChaincodeView' });
     this.setState({
@@ -156,9 +136,6 @@ class MenuBar extends Component {
         break;
       case 'BlockView':
         currentView = <Blocks blockList={this.props.blockList} channel={this.props.channel} countHeader={this.props.countHeader} getBlockList={this.props.getBlockList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo}/>;
-        break;
-      case 'ChannelView':
-        currentView = <Channels channelList={this.props.channelList} />;
         break;
       case 'PeerView':
         currentView = <Peers peerList={this.props.peerList} />;
@@ -187,8 +164,6 @@ class MenuBar extends Component {
             </Nav>
           </Navbar>
         </div>
-
-
         <div style={{ position: 'absolute', top: 140, left: 30, zIndex: 1000 }}>
           {currentView}
         </div>
@@ -206,7 +181,6 @@ const mapDispatchToProps = (dispatch) => ({
   getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset))
 });
 
-
 const mapStateToProps = state => ({
   block: state.block.block,
   blockList: state.blockList.blockList,
@@ -219,8 +193,6 @@ const mapStateToProps = state => ({
   transactionList: state.transactionList.transactionList,
   notification: state.notification.notification
 });
-
-
 
 export default compose(
   withStyles(styles, { name: 'CountHeader' }),

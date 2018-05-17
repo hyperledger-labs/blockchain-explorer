@@ -9,7 +9,6 @@ import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
 
 const Peers = ({ peerList }) => {
-
     const columnHeaders = [
         {
           Header: "Peer Name",
@@ -22,7 +21,7 @@ const Peers = ({ peerList }) => {
           Header: "Request Url",
           accessor: "requests",
           filterMethod: (filter, rows) =>
-          matchSorter(rows, filter.value, { keys: ["requests"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            matchSorter(rows, filter.value, { keys: ["requests"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
         filterAll: true
         }
       ];
@@ -39,13 +38,14 @@ const Peers = ({ peerList }) => {
                             defaultPageSize={5}
                             className="-striped -highlight"
                             filterable
+                            minRows = {0}
                         />
                         </div>
                     </Col>
                 </Row>
             </Container>
-
         </div>
     );
 };
+
 export default Peers;

@@ -15,22 +15,10 @@ class Transactions extends Component {
     super(props);
     this.state = {
       loading: false,
-      totalBlocks: this.props.countHeader.txCount,
+      totalTransactions: this.props.countHeader.txCount,
       dialogOpen: false
     };
   }
-
-  convertTime = date => {
-    var hold = new Date(date);
-    var hours = hold.getHours();
-    var minutes = hold.getMinutes();
-    var ampm = hours >= 12 ? "pm" : "am";
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? "0" + minutes : minutes;
-    var strTime = hours + ":" + minutes + " " + ampm;
-    return strTime;
-  };
 
   handleDialogOpen = tid => {
     this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
@@ -42,15 +30,10 @@ class Transactions extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ totalBlocks: this.props.countHeader.txCount });
-  }
-
-  componentDidMount() {
-
+    this.setState({ totalTransactions: this.props.countHeader.txCount });
   }
 
   render() {
-
     const columnHeaders = [
       {
         Header: "Creator",
@@ -104,6 +87,7 @@ class Transactions extends Component {
                   defaultPageSize={10}
                   className="-striped -highlight"
                   filterable
+                  minRows = {0}
                 />
               </div>
             </Col>
