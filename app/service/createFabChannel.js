@@ -11,25 +11,13 @@
 var fs = require('fs');
 var helper = require('../helper.js');
 var logger = helper.getLogger('createFabChannel');
-
 var hfc = require('fabric-client');
+var networkService = require('./networkservice.js');
 
-async function getClientForOrg (userorg, orgPath, networkCfgPath) {
-    let config = '-connection-profile-path';
-
-    hfc.setConfigSetting('network'+config, networkCfgPath);
-    hfc.setConfigSetting(userorg+config, orgPath);
-
-	let client = hfc.loadFromConfig(hfc.getConfigSetting('network'+config));
-	client.loadFromConfig(hfc.getConfigSetting(userorg+config));
-	await client.initCredentialStores();
-
-	return client;
-}
-
-var createFabChannel = async function(channelName, channelConfigPath, orgName, orgPath, networkCfgPath) {
+var createFabChannel = async function (channelName, channelConfigPath, orgName, orgPath, networkCfgPath) {
+	logger.debug('createFabChannel ', channelName, channelConfigPath, orgName, orgPath, networkCfgPath)
 	try {
-		var client = await getClientForOrg(orgName, orgPath, networkCfgPath);
+		var client = await networkService.getClientForOrg(orgName, orgPath, networkCfgPath);
 		// read in the envelope for the channel config raw bytes
 		var envelope = fs.readFileSync(channelConfigPath);
 		var channelConfig = client.extractChannelConfig(envelope);
@@ -41,22 +29,27 @@ var createFabChannel = async function(channelName, channelConfigPath, orgName, o
 			txId: client.newTransactionID(true)
 		};
 
-		var response = await client.createChannel(request)
+		var response = await client.createChannel(request);
+
 		if (response && response.status === 'SUCCESS') {
 			logger.info('Successfully created the channel.');
 			let response = {
 				success: true,
-				message: 'Channel \'' + channelName + '\' created Successfully'
+				message: 'Successfully created ' + channelName
 			};
 
 			return response;
 		} else {
+			console.debug("A >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 			logger.error('\n\nFailed to create the channel ' + channelName + '\n\n', response);
-			throw new Error('Failed to create the channel ' + channelName);
+			throw new Error('\n\nFailed to create the channel ' + channelName + '\n\n', response);
 		}
+
 	} catch (err) {
-		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack :	err);
-		throw new Error('Failed to initialize the channel: ' + err.toString());
+		console.debug("B >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
+		throw new Error('Failed to initialize the channel: ' + err);
+
 	}
 };
 

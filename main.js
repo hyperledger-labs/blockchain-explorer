@@ -19,6 +19,7 @@ var logger = helper.getLogger('main');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
 var configuration = require('./app/FabricConfiguration.js')
+var chModel = require('./app/models/channel.js');
 var url = require('url');
 var WebSocket = require('ws');
 
@@ -31,7 +32,6 @@ timer.start()
 
 
 var statusMetrics = require('./app/service/metricservice.js')
-
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -449,44 +449,86 @@ app.get("/api/txByOrg/:channel", function (req, res) {
         return requtil.invalidRequest(req, res)
     }
 });
+
 /***
-    An API to create a channel
-POST /api/channel
-curl -s -X POST http://localhost:8080/api/channel
-Response: {"status":"SUCCESS","info":""}
+    SETUP instructions for create new channel
+
+    SET PATH to configtxgen tool in your .bashrc file
+
+    On ubnuntu, you can use command
+    $sudo nano ~/.bashrc
+    export FABRIC_CFG_PATH=fabric-path/fabric-samples/first-network
+    export PATH=$PATH:$FABRIC_CFG_PATH
+    save the file and refresh, use command
+    $source ~/.bashrc
+
+    Update config.json file, look for the key configtxgenToolPath, should match your
+    configtxgen tool path
+
+    Update "fabric-path" in file /blockchain-explorer/app/config/network-config-tls.yaml to your
+    fabric network path
+
+    Everytime you add a new channel you need to define it in file:
+    /blockchain-explorer/app/config/network-config-tls.yaml
+    Search for keyword newchannel, and update it to the name of your new channel
+
+    The values of the profile and genesisBlock are taken fron the configtx.yaml file that
+    is used by the configtxgen tool
+    Example values for:
+    profile = 'TwoOrgsChannel';
+    genesisBlock = 'TwoOrgsOrdererGenesis';
 */
+
+/*
+Create new channel
+POST /api/channel
+
+curl -X POST -H "Content-Type: application/json" -d '{"orgName":"Org1","channelName":"newchannel","profile" : "TwoOrgsChannel", "genesisBlock":"TwoOrgsOrdererGenesis" }' http://localhost:8080/api/channel
+Response: {  success: true, message: "Successfully created channel "   }
+*/
+
 app.post('/api/channel', function (req, res) {
     var channelName = req.body.channelName;
-    var channelConfigPath = req.body.channelConfigPath;
     var orgName = req.body.orgName;
-    var orgPath = req.body.orgPath;
-    var networkCfgPath = req.body.networkCfgPath;
+    var profile = req.body.profile;
+    var genesisBlock = req.body.genesisBlock
+    logger.debug("channelName, orgName, profile, genesisBlock ", channelName, orgName, profile, genesisBlock)
 
-    //Validate inputs
-    if (!channelName) {
-        res.json(getErrorMessage('\'channelName\''));
-        return;
-    }
-    if (!channelConfigPath) {
-        res.json(getErrorMessage('\'channelConfigPath\''));
-        return;
-    }
-    if (!orgName) {
-        res.json(getErrorMessage('\'orgName\''));
-        return;
-    }
-    if (!orgPath) {
-        res.json(getErrorMessage('\'orgPath\''));
-        return;
-    }
-    if (!networkCfgPath) {
-        res.json(getErrorMessage('\'networkCfgPath\''));
-        return;
-    }
+    if (channelName && orgName && profile && genesisBlock) {
+        chModel.createChannel(channelName, orgName, profile, genesisBlock).then((resp) => {
+            return res.send(resp);
+        });
 
-    let resMess = channelService.createChannel(channelName, channelConfigPath, orgName, orgPath, networkCfgPath);
-    res.send(resMess);
+    } else {
+        return requtil.invalidRequest(req, res)
+    }
 });
+
+/***
+    An API to join channel
+POST /api/joinChannel
+
+curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channelName":"newchannel"}' http://localhost:8080/api/joinChannel
+
+Response: {  success: true, message: "Successfully joined peer to the channel "   }
+*/
+
+app.post('/api/joinChannel', function (req, res) {
+    var channelName = req.body.channelName;
+    var peers = req.body.peers;
+    var orgName = req.body.orgName;
+    if (channelName && peers && orgName) {
+        chModel.joinChannel(channelName, peers, orgName).then((resp) => {
+            return res.send(resp);
+        })
+
+    } else {
+        return requtil.invalidRequest(req, res)
+    }
+
+});
+
+
 //============ web socket ==============//
 var server = http.createServer(app);
 var wss = new WebSocket.Server({ server });

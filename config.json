@@ -46,6 +46,7 @@
 	"channel": "mychannel",
 	"keyValueStore": "/tmp/fabric-client-kvs",
 	"eventWaitTime": "30000",
+	"configtxgenToolPath":"fabric-path/fabric-samples/bin",
 	"users":[
 		{
 		   "username":"admin",
