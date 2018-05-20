@@ -106,7 +106,7 @@ function* saveBlockRange(channelName, start, end) {
 
             let chaincodeID
             try {
-                let chaincodeID = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name
+                chaincodeID = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name
             } catch (err) {
             }
 

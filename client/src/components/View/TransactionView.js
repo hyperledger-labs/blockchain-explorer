@@ -77,7 +77,7 @@ class TransactionView extends Component {
                             <b>Tx:</b>{this.props.transaction.txhash} <br />
                             <b>Creator MSP:</b> {this.props.transaction.creator_msp_id} <br />
                             <b>Endorser:</b> {this.props.transaction.endorser_msp_id} <br />
-                            <b>Chaincode Name:</b> {this.props.transaction.chaincodename} <br />
+                            <b>Chaincode Name:</b> {this.props.transaction.chaincode_id} <br />
                             <b>Type:</b> {this.props.transaction.type} <br />
                             <b>Time:</b> {moment(this.props.transaction.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")} <br />
                             <b>Reads:</b>
