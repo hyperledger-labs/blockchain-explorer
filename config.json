@@ -7,17 +7,17 @@
 				"requests": "grpcs://127.0.0.1:7051",
 				"events": "grpcs://127.0.0.1:7053",
 				"server-hostname": "peer0.org0.diid.network",
-				"tls_cacerts": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer0.org0.diid.network/tls/ca.crt"
+				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer0.org0.diid.network/tls/ca.crt"
 			},
 			"peer1": {
 				"requests": "grpcs://127.0.0.1:8051",
 				"events": "grpcs://127.0.0.1:8053",
 				"server-hostname": "peer1.org0.diid.network",
-				"tls_cacerts": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer1.org0.diid.network/tls/ca.crt"
+				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer1.org0.diid.network/tls/ca.crt"
 			},
 			"admin": {
-				"key": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/users/Admin@org0.diid.network/msp/keystore",
-				"cert": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/users/Admin@org0.diid.network/msp/signcerts"
+				"key": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/users/Admin@org0.diid.network/msp/keystore",
+				"cert": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/users/Admin@org0.diid.network/msp/signcerts"
 			}
 		},
 		"org1": {
@@ -27,17 +27,17 @@
 				"requests": "grpcs://127.0.0.1:9051",
 				"events": "grpcs://127.0.0.1:9053",
 				"server-hostname": "peer0.org1.diid.network",
-				"tls_cacerts": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer0.org1.diid.network/tls/ca.crt"
+				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer0.org1.diid.network/tls/ca.crt"
 			},
 			"peer1": {
 				"requests": "grpcs://127.0.0.1:10051",
 				"events": "grpcs://127.0.0.1:10053",
 				"server-hostname": "peer1.org1.diid.network",
-				"tls_cacerts": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer1.org1.diid.network/tls/ca.crt"
+				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer1.org1.diid.network/tls/ca.crt"
 			},
 			"admin": {
-				"key": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/users/Admin@org1.diid.network/msp/keystore",
-				"cert": "github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/users/Admin@org1.diid.network/msp/signcerts"
+				"key": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/users/Admin@org1.diid.network/msp/keystore",
+				"cert": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/users/Admin@org1.diid.network/msp/signcerts"
 			}
 		}
 	},
