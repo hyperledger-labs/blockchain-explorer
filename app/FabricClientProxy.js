@@ -18,20 +18,28 @@ hfc.setLogger(logger);
 
 class FabricClientProxy {
 
-	constructor(channelName) {
-		this.channelName = channelName;
+	constructor() {
 		this.clients = {};
 		this.channels = {};
 		this.caClients = {};
 		this.channelEventHubs = {};
-		this.createDefault();
 		this.peers = [];
+		this.createDefault();
+	}
+
+	modifyChannelObj(org) {
+		if (this.channels[org][ledgerMgr.getCurrChannel()] == undefined) {
+			this.createDefault();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	getChannelForOrg(org) {
-		if (this.channels[org][this.channelName] == undefined)
-			this.createDefault(this.channelName);
-		return this.channels[org][this.channelName];
+		if (this.channels[org][ledgerMgr.getCurrChannel()] == undefined)
+			this.createDefault();
+		return this.channels[org][ledgerMgr.getCurrChannel()];
 	};
 
 	getClientForOrg(org) {
@@ -43,7 +51,6 @@ class FabricClientProxy {
 		this.setupPeers(null, org, client, true);
 		var channel = this.getChannelForOrg(org);
 		if (this.channelEventHubs[org][this.peers[0]] == undefined) {
-			console.log("channelEventHub is not created object")
 			var channel_event_hub = channel.newChannelEventHub(this.peers[0]);
 			this.channelEventHubs[org][this.peers[0]] = channel_event_hub;
 		}
@@ -134,14 +141,14 @@ class FabricClientProxy {
 			console.log("error-admin--" + err.stack)
 			throw err;
 		});
-
 		return user;
 	}
-
 
 	// set up the client and channel objects for each org
 	createDefault() {
 		configuration.getOrgs().forEach(key => {
+			let channelName = ledgerMgr.getCurrChannel();
+			//if (this.channels[key] == undefined || this.channels[key][channelName] == undefined) {
 			let client = new hfc();
 			let cryptoSuite = hfc.newCryptoSuite();
 			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
@@ -149,7 +156,7 @@ class FabricClientProxy {
 			this.channels[key] = {};
 			this.channelEventHubs[key] = {};
 			this.peers = [];
-			let channel = client.newChannel(this.channelName);
+			let channel = client.newChannel(channelName);
 			//Now clients are available for use.
 			this.clients[key] = client;
 			//For each client setup a admin user as signining identity
@@ -159,12 +166,13 @@ class FabricClientProxy {
 			}).then(store => {
 				client.setStateStore(store);
 			});
-			this.channels[key][this.channelName] = channel;
+			this.channels[key][channelName] = channel;
 			this.setupPeers(channel, key, client, false);
 			for (let peer of this.peers) {
 				var channel_event_hub = channel.newChannelEventHub(peer);
 				this.channelEventHubs[key][peer] = channel_event_hub;
 			}
+			//}			
 		});
 	}
 
@@ -192,4 +200,4 @@ class FabricClientProxy {
 	}
 }
 
-module.exports = new FabricClientProxy(ledgerMgr.getCurrChannel());
+module.exports = new FabricClientProxy();

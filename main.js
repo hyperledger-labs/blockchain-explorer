@@ -124,6 +124,18 @@ curl -i 'http://<host>:<port>/api/curChannel'
 app.get('/api/curChannel', function (req, res) {
     res.send({ 'currentChannel': ledgerMgr.getCurrChannel() })
 })
+
+/**
+Return change channel
+POST /api/changeChannel
+curl -i 'http://<host>:<port>/api/curChannel'
+*/
+app.get('/api/changeChannel/:channelName',function(req,res){
+    let channelName=req.params.channelName
+    ledgerMgr.changeChannel(channelName)
+    res.send({ 'currentChannel': ledgerMgr.getCurrChannel() })
+})
+
 /***
 Block by number
 GET /api/block/getinfo -> /api/block

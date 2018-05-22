@@ -12,8 +12,6 @@ var org = Object.keys(networkConfig)[0];
 
 function syncChannelEventHubBlock() {
     var channel_event_hub = fabricClientProxy.getChannelEventHub(org);
-    console.log("syncEvent-block--" + channel_event_hub)
-    var client = fabricClientProxy.getClientForOrg(org)
     channel_event_hub.connect(true);
 
     channel_event_hub.registerBlockEvent(
@@ -22,7 +20,6 @@ function syncChannelEventHubBlock() {
             if (block.data != undefined) {
                 //full block	
                 co(blockScanner.saveBlockRange, block).then(() => {
-                    console.log("success block in Event")
                 }).catch(err => {
                     console.log(err.stack);
                     logger.error(err)

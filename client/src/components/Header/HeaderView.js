@@ -21,6 +21,21 @@ import Websocket from 'react-websocket';
 // import { Badge } from 'reactstrap';
 import Badge from 'material-ui/Badge';
 import { getNotification as getNotificationCreator } from '../../store/actions/notification/action-creators';
+import { changeChannel as changeChannelCreator } from '../../store/actions/channel/action-creators';
+import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+import { getPeerList as getPeerListCreator } from '../../store/actions/peer/action-creators';
+import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
+import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
+import { getHeaderCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
+import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
+import { getTxByOrg as getTxByOrgCreator } from '../../store/actions/charts/action-creators';
+import {
+  blocksPerHour as getBlocksPerHourCreator,
+  blocksPerMin as getBlocksPerMinCreator,
+  txPerHour as getTxPerHourCreator,
+  txPerMin as getTxPerMinCreator
+} from '../../store/actions/charts/action-creators';
+
 
 const styles = theme => ({
   margin: {
@@ -73,18 +88,35 @@ class HeaderView extends Component {
 
     this.setState({ channels: arr });
 
-    this.setState({ selectedOption: arr[0] })
+    this.setState({ selectedOption: this.props.channel.currentChannel })
 
   }
   componentWillReceiveProps(nextProps) {
-    // console.log(nextProps.trades);
     // this.setState({loading:false});
   }
 
   handleChange = (selectedOption) => {
-    this.setState({ selectedOption: selectedOption });
+    this.setState({ selectedOption: selectedOption.value });
+    this.props.changeChannel(selectedOption.value);
+    setTimeout(() => {
+      this.props.getPeerList(selectedOption.value);
+      this.props.getHeaderCount(selectedOption.value);
+      this.props.getTxPerHour(selectedOption.value);
+      this.props.getTxPerMin(selectedOption.value);
+      this.props.getBlocksPerHour(selectedOption.value);
+      this.props.getBlocksPerMin(selectedOption.value);
+      this.props.getTransactionList(selectedOption.value, 0);
+      this.props.getBlockList(selectedOption.value, 0);
+      this.props.getChaincodes(selectedOption.value);
+      this.props.getTxByOrg(selectedOption.value);
+    }, 5000);
   }
+
   handleOpen() {
+
+
+
+
     this.setState({ modalOpen: true });
   }
 
@@ -181,5 +213,17 @@ function mapStateToProps(state, ownProps) {
 }
 const mapDispatchToProps = (dispatch) => ({
   getNotification: (notification) => dispatch(getNotificationCreator(notification)),
+  changeChannel: (curChannel) => dispatch(changeChannelCreator(curChannel)),
+  getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
+  getHeaderCount: (curChannel) => dispatch(getHeaderCountCreator(curChannel)),
+  getTxPerHour: (curChannel) => dispatch(getTxPerHourCreator(curChannel)),
+  getTxPerMin: (curChannel) => dispatch(getTxPerMinCreator(curChannel)),
+  getBlocksPerHour: (curChannel) => dispatch(getBlocksPerHourCreator(curChannel)),
+  getBlocksPerMin: (curChannel) => dispatch(getBlocksPerMinCreator(curChannel)),
+  getTransactionList: (curChannel, offset) => dispatch(getTransactionListCreator(curChannel, offset)),
+  getBlockList: (curChannel, offset) => dispatch(getBlockListCreator(curChannel, offset)),
+  getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel)),
+  getChaincodes: (curChannel) => dispatch(getChaincodesCreator(curChannel)),
+  getTxByOrg: (curChannel) => dispatch(getTxByOrgCreator(curChannel))
 });
-export default compose (withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(HeaderView);
+export default compose(withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(HeaderView);

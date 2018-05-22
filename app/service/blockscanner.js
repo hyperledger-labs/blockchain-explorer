@@ -43,7 +43,6 @@ function syncBlock() {
         maxBlockNum = parseInt(datas[0])
         curBlockNum = parseInt(datas[1]) + 1
         co(getBlockByNumber, channelName, curBlockNum, maxBlockNum).then(() => {
-            console.log("getBlock")
         }).catch(err => {
             console.log(err.stack);
             logger.error(err)
@@ -59,7 +58,6 @@ function* getBlockByNumber(channelName, start, end) {
     while (start < end) {
         let block = yield query.getBlockByNumber(peer, channelName, start, org)
         co(saveBlockRange, block).then(() => {
-            console.log("success block")
         }).catch(err => {
             console.log(err.stack);
             logger.error(err)
@@ -83,7 +81,6 @@ function* saveBlockRange(block) {
 
     let c = yield sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${blockNum}' and txcount='${txCount}' and prehash='${preHash}' and datahash='${dataHash}' and channelname='${channelName}' `)
     if (c.c == 0) {
-        //blockListener.emit('createBlock', block)
         yield sql.saveRow('blocks',
             {
                 'blocknum': block.header.number,
@@ -105,7 +102,7 @@ function* saveBlockRange(block) {
         wss.broadcast(notify);
 
         //////////chaincode//////////////////
-        syncChaincodes();
+        //syncChaincodes();
         //////////tx/////////////////////////
         let txLen = block.data.data.length
         for (let i = 0; i < txLen; i++) {
@@ -165,8 +162,6 @@ function* saveBlockRange(block) {
 
             yield sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${chaincode}' and channelname='${channelName}' `)
         }
-    } else {
-        console.log("Already exists blocks");
     }
 }
 
@@ -197,7 +192,7 @@ function getCurBlockNum(channelName) {
 
 // ====================chaincodes=====================================
 function* saveChaincodes(channelName) {
-    let chaincodes = yield query.getInstalledChaincodes(peer, channelName, 'installed', org)
+    let chaincodes = yield query.getInstalledChaincodes(peer, channelName, 'Instantiated', org)
     let len = chaincodes.length
     if (typeof chaincodes === 'string') {
         logger.debug(chaincodes)
@@ -241,7 +236,6 @@ function* savePeerlist(channelName) {
 function syncChaincodes() {
     var channelName = ledgerMgr.getCurrChannel();
     co(saveChaincodes, channelName).then(() => {
-        // blockListener.emit('syncChaincodes', channelName)
     }).catch(err => {
         logger.error(err)
     })
@@ -250,7 +244,6 @@ function syncChaincodes() {
 function syncPeerlist() {
     var channelName = ledgerMgr.getCurrChannel();
     co(savePeerlist, channelName).then(() => {
-        // blockListener.emit('syncPeerlist', channelName)
     }).catch(err => {
         logger.error(err)
     })

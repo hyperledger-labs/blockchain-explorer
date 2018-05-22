@@ -28,6 +28,9 @@ var txnPerMinMeter = Metrics.txMetrics
 // var stomp=require('../socket/websocketserver.js').stomp()
 
 var statusMertics = require('../service/metricservice.js')
+var config = require('../../config.json')
+var networkConfig = config["network-config"];
+var org = Object.keys(networkConfig)[0];
 
 
 var ledgerEvent = ledgerMgr.ledgerEvent
@@ -35,10 +38,13 @@ ledgerEvent.on('channgelLedger', function () {
     blockPerMinMeter.clean()
     txnPerSecMeter.clean()
     txnPerMinMeter.clean()
+    var changeStatus = fabricClientProxy.modifyChannelObj(org);
+    if(changeStatus){
+        start();
+    }
 })
 
 function start() {
-
     setInterval(function () {
         blockPerMinMeter.push(0)
         txnPerSecMeter.push(0)

@@ -19,6 +19,10 @@ const channel = handleActions({
         .set('loaded', true)
         .set('channel', action.payload)
         .set('errors', action.error),
+    [actionTypes.CHANGECHANNEL]: (state = InitialState(), action) => state
+        .set('loaded', true)
+        .set('channel', action.payload)
+        .set('errors', action.error)
 }, new InitialState())
 
 export default channel

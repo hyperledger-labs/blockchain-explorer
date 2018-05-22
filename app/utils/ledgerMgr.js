@@ -16,22 +16,22 @@
 
 var EventEmitter = require('events').EventEmitter;
 var ledgerEvent = new EventEmitter();
-var config=require('../../config.json')
-var query=require('../query.js')
+var config = require('../../config.json')
+var query = require('../query.js')
 
 var currChannel;
 
-function changeChannel(channelName){
-    currChannel=channelName
+var changeChannel = function (channelName) {
+    currChannel = channelName
     ledgerEvent.emit('channgelLedger')
 }
 
-function getCurrChannel(){
-    if(currChannel == undefined)
+var getCurrChannel = function () {
+    if (currChannel == undefined)
         currChannel = config.channel;
     return currChannel
 }
 
-exports.getCurrChannel=getCurrChannel
-exports.changeChannel=changeChannel
-exports.ledgerEvent=ledgerEvent
+exports.getCurrChannel = getCurrChannel
+exports.changeChannel = changeChannel
+exports.ledgerEvent = ledgerEvent
