@@ -141,7 +141,7 @@ function* saveBlockRange(channelName, start, end) {
                     'endorser_msp_id': mspId,
                     'chaincode_id': chaincodeID || "None",
                     'type': tx.payload.header.channel_header.typeString,
-                    'payload': payload || "None"
+                    'payload': payload || "None",
                     'read_set': JSON.stringify(readSet),
                     'write_set': JSON.stringify(writeSet)
                 })
