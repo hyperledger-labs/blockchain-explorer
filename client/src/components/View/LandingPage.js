@@ -7,12 +7,14 @@ import Slider from 'react-slick';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import Logo from '../../static/images/Explorer_Logo.svg';
-import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+import { headerCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getPeerList as getPeerListCreator } from '../../store/actions/peer/action-creators';
-import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
-import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
-import { getHeaderCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
-import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
+import { blockList as getBlockListCreator } from '../../store/actions/block/action-creators';
+import { transactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
+import { getChannelList as getChannelListCreator } from '../../store/actions/chanelList/action-creators';
+import { getChannel as getChannelCreator } from '../../store/actions/channel/action-creators';
+import { headerCount as getHeaderCountCreator } from '../../store/actions/header/action-creators';
+import { chaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
 import { getTxByOrg as getTxByOrgCreator } from '../../store/actions/charts/action-creators';
 import {
   blocksPerHour as getBlocksPerHourCreator,

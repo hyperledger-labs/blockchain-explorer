@@ -2,8 +2,6 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
-import { shallow } from "enzyme";
 import App from "./App";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

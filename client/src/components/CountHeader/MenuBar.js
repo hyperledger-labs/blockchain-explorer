@@ -11,12 +11,24 @@ import Blocks from '../Lists/Blocks';
 import Transactions from '../Lists/Transactions';
 import DashboardView from '../View/DashboardView';
 import Chaincodes from '../Lists/Chaincodes';
-import { getChaincodes as getChaincodesCreator } from '../../store/actions/chaincodes/action-creators';
-import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
-import { getTransactionInfo as getTransactionInfoCreator } from '../../store/actions/transaction/action-creators';
-import { getLatestBlock as getLatestBlockCreator } from '../../store/actions/latestBlock/action-creators';
-import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
-import { getTransactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
+import { blockList } from '../../store/actions/block/action-creators';
+import { chaincodes } from '../../store/actions/chaincodes/action-creators';
+import { headerCount } from '../../store/actions/header/action-creators';
+import { latestBlock } from '../../store/actions/latestBlock/action-creators';
+import { transactionInfo } from '../../store/actions/transaction/action-creators';
+import { transactionList } from '../../store/actions/transactions/action-creators';
+import {
+  getBlock,
+  getBlockList,
+  getChaincodes,
+  getChannelList,
+  getChannelSelector,
+  getCountHeader,
+  getNotification,
+  getPeerList,
+  getTransaction,
+  getTransactionList
+} from '../../store/selectors/selectors'
 import {
   Navbar,
   Nav,
@@ -40,13 +52,13 @@ const styles = theme => ({
   },
 });
 
-class MenuBar extends Component {
+export class MenuBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       activeView: 'DashboardView',
-      activeTab: { dashboardTab: true, peersTab: false, blocksTab: false, chaincodesTab: false },
-      countHeader: { countHeader: this.props.getCountHeader() }
+      activeTab: { dashboardTab: true, networkTab: false, blocksTab: false, chaincodesTab: false },
+      countHeader: { countHeader: this.props.getHeaderCount() }
     }
   }
 
@@ -66,7 +78,7 @@ class MenuBar extends Component {
 
   componentDidMount() {
     setInterval(() => {
-      this.props.getCountHeader(this.props.channel.currentChannel);
+      this.props.getHeaderCount(this.props.channel.currentChannel);
       this.props.getLatestBlock(this.props.channel.currentChannel, 0);
     }, 3000)
   }
@@ -76,7 +88,7 @@ class MenuBar extends Component {
     this.setState({
       activeTab: {
         dashboardTab: false,
-        peersTab: false,
+        networkTab: false,
         blocksTab: false,
         txTab: true,
         chaincodesTab: false
@@ -89,7 +101,7 @@ class MenuBar extends Component {
     this.setState({
       activeTab: {
         dashboardTab: false,
-        peersTab: false,
+        networkTab: false,
         blocksTab: true,
         txTab: false,
         chaincodesTab: false
@@ -97,12 +109,12 @@ class MenuBar extends Component {
     });
   }
 
-  handleClickPeerView = () => {
+  handleClickNetworkView = () => {
     this.setState({ activeView: 'PeerView' });
     this.setState({
       activeTab: {
         dashboardTab: false,
-        peersTab: true,
+        networkTab: true,
         blocksTab: false,
         txTab: false,
         chaincodesTab: false
@@ -115,7 +127,7 @@ class MenuBar extends Component {
     this.setState({
       activeTab: {
         dashboardTab: true,
-        peersTab: false,
+        networkTab: false,
         blocksTab: false,
         txTab: false,
         chaincodesTab: false
@@ -128,7 +140,7 @@ class MenuBar extends Component {
     this.setState({
       activeTab: {
         dashboardTab: false,
-        peersTab: false,
+        networkTab: false,
         blocksTab: false,
         txTab: false,
         chaincodesTab: true
@@ -138,7 +150,6 @@ class MenuBar extends Component {
 
   render() {
     let currentView = null;
-
     switch (this.state.activeView) {
       case 'TransactionView':
         currentView = <Transactions channel={this.props.channel} countHeader={this.props.countHeader} transactionList={this.props.transactionList.rows} getTransactionList={this.props.getTransactionList} transaction={this.props.transaction} getTransactionInfo={this.props.getTransactionInfo} />;
@@ -166,7 +177,7 @@ class MenuBar extends Component {
           <Navbar color="faded" light expand="md">
             <Nav className="ml-auto" navbar>
               <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}>DASHBOARD </NavItem>
-              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
+              <NavItem active={this.state.activeTab.networkTab} onClick={this.handleClickNetworkView}>NETWORK  </NavItem>
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
               <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
               <NavItem active={this.state.activeTab.chaincodesTab} onClick={this.handleClickChaincodeView}>CHAINCODES</NavItem>
@@ -181,29 +192,22 @@ class MenuBar extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  getBlockList: (channel, offset) => dispatch(getBlockListCreator(channel, offset)),
-  getChaincodes: (channel, offset) => dispatch(getChaincodesCreator(channel, offset)),
-  getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
-  getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
-  getTransactionInfo: (channel, tx_id) => dispatch(getTransactionInfoCreator(channel, tx_id)),
-  getTransactionList: (curChannel, offset) => dispatch(getTransactionListCreator(curChannel, offset))
-});
-
-const mapStateToProps = state => ({
-  block: state.block.block,
-  blockList: state.blockList.blockList,
-  chaincodes: state.chaincodes.chaincodes,
-  channel: state.channel.channel,
-  channelList: state.channelList.channelList,
-  countHeader: state.countHeader.countHeader,
-  peerList: state.peerList.peerList,
-  transaction: state.transaction.transaction,
-  transactionList: state.transactionList.transactionList,
-  notification: state.notification.notification
-});
-
-export default compose(
-  withStyles(styles, { name: 'CountHeader' }),
-  connect(mapStateToProps, mapDispatchToProps),
-)(MenuBar);
+export default connect((state) => ({
+    block: getBlock(state),
+    blockList: getBlockList(state),
+    chaincodes: getChaincodes(state),
+    channel: getChannelSelector(state),
+    channelList: getChannelList(state),
+    countHeader: getCountHeader(state),
+    notification: getNotification(state),
+    peerList: getPeerList(state),
+    transaction: getTransaction(state),
+    transactionList: getTransactionList(state)
+}), {
+      getBlockList: blockList,
+      getChaincodes: chaincodes,
+      getHeaderCount: headerCount,
+      getLatestBlock: latestBlock,
+      getTransactionInfo: transactionInfo,
+      getTransactionList: transactionList
+  })(MenuBar);

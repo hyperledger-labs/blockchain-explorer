@@ -2,8 +2,6 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
-import { mount } from "enzyme";
 import Transactions from "./Transactions";
 import ReactTable from 'react-table';
 import TransactionView from '../View/TransactionView';

@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TimeChart from './TimeChart';
+import moment from 'moment-timezone';
 import {
   TabContent,
   TabPane,
@@ -27,7 +28,7 @@ import {
   getTxPerHour,
   getTxPerMin,
   getChannelSelector
-} from '../../store/selectors/Charts/selectors';
+} from '../../store/selectors/selectors';
 import classnames from 'classnames';
 
 export class ChartStats extends Component {
@@ -39,11 +40,6 @@ export class ChartStats extends Component {
     }
   }
 
-  toggle = (tab) => {
-    this.setState({
-      activeTab: tab
-    });
-  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.props.getBlocksPerMin(nextProps.channel.currentChannel);
@@ -60,6 +56,35 @@ export class ChartStats extends Component {
     this.props.getTxPerMin(this.props.channel.currentChannel);
     this.props.getTxPerHour(this.props.channel.currentChannel);
     }, 6000)
+  }
+
+   timeDataSetup = (chartData = []) => {
+    let displayData
+    let dataMax = 0;
+
+      displayData = chartData.map( data => {
+        if (parseInt(data.count, 10) > dataMax) {
+          dataMax = parseInt(data.count, 10)
+        }
+
+        return {
+          datetime: moment(data.datetime).tz(moment.tz.guess()).format("h:mm A"),
+          count: data.count
+        }
+      })
+
+    dataMax = dataMax + 5;
+
+    return {
+      displayData: displayData,
+      dataMax: dataMax
+    }
+  }
+
+  toggle = (tab) => {
+    this.setState({
+      activeTab: tab
+    });
   }
 
   render() {
@@ -102,16 +127,16 @@ export class ChartStats extends Component {
             </Nav>
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId="1">
-                <TimeChart chartData={this.props.blockPerHour} />
+                <TimeChart chartData={this.timeDataSetup(this.props.blockPerHour.rows)} />
               </TabPane>
               <TabPane tabId="2">
-                <TimeChart chartData={this.props.blockPerMin} />
+                <TimeChart chartData={this.timeDataSetup(this.props.blockPerMin.rows)} />
               </TabPane>
               <TabPane tabId="3">
-                <TimeChart chartData={this.props.txPerHour} />
+                <TimeChart chartData={this.timeDataSetup(this.props.txPerHour.rows)} />
               </TabPane>
               <TabPane tabId="4">
-                <TimeChart chartData={this.props.txPerMin} />
+                <TimeChart chartData={this.timeDataSetup(this.props.txPerMin.rows)} />
               </TabPane>
             </TabContent>
           </CardBody>

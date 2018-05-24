@@ -2,8 +2,6 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from "react";
-import { shallow } from "enzyme";
 import { ChartStats } from  './ChartStats';
 
 jest.useFakeTimers();
@@ -71,4 +69,16 @@ describe('ChartStats', () => {
     wrapper.find('NavLink').findWhere(n => n.contains('BLOCKS / HOUR')).first().simulate('click')
     expect(wrapper.state('activeTab')).toBe('1')
   });
+
+  test('timeDataSetup should return new dataMax', () => {
+    const { wrapper } = setup();
+    const data = [{"datetime":"2018-05-13T17:00:00.000Z","count":"10"}]
+    expect(wrapper.instance().timeDataSetup(data).dataMax).toBe(15)
+  })
+
+  test('timeDataSetup should return same dataMax', () => {
+    const { wrapper } = setup();
+    const data = [{"datetime":"2018-05-13T17:00:00.000Z","count":"0"}]
+    expect(wrapper.instance().timeDataSetup(data).dataMax).toBe(5)
+  })
 });
