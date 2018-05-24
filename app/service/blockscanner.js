@@ -15,25 +15,21 @@
  */
 
 
-var query = require('../query.js')
+var query = require('../platform/fabric/query.js')
+var fabricConfiguration = require('../platform/fabric/FabricConfiguration.js')
+
 var helper = require('../helper.js')
 var co = require('co')
 var logger = helper.getLogger('blockscanner');
-var ledgerMgr = require('../utils/ledgerMgr.js')
-var config = require('../../config.json')
 var sql = require('../db/pgservice.js');
 var wss = require('../../main.js');
 var blockListener
 
-var networkConfig = config["network-config"];
-var org = Object.keys(networkConfig)[0];
-var orgObj = config["network-config"][org];
-var orgKey = Object.keys(orgObj);
-var index = orgKey.indexOf("peer1");
-var peer = orgKey[index];
+var org = fabricConfiguration.getDefaultOrg();
+var peer = fabricConfiguration.getDefaultPeer();
 
 function syncBlock() {
-    var channelName = ledgerMgr.getCurrChannel();
+    var channelName = fabricConfiguration.getCurrChannel();
     let maxBlockNum
     let curBlockNum
     Promise.all([
@@ -210,15 +206,9 @@ function* saveChaincodes(channelName) {
 }
 
 function* savePeerlist(channelName) {
-    var array = Object.keys(networkConfig);
-    var peerlists;
-    array.forEach(function (element) {
-        var peerlist = query.getPeerList(element, channelName);
-        if (peerlists != undefined)
-            peerlists = peerlists.concat(peerlist);
-        else
-            peerlists = peerlist;
-    });
+
+    var peerlists = yield query.getConnectedPeers(channelName);
+
     let peerlen = peerlists.length
     for (let i = 0; i < peerlen; i++) {
         var peers = {};
@@ -234,7 +224,7 @@ function* savePeerlist(channelName) {
 }
 
 function syncChaincodes() {
-    var channelName = ledgerMgr.getCurrChannel();
+    var channelName = fabricConfiguration.getCurrChannel();
     co(saveChaincodes, channelName).then(() => {
     }).catch(err => {
         logger.error(err)
@@ -242,7 +232,7 @@ function syncChaincodes() {
 }
 
 function syncPeerlist() {
-    var channelName = ledgerMgr.getCurrChannel();
+    var channelName = fabricConfiguration.getCurrChannel();
     co(savePeerlist, channelName).then(() => {
     }).catch(err => {
         logger.error(err)

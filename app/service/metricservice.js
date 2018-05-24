@@ -16,7 +16,7 @@
 
 var co = require('co')
 var helper = require('../helper.js');
-var query = require('../query.js');
+var query = require('../platform/fabric/query.js');
 var logger = helper.getLogger('metricservice');
 var sql = require('../db/pgservice.js');
 
@@ -52,9 +52,11 @@ function* getPeerData(channelName) {
 function* getTxPerChaincodeGenerate(channelName) {
   let txArray = []
   var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
-  c.forEach((item, index) => {
-    txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
-  })
+  if(c != null) {
+    c.forEach((item, index) => {
+      txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
+    })
+  }
   return txArray
 
 }

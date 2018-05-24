@@ -18,16 +18,14 @@ var requtil = require('./app/utils/requestutils.js')
 var logger = helper.getLogger('main');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
-var configuration = require('./app/FabricConfiguration.js')
+var configuration = require('./app/platform/fabric/FabricConfiguration.js')
 var chModel = require('./app/models/channel.js');
 var url = require('url');
 var WebSocket = require('ws');
-
-
-var query = require('./app/query.js');
+var query = require('./app/platform/fabric/query.js');
+var timer = require('./app/timer/timer.js')
 var ledgerMgr = require('./app/utils/ledgerMgr.js')
 
-var timer = require('./app/timer/timer.js')
 timer.start()
 
 
@@ -36,20 +34,14 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var config = require('./config.json');
-var query = require('./app/query.js');
+var appconfig = require('./appconfig.json');
 var sql = require('./app/db/pgservice.js');
 
-var host = process.env.HOST || config.host;
-var port = process.env.PORT || config.port;
+var host = process.env.HOST || appconfig.host;
+var port = process.env.PORT || appconfig.port;
 
-
-var networkConfig = config["network-config"];
-var org = Object.keys(networkConfig)[0];
-var orgObj = config["network-config"][org];
-var orgKey = Object.keys(orgObj);
-var index = orgKey.indexOf("peer1");
-var peer = orgKey[index];
+var org = configuration.getDefaultOrg();
+var peer = configuration.getDefaultPeer();
 
 // =======================   controller  ===================
 
@@ -122,7 +114,7 @@ GET /api/curChannel
 curl -i 'http://<host>:<port>/api/curChannel'
 */
 app.get('/api/curChannel', function (req, res) {
-    res.send({ 'currentChannel': ledgerMgr.getCurrChannel() })
+    res.send({ 'currentChannel': configuration.getCurrChannel() })
 })
 
 /**
@@ -132,8 +124,9 @@ curl -i 'http://<host>:<port>/api/curChannel'
 */
 app.get('/api/changeChannel/:channelName',function(req,res){
     let channelName=req.params.channelName
-    ledgerMgr.changeChannel(channelName)
-    res.send({ 'currentChannel': ledgerMgr.getCurrChannel() })
+    configuration.changeChannel(channelName)
+    ledgerMgr.ledgerEvent.emit('channgelLedger'); 
+    res.send({ 'currentChannel': configuration.getCurrChannel() })
 })
 
 /***

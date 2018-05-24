@@ -19,7 +19,7 @@ var blockListener = new EventEmitter();
 var blockScanner = require('../service/blockscanner.js')
 blockScanner.setBlockListener(blockListener)
 
-var channeleventhub = require('../listener/channeleventhublistener.js')
+var channeleventhub = require('../platform/fabric/channeleventhublistener.js')
 
 var blockMetrics = require('../metrics/metrics').blockMetrics
 var txMetrics = require('../metrics/metrics').txMetrics
@@ -51,7 +51,7 @@ blockListener.on('syncBlock', function () {
 
 blockListener.on('syncChannelEventHubBlock', function () {
     setTimeout(function () {
-        channeleventhub.syncChannelEventHubBlock()
+        channeleventhub.syncChannelEventHubBlock(blockScanner.saveBlockRange)
     }, 1000)
 })
 

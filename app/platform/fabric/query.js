@@ -19,7 +19,7 @@ var util = require('util');
 var hfc = require('fabric-client');
 var Peer = require('fabric-client/lib/Peer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
-var helper = require('./helper.js');
+var helper = require('../../helper.js');
 var logger = helper.getLogger('Query');
 var fabricClientProxy = require('./FabricClientProxy.js');
 var configuration = require('./FabricConfiguration.js');
@@ -197,7 +197,23 @@ var getChannelHeight = function (peer, channelName, org) {
 			return "0";
 		}
 	})
-}
+};
+
+/*This function
+*/
+var getConnectedPeers = function (channelName) {
+	var orgs = configuration.getOrgs();
+	var peerlists;
+	orgs.forEach(function (element) {
+		var peerlist = getPeerList(element, channelName);
+		if (peerlists != undefined)
+			peerlists = peerlists.concat(peerlist);
+		else
+			peerlists = peerlist;
+	});
+
+	return peerlists;
+};
 
 function buildTarget(peer, org) {
 	var target = null;
@@ -207,7 +223,7 @@ function buildTarget(peer, org) {
 	}
 
 	return target;
-}
+};
 
 exports.queryChaincode = queryChaincode;
 exports.getBlockByNumber = getBlockByNumber;
@@ -219,3 +235,4 @@ exports.getChannels = getChannels;
 exports.getChannelHeight = getChannelHeight;
 exports.getPeerList = getPeerList;
 exports.getOrganizations = getOrganizations;
+exports.getConnectedPeers = getConnectedPeers;

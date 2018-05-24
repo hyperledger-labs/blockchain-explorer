@@ -1,16 +1,16 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-var helper = require('../helper.js')
+var helper = require('../../helper.js')
 var logger = helper.getLogger('channeleventhublistener');
-var fabricClientProxy = require('../FabricClientProxy.js')
-var config = require('../../config.json')
+var fabricClientProxy = require('./FabricClientProxy.js')
+var fabricConfiguration = require('./FabricConfiguration.js')
 var co = require('co')
-var blockScanner = require('../service/blockscanner.js')
-var networkConfig = config["network-config"];
-var org = Object.keys(networkConfig)[0];
 
-function syncChannelEventHubBlock() {
+
+function syncChannelEventHubBlock(saveToDatabase) {
+
+    var org = fabricConfiguration.getDefaultOrg();
     var channel_event_hub = fabricClientProxy.getChannelEventHub(org);
     channel_event_hub.connect(true);
 
@@ -19,7 +19,7 @@ function syncChannelEventHubBlock() {
             console.log('Successfully received the block event' + block);
             if (block.data != undefined) {
                 //full block	
-                co(blockScanner.saveBlockRange, block).then(() => {
+                co(saveToDatabase, block).then(() => {
                 }).catch(err => {
                     console.log(err.stack);
                     logger.error(err)

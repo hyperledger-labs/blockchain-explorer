@@ -15,7 +15,7 @@
  */
 
 const { Client } = require('pg');
-var config = require('../../config.json')
+var config = require('../../appconfig.json')
 var pgconfig = config.pg
 var helper = require('../helper.js');
 var logger = helper.getLogger('pgservice');

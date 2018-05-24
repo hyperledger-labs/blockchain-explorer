@@ -17,8 +17,8 @@ var ledgerMgr = require('../utils/ledgerMgr.js')
 var helper = require('../helper.js')
 var Metrics = require('../metrics/metrics.js')
 var blockListener = require('../listener/blocklistener.js').blockListener()
-var fabricClientProxy = require('../FabricClientProxy.js')
-var configuration = require('../FabricConfiguration.js')
+var fabricClientProxy = require('../platform/fabric/FabricClientProxy.js')
+var configuration = require('../platform/fabric/FabricConfiguration.js')
 
 
 var blockPerMinMeter = Metrics.blockMetrics
@@ -28,9 +28,6 @@ var txnPerMinMeter = Metrics.txMetrics
 // var stomp=require('../socket/websocketserver.js').stomp()
 
 var statusMertics = require('../service/metricservice.js')
-var config = require('../../config.json')
-var networkConfig = config["network-config"];
-var org = Object.keys(networkConfig)[0];
 
 
 var ledgerEvent = ledgerMgr.ledgerEvent
@@ -38,7 +35,7 @@ ledgerEvent.on('channgelLedger', function () {
     blockPerMinMeter.clean()
     txnPerSecMeter.clean()
     txnPerMinMeter.clean()
-    var changeStatus = fabricClientProxy.modifyChannelObj(org);
+    var changeStatus = fabricClientProxy.modifyChannelObj(configuration.getDefaultOrg());
     if(changeStatus){
         start();
     }

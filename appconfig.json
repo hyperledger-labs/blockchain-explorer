@@ -1,0 +1,14 @@
+{
+	"pg": {
+		"host": "127.0.0.1",
+		"port": "5432",
+		"database": "fabricexplorer",
+		"username": "udaydeshpande",
+        "passwd": "fabricpass"
+    },
+	"configtxgenToolPath":"/Users/udaydeshpande/Desktop/hyperledgerfabrick/fabric-samples/bin",
+	"host": "localhost",
+	"port": "8085"
+
+}
+
