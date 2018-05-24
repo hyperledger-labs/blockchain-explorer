@@ -6,8 +6,7 @@ import React, { Component } from 'react';
 // import Card, { CardContent } from 'material-ui/Card';
 import { Card, CardHeader, CardBody } from 'reactstrap';
 import { PieChart, Pie, Tooltip, Legend } from 'recharts';
-import txByOrg from '../../store/reducers/txByOrg';
-const colors = ['#0B091A','#6283D0','#0D3799','#7C7C7C'];
+const colors = ['#0B091A', '#6283D0', '#0D3799', '#7C7C7C'];
 class OrgPieChart extends Component {
     constructor(props) {
         super(props);
@@ -20,25 +19,34 @@ class OrgPieChart extends Component {
 
         }
     }
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         var temp = [];
         var index = 0;
-        nextProps.txByOrg.forEach(element => {
-            temp.push({value: parseInt(element.count), name: element.creator_msp_id,
-            fill: colors[index]});
-            index++;
-        });
-        this.setState({data:temp});
+        if (nextProps.txByOrg !== undefined) {
+            nextProps.txByOrg.forEach(element => {
+                temp.push({
+                    value: parseInt(element.count), name: element.creator_msp_id,
+                    fill: colors[index]
+                });
+                index++;
+            });
+        }
+        this.setState({ data: temp });
+
     }
     componentDidMount() {
         var temp = [];
         var index = 0;
-        this.props.txByOrg.forEach(element => {
-            temp.push({value: parseInt(element.count), name: element.creator_msp_id,
-            fill: colors[index]});
-            index++;
-        });
-        this.setState({data:temp});
+        if (this.props.txByOrg !== undefined) {
+            this.props.txByOrg.forEach(element => {
+                temp.push({
+                    value: parseInt(element.count), name: element.creator_msp_id,
+                    fill: colors[index]
+                });
+                index++;
+            });
+        }
+        this.setState({ data: temp });
     }
     render() {
         return (
@@ -50,7 +58,7 @@ class OrgPieChart extends Component {
                     <CardBody>
                         <PieChart width={535} height={230}>
                             <Legend align="right" height={15} />
-                            <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%"  outerRadius={50} label fill="fill" />
+                            <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50} label fill="fill" />
                             <Tooltip />
                         </PieChart>
                     </CardBody>

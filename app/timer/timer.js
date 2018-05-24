@@ -31,7 +31,7 @@ var statusMertics = require('../service/metricservice.js')
 
 
 var ledgerEvent = ledgerMgr.ledgerEvent
-ledgerEvent.on('channgelLedger', function () {
+ledgerEvent.on('changeLedger', function () {
     blockPerMinMeter.clean()
     txnPerSecMeter.clean()
     txnPerMinMeter.clean()

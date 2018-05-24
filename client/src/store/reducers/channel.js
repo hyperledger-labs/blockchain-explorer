@@ -25,4 +25,7 @@ const channel = handleActions({
         .set('errors', action.error)
 }, new InitialState())
 
+/*const sampleCallBack = (state, action) => {
+    return { state: channel, ...action.payload };
+}*/
 export default channel

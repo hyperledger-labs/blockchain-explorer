@@ -26,24 +26,27 @@ class DashboardView extends Component {
             arr.unshift(nextProps.notification);
             this.setState({ notifications: arr });
         }
+        if (nextProps.channel.currentChannel !== this.props.channel.currentChannel)
+            this.props.getTxByOrg(nextProps.channel.currentChannel);
     }
     componentDidMount() {
-        var count = 1;
         setInterval(() => {
-            this.props.getTxByOrg(this.props.channel.currentChannel);
-        }, 60000);
+        this.props.getTxByOrg(this.props.channel.currentChannel);
+       }, 60000);
 
         var arr = [];
         for (var i = 0; i < 3; i++) {
-            var block = this.props.blockList[i];
-            var notify = {
-                'title': 'Block ' + block.blocknum + ' Added',
-                'type': 'block',
-                'time': block.createdt,
-                'txcount': block.txcount,
-                'datahash': block.datahash
-            };
-            arr.push(notify);
+            if(this.props.blockList!==undefined){
+                var block = this.props.blockList[i];
+                var notify = {
+                    'title': 'Block ' + block.blocknum + ' Added',
+                    'type': 'block',
+                    'time': block.createdt,
+                    'txcount': block.txcount,
+                    'datahash': block.datahash
+                };
+                arr.push(notify);
+            }
         }
         this.setState({ notifications: arr });
     }

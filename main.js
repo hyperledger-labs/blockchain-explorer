@@ -124,10 +124,10 @@ Return change channel
 POST /api/changeChannel
 curl -i 'http://<host>:<port>/api/curChannel'
 */
-app.get('/api/changeChannel/:channelName',function(req,res){
-    let channelName=req.params.channelName
+app.get('/api/changeChannel/:channelName', function (req, res) {
+    let channelName = req.params.channelName
     configuration.changeChannel(channelName)
-    ledgerMgr.ledgerEvent.emit('channgelLedger');
+    ledgerMgr.ledgerEvent.emit('changeLedger');
     res.send({ 'currentChannel': configuration.getCurrChannel() })
 })
 

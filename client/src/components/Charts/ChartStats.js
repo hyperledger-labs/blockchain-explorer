@@ -21,7 +21,6 @@ import {
   txPerHour,
   txPerMin
 } from '../../store/actions/charts/action-creators';
-import { getChannel } from '../../store/actions/channel/action-creators';
 import {
   getBlockperHour,
   getBlockPerMin,
@@ -45,13 +44,21 @@ export class ChartStats extends Component {
       activeTab: tab
     });
   }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
+      this.props.getBlocksPerMin(nextProps.channel.currentChannel);
+      this.props.getBlocksPerHour(nextProps.channel.currentChannel);
+      this.props.getTxPerMin(nextProps.channel.currentChannel);
+      this.props.getTxPerHour(nextProps.channel.currentChannel);
+    }
+  }
 
   componentDidMount() {
     setInterval(() => {
-      this.props.getBlocksPerMin(this.props.channel.currentChannel);
-      this.props.getBlocksPerHour(this.props.channel.currentChannel);
-      this.props.getTxPerMin(this.props.channel.currentChannel);
-      this.props.getTxPerHour(this.props.channel.currentChannel);
+    this.props.getBlocksPerMin(this.props.channel.currentChannel);
+    this.props.getBlocksPerHour(this.props.channel.currentChannel);
+    this.props.getTxPerMin(this.props.channel.currentChannel);
+    this.props.getTxPerHour(this.props.channel.currentChannel);
     }, 6000)
   }
 

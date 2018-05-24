@@ -17,7 +17,7 @@ export const getChannel = () => dispatch => {
 export const changeChannel = (channelName) => dispatch => {
     get('/api/changeChannel/' + channelName)
         .then(resp => {
-            dispatch(createAction(actionTypes.CHANGECHANNEL)(resp, channelName))
+            dispatch(createAction(actionTypes.CHANGECHANNEL)(resp))
         }).catch((error) => {
             console.error(error);
         })

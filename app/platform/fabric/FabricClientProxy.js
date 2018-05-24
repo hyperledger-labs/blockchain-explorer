@@ -153,9 +153,11 @@ class FabricClientProxy {
 			let cryptoSuite = hfc.newCryptoSuite();
 			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
 			client.setCryptoSuite(cryptoSuite);
-			this.channels[key] = {};
-			this.channelEventHubs[key] = {};
-			this.peers = [];
+			if(this.channels[key] == undefined){
+				this.channels[key] = {};
+				this.channelEventHubs[key] = {};
+				this.peers = [];
+			}				
 			let channel = client.newChannel(channelName);
 			//Now clients are available for use.
 			this.clients[key] = client;
