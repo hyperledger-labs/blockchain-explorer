@@ -9,7 +9,8 @@ var hfc = require('fabric-client');
 var helper = require('../helper.js');
 var logger = helper.getLogger('joinChannel');
 var networkService = require('./networkservice.js');
-var orgPath = path.join(__dirname, '../config/channel/org1.yaml');
+var config = require('../../config.json');
+var orgPath = path.join(__dirname, '../config/org1.yaml');
 var networkCfgPath = path.join(__dirname, '../config/network-config-tls.yaml');
 
 /*

@@ -7,17 +7,17 @@
 				"requests": "grpcs://127.0.0.1:7051",
 				"events": "grpcs://127.0.0.1:7053",
 				"server-hostname": "peer0.org1.example.com",
-				"tls_cacerts": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"tls_cacerts": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"peer2": {
 				"requests": "grpcs://127.0.0.1:8051",
 				"events": "grpcs://127.0.0.1:8053",
 				"server-hostname": "peer1.org1.example.com",
-				"tls_cacerts": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+				"tls_cacerts": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
 			},
 			"admin": {
-				"key": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
-				"cert": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+				"key": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"cert": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
 			}
 		},
 		"org2": {
@@ -27,17 +27,17 @@
 				"requests": "grpcs://127.0.0.1:9051",
 				"events": "grpcs://127.0.0.1:9053",
 				"server-hostname": "peer0.org2.example.com",
-				"tls_cacerts": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+				"tls_cacerts": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 			},
 			"peer2": {
 				"requests": "grpcs://127.0.0.1:10051",
 				"events": "grpcs://127.0.0.1:10053",
 				"server-hostname": "peer1.org2.example.com",
-				"tls_cacerts": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+				"tls_cacerts": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
 			},
 			"admin": {
-				"key": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
-				"cert": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
+				"key": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
+				"cert": "/home/nfrunza/workspace/fabric-1.1/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
 			}
 		}
 	},
@@ -46,7 +46,6 @@
 	"channel": "mychannel",
 	"keyValueStore": "/tmp/fabric-client-kvs",
 	"eventWaitTime": "30000",
-	"configtxgenToolPath":"fabric-path/fabric-samples/bin",
 	"users":[
 		{
 		   "username":"admin",

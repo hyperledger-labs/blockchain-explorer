@@ -40,13 +40,11 @@ var createFabChannel = async function (channelName, channelConfigPath, orgName, 
 
 			return response;
 		} else {
-			console.debug("A >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-			logger.error('\n\nFailed to create the channel ' + channelName + '\n\n', response);
-			throw new Error('\n\nFailed to create the channel ' + channelName + '\n\n', response);
+			logger.error('Failed to create the channel ' + channelName , response);
+			throw new Error('Failed to create the channel ' + channelName , response);
 		}
 
 	} catch (err) {
-		console.debug("B >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 		logger.error('Failed to initialize the channel: ' + err.stack ? err.stack : err);
 		throw new Error('Failed to initialize the channel: ' + err);
 

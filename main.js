@@ -16,10 +16,12 @@ var bodyParser = require('body-parser');
 var helper = require('./app/helper');
 var requtil = require('./app/utils/requestutils.js')
 var logger = helper.getLogger('main');
+logger.setLevel('INFO');
 var txModel = require('./app/models/transactions.js')
 var blocksModel = require('./app/models/blocks.js')
 var configuration = require('./app/platform/fabric/FabricConfiguration.js')
 var chModel = require('./app/models/channel.js');
+var chs = require('./app/service/channelservice.js');
 var url = require('url');
 var WebSocket = require('ws');
 var query = require('./app/platform/fabric/query.js');
@@ -125,7 +127,7 @@ curl -i 'http://<host>:<port>/api/curChannel'
 app.get('/api/changeChannel/:channelName',function(req,res){
     let channelName=req.params.channelName
     configuration.changeChannel(channelName)
-    ledgerMgr.ledgerEvent.emit('channgelLedger'); 
+    ledgerMgr.ledgerEvent.emit('channgelLedger');
     res.send({ 'currentChannel': configuration.getCurrChannel() })
 })
 
@@ -456,30 +458,11 @@ app.get("/api/txByOrg/:channel", function (req, res) {
 });
 
 /***
-    SETUP instructions for create new channel
-
-    SET PATH to configtxgen tool in your .bashrc file
-
-    On ubnuntu, you can use command
-    $sudo nano ~/.bashrc
-    export FABRIC_CFG_PATH=fabric-path/fabric-samples/first-network
-    export PATH=$PATH:$FABRIC_CFG_PATH
-    save the file and refresh, use command
-    $source ~/.bashrc
-
-    Update config.json file, look for the key configtxgenToolPath, should match your
-    configtxgen tool path
-
-    Update "fabric-path" in file /blockchain-explorer/app/config/network-config-tls.yaml to your
-    fabric network path
-
-    Everytime you add a new channel you need to define it in file:
-    /blockchain-explorer/app/config/network-config-tls.yaml
-    Search for keyword newchannel, and update it to the name of your new channel
+   Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
 
     The values of the profile and genesisBlock are taken fron the configtx.yaml file that
     is used by the configtxgen tool
-    Example values for:
+    Example values from the defualt first network:
     profile = 'TwoOrgsChannel';
     genesisBlock = 'TwoOrgsOrdererGenesis';
 */
@@ -488,24 +471,34 @@ app.get("/api/txByOrg/:channel", function (req, res) {
 Create new channel
 POST /api/channel
 
-curl -X POST -H "Content-Type: application/json" -d '{"orgName":"Org1","channelName":"newchannel","profile" : "TwoOrgsChannel", "genesisBlock":"TwoOrgsOrdererGenesis" }' http://localhost:8080/api/channel
 Response: {  success: true, message: "Successfully created channel "   }
 */
 
-app.post('/api/channel', function (req, res) {
-    var channelName = req.body.channelName;
-    var orgName = req.body.orgName;
-    var profile = req.body.profile;
-    var genesisBlock = req.body.genesisBlock
-    logger.debug("channelName, orgName, profile, genesisBlock ", channelName, orgName, profile, genesisBlock)
+app.post('/api/channel', async function (req, res) {
+    try {
 
-    if (channelName && orgName && profile && genesisBlock) {
-        chModel.createChannel(channelName, orgName, profile, genesisBlock).then((resp) => {
-            return res.send(resp);
-        });
-
-    } else {
-        return requtil.invalidRequest(req, res)
+        let artifacts = await chModel.aSyncUpload(req, res);
+        if (artifacts) {
+            if (artifacts.channelTXpath && artifacts.blockPath) {
+                try {
+                    let channelCreate = await chs.createChannel(artifacts.channelName, artifacts.orgName, artifacts.profile, artifacts.genesisBlock, artifacts.channelTXpath);
+                    res.send(channelCreate)
+                } catch (err) {
+                    res.send({ success: false, message: err })
+                }
+            } else {
+                let response = {
+                    success: false,
+                    message: "Invalid request, payload: "
+                };
+                return response;
+            }
+        } else {
+            res.send({ success: false, message: 'no artifacts' })
+        }
+    } catch (err) {
+        logger.error(err)
+        return res.send({ success: false, message: "Invalid request, payload" });
     }
 });
 

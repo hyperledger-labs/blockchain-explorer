@@ -3,12 +3,10 @@
 		"host": "127.0.0.1",
 		"port": "5432",
 		"database": "fabricexplorer",
-		"username": "udaydeshpande",
-        "passwd": "fabricpass"
-    },
-	"configtxgenToolPath":"/Users/udaydeshpande/Desktop/hyperledgerfabrick/fabric-samples/bin",
+		"username": "hppoc",
+		"passwd": "password"
+	},
 	"host": "localhost",
-	"port": "8085"
-
+	"port": "8080",
+	"license": "Apache-2.0"
 }
-
