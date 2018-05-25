@@ -43,6 +43,12 @@ blockListener.on('syncPeerlist', function () {
     }, 1000)
 })
 
+blockListener.on('syncChannels', function () {
+    setTimeout(function () {
+        blockScanner.syncChannels()
+    }, 1000)
+})
+
 blockListener.on('syncBlock', function () {
     setTimeout(function () {
         blockScanner.syncBlock()
