@@ -22,7 +22,7 @@ class FabricConfiguration {
 	}
 
 	getOrgAdmin(org) {
-		this.networkConfig[org].admin;
+		return this.networkConfig[org].admin;
 	}
 
 	getKeyStoreForOrg(org) {
