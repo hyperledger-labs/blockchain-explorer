@@ -228,7 +228,6 @@ app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
     if (channelName) {
         txModel.getTxList(channelName, blockNum, txid)
             .then(rows => {
-                console.log(rows)
                 if (rows) {
                     return res.send({ status: 200, rows: rows })
                 }
