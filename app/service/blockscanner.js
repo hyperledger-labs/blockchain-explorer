@@ -204,6 +204,41 @@ function* saveChaincodes(channelName) {
     }
 
 }
+function* saveChannel(peer, org) {
+    let { channels } = yield query.getChannels(peer, org)
+    for (let i = 0; i < channels.length; i++) {
+        let date = new Date()
+        var channel = {
+            blocks: 0,
+            trans: 0,
+            name: channels[i].channel_id,
+            createdt: date,
+            channel_hash: ''
+        };
+        channel.blocks = yield query.getChannelHeight(peer, channel.name, org)
+        for (let j = 0; j < channel.blocks; j++) {
+            let block = yield query.getBlockByNumber(peer, channel.name, j, org)
+            channel.trans += block.data.data.length
+            if (j == channel.blocks - 1) {
+                channel.channel_hash = block.data.data[block.data.data.length - 1].payload.header.channel_header.tx_id
+            }
+        }
+        let c = yield sql.getRowByPkOne(`select count(1) as c from channel where name='${channel.name}'`)
+        if (c.c == 0) {
+            yield sql.saveRow('channel', { "name": channel.name, "createdt": channel.createdt, "blocks": channel.blocks, "trans": channel.trans, "channel_hash": channel.channel_hash })
+        } else {
+            yield sql.updateBySql(`update channel set blocks='${channel.blocks}',trans='${channel.trans}',channel_hash='${channel.channel_hash}' where name='${channel.name}'`)
+        }
+    }
+}
+
+function syncChannels() {
+    var channelName = fabricConfiguration.getCurrChannel();
+    co(saveChannel, peer, org).then(() => {
+    }).catch(err => {
+        logger.error(err)
+    })
+}
 
 function* savePeerlist(channelName) {
 
@@ -243,7 +278,7 @@ exports.syncBlock = syncBlock
 exports.syncChaincodes = syncChaincodes
 exports.syncPeerlist = syncPeerlist
 exports.saveBlockRange = saveBlockRange
-
+exports.syncChannels = syncChannels
 exports.setBlockListener = function (blisten) {
     blockListener = blisten
 }

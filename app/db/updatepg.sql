@@ -14,6 +14,7 @@ ALTER TABLE Transaction ADD COLUMN chaincode_id character varying(256) DEFAULT N
 ALTER TABLE Transaction ADD COLUMN type character varying(128) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN read_set  json default NULL;
 ALTER TABLE Transaction ADD COLUMN write_set  json default NULL;
+ALTER TABLE channel ADD COLUMN channel_hash character varying(256) DEFAULT NULL;
 
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;
