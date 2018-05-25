@@ -4,14 +4,14 @@
 			"name": "Org0",
 			"mspid": "Org0MSP",
 			"peer0": {
-				"requests": "grpcs://peer0.org0.diid.network:7051",
-				"events": "grpcs://peer0.org0.diid.network:7053",
+				"requests": "grpcs://127.0.0.1:7051",
+				"events": "grpcs://127.0.0.1:7053",
 				"server-hostname": "peer0.org0.diid.network",
 				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer0.org0.diid.network/tls/ca.crt"
 			},
 			"peer1": {
-				"requests": "grpcs://peer1.org0.diid.network:8051",
-				"events": "grpcs://peer1.org0.diid.network:8053",
+				"requests": "grpcs://127.0.0.1:8051",
+				"events": "grpcs://127.0.0.1:8053",
 				"server-hostname": "peer1.org0.diid.network",
 				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org0.diid.network/peers/peer1.org0.diid.network/tls/ca.crt"
 			},
@@ -24,14 +24,14 @@
 			"name": "Org1",
 			"mspid": "Org1MSP",
 			"peer0": {
-				"requests": "grpcs://peer0.org1.diid.network:9051",
-				"events": "grpcs://peer0.org1.diid.network:9053",
+				"requests": "grpcs://127.0.0.1:9051",
+				"events": "grpcs://127.0.0.1:9053",
 				"server-hostname": "peer0.org1.diid.network",
 				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer0.org1.diid.network/tls/ca.crt"
 			},
 			"peer1": {
-				"requests": "grpcs://peer1.org1.diid.network:10051",
-				"events": "grpcs://peer1.org1.diid.network:10053",
+				"requests": "grpcs://127.0.0.1:10051",
+				"events": "grpcs://127.0.0.1:10053",
 				"server-hostname": "peer1.org1.diid.network",
 				"tls_cacerts": "/opt/gopath/src/github.com/distributedID/bcmanager/fixtures/environments/local/crypto-config/peerOrganizations/org1.diid.network/peers/peer1.org1.diid.network/tls/ca.crt"
 			},
@@ -53,7 +53,7 @@
 		}
 	 ],
 	"pg": {
-		"host": "postgres-provider.diid.network",
+		"host": "127.0.0.1",
 		"port": "5433",
 		"database": "fabricexplorer",
 		"username": "diid",
