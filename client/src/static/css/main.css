@@ -18,6 +18,16 @@ font-weight: 300;
     margin-right: 10px;
     padding-right: 15px;
 }
+.button{
+    background-color:#afeeee;
+    font-size: 16px;
+    color: black;
+    padding: 7px 35px;
+    margin: 14px 0px;
+    display:block;
+    border: none;
+    box-shadow: 0px 9px 10px  rgba(0,0,0,0.05)
+}
 .bell{
     margin-top: 36px;
     color: #5F6164;
