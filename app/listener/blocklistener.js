@@ -40,25 +40,25 @@ blockListener.on('syncChaincodes', function () {
 blockListener.on('syncPeerlist', function () {
     setTimeout(function () {
         blockScanner.syncPeerlist()
-    }, 1000)
+    }, 2000)
 })
 
 blockListener.on('syncChannels', function () {
     setTimeout(function () {
         blockScanner.syncChannels()
-    }, 1000)
+    }, 2000)
 })
 
 blockListener.on('syncBlock', function () {
     setTimeout(function () {
         blockScanner.syncBlock()
-    }, 1000)
+    }, 2000)
 })
 
 blockListener.on('syncChannelEventHubBlock', function () {
     setTimeout(function () {
         channeleventhub.syncChannelEventHubBlock(blockScanner.saveBlockRange)
-    }, 1000)
+    }, 2000)
 })
 
 

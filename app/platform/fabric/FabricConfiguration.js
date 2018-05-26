@@ -22,8 +22,7 @@ class FabricConfiguration {
 	getDefaultOrg() {
 
 		if(defaultOrg == undefined) {
-			var networkConfig = config["network-config"];
-			defaultOrg = Object.keys(networkConfig)[0];
+			defaultOrg = Object.keys(this.networkConfig)[0];
 		}
 
 		return defaultOrg;

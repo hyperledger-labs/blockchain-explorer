@@ -11,6 +11,7 @@ var util = require('util');
 var fs = require('fs-extra');
 var User = require('fabric-client/lib/User.js');
 var crypto = require('crypto');
+var FabricChannel = require('./FabricChannel.js');
 logger.setLevel('INFO');
 var hfc = require('fabric-client');
 hfc.addConfigFile(path.join(__dirname, './config.json'));
@@ -22,104 +23,37 @@ class FabricClientProxy {
 		this.clients = {};
 		this.channels = {};
 		this.caClients = {};
-		this.channelEventHubs = {};
-		this.peers = [];
+		this.peers = {};
 		this.createDefault();
 	}
 
-	modifyChannelObj(org) {
-		if (this.channels[org][configuration.getCurrChannel()] == undefined) {
-			this.createDefault();
-			return true;
-		} else {
-			return false;
-		}
+	getDefaultPeer()
+	{
+		return this.peers[[configuration.getDefaultOrg(), configuration.getDefaultPeer()]];
 	}
 
-	getChannelForOrg(org) {
-		if (this.channels[org][configuration.getCurrChannel()] == undefined)
-			this.createDefault();
-		return this.channels[org][configuration.getCurrChannel()];
-	};
+	getChannel(channelName) {
+		return this.channels[channelName].channel;
+	}
+
+	getChannels() {
+		return Object.keys(this.channels);
+	}
+
+	getChannelObjects() {
+		return Object.values(this.channels);
+	}
+
+
+	getChannelEventHub(channelName) {
+		return this.channels[channelName].channelEventHub;
+	}
+
 
 	getClientForOrg(org) {
 		return this.clients[org];
 	};
 
-	getChannelEventHub(org) {
-		var client = this.getClientForOrg(org)
-		this.setupPeers(null, org, client, true);
-		var channel = this.getChannelForOrg(org);
-		if (this.channelEventHubs[org][this.peers[0]] == undefined) {
-
-			var channel_event_hub = channel.newChannelEventHub(this.peers[0]);
-			this.channelEventHubs[org][this.peers[0]] = channel_event_hub;
-		}
-		return this.channelEventHubs[org][this.peers[0]];
-	}
-
-	newRemotes(urls, forPeers, userOrg) {
-		var targets = [];
-		// find the peer that match the urls
-		outer:
-		for (let index in urls) {
-			let peerUrl = urls[index];
-			let found = false;
-
-			var orgs = configuration.getOrgs();
-			for (let key of orgs) {
-				// if looking for event hubs, an app can only connect to
-				// event hubs in its own org
-				if (!forPeers && key !== userOrg) {
-					return;
-				}
-				let org = configuration.getOrg(key);
-				let client = this.getClientForOrg(key);
-
-				var peers = configuration.getPeersByOrg(key);
-
-				for (let prop of peers) {
-					if (org[prop]['requests'].indexOf(peerUrl) >= 0) {
-						// found a peer matching the subject url
-						if (forPeers) {
-							if (org[prop]['tls_cacerts'] != undefined) {
-								let data = fs.readFileSync(org[prop]['tls_cacerts']);
-								targets.push(client.newPeer(peerUrl, {
-									pem: Buffer.from(data).toString(),
-									'ssl-target-name-override': org[prop]['server-hostname']
-								}));
-							} else {
-								targets.push(client.newPeer(peerUrl));
-							}
-						} else {
-							let eh = client.newEventHub();
-							if (org[prop]['tls_cacerts'] != undefined) {
-								let data = fs.readFileSync(org[prop]['tls_cacerts']);
-								eh.setPeerAddr(org[prop]['events'], {
-									pem: Buffer.from(data).toString(),
-									'ssl-target-name-override': org[prop]['server-hostname']
-								});
-							} else {
-								eh.setPeerAddr(org[prop]['events']);
-							}
-							targets.push(eh);
-						}
-
-						continue outer;
-
-					}
-				}
-			}
-			if (!found) {
-				logger.error(util.format('Failed to find a peer matching the url %s', peerUrl));
-			}
-		}
-		return targets;
-	}
-
-	newPeers(urls) {
-		return this.newRemotes(urls, true, '');
-	};
 
 	setAdminForClient(org, client) {
 		var admin = configuration.getOrg(org).admin;
@@ -153,13 +87,7 @@ class FabricClientProxy {
 			let cryptoSuite = hfc.newCryptoSuite();
 			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
 			client.setCryptoSuite(cryptoSuite);
-			if(this.channels[key] == undefined){
-				this.channels[key] = {};
-				this.channelEventHubs[key] = {};
-				this.peers = [];
-			}				
-			let channel = client.newChannel(channelName);
-			//Now clients are available for use.
+
 			this.clients[key] = client;
 			//For each client setup a admin user as signining identity
 			this.setAdminForClient(key, client);
@@ -168,16 +96,18 @@ class FabricClientProxy {
 			}).then(store => {
 				client.setStateStore(store);
 			});
-			this.channels[key][channelName] = channel;
-			this.setupPeers(channel, key, client, false);
-			for (let peer of this.peers) {
-				var channel_event_hub = channel.newChannelEventHub(peer);
-				this.channelEventHubs[key][peer] = channel_event_hub;
-			}
+
+			this.setupPeers(key, client, false);
 		});
+
+		var that = this;
+		setTimeout (function () {
+			that.setChannels();
+		}, 1000);
+
 	}
 
-	setupPeers(channel, org, client, isReturn) {
+	setupPeers(org, client, isReturn) {
 		configuration.getPeersByOrg(org).forEach(key => {
 			let peer
 			if (configuration.getOrg(org)[key]['tls_cacerts'] != undefined) {
@@ -194,11 +124,52 @@ class FabricClientProxy {
 					configuration.getOrg(org)[key].requests
 				);
 			}
-			this.peers.push(peer);
-			if (!isReturn)
-				channel.addPeer(peer);
+
+			this.peers[[org, key]] = peer;
 		});
 	}
+
+
+	async setChannels() {
+
+		var client = this.getClientForOrg(configuration.getDefaultOrg());
+		var channelInfo =  await this.queryChannels(configuration.getDefaultPeer(), configuration.getDefaultOrg());
+
+		channelInfo.channels.forEach( chan => {
+			var channelName = chan.channel_id;
+			let channel = client.newChannel(channelName);
+			channel.addPeer(this.getDefaultPeer());
+			var channel_event_hub = channel.newChannelEventHub(this.getDefaultPeer());
+			this.channels[channelName] = new FabricChannel(channelName, channel, channel_event_hub);
+		});
+
+	}
+
+	queryChannels(peer, org) {
+		var target = this.buildTarget(peer, org);
+		var client = this.getClientForOrg(org);
+		return client.queryChannels(target).then((channelinfo) => {
+			if (channelinfo) {
+				return channelinfo;
+			} else {
+				logger.error('response_payloads is null');
+				return 'response_payloads is null';
+			}
+		}, (err) => {
+			logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
+				err);
+			return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+		}).catch((err) => {
+			logger.error('Failed to query with error:' + err.stack ? err.stack : err);
+			return 'Failed to query with error:' + err.stack ? err.stack : err;
+		});
+	}
+
+	buildTarget(peer, org) {
+
+		return this.peers[[org, peer]];
+	}
+
 }
 
 module.exports = new FabricClientProxy();

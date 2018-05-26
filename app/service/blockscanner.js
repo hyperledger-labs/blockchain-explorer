@@ -17,37 +17,45 @@
 
 var query = require('../platform/fabric/query.js')
 var fabricConfiguration = require('../platform/fabric/FabricConfiguration.js')
+var fabricProxy = require('../platform/fabric/FabricClientProxy.js')
 
 var helper = require('../helper.js')
 var co = require('co')
 var logger = helper.getLogger('blockscanner');
 var sql = require('../db/pgservice.js');
 var wss = require('../../main.js');
+
+
 var blockListener
 
 var org = fabricConfiguration.getDefaultOrg();
 var peer = fabricConfiguration.getDefaultPeer();
 
-function syncBlock() {
-    var channelName = fabricConfiguration.getCurrChannel();
-    let maxBlockNum
-    let curBlockNum
-    Promise.all([
-        getMaxBlockNum(channelName),
-        getCurBlockNum(channelName)
-    ]).then(datas => {
-        maxBlockNum = parseInt(datas[0])
-        curBlockNum = parseInt(datas[1]) + 1
-        co(getBlockByNumber, channelName, curBlockNum, maxBlockNum).then(() => {
-        }).catch(err => {
-            console.log(err.stack);
-            logger.error(err)
-        })
-    }).catch(err => {
-        logger.error(err)
-    })
+async function syncBlock() {
+    try {
+        var channels =   fabricProxy.getChannels();
 
-
+        channels.forEach( channelName => {
+            let maxBlockNum
+            let curBlockNum
+            Promise.all([
+                getMaxBlockNum(channelName),
+                getCurBlockNum(channelName)
+            ]).then(datas => {
+                maxBlockNum = parseInt(datas[0])
+                curBlockNum = parseInt(datas[1]) + 1
+                co(getBlockByNumber, channelName, curBlockNum, maxBlockNum).then(() => {
+                }).catch(err => {
+                    console.log(err.stack);
+                    logger.error(err)
+                })
+            }).catch(err => {
+                logger.error(err)
+            });
+        });
+    }catch (err) {
+    console.log(err);
+    }
 }
 
 function* getBlockByNumber(channelName, start, end) {

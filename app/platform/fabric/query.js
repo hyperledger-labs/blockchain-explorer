@@ -28,10 +28,10 @@ var FabricCAService = require('fabric-ca-client');
 
 var peerFailures = 0;
 var queryChaincode = function (peer, channelName, chaincodeName, fcn, args, org) {
-	var channel = fabricClientProxy.getChannelForOrg(org);
+	var channel = fabricClientProxy.getChannel(channelName);
 	var client = fabricClientProxy.getClientForOrg(org);
 
-	var target = buildTarget(peer, org);
+	var target = fabricClientProxy.buildTarget(peer, org);
 	//Let Cahnnel use second peer added
 	if (peerFailures > 0) {
 		let peerToRemove = channel.getPeers()[0];
@@ -50,8 +50,8 @@ var queryChaincode = function (peer, channelName, chaincodeName, fcn, args, org)
 };
 
 var getBlockByNumber = function (peer, channelName, blockNumber, org) {
-	var target = buildTarget(peer, org);
-	var channel = fabricClientProxy.getChannelForOrg(org);
+	var target = fabricClientProxy.buildTarget(peer, org);
+	var channel = fabricClientProxy.getChannel(channelName);
 	return channel.queryBlock(parseInt(blockNumber), target).then((channelinfo) => {
 		if (channelinfo) {
 			return channelinfo;
@@ -73,22 +73,24 @@ var getBlockByNumber = function (peer, channelName, blockNumber, org) {
 var getTransactionByID = function (peer, channelName, trxnID, org) {
 	if (trxnID) {
 
-	var target = buildTarget(peer, org);
-	var channel = fabricClientProxy.getChannelForOrg(org);
+	var target = fabricClientProxy.buildTarget(peer, org);
+	var channel = fabricClientProxy.getChannel(channelName);
 	return channel.queryTransaction(trxnID, target);
 	}
 	return {};
 
 };
+
 var getBlockByHash = function (peer, hash, org) {
-	var target = buildTarget(peer, org);
+	var target = fabricClientProxy.buildTarget(peer, org);
 	var channel = fabricClientProxy.getChannelForOrg(org);
 	return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
 };
+
 var getChainInfo = function (peer, channelName, org) {
-	var target = buildTarget(peer, org);
-	var client = fabricClientProxy.getClientForOrg(org);
-	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
+	var target = fabricClientProxy.buildTarget(peer, org);
+
+	var channel = fabricClientProxy.getChannel(channelName);
 	return channel.queryInfo(target, true).then((blockchainInfo) => {
 		if (blockchainInfo) {
 			// FIXME: Save this for testing 'getBlockByHash'  ?
@@ -113,9 +115,9 @@ var getChainInfo = function (peer, channelName, org) {
 
 //getInstalledChaincodes
 var getInstalledChaincodes = function (peer, channelName, type, org) {
-	var target = buildTarget(peer, org);
+	var target = fabricClientProxy.buildTarget(peer, org);
 	var client = fabricClientProxy.getClientForOrg(org);
-	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
+	var channel = fabricClientProxy.getChannel(channelName);
 	return (function() {
 		if (type === 'installed') {
 			return client.queryInstalledChaincodes(target, true);
@@ -155,35 +157,17 @@ var getInstalledChaincodes = function (peer, channelName, type, org) {
 	});
 };
 
-var getOrganizations = function (org, channelName) {
-	var channel = fabricClientProxy.getChannelForOrg(org, channelName);
+var getOrganizations = function (channelName) {
+	var channel = fabricClientProxy.getChannel(channelName);
 	return channel.getOrganizations();
 };
 
 var getChannels = function (peer, org) {
-	var target = buildTarget(peer, org);
-	var client = fabricClientProxy.getClientForOrg(org);
-	return client.queryChannels(target).then((channelinfo) => {
-		if (channelinfo) {
-			return channelinfo;
-		} else {
-			logger.error('response_payloads is null');
-			return 'response_payloads is null';
-		}
-	}, (err) => {
-		logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-			err);
-		return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-	}).catch((err) => {
-		logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-		return 'Failed to query with error:' + err.stack ? err.stack : err;
-	});
+	return fabricClientProxy.queryChannels(peer, org);
 };
 
-var getPeerList = function (org, channelName) {
-	var client = fabricClientProxy.getClientForOrg(org);
-	var channel = fabricClientProxy.getChannelForOrg(org);
-	return channel.getPeers();
+var getConnectedPeers = function (channelName) {
+	return fabricClientProxy.getChannel(channelName).getPeers();
 };
 
 var getChannelHeight = function (peer, channelName, org) {
@@ -199,32 +183,6 @@ var getChannelHeight = function (peer, channelName, org) {
 	})
 };
 
-/*This function
-*/
-var getConnectedPeers = function (channelName) {
-	var orgs = configuration.getOrgs();
-	var peerlists;
-	orgs.forEach(function (element) {
-		var peerlist = getPeerList(element, channelName);
-		if (peerlists != undefined)
-			peerlists = peerlists.concat(peerlist);
-		else
-			peerlists = peerlist;
-	});
-
-	return peerlists;
-};
-
-function buildTarget(peer, org) {
-	var target = null;
-	if (typeof peer !== 'undefined') {
-		let targets = fabricClientProxy.newPeers([configuration.getPeerAddressByName(org, peer)]);
-		if (targets && targets.length > 0) target = targets[0];
-	}
-
-	return target;
-};
-
 exports.queryChaincode = queryChaincode;
 exports.getBlockByNumber = getBlockByNumber;
 exports.getTransactionByID = getTransactionByID;
@@ -233,6 +191,5 @@ exports.getChainInfo = getChainInfo;
 exports.getInstalledChaincodes = getInstalledChaincodes;
 exports.getChannels = getChannels;
 exports.getChannelHeight = getChannelHeight;
-exports.getPeerList = getPeerList;
 exports.getOrganizations = getOrganizations;
 exports.getConnectedPeers = getConnectedPeers;
