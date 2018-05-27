@@ -16,8 +16,10 @@
 var ledgerMgr = require('../utils/ledgerMgr.js')
 var helper = require('../helper.js')
 var Metrics = require('../metrics/metrics.js')
-var blockListener = require('../listener/blocklistener.js').blockListener()
-var fabricClientProxy = require('../platform/fabric/FabricClientProxy.js')
+var BlockListener = require('../listener/Blocklistener.js')
+var BlockScanner = require('../service/BlockScanner.js')
+
+var PlatformBuilder = require('../platform/PlatformBuilder.js')
 var configuration = require('../platform/fabric/FabricConfiguration.js')
 
 
@@ -30,34 +32,23 @@ var txnPerMinMeter = Metrics.txMetrics
 var statusMertics = require('../service/metricservice.js')
 
 
-var ledgerEvent = ledgerMgr.ledgerEvent
-ledgerEvent.on('changeLedger', function () {
-    blockPerMinMeter.clean()
-    txnPerSecMeter.clean()
-    txnPerMinMeter.clean()
-    var changeStatus = fabricClientProxy.modifyChannelObj(configuration.getDefaultOrg());
-    if(changeStatus){
-        start();
-    }
-})
+async function start(platform) {
 
-function start() {
-    setInterval(function () {
-        blockPerMinMeter.push(0)
-        txnPerSecMeter.push(0)
-        txnPerMinMeter.push(0)
-    }, 500)
+        blockScanner = new BlockScanner(platform);
+        blockListener = new BlockListener(blockScanner);
 
+        setInterval(function () {
+            blockPerMinMeter.push(0)
+            txnPerSecMeter.push(0)
+            txnPerMinMeter.push(0)
+        }, 500);
 
-    //Sync Block
-    blockListener.emit('syncChannels')
-    blockListener.emit('syncChaincodes')
-    blockListener.emit('syncPeerlist')
-    blockListener.emit('syncBlock')
-    blockListener.emit('syncChannelEventHubBlock')
-
-
-
+        //Sync Block
+        blockListener.emit('syncChannels');
+        blockListener.emit('syncChaincodes');
+        blockListener.emit('syncPeerlist');
+        blockListener.emit('syncBlock');
+        blockListener.emit('syncChannelEventHubBlock');
 }
 
 

@@ -2,7 +2,6 @@
 *    SPDX-License-Identifier: Apache-2.0
 */
 
-var query = require('./query.js')
 var co = require('co');
 var fabricConfiguration = require('./FabricConfiguration.js')
 var fabricClientProxy = require('./FabricClientProxy.js');

@@ -24,11 +24,12 @@ var chModel = require('./app/models/channel.js');
 var chs = require('./app/service/channelservice.js');
 var url = require('url');
 var WebSocket = require('ws');
-var query = require('./app/platform/fabric/query.js');
 var timer = require('./app/timer/timer.js')
 var ledgerMgr = require('./app/utils/ledgerMgr.js')
+var config = require('./appconfig.json');
+var PlatformBuilder = require('./app/platform/PlatformBuilder.js')
 
-timer.start()
+
 
 
 var statusMetrics = require('./app/service/metricservice.js')
@@ -61,6 +62,12 @@ Response:
  *
  */
 
+var platforms = config['platforms'];
+
+
+startRestServices();
+
+
 app.get("/api/status/:channel", function (req, res) {
     let channelName = req.params.channel
     if (channelName) {
@@ -78,38 +85,6 @@ app.get("/api/status/:channel", function (req, res) {
 });
 
 
-/**
-Return list of channels
-GET /channellist -> /api/channels
-curl -i http://<host>:<port>/api/channels
-Response:
-{
-  "channels": [
-    {
-    "channel_id": "mychannel"
-    }
-  ]
-}
- */
-
-app.get('/api/channels', function (req, res) {
-    var channels = [], counter = 0;
-    const orgs_peers = configuration.getOrgMapFromConfig();
-
-    orgs_peers.forEach(function (org) {
-        query.getChannels(org['value'], org['key']).then(channel => {
-            channel['channels'].forEach(function (element) {
-                channels.push(element['channel_id']);
-            });
-            if (counter == orgs_peers.length - 1) {
-                var response = { status: 200 };
-                response["channels"] = [...(new Set(channels))]
-                res.send(response);
-            }
-            counter++;
-        });
-    })
-})
 /**
 Return current channel
 GET /api/curChannel
@@ -131,30 +106,6 @@ app.get('/api/changeChannel/:channelName', function (req, res) {
     res.send({ 'currentChannel': configuration.getCurrChannel() })
 })
 
-/***
-Block by number
-GET /api/block/getinfo -> /api/block
-curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
- *
- */
-app.get("/api/block/:channel/:number", function (req, res) {
-    let number = parseInt(req.params.number)
-    let channelName = req.params.channel
-    if (!isNaN(number) && channelName) {
-        query.getBlockByNumber(peer, channelName, number, org)
-            .then(block => {
-                res.send({
-                    status: 200,
-                    'number': block.header.number.toString(),
-                    'previous_hash': block.header.previous_hash,
-                    'data_hash': block.header.data_hash,
-                    'transactions': block.data.data
-                })
-            })
-    } else {
-        return requtil.invalidRequest(req, res)
-    }
-});
 
 /***
 Transaction count
@@ -548,6 +499,68 @@ function broadcast(data) {
         }
     });
 };
+
+
+async function startRestServices() {
+
+    for(let pltfrm of platforms) {
+
+        platform = await PlatformBuilder.build(pltfrm);
+
+        timer.start(platform);
+
+        /***
+        Block by number
+        GET /api/block/getinfo -> /api/block
+        curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
+        *
+        */
+        app.get("/api/block/:channel/:number", function (req, res) {
+            let number = parseInt(req.params.number)
+            let channelName = req.params.channel
+            if (!isNaN(number) && channelName) {
+                platform.getBlockByNumber(channelName, number)
+                    .then(block => {
+                        res.send({
+                            status: 200,
+                            'number': block.header.number.toString(),
+                            'previous_hash': block.header.previous_hash,
+                            'data_hash': block.header.data_hash,
+                            'transactions': block.data.data
+                        })
+                    })
+            } else {
+                return requtil.invalidRequest(req, res)
+            }
+        });
+
+        /**
+        Return list of channels
+        GET /channellist -> /api/channels
+        curl -i http://<host>:<port>/api/channels
+        Response:
+        {
+        "channels": [
+            {
+            "channel_id": "mychannel"
+            }
+        ]
+        }
+        */
+
+        app.get('/api/channels', function (req, res) {
+            var channels = [], counter = 0;
+            var channels = platform.getChannels();
+
+            var response = { status: 200 };
+            response["channels"] = [...(new Set(channels))]
+            res.send(response);
+        });
+    }
+}
+
+
+
 exports.wss = wss;
 exports.broadcast = broadcast;
 // ============= start server =======================

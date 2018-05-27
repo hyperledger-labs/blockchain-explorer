@@ -16,7 +16,6 @@
 
 var co = require('co')
 var helper = require('../helper.js');
-var query = require('../platform/fabric/query.js');
 var logger = helper.getLogger('metricservice');
 var sql = require('../db/pgservice.js');
 
