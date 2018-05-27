@@ -19,12 +19,11 @@ hfc.setLogger(logger);
 
 class FabricClientProxy {
 
-	constructor(channelName) {
+	constructor() {
 		this.clients = {};
 		this.channels = {};
 		this.caClients = {};
 		this.peers = {};
-		this.createDefault();
 	}
 
 	getDefaultPeer()
@@ -55,55 +54,60 @@ class FabricClientProxy {
 	};
 
 
-	setAdminForClient(org, client) {
+	async setAdminForClient(org, client) {
 		var admin = configuration.getOrg(org).admin;
 		var keyPath = admin.key;
 		var keyPEM = Buffer.from(helper.readAllFiles(keyPath)[0]).toString();
 		var certPath = admin.cert;
 		var certPEM = helper.readAllFiles(certPath)[0].toString();
+		var admin;
 
-		var user = client.createUser({
-			username: 'peer' + org + 'Admin',
-			mspid: configuration.getMspID(org),
-			cryptoContent: {
-				privateKeyPEM: keyPEM,
-				signedCertPEM: certPEM
-			},
-			skipPersistence: false
-		}).then(admin => {
-			client.setAdminSigningIdentity(keyPEM, certPEM, configuration.getMspID(org));
-		}, err => {
+		try {
+					admin = await client.createUser({
+									username: 'peer' + org + 'Admin',
+									mspid: configuration.getMspID(org),
+									cryptoContent: {
+										privateKeyPEM: keyPEM,
+										signedCertPEM: certPEM
+									},
+									skipPersistence: false
+					});
+
+					client.setAdminSigningIdentity(keyPEM, certPEM, configuration.getMspID(org));
+		}
+		catch(err) {
 			console.log("error-admin--" + err.stack)
 			throw err;
-		});
-		return user;
+		}
+
+		return admin;
 	}
 
 	// set up the client and channel objects for each org
-	createDefault() {
-		configuration.getOrgs().forEach(key => {
-			let channelName = configuration.getCurrChannel();
+	async createDefault() {
+
+		for(let key of configuration.getOrgs())
+		{
 			let client = new hfc();
 			let cryptoSuite = hfc.newCryptoSuite();
-			cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
+
+			var store = await hfc.newDefaultKeyValueStore({
+				path: configuration.getKeyStoreForOrg(configuration.getOrgName(key))
+			});
+
+			client.setStateStore(store);
+
+			await cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
 			client.setCryptoSuite(cryptoSuite);
 
 			this.clients[key] = client;
 			//For each client setup a admin user as signining identity
-			this.setAdminForClient(key, client);
-			hfc.newDefaultKeyValueStore({
-				path: configuration.getKeyStoreForOrg(configuration.getOrgName(key))
-			}).then(store => {
-				client.setStateStore(store);
-			});
+			await this.setAdminForClient(key, client);
 
 			this.setupPeers(key, client, false);
-		});
+		}
 
-		var that = this;
-		setTimeout (function () {
-			that.setChannels();
-		}, 1000);
+		await this.setChannels();
 
 	}
 
@@ -145,24 +149,24 @@ class FabricClientProxy {
 
 	}
 
-	queryChannels(peer, org) {
+	async queryChannels(peer, org) {
 		var target = this.buildTarget(peer, org);
 		var client = this.getClientForOrg(org);
-		return client.queryChannels(target).then((channelinfo) => {
-			if (channelinfo) {
-				return channelinfo;
-			} else {
-				logger.error('response_payloads is null');
-				return 'response_payloads is null';
+
+		try {
+			var channelInfo = await client.queryChannels(target);
+			if (channelInfo) {
+				return channelInfo;
 			}
-		}, (err) => {
+			else {
+					logger.error('response_payloads is null');
+					return 'response_payloads is null';
+			}
+		} catch(err) {
 			logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
 				err);
 			return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-		}).catch((err) => {
-			logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-			return 'Failed to query with error:' + err.stack ? err.stack : err;
-		});
+		}
 	}
 
 	buildTarget(peer, org) {
@@ -172,4 +176,4 @@ class FabricClientProxy {
 
 }
 
-module.exports = new FabricClientProxy();
+module.exports = FabricClientProxy;

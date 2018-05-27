@@ -8,5 +8,6 @@
 	},
 	"host": "localhost",
 	"port": "8080",
-	"license": "Apache-2.0"
+	"license": "Apache-2.0",
+	"platforms": ["fabric"]
 }
