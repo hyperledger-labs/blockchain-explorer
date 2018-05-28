@@ -51,12 +51,12 @@ function* getPeerData(channelName) {
 function* getTxPerChaincodeGenerate(channelName) {
   let txArray = []
   var c = yield sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
-  console.log("chaincode---"+c)
-  //if(c != null) {
+  console.log("chaincode---" + c)
+  if (c) {
     c.forEach((item, index) => {
       txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
     })
-  //}
+  }
   return txArray
 
 }
