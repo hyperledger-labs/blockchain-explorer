@@ -16,7 +16,7 @@
 var ledgerMgr = require('../utils/ledgerMgr.js')
 var helper = require('../helper.js')
 var Metrics = require('../metrics/metrics.js')
-var BlockListener = require('../listener/Blocklistener.js')
+var BlockListener = require('../listener/BlockListener.js')
 var BlockScanner = require('../service/BlockScanner.js')
 
 var PlatformBuilder = require('../platform/PlatformBuilder.js')
