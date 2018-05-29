@@ -21,33 +21,20 @@ class  BlockListener extends EventEmitter{
             });
 
             this.on('syncChaincodes', function () {
-                setTimeout(function () {
                     blockScanner.syncChaincodes()
-                }, 1000)
             });
 
             this.on('syncPeerlist', function () {
-                setTimeout(function () {
                     blockScanner.syncPeerlist()
-                }, 2000)
             });
 
             this.on('syncChannels', function () {
-                setTimeout(function () {
                     blockScanner.syncChannels()
-                }, 2000)
             });
 
-            this.on('syncBlock', function () {
-                setTimeout(function () {
-                    blockScanner.syncBlock()
-                }, 2000)
-            });
-
-            this.on('syncChannelEventHubBlock', function () {
-                setTimeout(function () {
+            this.on('syncBlock', async function () {
+                    await blockScanner.syncBlock();
                     blockScanner.syncChannelEventHubBlock();
-                }, 2000)
             });
         }
 }

@@ -21,24 +21,17 @@ class BlockScanner {
         try {
             var channels =  this.platform.getChannels();
 
-            channels.forEach( channelName => {
+            for(let channelName of channels)
+            {
                 let maxBlockNum
                 let curBlockNum
-                Promise.all([
+                [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
                     this.getCurBlockNum(channelName)
-                ]).then(datas => {
-                    maxBlockNum = parseInt(datas[0])
-                    curBlockNum = parseInt(datas[1]) + 1
-                    co(this.getBlockByNumber, channelName, curBlockNum, maxBlockNum).then(() => {
-                    }).catch(err => {
-                        console.log(err.stack);
-                        logger.error(err)
-                    })
-                }).catch(err => {
-                    logger.error(err)
-                });
-            });
+                ]);
+
+                await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
+            };
         } catch (err) {
         console.log(err);
         }
@@ -49,7 +42,7 @@ class BlockScanner {
             let block = await platform.getBlockByNumber(channelName, start)
 
             try {
-                this.saveBlockRange(block)
+                await this.saveBlockRange(block)
             }
             catch(err) {
                 console.log(err.stack);
@@ -159,28 +152,33 @@ class BlockScanner {
     }
 
 
-    getMaxBlockNum(channelName) {
-        return platform.getChannelHeight(channelName).then(data => {
-            return data
-        }).catch(err => {
+    async getMaxBlockNum(channelName) {
+        try {
+            var data = await platform.getChannelHeight(channelName);
+            return data;
+        } catch(err) {
             logger.error(err)
-        })
+        }
     }
 
-    getCurBlockNum(channelName) {
-        let curBlockNum
-        return sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`).then(row => {
-            if (row == null || row.blocknum == null) {
-                curBlockNum = -1
-            } else {
-                curBlockNum = parseInt(row.blocknum)
-            }
+    async getCurBlockNum(channelName) {
+        try {
+        var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`);
 
-        }).then(() => {
-            return curBlockNum
-        }).catch(err => {
+        } catch(err) {
             logger.error(err)
-        })
+            return -1;
+        }
+
+        let curBlockNum
+
+        if (row == null || row.blocknum == null) {
+            curBlockNum = -1
+        } else {
+            curBlockNum = parseInt(row.blocknum)
+        }
+
+        return curBlockNum
     }
 
     // ====================chaincodes=====================================
