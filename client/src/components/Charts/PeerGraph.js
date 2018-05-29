@@ -17,16 +17,22 @@ class PeerGraph extends Component {
         this.state = {
             data: {
                 nodes: [
-                    { id: 'child1' },
-                    { id: 'child2' },
-                    { id: 'child3' },
-                    { id: 'child4' }
+                    { id: 'peer0.org0.diid.network' },
+                    { id: 'peer1.org0.diid.network' },
+                    { id: 'peer0.org1.diid.network' },
+                    { id: 'peer1.org1.diid.network' }
                 ],
                 links: [
-                    { source: 'child1', target: 'child2' },
-                    { source: 'child2', target: 'child3' },
-                    { source: 'child3', target: 'child4' },
-                    { source: 'child4', target: 'child1' }
+                    {
+                        source: 'peer0.org0.diid.network',
+                        target: 'peer1.org0.diid.network'
+                    }, {
+                        source: 'peer0.org0.diid.network',
+                        target: 'peer0.org1.diid.network'
+                    }, {
+                        source: 'peer0.org1.diid.network',
+                        target: 'peer1.org1.diid.network'
+                    }
                 ]
             },
             myConfig: {
@@ -50,29 +56,29 @@ class PeerGraph extends Component {
         }
     }
     componentDidMount() {
-        var nodes = [];
-        var links = [];
-        for (var i = 0; i < this.props.peerList.length; i++) {
-            nodes[i] = { id: this.props.peerList[i].server_hostname };
-            if (i < (this.props.peerList.length - 1)) {
-                links[i] = {
-                    source: this.props.peerList[i].server_hostname,
-                    target: this.props.peerList[i + 1].server_hostname
-                };
-            }
-            else {
-                links[i] = {
-                    source: this.props.peerList[i].server_hostname,
-                    target: this.props.peerList[0].server_hostname
-                };
-            }
-        }
-        this.setState({
-            data: {
-                nodes: nodes,
-                links: links
-            }
-        });
+        // var nodes = [];
+        // var links = [];
+        // for (var i = 0; i < this.props.peerList.length; i++) {
+        //     nodes[i] = { id: this.props.peerList[i].server_hostname };
+        //     if (i < (this.props.peerList.length - 1)) {
+        //         links[i] = {
+        //             source: this.props.peerList[i].server_hostname,
+        //             target: this.props.peerList[i + 1].server_hostname
+        //         };
+        //     }
+        //     else {
+        //         links[i] = {
+        //             source: this.props.peerList[i].server_hostname,
+        //             target: this.props.peerList[0].server_hostname
+        //         };
+        //     }
+        // }
+        // this.setState({
+        //     data: {
+        //         nodes: nodes,
+        //         links: links
+        //     }
+        // });
 
     }
     render() {
