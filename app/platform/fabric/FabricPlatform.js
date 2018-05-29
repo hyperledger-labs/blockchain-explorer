@@ -86,29 +86,29 @@ class FabricPlatform {
 			return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
 		}
 
-		getChainInfo(channelName) {
+		async getChainInfo(channelName) {
 			var target = this.proxy.buildTarget(this.peer, this.org);
 			var channel = this.proxy.getChannel(channelName);
-			return channel.queryInfo(target, true).then((blockchainInfo) => {
-				if (blockchainInfo) {
-					// FIXME: Save this for testing 'getBlockByHash'  ?
-					logger.debug('===========================================');
-					logger.debug(blockchainInfo.currentBlockHash);
-					logger.debug('===========================================');
-					//logger.debug(blockchainInfo);
-					return blockchainInfo;
-				} else {
-					logger.error('response_payloads is null');
-					return 'response_payloads is null';
-				}
-			}, (err) => {
+
+			try {
+					var blockchainInfo = await channel.queryInfo(target, true);
+
+					if (blockchainInfo) {
+						// FIXME: Save this for testing 'getBlockByHash'  ?
+						logger.debug('===========================================');
+						logger.debug(blockchainInfo.currentBlockHash);
+						logger.debug('===========================================');
+						//logger.debug(blockchainInfo);
+						return blockchainInfo;
+					} else {
+						logger.error('response_payloads is null');
+						return 'response_payloads is null';
+					}
+			} catch  (err) {
 				logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
 					err);
 				return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-			}).catch((err) => {
-				logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-				return 'Failed to query with error:' + err.stack ? err.stack : err;
-			});
+			}
 		}
 
 		//getInstalledChaincodes
@@ -168,17 +168,17 @@ class FabricPlatform {
 			return this.proxy.getChannel(channelName).getPeers();
 		}
 
-		getChannelHeight(channelName) {
-			return this.getChainInfo(channelName).then(response => {
-				if (response) {
-					logger.debug('<<<<<<<<<< channel height >>>>>>>>>')
-					if (response.height.low) {
-						logger.debug("response.height.low ", response.height.low);
-						return response.height.low.toString()
-					}
-					return "0";
+		async getChannelHeight(channelName) {
+			var response =  await this.getChainInfo(channelName);
+			if (response) {
+				logger.debug('<<<<<<<<<< channel height >>>>>>>>>')
+				if (response.height.low) {
+					logger.debug("response.height.low ", response.height.low);
+					return response.height.low.toString()
 				}
-			})
+			}
+
+			return "0";
 		}
 
 		async syncChannelEventHubBlock(saveToDatabase) {
@@ -191,7 +191,7 @@ class FabricPlatform {
 				channel_event_hub.connect(true);
 
 				channel_event_hub.registerBlockEvent(
-					async function (block) {
+					function (block) {
 						console.log('Successfully received the block event' + block);
 						if (block.data != undefined) {
 							//full block
