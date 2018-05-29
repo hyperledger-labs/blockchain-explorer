@@ -24,7 +24,7 @@ var peerList;
 
 //==========================query counts ==========================
 function getChaincodeCount(channelName) {
-  return sql.getRowsBySQlCase(`select count(1) c from chaincodes where channelname='${channelName}' `)
+  return sql.getRowsBySQlCase(`select count(1) c from chaincodes `)
 }
 
 function getPeerlistCount(channelName) {
@@ -51,7 +51,7 @@ function* getPeerData(channelName) {
 
 function* getTxPerChaincodeGenerate(channelName) {
   let txArray = []
-  var c = yield sql.getRowsBySQlNoCondtion(`select cc.channelname as channelname, cc.name as chaincodename, cc.version as version, cc.path as path, COALESCE(t.txcount, 0) as c from (SELECT * FROM chaincodes where channelname='${channelName}') cc LEFT OUTER JOIN (SELECT chaincode_id, count(*) as txcount from transaction GROUP BY chaincode_id) t ON cc.name = t.chaincode_id;`);
+  var c = yield sql.getRowsBySQlNoCondtion(`select cc.channelname as channelname, cc.name as chaincodename, cc.version as version, cc.path as path, COALESCE(t.txcount, 0) as c from (SELECT * FROM chaincodes) cc LEFT OUTER JOIN (SELECT chaincode_id, count(*) as txcount from transaction GROUP BY chaincode_id) t ON cc.name = t.chaincode_id;`);
   c.forEach((item, index) => {
     txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
   })

@@ -179,7 +179,7 @@ function getCurBlockNum(channelName) {
 
 // ====================chaincodes=====================================
 function* saveChaincodes(channelName) {
-    let chaincodes = yield query.getInstalledChaincodes(peer, channelName, 'instantiated', org)
+    let chaincodes = yield query.getInstalledChaincodes(peer, channelName, 'installed', org)
     let len = chaincodes.length
     if (typeof chaincodes === 'string') {
         logger.debug(chaincodes)
@@ -187,8 +187,13 @@ function* saveChaincodes(channelName) {
     }
     for (let i = 0; i < len; i++) {
         let chaincode = chaincodes[i]
-        chaincode.channelname = channelName
-        let c = yield sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' and channelname='${channelName}' `)
+        if (chaincode.name.indexOf("exchange") >= 0) {
+            chaincode.channelname = 'exchange-channel'
+        } else {
+            chaincode.channelname = 'private-channel'
+        }
+        // chaincode.channelname = channelName
+        let c = yield sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' `)
         if (c.c == 0) {
             yield sql.saveRow('chaincodes', chaincode)
         }
