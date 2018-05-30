@@ -216,6 +216,9 @@ class BlockScanner {
             for (let j = 0; j < channel.blocks; j++) {
                 let block = await platform.getBlockByNumber(channel.name, j)
                 channel.trans += block.data.data.length
+                if(j==0){
+                    channel.createdt = new Date(block.data.data[0].payload.header.channel_header.timestamp)
+                }
                 if (j == channel.blocks - 1) {
                     channel.channel_hash = block.data.data[block.data.data.length - 1].payload.header.channel_header.tx_id
                 }
