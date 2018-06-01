@@ -13,7 +13,7 @@ import {
   Nav, Navbar, NavbarBrand, NavbarToggler
 } from 'reactstrap';
 import AdminPanel from '../Panels/Admin';
-import Logo from '../../static/images/Explorer_Logo.svg';
+import Logo from '../../static/images/DIIDLogo.svg';
 import FontAwesome from 'react-fontawesome';
 import Drawer from 'material-ui/Drawer';
 import NotificationPanel from '../Panels/Notifications';
@@ -131,7 +131,7 @@ class HeaderView extends Component {
         <Websocket url='ws://localhost:8080/'
           onMessage={this.handleData.bind(this)} reconnect={true} />
         <Navbar color="faded" light expand="md">
-          <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
+          <NavbarBrand href="/"> <img src={Logo} className="logo" alt="DistributedID Logo" /></NavbarBrand>
           {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
