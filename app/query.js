@@ -69,22 +69,22 @@ var getBlockByNumber = function (peer, channelName, blockNumber, org) {
 	});
 };
 
-
 var getTransactionByID = function (peer, channelName, trxnID, org) {
 	if (trxnID) {
-
-	var target = buildTarget(peer, org);
-	var channel = fabricClientProxy.getChannelForOrg(org);
-	return channel.queryTransaction(trxnID, target);
+		var target = buildTarget(peer, org);
+		var channel = fabricClientProxy.getChannelForOrg(org);
+		return channel.queryTransaction(trxnID, target);
 	}
-	return {};
 
+	return {};
 };
+
 var getBlockByHash = function (peer, hash, org) {
 	var target = buildTarget(peer, org);
 	var channel = fabricClientProxy.getChannelForOrg(org);
 	return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
 };
+
 var getChainInfo = function (peer, channelName, org) {
 	var target = buildTarget(peer, org);
 	var client = fabricClientProxy.getClientForOrg(org);

@@ -25,7 +25,7 @@ function Header(props) {
     <div className={classes.root}>
       <AppBar position="static" >
         <Toolbar>
-          <Avatar src={process.env.PUBLIC_URL + '/favicon.ico'} alt='logoimage' className={classes.avatar} />
+          <Avatar src={process.env.PUBLIC_URL + '/DistributedID_Logo.ico'} alt='logoimage' className={classes.avatar} />
           <Typography type="title" color="inherit" className={classes.flex}>
           HYPERLEDGER EXPLORER
           </Typography>

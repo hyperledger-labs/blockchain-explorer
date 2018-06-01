@@ -92,7 +92,6 @@ function* saveBlockRange(channelName, start, end) {
             try {
                 chaincode = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace
             } catch (err) {
-                chaincode = ""
             }
 
             let rwset
@@ -107,8 +106,7 @@ function* saveBlockRange(channelName, start, end) {
 
             let chaincodeID
             try {
-                let chaincodeID =
-                    new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
+                chaincodeID = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name
             } catch (err) {
             }
 
@@ -116,29 +114,36 @@ function* saveBlockRange(channelName, start, end) {
             try {
                 status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
             } catch (err) {
+                status = 0
             }
 
             let mspId = []
-
             try {
                 mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
             } catch (err) {
             }
 
+            let payload
+            try{
+                payload=JSON.stringify(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.payload)
+            } catch(err) {
+            }
+
             yield sql.saveRow('transaction',
                 {
                     'channelname': channelName,
-                    'blockid': block.header.number.toString(),
-                    'txhash': tx.payload.header.channel_header.tx_id,
+                    'blockid': block.header.number,
+                    'txhash': tx.payload.header.channel_header.tx_id || "0x00",
                     'createdt': new Date(tx.payload.header.channel_header.timestamp),
-                    'chaincodename': chaincode,
-                    'chaincode_id': String.fromCharCode.apply(null, chaincodeID),
+                    'chaincodename': chaincode || "None",
                     'status': status,
                     'creator_msp_id': tx.payload.header.signature_header.creator.Mspid,
                     'endorser_msp_id': mspId,
+                    'chaincode_id': chaincodeID || "None",
                     'type': tx.payload.header.channel_header.typeString,
-                    'read_set': JSON.stringify(readSet, null, 2),
-                    'write_set': JSON.stringify(writeSet, null, 2)
+                    'payload': payload || "None",
+                    'read_set': JSON.stringify(readSet),
+                    'write_set': JSON.stringify(writeSet)
                 })
 
             yield sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${chaincode}' and channelname='${channelName}' `)
@@ -182,8 +187,13 @@ function* saveChaincodes(channelName) {
     }
     for (let i = 0; i < len; i++) {
         let chaincode = chaincodes[i]
-        chaincode.channelname = channelName
-        let c = yield sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' and channelname='${channelName}' `)
+        if (chaincode.name.indexOf("exchange") >= 0) {
+            chaincode.channelname = 'exchange-channel'
+        } else {
+            chaincode.channelname = 'private-channel'
+        }
+        // chaincode.channelname = channelName
+        let c = yield sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' `)
         if (c.c == 0) {
             yield sql.saveRow('chaincodes', chaincode)
         }

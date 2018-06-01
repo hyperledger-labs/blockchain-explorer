@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import Logo from '../../static/images/Explorer_Logo.svg';
+import Logo from '../../static/images/DIIDLogo.svg';
 import { getHeaderCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getPeerList as getPeerListCreator } from '../../store/actions/peer/action-creators';
 import { getBlockList as getBlockListCreator } from '../../store/actions/block/action-creators';
@@ -37,7 +37,7 @@ class LandingPage extends Component {
             },
             logoStyle: {
                 width: '520px',
-                height: '100px'
+                height: '125px'
             }
         }
     }
@@ -61,7 +61,7 @@ class LandingPage extends Component {
         return (
             <div className="landing" >
                 {/* <h1>PREPARING EXPLORER</h1> */}
-                <img src={Logo} style={this.state.logoStyle} alt="Hyperledger Logo" />
+                <img src={Logo} style={this.state.logoStyle} alt="DistributedID Logo" />
                 <Slider {...this.state.settings}>
                     <div><h3>ACCESSING THE NETWORK</h3></div>
                     <div><h3>CONNECTING TO CHANNEL</h3></div>

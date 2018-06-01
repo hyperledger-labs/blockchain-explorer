@@ -199,11 +199,14 @@ class MenuBar extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
   getBlockList: (channel,offset) => dispatch(getBlockListCreator(channel,offset)),
   getChaincodes: (channel,offset) => dispatch(getChaincodesCreator(channel,offset)),
+  getChannel: (channel, offset) => null,
+  getChannelList: (offset) => null,
   getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
-  getLatestBlock: (curChannel) => dispatch(getLatestBlockCreator(curChannel)),
-  getTransactionInfo: (channel,tx_id) => dispatch(getTransactionInfoCreator(channel,tx_id)),
+  getPeerList: (curChannel) => null,
+  getTransactionInfo: (curChannel,tx_id) => dispatch(getTransactionInfoCreator(curChannel,tx_id)),
   getTransactionList: (curChannel,offset) => dispatch(getTransactionListCreator(curChannel,offset))
 });
 

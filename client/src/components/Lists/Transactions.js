@@ -78,7 +78,7 @@ class Transactions extends Component {
       },
       {
         Header: "Chaincode",
-        accessor: "chaincodename",
+        accessor: "chaincode_id",
         filterMethod: (filter, rows) =>
         matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
       filterAll: true

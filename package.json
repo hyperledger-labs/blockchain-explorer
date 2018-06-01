@@ -12,6 +12,9 @@
     "node": ">=6.9.5",
     "npm": ">=3.10.10"
   },
+  "scripts": {
+     "start": "./start.sh"
+  },
   "dependencies": {
     "ajv": "^5.5.2",
     "body-parser": "^1.17.2",
