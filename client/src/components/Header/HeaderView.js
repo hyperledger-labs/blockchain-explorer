@@ -134,6 +134,9 @@ class HeaderView extends Component {
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="DistributedID Logo" /></NavbarBrand>
           {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
+          <div className='producerlabel'>
+              <h1> Producer </h2>
+          </div>
           <Nav className="ml-auto" navbar>
             <div className='channel-dropdown'>
               <Select
