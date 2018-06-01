@@ -37,7 +37,7 @@ class LandingPage extends Component {
             },
             logoStyle: {
                 width: '520px',
-                height: '100px'
+                height: '125px'
             }
         }
     }
