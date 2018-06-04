@@ -11,33 +11,43 @@ var EventHub = require('fabric-client/lib/EventHub.js');
 var helper = require('../../helper.js');
 var logger = helper.getLogger('Query');
 var configuration = require('./FabricConfiguration.js');
-var FabricClientProxy = require('./FabricClientProxy.js');
 
-class FabricPlatform {
+class Proxy {
 
-		constructor() {
+		constructor(target, client, channels) {
 			this.peerFailures = 0;
-			this.proxy = new FabricClientProxy();
-			this.org = configuration.getDefaultOrg();
-			this.peer = configuration.getDefaultPeer();
+			this.target = target;
+			this.client = client;
+			this.channels = channels;
 		}
 
-		async initialize() {
-            await this.proxy.createDefault();
+
+		getChannel(channelName) {
+			return this.channels[channelName].channel;
+		}
+
+		getChannels() {
+			return Object.keys(this.channels);
+		}
+
+		getChannelObjects() {
+			return Object.values(this.channels);
+		}
+
+		getChannelEventHub(channelName) {
+			return this.channels[channelName].channelEventHub;
 		}
 
 		queryChaincode(channelName, chaincodeName, fcn, args) {
-			var channel = this.proxy.getChannel(channelName);
-			var client = this.proxy.getClientForOrg(this.org);
+			var channel = this.getChannel(channelName);
 
-			var target = this.proxy.buildTarget(this.peer, this.org);
 			//Let Cahnnel use second peer added
 			if (peerFailures > 0) {
 				let peerToRemove = channel.getPeers()[0];
 				channel.removePeer(peerToRemove);
 				channel.addPeer(peerToRemove);
 			}
-			tx_id = client.newTransactionID();
+			tx_id = this.client.newTransactionID();
 			// send query
 			var request = {
 				chaincodeId: chaincodeName,
@@ -45,13 +55,13 @@ class FabricPlatform {
 				fcn: fcn,
 				args: args
 			};
-			return channel.queryByChaincode(request, target);
+			return channel.queryByChaincode(request, this.target);
 		}
 
 		getBlockByNumber(channelName, blockNumber) {
-			var target = this.proxy.buildTarget(this.peer, this.org);
-			var channel = this.proxy.getChannel(channelName);
-			return channel.queryBlock(parseInt(blockNumber), target).then((channelinfo) => {
+
+			var channel = this.getChannel(channelName);
+			return channel.queryBlock(parseInt(blockNumber), this.target).then((channelinfo) => {
 				if (channelinfo) {
 					return channelinfo;
 				} else {
@@ -71,27 +81,23 @@ class FabricPlatform {
 
 		getTransactionByID(channelName, trxnID) {
 			if (trxnID) {
-
-			var target = this.proxy.buildTarget(this.peer, this.org);
-			var channel = this.proxy.getChannel(channelName);
-			return channel.queryTransaction(trxnID, target);
+			var channel = this.getChannel(channelName);
+			return channel.queryTransaction(trxnID, this.target);
 			}
 			return {};
 
 		}
 
-		getBlockByHash(hash) {
-			var target = this.proxy.buildTarget(this.peer, this.org);
-			var channel = this.proxy.getChannelForOrg(this.org);
-			return channel.queryBlockByHash(new Buffer(hash, "hex"), target);
+		getBlockByHash(channelName, hash) {
+			var channel = this.getChannel(channelName);
+			return channel.queryBlockByHash(new Buffer(hash, "hex"), this.target);
 		}
 
 		async getChainInfo(channelName) {
-			var target = this.proxy.buildTarget(this.peer, this.org);
-			var channel = this.proxy.getChannel(channelName);
+			var channel = this.getChannel(channelName);
 
 			try {
-					var blockchainInfo = await channel.queryInfo(target, true);
+					var blockchainInfo = await channel.queryInfo(this.target, true);
 
 					if (blockchainInfo) {
 						// FIXME: Save this for testing 'getBlockByHash'  ?
@@ -112,60 +118,55 @@ class FabricPlatform {
 		}
 
 		//getInstalledChaincodes
-		getInstalledChaincodes(channelName, type) {
-			var target = this.proxy.buildTarget(this.peer, this.org);
-			var client = this.proxy.getClientForOrg(this.org);
-			var channel = this.proxy.getChannel(channelName);
-			return (function() {
-				if (type === 'installed') {
-					return client.queryInstalledChaincodes(target, true);
-				} else {
-					return channel.queryInstantiatedChaincodes(target, true);
-				}
-			}()).then((response) => {
-				if (response) {
+		async getInstalledChaincodes(channelName, type) {
+
+			var channel = this.getChannel(channelName);
+
+			var response;
+
+			try{
 					if (type === 'installed') {
-						logger.debug('<<< Installed Chaincodes >>>');
+						response = await this.client.queryInstalledChaincodes(this.target, true);
 					} else {
-						logger.debug('<<< Instantiated Chaincodes >>>');
+						response = await channel.queryInstantiatedChaincodes(this.target, true);
 					}
-					var details = [];
-					for (let i = 0; i < response.chaincodes.length; i++) {
-						let detail = {}
-						logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
-							response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
-						);
-						detail.name = response.chaincodes[i].name
-						detail.version = response.chaincodes[i].version
-						detail.path = response.chaincodes[i].path
-						details.push(detail);
-					}
-					return details;
-				} else {
-					logger.error('response is null');
-					return 'response is null';
-				}
-			}, (err) => {
+			} catch(err){
 				logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
 					err);
 				return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-			}).catch((err) => {
-				logger.error('Failed to query with error:' + err.stack ? err.stack : err);
-				return 'Failed to query with error:' + err.stack ? err.stack : err;
-			});
+			}
+
+			if (response) {
+				if (type === 'installed') {
+					logger.debug('<<< Installed Chaincodes >>>');
+				} else {
+					logger.debug('<<< Instantiated Chaincodes >>>');
+				}
+				var details = [];
+				for (let i = 0; i < response.chaincodes.length; i++) {
+					let detail = {}
+					logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
+						response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
+					);
+					detail.name = response.chaincodes[i].name
+					detail.version = response.chaincodes[i].version
+					detail.path = response.chaincodes[i].path
+					details.push(detail);
+				}
+				return details;
+			} else {
+				logger.error('response is null');
+				return 'response is null';
+			}
 		}
 
 		getOrganizations(channelName) {
-			var channel = this.proxy.getChannel(channelName);
+			var channel = this.getChannel(channelName);
 			return channel.getOrganizations();
 		}
 
-		getChannels() {
-			return this.proxy.getChannels();
-		}
-
 		getConnectedPeers(channelName) {
-			return this.proxy.getChannel(channelName).getPeers();
+			return this.getChannel(channelName).getPeers();
 		}
 
 		async getChannelHeight(channelName) {
@@ -183,7 +184,7 @@ class FabricPlatform {
 
 		async syncChannelEventHubBlock(saveToDatabase) {
 
-			var fabChannels = this.proxy.getChannelObjects();
+			var fabChannels = this.getChannelObjects();
 
 			fabChannels.forEach( fabChannel => {
 				var channel_event_hub = fabChannel.channelEventHub;
@@ -215,6 +216,24 @@ class FabricPlatform {
 				);
 			});
 		}
+
+		async queryChannels() {
+
+			try {
+				var channelInfo = await this.client.queryChannels(this.target);
+				if (channelInfo) {
+					return channelInfo;
+				}
+				else {
+						logger.error('response_payloads is null');
+						return 'response_payloads is null';
+				}
+			} catch(err) {
+				logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
+					err);
+				return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
+			}
+		}
 }
 
-module.exports = FabricPlatform;
+module.exports = Proxy;

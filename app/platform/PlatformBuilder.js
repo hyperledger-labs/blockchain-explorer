@@ -2,7 +2,7 @@
 *SPDX-License-Identifier: Apache-2.0
 */
 
-var FabricPlatform = require('./fabric/FabricPlatform.js');
+var Platform = require('./fabric/Platform.js');
 
 class PlatformBuilder {
 
@@ -11,7 +11,7 @@ class PlatformBuilder {
         var platform;
 
         if(platform == 'fabric') {
-            var platform = new FabricPlatform();
+            var platform = new Platform();
             await platform.initialize();
             return platform;
         }

@@ -4,7 +4,7 @@
 
 var log4js = require('log4js');
 var path = require('path');
-var logger = log4js.getLogger('FabricClientProxy');
+var logger = log4js.getLogger('Platform');
 var helper = require('../../helper.js')
 var configuration = require('./FabricConfiguration.js')
 var util = require('util');
@@ -12,12 +12,13 @@ var fs = require('fs-extra');
 var User = require('fabric-client/lib/User.js');
 var crypto = require('crypto');
 var FabricChannel = require('./FabricChannel.js');
+var Proxy = require('./Proxy.js');
 logger.setLevel('INFO');
 var hfc = require('fabric-client');
 hfc.addConfigFile(path.join(__dirname, './config.json'));
 hfc.setLogger(logger);
 
-class FabricClientProxy {
+class Platform {
 
 	constructor() {
 		this.clients = {};
@@ -26,26 +27,30 @@ class FabricClientProxy {
 		this.peers = {};
 	}
 
-	getDefaultPeer()
-	{
-		return this.peers[[configuration.getDefaultOrg(), configuration.getDefaultPeer()]];
+	getDefaultProxy() {
+		return this.getProxy(configuration.getDefaultOrg(), configuration.getDefaultPeer());
 	}
 
-	getChannel(channelName) {
-		return this.channels[channelName].channel;
+	getProxy(org, peer) {
+		return new Proxy(this.getPeerObject(org, peer), this.getClientForOrg(org), this.channels);
+	}
+
+	getDefaultPeer()
+	{
+		return this.getPeerObject(configuration.getDefaultOrg(), configuration.getDefaultPeer());
 	}
 
 	getChannels() {
 		return Object.keys(this.channels);
 	}
 
-	getChannelObjects() {
-		return Object.values(this.channels);
+	getPeerObject(org, peer) {
+		return this.peers[[org, peer]];
 	}
 
-
-	getChannelEventHub(channelName) {
-		return this.channels[channelName].channelEventHub;
+	getDefaultClient()
+	{
+		return this.getClientForOrg(configuration.getDefaultOrg());
 	}
 
 
@@ -84,7 +89,7 @@ class FabricClientProxy {
 	}
 
 	// set up the client and channel objects for each org
-	async createDefault() {
+	async initialize() {
 
 		for(let key of configuration.getOrgs())
 		{
@@ -137,7 +142,9 @@ class FabricClientProxy {
 	async setChannels() {
 
 		var client = this.getClientForOrg(configuration.getDefaultOrg());
-		var channelInfo =  await this.queryChannels(configuration.getDefaultPeer(), configuration.getDefaultOrg());
+
+		var proxy = this.getDefaultProxy();
+		var channelInfo =  await proxy.queryChannels();
 
 		channelInfo.channels.forEach( chan => {
 			var channelName = chan.channel_id;
@@ -149,31 +156,6 @@ class FabricClientProxy {
 
 	}
 
-	async queryChannels(peer, org) {
-		var target = this.buildTarget(peer, org);
-		var client = this.getClientForOrg(org);
-
-		try {
-			var channelInfo = await client.queryChannels(target);
-			if (channelInfo) {
-				return channelInfo;
-			}
-			else {
-					logger.error('response_payloads is null');
-					return 'response_payloads is null';
-			}
-		} catch(err) {
-			logger.error('Failed to send query due to error: ' + err.stack ? err.stack :
-				err);
-			return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
-		}
-	}
-
-	buildTarget(peer, org) {
-
-		return this.peers[[org, peer]];
-	}
-
 }
 
-module.exports = FabricClientProxy;
+module.exports = Platform;

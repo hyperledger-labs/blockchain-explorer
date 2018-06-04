@@ -14,12 +14,12 @@ var wss = require('../../main.js');
 class BlockScanner {
 
     constructor(platform) {
-        this.platform =  platform;
+        this.proxy =  platform.getDefaultProxy();
     }
 
     async syncBlock() {
         try {
-            var channels =  this.platform.getChannels();
+            var channels =  this.proxy.getChannels();
 
             for(let channelName of channels)
             {
@@ -39,7 +39,7 @@ class BlockScanner {
 
     async getBlockByNumber(channelName, start, end) {
         while (start < end) {
-            let block = await platform.getBlockByNumber(channelName, start)
+            let block = await this.proxy.getBlockByNumber(channelName, start)
 
             try {
                 await this.saveBlockRange(block)
@@ -154,7 +154,7 @@ class BlockScanner {
 
     async getMaxBlockNum(channelName) {
         try {
-            var data = await platform.getChannelHeight(channelName);
+            var data = await this.proxy.getChannelHeight(channelName);
             return data;
         } catch(err) {
             logger.error(err)
@@ -183,7 +183,7 @@ class BlockScanner {
 
     // ====================chaincodes=====================================
     async saveChaincodes(channelName) {
-        let chaincodes = await platform.getInstalledChaincodes(channelName, 'Instantiated')
+        let chaincodes = await this.proxy.getInstalledChaincodes(channelName, 'Instantiated')
         let len = chaincodes.length
         if (typeof chaincodes === 'string') {
             logger.debug(chaincodes)
@@ -201,7 +201,7 @@ class BlockScanner {
     }
 
     async saveChannel() {
-        var channels  = this.platform.getChannels();
+        var channels  = this.proxy.getChannels();
 
         for (let i = 0; i < channels.length; i++) {
             let date = new Date()
@@ -212,9 +212,9 @@ class BlockScanner {
                 createdt: date,
                 channel_hash: ''
             };
-            channel.blocks = await platform.getChannelHeight(channel.name)
+            channel.blocks = await this.proxy.getChannelHeight(channel.name)
             for (let j = 0; j < channel.blocks; j++) {
-                let block = await platform.getBlockByNumber(channel.name, j)
+                let block = await this.proxy.getBlockByNumber(channel.name, j)
                 channel.trans += block.data.data.length
                 if(j==0){
                     channel.createdt = new Date(block.data.data[0].payload.header.channel_header.timestamp)
@@ -242,7 +242,7 @@ class BlockScanner {
 
     async savePeerlist(channelName) {
 
-        var peerlists = await platform.getConnectedPeers(channelName);
+        var peerlists = await this.proxy.getConnectedPeers(channelName);
 
         let peerlen = peerlists.length
         for (let i = 0; i < peerlen; i++) {
@@ -279,7 +279,7 @@ class BlockScanner {
     }
 
 	syncChannelEventHubBlock() {
-        this.platform.syncChannelEventHubBlock(this.saveBlockRange);
+        this.proxy.syncChannelEventHubBlock(this.saveBlockRange);
     }
 }
 
