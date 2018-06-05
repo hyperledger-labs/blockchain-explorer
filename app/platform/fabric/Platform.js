@@ -1,161 +1,166 @@
 /**
-*    SPDX-License-Identifier: Apache-2.0
-*/
+ *    SPDX-License-Identifier: Apache-2.0
+ */
 
-var log4js = require('log4js');
-var path = require('path');
-var logger = log4js.getLogger('Platform');
-var helper = require('../../helper.js')
-var configuration = require('./FabricConfiguration.js')
-var util = require('util');
-var fs = require('fs-extra');
-var User = require('fabric-client/lib/User.js');
-var crypto = require('crypto');
-var FabricChannel = require('./FabricChannel.js');
-var Proxy = require('./Proxy.js');
-logger.setLevel('INFO');
-var hfc = require('fabric-client');
-hfc.addConfigFile(path.join(__dirname, './config.json'));
-hfc.setLogger(logger);
+var path = require("path");
+var helper = require("../../helper.js");
+var logger = helper.getLogger("platform");
+var configuration = require("./FabricConfiguration.js");
+var util = require("util");
+var fs = require("fs-extra");
+var User = require("fabric-client/lib/User.js");
+var crypto = require("crypto");
+var FabricChannel = require("./FabricChannel.js");
+var Proxy = require("./Proxy.js");
+var hfc = require("fabric-client");
+hfc.addConfigFile(path.join(__dirname, "./config.json"));
 
 class Platform {
+  constructor() {
+    this.clients = {};
+    this.channels = {};
+    this.caClients = {};
+    this.peers = {};
+  }
 
-	constructor() {
-		this.clients = {};
-		this.channels = {};
-		this.caClients = {};
-		this.peers = {};
-	}
+  getDefaultProxy() {
+    return this.getProxy(
+      configuration.getDefaultOrg(),
+      configuration.getDefaultPeer()
+    );
+  }
 
-	getDefaultProxy() {
-		return this.getProxy(configuration.getDefaultOrg(), configuration.getDefaultPeer());
-	}
+  getProxy(org, peer) {
+    return new Proxy(
+      this.getPeerObject(org, peer),
+      this.getClientForOrg(org),
+      this.channels
+    );
+  }
 
-	getProxy(org, peer) {
-		return new Proxy(this.getPeerObject(org, peer), this.getClientForOrg(org), this.channels);
-	}
+  getDefaultPeer() {
+    return this.getPeerObject(
+      configuration.getDefaultOrg(),
+      configuration.getDefaultPeer()
+    );
+  }
 
-	getDefaultPeer()
-	{
-		return this.getPeerObject(configuration.getDefaultOrg(), configuration.getDefaultPeer());
-	}
+  getChannels() {
+    return Object.keys(this.channels);
+  }
 
-	getChannels() {
-		return Object.keys(this.channels);
-	}
+  getPeerObject(org, peer) {
+    return this.peers[[org, peer]];
+  }
 
-	getPeerObject(org, peer) {
-		return this.peers[[org, peer]];
-	}
+  getDefaultClient() {
+    return this.getClientForOrg(configuration.getDefaultOrg());
+  }
 
-	getDefaultClient()
-	{
-		return this.getClientForOrg(configuration.getDefaultOrg());
-	}
+  getClientForOrg(org) {
+    return this.clients[org];
+  }
 
+  async setAdminForClient(org, client) {
+    var admin = configuration.getOrg(org).admin;
+    var keyPath = admin.key;
+    var keyPEM = Buffer.from(helper.readAllFiles(keyPath)[0]).toString();
+    var certPath = admin.cert;
+    var certPEM = helper.readAllFiles(certPath)[0].toString();
+    var admin;
 
-	getClientForOrg(org) {
-		return this.clients[org];
-	};
+    try {
+      admin = await client.createUser({
+        username: "peer" + org + "Admin",
+        mspid: configuration.getMspID(org),
+        cryptoContent: {
+          privateKeyPEM: keyPEM,
+          signedCertPEM: certPEM
+        },
+        skipPersistence: false
+      });
 
+      client.setAdminSigningIdentity(
+        keyPEM,
+        certPEM,
+        configuration.getMspID(org)
+      );
+    } catch (err) {
+      console.log("error-admin--" + err.stack);
+      throw err;
+    }
 
-	async setAdminForClient(org, client) {
-		var admin = configuration.getOrg(org).admin;
-		var keyPath = admin.key;
-		var keyPEM = Buffer.from(helper.readAllFiles(keyPath)[0]).toString();
-		var certPath = admin.cert;
-		var certPEM = helper.readAllFiles(certPath)[0].toString();
-		var admin;
+    return admin;
+  }
 
-		try {
-					admin = await client.createUser({
-									username: 'peer' + org + 'Admin',
-									mspid: configuration.getMspID(org),
-									cryptoContent: {
-										privateKeyPEM: keyPEM,
-										signedCertPEM: certPEM
-									},
-									skipPersistence: false
-					});
+  // set up the client and channel objects for each org
+  async initialize() {
+    for (let key of configuration.getOrgs()) {
+      let client = new hfc();
+      let cryptoSuite = hfc.newCryptoSuite();
 
-					client.setAdminSigningIdentity(keyPEM, certPEM, configuration.getMspID(org));
-		}
-		catch(err) {
-			console.log("error-admin--" + err.stack)
-			throw err;
-		}
+      var store = await hfc.newDefaultKeyValueStore({
+        path: configuration.getKeyStoreForOrg(configuration.getOrgName(key))
+      });
 
-		return admin;
-	}
+      client.setStateStore(store);
 
-	// set up the client and channel objects for each org
-	async initialize() {
+      await cryptoSuite.setCryptoKeyStore(
+        hfc.newCryptoKeyStore({
+          path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name)
+        })
+      );
+      client.setCryptoSuite(cryptoSuite);
 
-		for(let key of configuration.getOrgs())
-		{
-			let client = new hfc();
-			let cryptoSuite = hfc.newCryptoSuite();
+      this.clients[key] = client;
+      //For each client setup a admin user as signining identity
+      await this.setAdminForClient(key, client);
 
-			var store = await hfc.newDefaultKeyValueStore({
-				path: configuration.getKeyStoreForOrg(configuration.getOrgName(key))
-			});
+      this.setupPeers(key, client, false);
+    }
 
-			client.setStateStore(store);
+    await this.setChannels();
+  }
 
-			await cryptoSuite.setCryptoKeyStore(hfc.newCryptoKeyStore({ path: configuration.getKeyStoreForOrg(configuration.getOrg(key).name) }));
-			client.setCryptoSuite(cryptoSuite);
+  setupPeers(org, client, isReturn) {
+    configuration.getPeersByOrg(org).forEach(key => {
+      let peer;
+      if (configuration.getOrg(org)[key]["tls_cacerts"] != undefined) {
+        let data = fs.readFileSync(
+          configuration.getOrg(org)[key]["tls_cacerts"]
+        );
+        peer = client.newPeer(configuration.getOrg(org)[key].requests, {
+          pem: Buffer.from(data).toString(),
+          "ssl-target-name-override": configuration.getOrg(org)[key][
+            "server-hostname"
+          ]
+        });
+      } else {
+        peer = client.newPeer(configuration.getOrg(org)[key].requests);
+      }
 
-			this.clients[key] = client;
-			//For each client setup a admin user as signining identity
-			await this.setAdminForClient(key, client);
+      this.peers[[org, key]] = peer;
+    });
+  }
 
-			this.setupPeers(key, client, false);
-		}
+  async setChannels() {
+    var client = this.getClientForOrg(configuration.getDefaultOrg());
 
-		await this.setChannels();
+    var proxy = this.getDefaultProxy();
+    var channelInfo = await proxy.queryChannels();
 
-	}
-
-	setupPeers(org, client, isReturn) {
-		configuration.getPeersByOrg(org).forEach(key => {
-			let peer
-			if (configuration.getOrg(org)[key]['tls_cacerts'] != undefined) {
-				let data = fs.readFileSync(configuration.getOrg(org)[key]['tls_cacerts']);
-				peer = client.newPeer(
-					configuration.getOrg(org)[key].requests,
-					{
-						pem: Buffer.from(data).toString(),
-						'ssl-target-name-override': configuration.getOrg(org)[key]['server-hostname']
-					}
-				);
-			} else {
-				peer = client.newPeer(
-					configuration.getOrg(org)[key].requests
-				);
-			}
-
-			this.peers[[org, key]] = peer;
-		});
-	}
-
-
-	async setChannels() {
-
-		var client = this.getClientForOrg(configuration.getDefaultOrg());
-
-		var proxy = this.getDefaultProxy();
-		var channelInfo =  await proxy.queryChannels();
-
-		channelInfo.channels.forEach( chan => {
-			var channelName = chan.channel_id;
-			let channel = client.newChannel(channelName);
-			channel.addPeer(this.getDefaultPeer());
-			var channel_event_hub = channel.newChannelEventHub(this.getDefaultPeer());
-			this.channels[channelName] = new FabricChannel(channelName, channel, channel_event_hub);
-		});
-
-	}
-
+    channelInfo.channels.forEach(chan => {
+      var channelName = chan.channel_id;
+      let channel = client.newChannel(channelName);
+      channel.addPeer(this.getDefaultPeer());
+      var channel_event_hub = channel.newChannelEventHub(this.getDefaultPeer());
+      this.channels[channelName] = new FabricChannel(
+        channelName,
+        channel,
+        channel_event_hub
+      );
+    });
+  }
 }
 
 module.exports = Platform;

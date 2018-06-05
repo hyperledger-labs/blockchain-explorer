@@ -14,100 +14,103 @@
  limitations under the License.
  */
 
-const { Client } = require('pg');
-var config = require('../../appconfig.json')
-var pgconfig = config.pg
-var helper = require('../helper.js');
-var logger = helper.getLogger('pgservice');
+const { Client } = require("pg");
+var config = require("../../appconfig.json");
+var pgconfig = config.pg;
+var helper = require("../helper.js");
+var logger = helper.getLogger("pgservice");
 
-const connectionString = 'postgres://' + pgconfig.username + ':' + pgconfig.passwd + '@' +pgconfig.host +':' + pgconfig.port + '/' + pgconfig.database;
+const connectionString =
+  "postgres://" +
+  pgconfig.username +
+  ":" +
+  pgconfig.passwd +
+  "@" +
+  pgconfig.host +
+  ":" +
+  pgconfig.port +
+  "/" +
+  pgconfig.database;
 console.log(connectionString);
+logger.info(
+  "Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging."
+);
 const client = new Client({
-    connectionString: connectionString,
+  connectionString: connectionString
 });
 
-
 function handleDisconnect() {
+  var port = pgconfig.port ? pgconfig.port : "5432";
 
-    var port = pgconfig.port ? pgconfig.port : "5432";
-
-    client.connect((err) => {
-        if (err) {
-            // We introduce a delay before attempting to reconnect,
-            // to avoid a hot loop, and to allow our node script to
-            // process asynchronous requests in the meantime.
-            console.log('error when connecting to db:', err);
-            setTimeout(handleDisconnect, 2000);
-        }
-    });
-    client.on('error', (err) => {
-        console.log('db error', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            handleDisconnect();
-        } else {
-            throw err;
-        }
-    });
+  client.connect(err => {
+    if (err) {
+      // We introduce a delay before attempting to reconnect,
+      // to avoid a hot loop, and to allow our node script to
+      // process asynchronous requests in the meantime.
+      console.log("error when connecting to db:", err);
+      setTimeout(handleDisconnect, 2000);
+    }
+  });
+  client.on("error", err => {
+    console.log("db error", err);
+    if (err.code === "PROTOCOL_CONNECTION_LOST") {
+      handleDisconnect();
+    } else {
+      throw err;
+    }
+  });
 }
 
-handleDisconnect()
+handleDisconnect();
 //open connection
 function openconnection() {
-    client.connect();
+  client.connect();
 }
 
 //close connection
 function closeconnection() {
-    client.end()
+  client.end();
 }
-
 
 function saveRow(tablename, columnValues) {
+  return new Promise(function(resolve, reject) {
+    var addSqlParams = [];
+    var updatesqlcolumn = [];
+    var updatesqlflag = [];
+    var i = 1;
+    Object.keys(columnValues).forEach(k => {
+      let v = columnValues[k];
 
+      addSqlParams.push(v);
+      updatesqlcolumn.push(JSON.stringify(k));
+      updatesqlflag.push("$" + i);
+      i = i + 1;
+    });
 
-    return new Promise(function (resolve, reject) {
+    var updatesqlparmstr = updatesqlcolumn.join(",");
+    var updatesqlflagstr = updatesqlflag.join(",");
+    var addSql = `INSERT INTO ${tablename}  ( ${updatesqlparmstr} ) VALUES( ${updatesqlflagstr}  ) RETURNING *;`;
+    logger.debug(`Insert sql is ${addSql}`);
+    console.log(`Insert sql is ${addSql}`);
+    client.query(addSql, addSqlParams, (err, res) => {
+      if (err) {
+        logger.error("[INSERT ERROR] - ", err.message);
+        console.log(err.stack);
+        reject(err);
+      }
 
-        var addSqlParams = []
-        var updatesqlcolumn = []
-        var updatesqlflag = []
-        var i = 1
-        Object.keys(columnValues).forEach((k) => {
+      logger.debug(
+        "--------------------------INSERT----------------------------"
+      );
+      console.log("INSERT ID:", res.rows[0].id);
+      logger.debug(
+        "-----------------------------------------------------------------\n\n"
+      );
 
-            let v = columnValues[k]
-
-            addSqlParams.push(v)
-            updatesqlcolumn.push(JSON.stringify(k))
-            updatesqlflag.push('$' + i)
-            i = i + 1
-
-        })
-
-        var updatesqlparmstr = updatesqlcolumn.join(',')
-        var updatesqlflagstr = updatesqlflag.join(',')
-        var addSql = `INSERT INTO ${tablename}  ( ${updatesqlparmstr} ) VALUES( ${updatesqlflagstr}  ) RETURNING *;`;
-        logger.debug(`Insert sql is ${addSql}`)
-        console.log(`Insert sql is ${addSql}`)
-        client.query(addSql, addSqlParams, (err, res) => {
-
-            if (err) {
-                logger.error('[INSERT ERROR] - ', err.message);
-                console.log(err.stack)
-                reject(err)
-            }
-
-            logger.debug('--------------------------INSERT----------------------------');
-            console.log('INSERT ID:', res.rows[0].id);
-            logger.debug('-----------------------------------------------------------------\n\n');
-
-            resolve(res.rows[0].id)
-        });
-    })
-
-
-
-
+      resolve(res.rows[0].id);
+    });
+  });
 }
-
 
 /**
  * Update table
@@ -122,62 +125,55 @@ function saveRow(tablename, columnValues) {
  *
  */
 function updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
+  return new Promise(function(resolve, reject) {
+    var addSqlParams = [];
+    var updateParms = [];
 
-    return new Promise(function (resolve, reject) {
+    var updateparm = " set 1=1 ";
 
-        var addSqlParams = []
-        var updateParms = []
+    Object.keys(columnAndValue).forEach(k => {
+      let v = columnAndValue[k];
 
-        var updateparm = " set 1=1 "
+      addSqlParams.push(v);
+      //updateparm = updateparm + ` ,${k}=? `
+      updateParms.push(`${k} = ?`);
+    });
 
-        Object.keys(columnAndValue).forEach((k) => {
+    var updatewhereparm = " (1=1)  ";
+    var searchparm = { pkName: pkValue };
 
-            let v = columnAndValue[k]
+    Object.keys(searchparm).forEach(k => {
+      let v = searchparm[k];
 
-            addSqlParams.push(v)
-            //updateparm = updateparm + ` ,${k}=? `
-            updateParms.push(`${k} = ?`)
+      addSqlParams.push(v);
+      updatewhereparm = updatewhereparm + ` and ${k}=? `;
+    });
 
-        })
+    var updateParmsStr = updateParms.join(",");
 
-        var updatewhereparm = " (1=1)  "
-        var searchparm = { pkName: pkValue }
+    var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
 
-        Object.keys(searchparm).forEach((k) => {
+    logger.debug(`update sql is ${addSql}`);
+    console.log(`update sql is ${addSql}`);
+    client.query(addSql, addSqlParams, (err, res) => {
+      if (err) {
+        logger.error("[INSERT ERROR] - ", err.message);
+        reject(err);
+      }
 
-            let v = searchparm[k]
+      logger.debug(
+        "--------------------------UPDATE----------------------------"
+      );
+      //logger.debug(' update result :', result.affectedRows);
+      //console.log(res);
+      logger.debug(
+        "-----------------------------------------------------------------\n\n"
+      );
 
-            addSqlParams.push(v)
-            updatewhereparm = updatewhereparm + ` and ${k}=? `
-
-        })
-
-        var updateParmsStr = updateParms.join(',')
-
-        var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
-
-        logger.debug(`update sql is ${addSql}`)
-        console.log(`update sql is ${addSql}`)
-        client.query(addSql, addSqlParams, (err, res) => {
-
-            if (err) {
-                logger.error('[INSERT ERROR] - ', err.message);
-                reject(err)
-            }
-
-            logger.debug('--------------------------UPDATE----------------------------');
-            //logger.debug(' update result :', result.affectedRows);
-            //console.log(res);
-            logger.debug('-----------------------------------------------------------------\n\n');
-
-            resolve(res.rows)
-        });
-    })
-
-
-
+      resolve(res.rows);
+    });
+  });
 }
-
 
 /**
  * Update table
@@ -192,92 +188,80 @@ function updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
  *
  */
 function updateRow(tablename, columnAndValue, condition) {
+  return new Promise(function(resolve, reject) {
+    var addSqlParams = [];
+    var updateParms = [];
 
+    var updateparm = " set 1=1 ";
 
-    return new Promise(function (resolve, reject) {
+    Object.keys(columnAndValue).forEach(k => {
+      let v = columnAndValue[k];
 
-        var addSqlParams = []
-        var updateParms = []
+      addSqlParams.push(v);
+      //updateparm = updateparm + ` ,${k}=? `
+      updateParms.push(`${k} = ?`);
+    });
 
-        var updateparm = " set 1=1 "
+    var updatewhereparm = " (1=1)  ";
 
+    Object.keys(condition).forEach(k => {
+      let v = condition[k];
 
-        Object.keys(columnAndValue).forEach((k) => {
+      addSqlParams.push(v);
+      updatewhereparm = updatewhereparm + ` and ${k}=? `;
+    });
 
-            let v = columnAndValue[k]
+    var updateParmsStr = updateParms.join(",");
 
-            addSqlParams.push(v)
-            //updateparm = updateparm + ` ,${k}=? `
-            updateParms.push(`${k} = ?`)
+    var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
 
-        })
+    logger.debug(`update sql is ${addSql}`);
+    console.log(`update sql is ${addSql}`);
+    client.query(addSql, addSqlParams, (err, res) => {
+      if (err) {
+        logger.error("[INSERT ERROR] - ", err.message);
+        reject(err);
+      }
 
-        var updatewhereparm = " (1=1)  "
+      logger.debug(
+        "--------------------------UPDATE----------------------------"
+      );
+      logger.debug(" update result :", res.rows);
+      logger.debug(
+        "-----------------------------------------------------------------\n\n"
+      );
 
-
-        Object.keys(condition).forEach((k) => {
-
-            let v = condition[k]
-
-            addSqlParams.push(v)
-            updatewhereparm = updatewhereparm + ` and ${k}=? `
-
-        })
-
-
-        var updateParmsStr = updateParms.join(',')
-
-        var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
-
-        logger.debug(`update sql is ${addSql}`)
-        console.log(`update sql is ${addSql}`)
-        client.query(addSql, addSqlParams, (err, res) => {
-
-            if (err) {
-                logger.error('[INSERT ERROR] - ', err.message);
-                reject(err)
-            }
-
-            logger.debug('--------------------------UPDATE----------------------------');
-            logger.debug(' update result :', res.rows);
-            logger.debug('-----------------------------------------------------------------\n\n');
-
-            resolve(res.rows)
-        });
-    })
-
+      resolve(res.rows);
+    });
+  });
 }
-
 
 /**
  *  excute update or delete  sql.
  *  @param string  updateSql   the excute sql
  */
 function updateBySql(updateSql) {
+  return new Promise(function(resolve, reject) {
+    logger.debug(`update sql is :  ${updateSql}`);
 
-    return new Promise(function (resolve, reject) {
+    client.query(updateSql, [], (err, res) => {
+      if (err) {
+        logger.error("[INSERT ERROR] - ", err.message);
+        reject(err);
+      }
 
+      logger.debug(
+        "--------------------------UPDATE----------------------------"
+      );
+      logger.debug(" update result :", res.affectedRows);
+      logger.debug(
+        "-----------------------------------------------------------------\n\n"
+      );
 
-        logger.debug(`update sql is :  ${updateSql}`)
-
-        client.query(updateSql, [], (err, res) => {
-
-            if (err) {
-                logger.error('[INSERT ERROR] - ', err.message);
-                reject(err)
-            }
-
-            logger.debug('--------------------------UPDATE----------------------------');
-            logger.debug(' update result :', res.affectedRows);
-            logger.debug('-----------------------------------------------------------------\n\n');
-
-            resolve(res.rows)
-        });
-    })
-
-
+      resolve(res.rows);
+    });
+  });
 }
-
 
 /**
  * get row by primary key
@@ -289,31 +273,22 @@ function updateBySql(updateSql) {
  *
  */
 function getRowByPk(tablename, column, pkColumn, value) {
+  return new Promise(function(resolve, reject) {
+    if (column == "") column = "*";
 
+    var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
 
-    return new Promise(function (resolve, reject) {
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-        if (column == '')
-            column = '*'
-
-        var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
-
-        client.query(sql, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            // console.log(  `The solution is: ${rows.length }  `  );
-            logger.debug(' the getRowByPk ')
-            if (!res.rows || res.rows.length == 0)
-                resolve(null)
-            else
-                resolve(res.rows[0])
-        });
-    })
-
-
+      // console.log(  `The solution is: ${rows.length }  `  );
+      logger.debug(" the getRowByPk ");
+      if (!res.rows || res.rows.length == 0) resolve(null);
+      else resolve(res.rows[0]);
+    });
+  });
 }
 
 /**
@@ -324,31 +299,23 @@ function getRowByPk(tablename, column, pkColumn, value) {
  * @return unknown
  */
 function getRowByPkOne(sql) {
+  return new Promise(function(resolve, reject) {
+    //var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
-    return new Promise(function (resolve, reject) {
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-        //var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
+      // console.log(  `The solution is: ${rows.length }  `  );
+      logger.debug(` the getRowByPkOne sql ${sql}`);
+      //(` the getRowByPkOne sql ${sql}`)
 
-        client.query(sql, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            // console.log(  `The solution is: ${rows.length }  `  );
-            logger.debug(` the getRowByPkOne sql ${sql}`)
-            //(` the getRowByPkOne sql ${sql}`)
-
-            if (!res.rows || res.rows.length == 0)
-                resolve(null)
-            else
-                resolve(res.rows[0])
-
-        });
-    })
-
+      if (!res.rows || res.rows.length == 0) resolve(null);
+      else resolve(res.rows[0]);
+    });
+  });
 }
-
 
 /**
  * search table
@@ -360,52 +327,36 @@ function getRowByPkOne(sql) {
  *
  */
 function getRowsByCondition(tablename, column, condtion, orderBy, limit) {
+  return new Promise(function(resolve, reject) {
+    if (column == "") column = "*";
 
+    var updatewhereparm = " (1=1)  ";
+    var searchparm = { pkName: pkValue };
+    var addSqlParams = [];
 
-    return new Promise(function (resolve, reject) {
+    Object.keys(condtion).forEach(k => {
+      let v = condtion[k];
 
-        if (column == '')
-            column = '*'
+      addSqlParams.push(v);
+      updatewhereparm = updatewhereparm + ` and ${k}=? `;
+    });
 
-        var updatewhereparm = " (1=1)  "
-        var searchparm = { pkName: pkValue }
-        var addSqlParams = []
+    var sql = ` select  ${column} from ${tablename} where ${updatewhereparm} ${orderBy} ${limit}`;
 
-        Object.keys(condtion).forEach((k) => {
+    logger.debug(` the search sql is : ${sql} `);
 
-            let v = condtion[k]
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-            addSqlParams.push(v)
-            updatewhereparm = updatewhereparm + ` and ${k}=? `
+      // console.log(  `The solution is: ${rows.length }  `  );
+      logger.debug(" the getRowsByCondition ");
 
-        })
-
-
-
-        var sql = ` select  ${column} from ${tablename} where ${updatewhereparm} ${orderBy} ${limit}`
-
-        logger.debug(` the search sql is : ${sql} `)
-
-
-
-        client.query(sql, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            // console.log(  `The solution is: ${rows.length }  `  );
-            logger.debug(' the getRowsByCondition ')
-
-            resolve(res.rows)
-
-
-
-        });
-    })
-
+      resolve(res.rows);
+    });
+  });
 }
-
 
 /**
  * search table by sql
@@ -415,62 +366,46 @@ function getRowsByCondition(tablename, column, condtion, orderBy, limit) {
  *
  */
 function getRowsBySQl(sqlcharacter, condition, limit) {
+  return new Promise(function(resolve, reject) {
+    var updatewhereparm = " (1=1)  ";
+    var addSqlParams = [];
 
-    return new Promise(function (resolve, reject) {
+    Object.keys(condition).forEach(k => {
+      let v = condition[k];
 
+      addSqlParams.push(v);
+      updatewhereparm = updatewhereparm + ` and ${k}=? `;
+    });
 
-        var updatewhereparm = " (1=1)  "
-        var addSqlParams = []
+    var sql = ` ${sqlcharacter} where ${updatewhereparm}   ${limit}`;
 
-        Object.keys(condition).forEach((k) => {
+    logger.debug(` the search sql is : ${sql} `);
 
-            let v = condition[k]
+    client.query(sql, addSqlParams, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-            addSqlParams.push(v)
-            updatewhereparm = updatewhereparm + ` and ${k}=? `
+      //console.log(` The solution is: ${res.rows.length}  `);
+      logger.debug(" The getRowsBySQl  ");
 
-        })
-
-
-        var sql = ` ${sqlcharacter} where ${updatewhereparm}   ${limit}`
-
-        logger.debug(` the search sql is : ${sql} `)
-
-
-        client.query(sql, addSqlParams, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            //console.log(` The solution is: ${res.rows.length}  `);
-            logger.debug(' The getRowsBySQl  ')
-
-            resolve(res.rows)
-
-        });
-    })
-
-
+      resolve(res.rows);
+    });
+  });
 }
 function getRowsBySQlQuery(sql) {
+  return new Promise(function(resolve, reject) {
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
+      logger.debug(` the getRowsBySQlQuery ${sql}`);
 
-    return new Promise(function (resolve, reject) {
-        client.query(sql, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-            logger.debug(` the getRowsBySQlQuery ${sql}`)
-
-            if (!res.rows || res.rows.length == 0)
-                resolve(null)
-            else
-                resolve(res.rows)
-        });
-    })
+      if (!res.rows || res.rows.length == 0) resolve(null);
+      else resolve(res.rows);
+    });
+  });
 }
-
 
 /**
  * search table by sql and it's not condtion
@@ -481,30 +416,21 @@ function getRowsBySQlQuery(sql) {
  *
  */
 function getRowsBySQlNoCondtion(sqlcharacter, limit) {
+  return new Promise(function(resolve, reject) {
+    var sql = `${sqlcharacter} ${limit}`;
 
-    return new Promise(function (resolve, reject) {
+    client.query(sqlcharacter, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
+      // console.log(  `The solution is: ${rows.length }  `  );
+      logger.debug(` the getRowsBySQlNoCondtion ${sql}`);
 
-        var sql = `${sqlcharacter} ${limit}`
-
-        client.query(sqlcharacter, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            // console.log(  `The solution is: ${rows.length }  `  );
-            logger.debug(` the getRowsBySQlNoCondtion ${sql}`)
-
-            if (!res.rows || res.rows.length == 0)
-                resolve(null)
-            else
-                resolve(res.rows)
-
-        });
-    })
-
-
+      if (!res.rows || res.rows.length == 0) resolve(null);
+      else resolve(res.rows);
+    });
+  });
 }
 
 /**
@@ -514,28 +440,19 @@ function getRowsBySQlNoCondtion(sqlcharacter, limit) {
  * @return unknown
  */
 function getRowsBySQlCase(sql) {
+  return new Promise(function(resolve, reject) {
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-    return new Promise(function (resolve, reject) {
-
-
-
-        client.query(sql, (err, res) => {
-
-            if (err) {
-                reject(err)
-            }
-
-            // console.log(  `The solution is: ${rows.length }  `  );
-            logger.debug(` the getRowsBySQlCase ${sql}`)
-            if (!res.rows || res.rows.length == 0)
-                resolve(null)
-            else
-                resolve(res.rows[0])
-
-        });
-    })
+      // console.log(  `The solution is: ${rows.length }  `  );
+      logger.debug(` the getRowsBySQlCase ${sql}`);
+      if (!res.rows || res.rows.length == 0) resolve(null);
+      else resolve(res.rows[0]);
+    });
+  });
 }
-
 
 /**
  *
@@ -545,33 +462,25 @@ function getRowsBySQlCase(sql) {
  *
  */
 function getSQL2Map(sql, key) {
+  return new Promise(function(resolve, reject) {
+    client.query(sql, (err, res) => {
+      if (err) {
+        reject(err);
+      }
 
-    return new Promise(function (resolve, reject) {
+      logger.debug(`The solution is: ${res.rows.length}  `);
 
-        client.query(sql, (err, res) => {
+      var keymap = new Map();
 
-            if (err) {
-                reject(err)
-            }
+      for (var ind = 0; ind < res.rows.length; ind++) {
+        logger.debug(`The ind value is: ${res.rows[ind].id}  `);
+        keymap.set(res.rows[ind][key], rows[ind]);
+      }
 
-            logger.debug(`The solution is: ${res.rows.length}  `);
-
-
-            var keymap = new Map();
-
-            for (var ind = 0; ind < res.rows.length; ind++) {
-
-                logger.debug(`The ind value is: ${res.rows[ind].id}  `);
-                keymap.set(res.rows[ind][key], rows[ind])
-            }
-
-            resolve(keymap)
-
-
-        });
-    })
+      resolve(keymap);
+    });
+  });
 }
-
 
 /**
  *
@@ -581,60 +490,49 @@ function getSQL2Map(sql, key) {
  * @return unknown
  */
 function getSQL2Map4Arr(sql, key) {
+  return new Promise(function(resolve, reject) {
+    client.query(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+      }
 
-    return new Promise(function (resolve, reject) {
+      // logger.debug(  `The solution is: ${rows.length }  `  );
+      logger.debug(" the getSqlMap ");
 
-        client.query(sql, (err, rows) => {
+      var keymap = new Map();
 
-            if (err) {
-                reject(err)
-            }
+      for (var ind = 0; ind < res.rows.length; ind++) {
+        var keyvalue = res.rows[ind][key];
+        var arrvalue = [];
 
-            // logger.debug(  `The solution is: ${rows.length }  `  );
-            logger.debug(' the getSqlMap ')
+        if (keymap.has(keyvalue)) {
+          arrvalue = keymap.get(keyvalue);
+          arrvalue.push(res.rows);
+        } else {
+          arrvalue.push(res.rows);
+        }
 
-            var keymap = new Map();
+        keymap.set(keyvalue, arrvalue);
+      }
 
-            for (var ind = 0; ind < res.rows.length; ind++) {
-
-                var keyvalue = res.rows[ind][key]
-                var arrvalue = [];
-
-                if (keymap.has(keyvalue)) {
-                    arrvalue = keymap.get(keyvalue)
-                    arrvalue.push(res.rows)
-                } else {
-                    arrvalue.push(res.rows)
-                }
-
-                keymap.set(keyvalue, arrvalue)
-            }
-
-
-            resolve(keymap)
-
-        });
-    })
+      resolve(keymap);
+    });
+  });
 }
 
+exports.saveRow = saveRow;
+exports.updateRowByPk = updateRowByPk;
+exports.updateRow = updateRow;
+exports.updateBySql = updateBySql;
+exports.getRowByPk = getRowByPk;
+exports.getRowByPkOne = getRowByPkOne;
+exports.getRowsByCondition = getRowsByCondition;
+exports.getRowsBySQl = getRowsBySQl;
+exports.getRowsBySQlQuery = getRowsBySQlQuery;
+exports.getRowsBySQlNoCondtion = getRowsBySQlNoCondtion;
+exports.getRowsBySQlCase = getRowsBySQlCase;
+exports.getSQL2Map = getSQL2Map;
+exports.getSQL2Map4Arr = getSQL2Map4Arr;
 
-
-exports.saveRow = saveRow
-exports.updateRowByPk = updateRowByPk
-exports.updateRow = updateRow
-exports.updateBySql = updateBySql
-exports.getRowByPk = getRowByPk
-exports.getRowByPkOne = getRowByPkOne
-exports.getRowsByCondition = getRowsByCondition
-exports.getRowsBySQl = getRowsBySQl
-exports.getRowsBySQlQuery = getRowsBySQlQuery
-exports.getRowsBySQlNoCondtion = getRowsBySQlNoCondtion
-exports.getRowsBySQlCase = getRowsBySQlCase
-exports.getSQL2Map = getSQL2Map
-exports.getSQL2Map4Arr = getSQL2Map4Arr
-
-
-exports.openconnection = openconnection
-exports.closeconnection = closeconnection
-
-
+exports.openconnection = openconnection;
+exports.closeconnection = closeconnection;
