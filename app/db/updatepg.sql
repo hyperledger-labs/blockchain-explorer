@@ -15,6 +15,10 @@ ALTER TABLE Transaction ADD COLUMN type character varying(128) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN read_set  json default NULL;
 ALTER TABLE Transaction ADD COLUMN write_set  json default NULL;
 ALTER TABLE channel ADD COLUMN channel_hash character varying(256) DEFAULT NULL;
+ALTER TABLE channel ADD COLUMN channel_config  bytea default NULL;
+ALTER TABLE channel ADD COLUMN channel_block  bytea DEFAULT NULL;
+ALTER TABLE channel ADD COLUMN channel_tx  bytea DEFAULT NULL;
+ALTER TABLE channel ADD COLUMN channel_version character varying(128) DEFAULT NULL;
 
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;

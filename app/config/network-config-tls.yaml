@@ -41,67 +41,17 @@ version: "1.0"
 # based on the content below. If an app is creating channels, then it likely will not need this
 # section.
 #
+
+
 channels:
   # name of the channel
-  mychannel:
-    # Required. list of orderers designated by the application to use for transactions on this
-    # channel. This list can be a result of access control ("org1" can only access "ordererA"), or
-    # operational decisions to share loads from applications among the orderers.  The values must
-    # be "names" of orgs defined under "organizations/peers"
-    orderers:
-      - orderer.example.com
-
-    # Required. list of peers from participating orgs
-    peers:
-      peer0.org1.example.com:
-        # [Optional]. will this peer be sent transaction proposals for endorsement? The peer must
-        # have the chaincode installed. The app can also use this property to decide which peers
-        # to send the chaincode install request. Default: true
-        endorsingPeer: true
-
-        # [Optional]. will this peer be sent query proposals? The peer must have the chaincode
-        # installed. The app can also use this property to decide which peers to send the
-        # chaincode install request. Default: true
-        chaincodeQuery: true
-
-        # [Optional]. will this peer be sent query proposals that do not require chaincodes, like
-        # queryBlock(), queryTransaction(), etc. Default: true
-        ledgerQuery: true
-
-        # [Optional]. will this peer be the target of the SDK's listener registration? All peers can
-        # produce events but the app typically only needs to connect to one to listen to events.
-        # Default: true
-        eventSource: true
-
-      peer1.org1.example.com:
-        endorsingPeer: false
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: false
-
-      peer0.org2.example.com:
-        endorsingPeer: true
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: true
-
-      peer1.org2.example.com:
-        endorsingPeer: false
-        chaincodeQuery: true
-        ledgerQuery: true
-        eventSource: false
-
-    # [Optional]. what chaincodes are expected to exist on this channel? The application can use
-    # this information to validate that the target peers are in the expected state by comparing
-    # this list with the query results of getInstalledChaincodes() and getInstantiatedChaincodes()
-    chaincodes:
-      # the format follows the "cannonical name" of chaincodes by fabric code
-      - mycc:v0
-
-   ####### CHANNEL BELOW DEFINED AS AN EXAMPLE #############
-## START newchannel
-  # name of the channel
+  ### CHANNEL DEFINED AS AN EXAMPLE
+  ## Prerequisites
+  ## Setup your own network using [Build your network] http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html
+  ## You can use blockchain-explorer/app/config/network-config-tls.yaml file as a template to create a new channel, all the paths needs to be
+  # updated to you fabric network path, search for "fabric-path"
   newchannel:
+    # Every new channel creation requires single configuration
     # Required. list of orderers designated by the application to use for transactions on this
     # channel. This list can be a result of access control ("org1" can only access "ordererA"), or
     # operational decisions to share loads from applications among the orderers.  The values must

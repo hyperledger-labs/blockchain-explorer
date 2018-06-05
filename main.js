@@ -65,10 +65,10 @@ logger.info(
 );
 startRestServices();
 
-app.get("/api/status/:channel", function(req, res) {
+app.get("/api/status/:channel", function (req, res) {
   let channelName = req.params.channel;
   if (channelName) {
-    statusMetrics.getStatus(channelName, function(data) {
+    statusMetrics.getStatus(channelName, function (data) {
       if (
         data &&
         (data.chaincodeCount &&
@@ -91,7 +91,7 @@ Return current channel
 GET /api/curChannel
 curl -i 'http://<host>:<port>/api/curChannel'
 */
-app.get("/api/curChannel", function(req, res) {
+app.get("/api/curChannel", function (req, res) {
   res.send({ currentChannel: configuration.getCurrChannel() });
 });
 
@@ -100,7 +100,7 @@ Return change channel
 POST /api/changeChannel
 curl -i 'http://<host>:<port>/api/curChannel'
 */
-app.get("/api/changeChannel/:channelName", function(req, res) {
+app.get("/api/changeChannel/:channelName", function (req, res) {
   let channelName = req.params.channelName;
   configuration.changeChannel(channelName);
   ledgerMgr.ledgerEvent.emit("changeLedger");
@@ -117,7 +117,7 @@ Response:
   "txCount": 1
 }
  */
-app.get("/api/block/transactions/:channel/:number", function(req, res) {
+app.get("/api/block/transactions/:channel/:number", function (req, res) {
   let number = parseInt(req.params.number);
   let channelName = req.params.channel;
   if (!isNaN(number) && channelName) {
@@ -153,7 +153,7 @@ Response:
 }
  */
 
-app.get("/api/transaction/:channel/:txid", function(req, res) {
+app.get("/api/transaction/:channel/:txid", function (req, res) {
   let txid = req.params.txid;
   let channelName = req.params.channel;
   if (txid && txid != "0" && channelName) {
@@ -176,7 +176,7 @@ Response:
 "txhash":"c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8",
 "createdt":"2018-03-09T19:40:59.000Z","chaincodename":"mycc"}]}
  */
-app.get("/api/txList/:channel/:blocknum/:txid", function(req, res) {
+app.get("/api/txList/:channel/:blocknum/:txid", function (req, res) {
   let channelName = req.params.channel;
   let blockNum = parseInt(req.params.blocknum);
   let txid = parseInt(req.params.txid);
@@ -206,10 +206,10 @@ Response:
   }
 ]
  */
-app.get("/api/peers/:channel", function(req, res) {
+app.get("/api/peers/:channel", function (req, res) {
   let channelName = req.params.channel;
   if (channelName) {
-    statusMetrics.getPeerList(channelName, function(data) {
+    statusMetrics.getPeerList(channelName, function (data) {
       res.send({ status: 200, peers: data });
     });
   } else {
@@ -233,10 +233,10 @@ Response:
 ]
  */
 
-app.get("/api/chaincode/:channel", function(req, res) {
+app.get("/api/chaincode/:channel", function (req, res) {
   let channelName = req.params.channel;
   if (channelName) {
-    statusMetrics.getTxPerChaincode(channelName, function(data) {
+    statusMetrics.getTxPerChaincode(channelName, function (data) {
       res.send({ status: 200, chaincode: data });
     });
   } else {
@@ -255,7 +255,7 @@ Response:
  *
  */
 
-app.get("/api/blockAndTxList/:channel/:blocknum", function(req, res) {
+app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
   let channelName = req.params.channel;
   let blockNum = parseInt(req.params.blocknum);
 
@@ -283,7 +283,7 @@ Response:
 
  */
 
-app.get("/api/txByMinute/:channel/:hours", function(req, res) {
+app.get("/api/txByMinute/:channel/:hours", function (req, res) {
   let channelName = req.params.channel;
   let hours = parseInt(req.params.hours);
 
@@ -308,7 +308,7 @@ Response:
 {"datetime":"2018-03-12T20:00:00.000Z","count":"0"}]}
  */
 
-app.get("/api/txByHour/:channel/:days", function(req, res) {
+app.get("/api/txByHour/:channel/:days", function (req, res) {
   let channelName = req.params.channel;
   let days = parseInt(req.params.days);
 
@@ -335,7 +335,7 @@ Response:
 
 */
 
-app.get("/api/blocksByMinute/:channel/:hours", function(req, res) {
+app.get("/api/blocksByMinute/:channel/:hours", function (req, res) {
   let channelName = req.params.channel;
   let hours = parseInt(req.params.hours);
 
@@ -360,7 +360,7 @@ Response:
 
 */
 
-app.get("/api/blocksByHour/:channel/:days", function(req, res) {
+app.get("/api/blocksByHour/:channel/:days", function (req, res) {
   let channelName = req.params.channel;
   let days = parseInt(req.params.days);
 
@@ -384,7 +384,7 @@ Response:
 {"rows":[{"count":"4","creator_msp_id":"Org1"}]}
 
 */
-app.get("/api/txByOrg/:channel", function(req, res) {
+app.get("/api/txByOrg/:channel", function (req, res) {
   let channelName = req.params.channel;
 
   if (channelName) {
@@ -412,39 +412,44 @@ app.get("/api/txByOrg/:channel", function(req, res) {
 /*
 Create new channel
 POST /api/channel
-
+Content-Type : application/x-www-form-urlencoded
+{channelName:"newchannel02"
+genesisBlock:"TwoOrgsOrdererGenesis"
+orgName:"Org1"
+profile:"TwoOrgsChannel"}
+{fieldname: "channelArtifacts", fieldname: "channelArtifacts"}
+ <input type="file" name="channelArtifacts" multiple />
 Response: {  success: true, message: "Successfully created channel "   }
 */
 
-app.post("/api/channel", async function(req, res) {
+app.post('/api/channel', async function (req, res) {
   try {
+    // upload channel config, and org config
     let artifacts = await chModel.aSyncUpload(req, res);
     if (artifacts) {
-      if (artifacts.channelTXpath && artifacts.blockPath) {
+      if (artifacts.channelName && artifacts.profile && artifacts.genesisBlock) {
+        // generate genesis block and channel transaction             //
+        let channelGenesis = await chModel.generateChannelArtifacts(artifacts);
+        artifacts.channelTxPath = channelGenesis.channelTxPath;
         try {
-          let channelCreate = await chs.createChannel(
-            artifacts.channelName,
-            artifacts.orgName,
-            artifacts.profile,
-            artifacts.genesisBlock,
-            artifacts.channelTXpath
-          );
-          res.send(channelCreate);
+          let channelCreate = await chs.createChannel(artifacts);
+          res.send(channelCreate)
         } catch (err) {
-          res.send({ success: false, message: err });
+          res.send({ success: false, message: err })
         }
       } else {
         let response = {
           success: false,
-          message: "Invalid request, payload: "
+          message: "Invalid request " + artifacts
         };
         return response;
       }
     } else {
-      res.send({ success: false, message: "no artifacts" });
+      res.send({ success: false, message: 'no artifacts' })
     }
+
   } catch (err) {
-    logger.error(err);
+    logger.error(err)
     return res.send({ success: false, message: "Invalid request, payload" });
   }
 });
@@ -458,7 +463,7 @@ curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channel
 Response: {  success: true, message: "Successfully joined peer to the channel "   }
 */
 
-app.post("/api/joinChannel", function(req, res) {
+app.post("/api/joinChannel", function (req, res) {
   var channelName = req.body.channelName;
   var peers = req.body.peers;
   var orgName = req.body.orgName;
@@ -504,7 +509,7 @@ async function startRestServices() {
         curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
         *
         */
-    app.get("/api/block/:channel/:number", function(req, res) {
+    app.get("/api/block/:channel/:number", function (req, res) {
       let number = parseInt(req.params.number);
       let channelName = req.params.channel;
       if (!isNaN(number) && channelName) {
@@ -536,7 +541,7 @@ async function startRestServices() {
         }
         */
 
-    app.get("/api/channels", function(req, res) {
+    app.get("/api/channels", function (req, res) {
       var channels = [],
         counter = 0;
       var channels = platform.getChannels();
@@ -551,7 +556,7 @@ async function startRestServices() {
 exports.wss = wss;
 exports.broadcast = broadcast;
 // ============= start server =======================
-server.listen(port, function() {
+server.listen(port, function () {
   console.log(`Please open web browser to access ：http://${host}:${port}/`);
 });
 
