@@ -10,9 +10,10 @@ import PeerGraph from '../Charts/PeerGraph';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import { Card, Row, Col, CardBody } from 'reactstrap';
-import { headerCount as getCountHeaderCreator } from '../../store/actions/header/action-creators';
+import { countHeader as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getTxByOrg as getTxByOrgCreator } from '../../store/actions/charts/action-creators';
 import FontAwesome from 'react-fontawesome';
+
 class DashboardView extends Component {
   constructor(props) {
     super(props);
@@ -20,15 +21,18 @@ class DashboardView extends Component {
       notifications: []
     }
   }
+
   componentWillReceiveProps(nextProps) {
     if (Object.keys(nextProps.notification).length !== 0 && this.props.notification !== nextProps.notification) {
       var arr = this.state.notifications;
       arr.unshift(nextProps.notification);
       this.setState({ notifications: arr });
     }
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel)
+    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.props.getTxByOrg(nextProps.channel.currentChannel);
+    }
   }
+
   componentDidMount() {
     setInterval(() => {
       this.props.getTxByOrg(this.props.channel.currentChannel);
@@ -50,6 +54,7 @@ class DashboardView extends Component {
     }
     this.setState({ notifications: arr });
   }
+
   render() {
     return (
       <div className="dashboard" >
@@ -106,6 +111,7 @@ const mapDispatchToProps = (dispatch) => ({
   getCountHeader: (curChannel) => dispatch(getCountHeaderCreator(curChannel)),
   getTxByOrg: (curChannel) => dispatch(getTxByOrgCreator(curChannel))
 });
+
 const mapStateToProps = state => ({
   countHeader: state.countHeader,
   txByOrg: state.txByOrg.txByOrg,
@@ -113,6 +119,7 @@ const mapStateToProps = state => ({
   notification: state.notification.notification,
   peerList: state.peerList.peerList
 });
+
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
 )(DashboardView);

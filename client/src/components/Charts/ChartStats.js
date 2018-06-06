@@ -36,60 +36,63 @@ export class ChartStats extends Component {
     super(props);
     this.state = {
       activeTab: '1',
-      loading: false,
+      loading: false
+    };
     }
-  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getBlocksPerMin(nextProps.channel.currentChannel);
-      this.props.getBlocksPerHour(nextProps.channel.currentChannel);
-      this.props.getTxPerMin(nextProps.channel.currentChannel);
-      this.props.getTxPerHour(nextProps.channel.currentChannel);
+      this.syncData(nextProps.channel.currentChannel);
     }
   }
 
   componentDidMount() {
     setInterval(() => {
-    this.props.getBlocksPerMin(this.props.channel.currentChannel);
-    this.props.getBlocksPerHour(this.props.channel.currentChannel);
-    this.props.getTxPerMin(this.props.channel.currentChannel);
-    this.props.getTxPerHour(this.props.channel.currentChannel);
-    }, 6000)
+      this.syncData(this.props.channel.currentChannel);
+    }, 6000);
   }
 
+  syncData = currentChannel => {
+    this.props.getBlocksPerMin(currentChannel);
+    this.props.getBlocksPerHour(currentChannel);
+    this.props.getTxPerMin(currentChannel);
+    this.props.getTxPerHour(currentChannel);
+  };
+
    timeDataSetup = (chartData = []) => {
-    let displayData
+    let displayData;
     let dataMax = 0;
 
-      displayData = chartData.map( data => {
+    displayData = chartData.map(data => {
         if (parseInt(data.count, 10) > dataMax) {
-          dataMax = parseInt(data.count, 10)
+        dataMax = parseInt(data.count, 10);
         }
 
         return {
-          datetime: moment(data.datetime).tz(moment.tz.guess()).format("h:mm A"),
+        datetime: moment(data.datetime)
+          .tz(moment.tz.guess())
+          .format('h:mm A'),
           count: data.count
-        }
-      })
+      };
+    });
 
     dataMax = dataMax + 5;
 
     return {
       displayData: displayData,
       dataMax: dataMax
-    }
-  }
+    };
+  };
 
-  toggle = (tab) => {
+  toggle = tab => {
     this.setState({
       activeTab: tab
     });
-  }
+  };
 
   render() {
     return (
-      <div className="chart-stats" >
+      <div className="chart-stats">
         <Card>
           <CardHeader>
             <h5>Analytics</h5>
@@ -98,45 +101,73 @@ export class ChartStats extends Component {
             <Nav tabs>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '1' })}
-                  onClick={() => { this.toggle('1'); }}>
+                  className={classnames({
+                    active: this.state.activeTab === "1"
+                  })}
+                  onClick={() => {
+                    this.toggle("1");
+                  }}
+                >
                   BLOCKS / HOUR
                      </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '2' })}
-                  onClick={() => { this.toggle('2'); }}>
+                  className={classnames({
+                    active: this.state.activeTab === "2"
+                  })}
+                  onClick={() => {
+                    this.toggle("2");
+                  }}
+                >
                   BLOCKS / MIN
                         </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '3' })}
-                  onClick={() => { this.toggle('3'); }}>
+                  className={classnames({
+                    active: this.state.activeTab === "3"
+                  })}
+                  onClick={() => {
+                    this.toggle("3");
+                  }}
+                >
                   TX / HOUR
                         </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink
-                  className={classnames({ active: this.state.activeTab === '4' })}
-                  onClick={() => { this.toggle('4'); }}>
+                  className={classnames({
+                    active: this.state.activeTab === "4"
+                  })}
+                  onClick={() => {
+                    this.toggle("4");
+                  }}
+                >
                   TX / MIN
                         </NavLink>
               </NavItem>
             </Nav>
             <TabContent activeTab={this.state.activeTab}>
               <TabPane tabId="1">
-                <TimeChart chartData={this.timeDataSetup(this.props.blockPerHour.rows)} />
+                <TimeChart
+                  chartData={this.timeDataSetup(this.props.blockPerHour.rows)}
+                />
               </TabPane>
               <TabPane tabId="2">
-                <TimeChart chartData={this.timeDataSetup(this.props.blockPerMin.rows)} />
+                <TimeChart
+                  chartData={this.timeDataSetup(this.props.blockPerMin.rows)}
+                />
               </TabPane>
               <TabPane tabId="3">
-                <TimeChart chartData={this.timeDataSetup(this.props.txPerHour.rows)} />
+                <TimeChart
+                  chartData={this.timeDataSetup(this.props.txPerHour.rows)}
+                />
               </TabPane>
               <TabPane tabId="4">
-                <TimeChart chartData={this.timeDataSetup(this.props.txPerMin.rows)} />
+                <TimeChart
+                  chartData={this.timeDataSetup(this.props.txPerMin.rows)}
+                />
               </TabPane>
             </TabContent>
           </CardBody>
@@ -146,15 +177,18 @@ export class ChartStats extends Component {
   }
 }
 
-export default connect((state) => ({
+export default connect(
+  state => ({
   blockPerHour: getBlockperHour(state),
   blockPerMin: getBlockPerMin(state),
   txPerHour: getTxPerHour(state),
   txPerMin: getTxPerMin(state),
   channel: getChannelSelector(state)
-}), {
+  }),
+  {
     getBlocksPerHour: blocksPerHour,
     getBlocksPerMin: blocksPerMin,
     getTxPerHour: txPerHour,
     getTxPerMin: txPerMin
-  })(ChartStats);
+  }
+)(ChartStats);

@@ -18,12 +18,7 @@ class TimelineStream extends Component {
             notifications: []
         }
     }
-    componentWillReceiveProps() {
 
-    }
-    componentDidMount() {
-
-    }
     render() {
         return (
             <div className="activity-stream">
@@ -32,7 +27,7 @@ class TimelineStream extends Component {
                         <h5>Activity</h5>
                     </CardHeader>
                     <CardBody >
-                        <div className='scrollable-card'>
+                        <div className="scrollable-card">
                             <Timeline >
                                 {this.props.notifications.map(item =>
                                     <TimelineEvent key={item.title} title={item.title}
@@ -40,7 +35,7 @@ class TimelineStream extends Component {
                                         iconColor="#0D3799"
                                         container="card"
                                         titleStyle={{ fontWeight: "bold" }}
-                                        style={{ width: '400px ' }}
+                                        style={{ width: "400px" }}
                                         cardHeaderStyle={{ backgroundColor: "#6283D0", fontSize: "13pt" }}
                                         buttons={<FontAwesome name="play-circle"  />}>
                                         <Typography variant="body1">
@@ -62,4 +57,5 @@ class TimelineStream extends Component {
         );
     }
 };
+
 export default TimelineStream;
