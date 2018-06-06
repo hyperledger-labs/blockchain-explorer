@@ -86,4 +86,5 @@ class ChannelForm extends Component {
         );
     }
 }
+
 export default withStyles(styles)(ChannelForm);

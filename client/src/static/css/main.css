@@ -28,12 +28,12 @@ font-weight: 300;
     border: none;
     box-shadow: 0px 9px 10px  rgba(0,0,0,0.05)
 }
-.bell{
+.cog, .bell{
     margin-top: 36px;
     color: #5F6164;
     font-size: 18pt;
 }
-.bell:hover{
+.bell:hover, .cog:hover{
     margin-top: 36px;
     color: #24272a;
     font-size: 18pt;

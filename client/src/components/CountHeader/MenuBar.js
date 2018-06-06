@@ -13,7 +13,7 @@ import DashboardView from '../View/DashboardView';
 import Chaincodes from '../Lists/Chaincodes';
 import { blockList } from '../../store/actions/block/action-creators';
 import { chaincodes } from '../../store/actions/chaincodes/action-creators';
-import { headerCount } from '../../store/actions/header/action-creators';
+import { countHeader } from '../../store/actions/header/action-creators';
 import { latestBlock } from '../../store/actions/latestBlock/action-creators';
 import { transactionInfo } from '../../store/actions/transaction/action-creators';
 import { transactionList } from '../../store/actions/transactions/action-creators';
@@ -24,7 +24,6 @@ import {
   getChannelList,
   getChannelSelector,
   getCountHeader,
-  getNotification,
   getPeerList,
   getTransaction,
   getTransactionList
@@ -58,7 +57,7 @@ export class MenuBar extends Component {
     this.state = {
       activeView: 'DashboardView',
       activeTab: { dashboardTab: true, networkTab: false, blocksTab: false, chaincodesTab: false },
-      countHeader: { countHeader: this.props.getHeaderCount() }
+      countHeader: { countHeader: this.props.getCountHeader() }
     }
   }
 
@@ -67,19 +66,23 @@ export class MenuBar extends Component {
       this.setState({ countHeader: nextProps.countHeader });
     }
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getCountHeader(nextProps.channel.currentChannel);
-      this.props.getLatestBlock(nextProps.channel.currentChannel, 0);
-      this.props.getBlockList(nextProps.channel.currentChannel, 0);
-      this.props.getChaincodes(nextProps.channel.currentChannel);
-      this.props.getTransactionList(nextProps.channel.currentChannel, 0);
-
+      this.syncData(nextProps.channel.currentChannel)
     }
   }
 
+  syncData = (currentChannel) => {
+    this.props.getCountHeader(currentChannel);
+    this.props.getLatestBlock(currentChannel);
+    this.props.getBlockList(currentChannel);
+    this.props.getChaincodes(currentChannel);
+    this.props.getTransactionList(currentChannel, 0);
+  }
+
+
   componentDidMount() {
     setInterval(() => {
-      this.props.getHeaderCount(this.props.channel.currentChannel);
-      this.props.getLatestBlock(this.props.channel.currentChannel, 0);
+      this.props.getCountHeader(this.props.channel.currentChannel);
+      this.props.getLatestBlock(this.props.channel.currentChannel);
     }, 3000)
   }
 
@@ -192,22 +195,21 @@ export class MenuBar extends Component {
   }
 }
 
-export default connect((state) => ({
+export default compose(withStyles(styles), connect((state) => ({
     block: getBlock(state),
     blockList: getBlockList(state),
     chaincodes: getChaincodes(state),
     channel: getChannelSelector(state),
     channelList: getChannelList(state),
     countHeader: getCountHeader(state),
-    notification: getNotification(state),
     peerList: getPeerList(state),
     transaction: getTransaction(state),
     transactionList: getTransactionList(state)
 }), {
       getBlockList: blockList,
       getChaincodes: chaincodes,
-      getHeaderCount: headerCount,
+      getCountHeader: countHeader,
       getLatestBlock: latestBlock,
       getTransactionInfo: transactionInfo,
       getTransactionList: transactionList
-  })(MenuBar);
+  }))(MenuBar);

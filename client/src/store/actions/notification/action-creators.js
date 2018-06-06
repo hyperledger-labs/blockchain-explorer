@@ -5,7 +5,7 @@
 import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
 
-export const getNotification = (notification) => dispatch => {
+export const notification = (notification) => dispatch => {
     var notify = JSON.parse(notification);
     dispatch(createAction(actionTypes.NOTIFICATION_LOAD)(notify))
 

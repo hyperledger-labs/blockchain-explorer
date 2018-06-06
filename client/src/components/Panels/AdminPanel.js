@@ -10,10 +10,8 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Typography from 'material-ui/Typography';
-
-import ChannelForm from '../Forms/Channel';
+import ChannelForm from '../Forms/ChannelForm';
 import FontAwesome from 'react-fontawesome';
-// import Select from 'react-select';
 import { MenuItem } from 'material-ui/Menu';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Select from 'material-ui/Select';
@@ -21,17 +19,16 @@ import Select from 'material-ui/Select';
 class AdminPanel extends Component {
     constructor(props, context) {
         super(props, context);
-        this.handleChange = this.handleChange.bind(this);
     }
-    handleChange() {
+
+    handleChange = () => {
 
     }
+
     render() {
-
         return (
             <div>
                 <Typography variant="headline"><FontAwesome name="cogs" /> ADMIN PANEL</Typography>
-
                 <ExpansionPanel>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                         <Typography variant="subheading">MANAGE CHANNEL  </Typography>
@@ -62,7 +59,6 @@ class AdminPanel extends Component {
                                     <MenuItem value={30}>mock2</MenuItem>
                                 </Select>
                                 <FormHelperText>select a channel</FormHelperText>
-
                             </FormControl>
                         </form>
                         {/* <div className='channel-dropdown'>
