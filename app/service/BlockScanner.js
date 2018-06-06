@@ -2,8 +2,6 @@
 *SPDX-License-Identifier: Apache-2.0
 */
 
-var fabricConfiguration = require('../platform/fabric/FabricConfiguration.js')
-
 var helper = require('../helper.js')
 var co = require('co')
 var logger = helper.getLogger('blockscanner');
@@ -259,7 +257,7 @@ class BlockScanner {
     }
 
     syncChaincodes() {
-        var channelName = fabricConfiguration.getCurrChannel();
+        var channelName = this.proxy.getDefaultChannel();
 
         try {
             this.saveChaincodes(channelName);
@@ -269,7 +267,7 @@ class BlockScanner {
     }
 
     syncPeerlist() {
-        var channelName = fabricConfiguration.getCurrChannel();
+        var channelName = this.proxy.getDefaultChannel();
 
         try {
             this.savePeerlist(channelName);

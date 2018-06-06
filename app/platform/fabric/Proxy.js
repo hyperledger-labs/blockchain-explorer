@@ -234,6 +234,10 @@ class Proxy {
 				return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
 			}
 		}
+
+		getDefaultChannel(){
+			return configuration.getCurrChannel();
+		}
 }
 
 module.exports = Proxy;
