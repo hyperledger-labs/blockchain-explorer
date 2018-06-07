@@ -3,9 +3,9 @@
 */
 
 var co = require('co')
-var helper = require('../helper.js');
+var helper = require('../../../helper.js');
+var sql = require('../../../db/pgservice.js');
 var logger = helper.getLogger('transactions');
-var sql = require('../db/pgservice.js');
 
 function getTransactionByID(channelName, txhash) {
     let sqlTxById = ` select * from TRANSACTION where txhash = '${txhash}' `;

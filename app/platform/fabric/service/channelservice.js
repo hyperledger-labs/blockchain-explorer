@@ -11,11 +11,10 @@ var path = require('path');
 var co = require('co')
 var fs = require('fs');
 var util = require('util');
-var sql = require('../db/pgservice.js');
-var helper = require('../helper.js');
+var sql = require('../../../db/pgservice.js');
+var helper = require('../../../helper.js');
 var logger = helper.getLogger('channelservice');
 var networkService = require('./networkservice.js');
-var logger = helper.getLogger("channelservice");
 logger.setLevel('INFO');
 var tableName = "channel";
 

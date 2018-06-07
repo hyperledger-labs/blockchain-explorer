@@ -3,9 +3,10 @@
 */
 
 var co = require('co')
-var helper = require('../helper.js');
+var helper = require('../../../helper.js');
+var sql = require('../../../db/pgservice.js');
 var logger = helper.getLogger('blocks');
-var sql = require('../db/pgservice.js');
+
 
 function getBlockAndTxList(channelName, blockNum) {
 

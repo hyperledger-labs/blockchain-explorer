@@ -4,7 +4,8 @@
 */
 
 var hfc = require('fabric-client');
-var helper = require('../helper.js');
+var helper = require('../../../helper.js');
+
 var logger = helper.getLogger('networkservice');
 var path = require('path');
 

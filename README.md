@@ -9,7 +9,8 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 	├── db			   Postgres script and help class
 	├── listener       Websocket listener
 	├── metrics        Metrics
-	├── mock_server	   Mock server used for development
+	├── platform       Blockchain platform
+	  	├── fabric     Fabric platform specific
 	├── service        The service
 	├── socket		   Push real time data to front end
 	├── test		   Endpoint tests

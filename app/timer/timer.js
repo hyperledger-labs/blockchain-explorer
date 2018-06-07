@@ -29,7 +29,7 @@ var txnPerMinMeter = Metrics.txMetrics
 
 // var stomp=require('../socket/websocketserver.js').stomp()
 
-var statusMertics = require('../service/metricservice.js')
+var statusMertics = require('../platform/fabric/service/metricservice.js')
 
 
 async function start(platform) {

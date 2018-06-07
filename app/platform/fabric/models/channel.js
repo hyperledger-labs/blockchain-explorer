@@ -5,15 +5,17 @@
 var multer = require('multer');
 const util = require('util');
 var path = require('path');
+var fs = require('fs');
 const exec = util.promisify(require('child_process').exec);
-var config = require('../platform/fabric/config.json');
+var config = require('../config.json');
+var sql = require('../../../db/pgservice.js');
 var jch = require('../service/joinChannel.js');
 var chs = require('../service/channelservice.js');
-var requtil = require('../utils/requestutils.js');
-var fs = require('fs');
-var helper = require('../helper.js');
-var logger = helper.getLogger('channel');
+var requtil = require('../../../utils/requestutils.js');
+var fileUtil = require('../../../utils/fileUtils.js');
+var helper = require('../../../helper.js');
 var configtxgenToolPath = config.configtxgenToolPath;
+var logger = helper.getLogger('channel');
 
 logger.setLevel('INFO');
 
@@ -30,7 +32,9 @@ var storage = multer.diskStorage({
     }
 });
 // set to upload 2 files, can be increased by updating array
-var upload = multer({ storage: storage }).array('channelArtifacts', 2);
+var upload = multer({
+    storage: storage
+}).array('channelArtifacts', 2);
 
 
 function aSyncUpload(req, res) {
@@ -85,8 +89,7 @@ function aSyncUpload(req, res) {
                 reject(response)
             }
         });
-    }
-    )
+    })
 }
 
 
@@ -95,8 +98,14 @@ function joinChannel(channelName, peers, orgName) {
     let jc = jch.joinChannel(channelName, peers, orgName);
     return jc;
 }
+
+var getChannelConfig = async function (channelName) {
+    let channelConfig = await sql.getRowsBySQlCase(` select * from channel where name ='${channelName}' `);
+    return channelConfig;
+}
+
 var generateChannelArtifacts = async function (artifacts) {
-    let artifactsDir = await generateDir();
+    let artifactsDir = await fileUtil.generateDir();
     var artifactChannelPath = path.resolve(artifactsDir);
     let channelTxPath = `${artifactChannelPath}/${artifacts.channelName}.tx`;
     let channelBlockPath = `${artifactChannelPath}/${artifacts.channelName}.block`;
@@ -118,17 +127,9 @@ var generateChannelArtifacts = async function (artifacts) {
     return channelArtifacts;
 }
 
-var generateDir = async function () {
-    var artifactsDir = '/tmp/' + new Date().getTime();
-    try {
-        fs.mkdirSync(artifactsDir);
-    } catch (err) {
-        logger.error(err);
-    }
-    return artifactsDir
-}
 
-exports.generateDir = generateDir
+
+exports.getChannelConfig = getChannelConfig
 exports.generateChannelArtifacts = generateChannelArtifacts
 exports.joinChannel = joinChannel
 exports.aSyncUpload = aSyncUpload
