@@ -104,8 +104,11 @@ From new terminal.
 
 - `cd blockchain-explorer/`
 - `./start.sh`  (it will have the backend up).
-- `tail -f log.log` (view log)
 - Launch the URL http://localhost:8080 on a browser.
+
+## Logs
+- Please visit the [./logs/console]() folder to view the logs relating to console and [./logs/app]() to view the application logs and visit the [./logs/db]() to view the database logs.
+- Logs rotate for every 7 days.
 
 ## License
 
