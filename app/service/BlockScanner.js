@@ -7,20 +7,20 @@ var co = require('co')
 var logger = helper.getLogger('blockscanner');
 var sql = require('../db/pgservice.js');
 var wss = require('../../main.js');
-
+var sha = require('js-sha256');
+var asn = require('asn1.js');
 
 class BlockScanner {
 
     constructor(platform) {
-        this.proxy =  platform.getDefaultProxy();
+        this.proxy = platform.getDefaultProxy();
     }
 
     async syncBlock() {
         try {
-            var channels =  this.proxy.getChannels();
+            var channels = this.proxy.getChannels();
 
-            for(let channelName of channels)
-            {
+            for (let channelName of channels) {
                 let maxBlockNum
                 let curBlockNum
                 [maxBlockNum, curBlockNum] = await Promise.all([
@@ -31,7 +31,7 @@ class BlockScanner {
                 await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
             };
         } catch (err) {
-        console.log(err);
+            console.log(err);
         }
     }
 
@@ -42,7 +42,7 @@ class BlockScanner {
             try {
                 await this.saveBlockRange(block)
             }
-            catch(err) {
+            catch (err) {
                 console.log(err.stack);
                 logger.error(err)
             }
@@ -50,11 +50,21 @@ class BlockScanner {
         }
     }
 
+    calculateBlockHash(header) {
+        let headerAsn = asn.define('headerAsn', function () {
+            this.seq().obj(this.key('Number').int(), this.key('PreviousHash').octstr(), this.key('DataHash').octstr());
+        });
+
+        let output = headerAsn.encode({ Number: parseInt(header.number), PreviousHash: Buffer.from(header.previous_hash, 'hex'), DataHash: Buffer.from(header.data_hash, 'hex') }, 'der');
+        let hash = sha.sha256(output);
+        return hash;
+    };
+
     async saveBlockRange(block) {
         let first_tx = block.data.data[0]; //get the first Transaction
         let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
         let channelName = header.channel_header.channel_id;
-        let blockNum = block.header.number.toString();
+        let blockNum = block.header.number;
         let firstTxTimestamp = header.channel_header.timestamp;
         let preHash = block.header.previous_hash;
         let dataHash = block.header.data_hash;
@@ -63,25 +73,39 @@ class BlockScanner {
             firstTxTimestamp = null
         }
 
+        let headerAsn = asn.define('headerAsn', function () {
+            this.seq().obj(this.key('Number').int(),
+                this.key('PreviousHash').octstr(), this.key('DataHash').octstr());
+        });
+
+        let output = headerAsn.encode({
+            Number: parseInt(blockNum),
+            PreviousHash: Buffer.from(preHash, 'hex'),
+            DataHash: Buffer.from(dataHash, 'hex')
+        }, 'der');
+
+        let blockhash = sha.sha256(output);
+
         let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${blockNum}' and txcount='${txCount}' and prehash='${preHash}' and datahash='${dataHash}' and channelname='${channelName}' `)
         if (c.c == 0) {
             await sql.saveRow('blocks',
                 {
-                    'blocknum': block.header.number,
+                    'blocknum': blockNum,
                     'channelname': channelName,
-                    'prehash': block.header.previous_hash,
-                    'datahash': block.header.data_hash,
-                    'txcount': block.data.data.length,
+                    'prehash': preHash,
+                    'datahash': dataHash,
+                    'blockhash':blockhash,
+                    'txcount': txCount,
                     'createdt': new Date(firstTxTimestamp)
                 })
             //push last block
             var notify = {
-                'title': 'Block '+block.header.number + ' Added',
+                'title': 'Block ' + block.header.number + ' Added',
                 'type': 'block',
                 'message': 'Block ' + block.header.number + ' established with ' + block.data.data.length + ' tx',
                 'time': new Date(firstTxTimestamp),
                 'txcount': block.data.data.length,
-                'datahash':block.header.data_hash
+                'datahash': block.header.data_hash
             };
             wss.broadcast(notify);
 
@@ -154,16 +178,16 @@ class BlockScanner {
         try {
             var data = await this.proxy.getChannelHeight(channelName);
             return data;
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
         }
     }
 
     async getCurBlockNum(channelName) {
         try {
-        var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`);
+            var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`);
 
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
             return -1;
         }
@@ -199,7 +223,7 @@ class BlockScanner {
     }
 
     async saveChannel() {
-        var channels  = this.proxy.getChannels();
+        var channels = this.proxy.getChannels();
 
         for (let i = 0; i < channels.length; i++) {
             let date = new Date()
@@ -214,7 +238,7 @@ class BlockScanner {
             for (let j = 0; j < channel.blocks; j++) {
                 let block = await this.proxy.getBlockByNumber(channel.name, j)
                 channel.trans += block.data.data.length
-                if(j==0){
+                if (j == 0) {
                     channel.createdt = new Date(block.data.data[0].payload.header.channel_header.timestamp)
                 }
                 if (j == channel.blocks - 1) {
@@ -233,7 +257,7 @@ class BlockScanner {
     async syncChannels() {
         try {
             await this.saveChannel();
-        }catch(err) {
+        } catch (err) {
             logger.error(err)
         }
     }
@@ -261,7 +285,7 @@ class BlockScanner {
 
         try {
             this.saveChaincodes(channelName);
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
         }
     }
@@ -271,12 +295,12 @@ class BlockScanner {
 
         try {
             this.savePeerlist(channelName);
-        } catch(err) {
+        } catch (err) {
             logger.error(err)
         }
     }
 
-	syncChannelEventHubBlock() {
+    syncChannelEventHubBlock() {
         this.proxy.syncChannelEventHubBlock(this.saveBlockRange);
     }
 }

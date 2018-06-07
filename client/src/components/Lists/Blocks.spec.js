@@ -12,7 +12,7 @@ const setup = () => {
   const props = {
     blockList: [
       {
-        blockhash: null,
+        blockhash: "6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
         blocknum: 20,
         channelname: "mychannel",
         createdt: "2018-04-26T20:32:13.000Z",
@@ -29,7 +29,7 @@ const setup = () => {
         ]
       },
       {
-        blockhash: null,
+        blockhash: "7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
         blocknum: 19,
         channelname: "mychannel",
         createdt: "2018-04-26T20:32:11.000Z",
@@ -157,6 +157,8 @@ describe("Blocks", () => {
     expect(wrapper.find('TdComponent').findWhere(n => n.contains(2)).exists()).toBe(true);
     //Data Hash
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e')).exists()).toBe(true);
+    //Block Hash
+    expect(wrapper.find('TdComponent').findWhere(n => n.contains('6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
     //Previous Hash
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
     //Number of Transactions
@@ -168,6 +170,8 @@ describe("Blocks", () => {
     expect(wrapper.find('TdComponent').findWhere(n => n.contains(3)).exists()).toBe(true);
     //Data Hash
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf')).exists()).toBe(true);
+    //Block Hash
+    expect(wrapper.find('TdComponent').findWhere(n => n.contains('7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
     //Previous Hash
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d')).exists()).toBe(true);
     //Number of Transactions
@@ -189,7 +193,7 @@ describe("Blocks", () => {
 
   test("handleDialogClose should set dialogOpen to false", () => {
     const { wrapper } = setup();
-    wrapper.setState({ dialogOpen: true})
+    wrapper.setState({ dialogOpen: true })
     wrapper.update()
     wrapper.instance().handleDialogClose()
     wrapper.update()
@@ -205,31 +209,37 @@ describe("Blocks", () => {
 
   test("Simulate Block Number filterMethod should have one result when given a value of 20", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '0-blocknum').find('input').simulate('change', {target: {value: '20'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '0-blocknum').find('input').simulate('change', { target: { value: '20' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
   test("Simulate Number of Tx filterMethod should have one result when given a value of 3", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '1-txcount').find('input').simulate('change', {target: {value: '3'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '1-txcount').find('input').simulate('change', { target: { value: '3' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
   test("Simluate Data filterMethod should have one result when given a datahash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '2-datahash').find('input').simulate('change', {target: {value: '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '2-datahash').find('input').simulate('change', { target: { value: '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e' } });
+    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+  });
+
+  test("Simulate Block Hash filterMethod should have one result when given a block hash", () => {
+    const { wrapper } = setup();
+    wrapper.find('ThComponent').findWhere(n => n.key() === '3-blockhash').find('input').simulate('change', { target: { value: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
   test("Simulate Previous Hash filterMethod should have one result when given a previous hash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '3-prehash').find('input').simulate('change', {target: {value: '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '4-prehash').find('input').simulate('change', { target: { value: '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
   test("Simulate Transaction filterMethod should have one result when given a transaction hash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '4-txhash').find('input').simulate('change', {target: {value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '5-txhash').find('input').simulate('change', { target: { value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 

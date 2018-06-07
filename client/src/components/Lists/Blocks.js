@@ -59,10 +59,17 @@ class Blocks extends Component {
           width: 150
         },
         {
-          Header: "Data",
+          Header: "Data Hash",
           accessor: "datahash",
           filterMethod: (filter, rows) =>
             matchSorter(rows, filter.value, { keys: ["datahash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+          filterAll: true
+        },
+        {
+          Header: "Block Hash",
+          accessor: "blockhash",
+          filterMethod: (filter, rows) =>
+            matchSorter(rows, filter.value, { keys: ["blockhash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
           filterAll: true
         },
         {
