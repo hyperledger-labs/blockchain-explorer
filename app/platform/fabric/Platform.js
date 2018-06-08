@@ -5,7 +5,7 @@
 var path = require("path");
 var helper = require("../../helper.js");
 var logger = helper.getLogger("platform");
-var configuration = require("./FabricConfiguration.js");
+var configuration = require("./Configuration.js");
 var util = require("util");
 var fs = require("fs-extra");
 var User = require("fabric-client/lib/User.js");
@@ -161,6 +161,11 @@ class Platform {
       );
     });
   }
+
+  getDefaultChannel(){
+    return configuration.getCurrChannel();
+  }
+
 }
 
 module.exports = Platform;

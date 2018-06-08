@@ -9,7 +9,7 @@ var defaultOrg;
 var defaultPeer;
 var currChannel;
 
-class FabricConfiguration {
+class Configuration {
   constructor(config) {
     this.networkConfig = config["network-config"];
   }
@@ -111,4 +111,4 @@ class FabricConfiguration {
   }
 }
 
-module.exports = new FabricConfiguration(config);
+module.exports = new Configuration(config);

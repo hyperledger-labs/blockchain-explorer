@@ -10,7 +10,7 @@ var Peer = require('fabric-client/lib/Peer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
 var helper = require('../../helper.js');
 var logger = helper.getLogger('Query');
-var configuration = require('./FabricConfiguration.js');
+var configuration = require('./Configuration.js');
 
 class Proxy {
 
@@ -182,7 +182,7 @@ class Proxy {
 			return "0";
 		}
 
-		async syncChannelEventHubBlock(saveToDatabase) {
+		async syncChannelEventHubBlock(callback) {
 
 			var fabChannels = this.getChannelObjects();
 
@@ -198,7 +198,7 @@ class Proxy {
 							//full block
 
 							try {
-								saveToDatabase(block);
+								callback(block);
 							} catch(err) {
 								console.log(err.stack);
 								logger.error(err)
@@ -235,9 +235,33 @@ class Proxy {
 			}
 		}
 
-		getDefaultChannel(){
-			return configuration.getCurrChannel();
+		async getCurBlockNum(channelName) {
+			try {
+			var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`);
+
+			} catch(err) {
+				logger.error(err)
+				return -1;
+			}
+
+			let curBlockNum
+
+			if (row == null || row.blocknum == null) {
+				curBlockNum = -1
+			} else {
+				curBlockNum = parseInt(row.blocknum)
+			}
+
+			return curBlockNum
 		}
+
+		joinChannel(channelName, peers, orgName) {
+			let jc = jch.joinChannel(channelName, peers, orgName);
+			return jc;
+		}
+		
+
+
 }
 
 module.exports = Proxy;

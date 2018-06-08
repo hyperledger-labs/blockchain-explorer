@@ -8,10 +8,6 @@ var path = require('path');
 var fs = require('fs');
 const exec = util.promisify(require('child_process').exec);
 var config = require('../config.json');
-var sql = require('../../../db/pgservice.js');
-var jch = require('../service/joinChannel.js');
-var chs = require('../service/channelservice.js');
-var requtil = require('../../../utils/requestutils.js');
 var fileUtil = require('../../../utils/fileUtils.js');
 var helper = require('../../../helper.js');
 var configtxgenToolPath = config.configtxgenToolPath;
@@ -31,6 +27,7 @@ var storage = multer.diskStorage({
         callback(null, file.originalname);
     }
 });
+
 // set to upload 2 files, can be increased by updating array
 var upload = multer({
     storage: storage
@@ -94,15 +91,7 @@ function aSyncUpload(req, res) {
 
 
 
-function joinChannel(channelName, peers, orgName) {
-    let jc = jch.joinChannel(channelName, peers, orgName);
-    return jc;
-}
 
-var getChannelConfig = async function (channelName) {
-    let channelConfig = await sql.getRowsBySQlCase(` select * from channel where name ='${channelName}' `);
-    return channelConfig;
-}
 
 var generateChannelArtifacts = async function (artifacts) {
     let artifactsDir = await fileUtil.generateDir();
@@ -129,7 +118,5 @@ var generateChannelArtifacts = async function (artifacts) {
 
 
 
-exports.getChannelConfig = getChannelConfig
 exports.generateChannelArtifacts = generateChannelArtifacts
-exports.joinChannel = joinChannel
 exports.aSyncUpload = aSyncUpload

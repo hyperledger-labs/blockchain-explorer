@@ -2,9 +2,6 @@
     SPDX-License-Identifier: Apache-2.0
 */
 
-var helper = require('../helper.js');
-var logger = helper.getLogger('requestutils');
-
 function invalidRequest(req, res) {
     let payload = reqPayload(req);
     res.send({

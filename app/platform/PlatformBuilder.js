@@ -6,11 +6,9 @@ var Platform = require('./fabric/Platform.js');
 
 class PlatformBuilder {
 
-    static async build(platform) {
+    static async build(pltfrm) {
 
-        var platform;
-
-        if(platform == 'fabric') {
+        if(pltfrm == 'fabric') {
             var platform = new Platform();
             await platform.initialize();
             return platform;

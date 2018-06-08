@@ -7,16 +7,11 @@
  * Created by Cam Mach on 6/8/17.
  *
  */
-var path = require('path');
-var co = require('co')
 var fs = require('fs');
-var util = require('util');
-var sql = require('../../../db/pgservice.js');
 var helper = require('../../../helper.js');
 var logger = helper.getLogger('channelservice');
 var networkService = require('./networkservice.js');
 logger.setLevel('INFO');
-var tableName = "channel";
 
 var createChannel = async function (artifacts) {
   try {
@@ -67,24 +62,6 @@ var createChannel = async function (artifacts) {
     };
     return resp;
   }
-
-
 }
 
-var saveChannelRow = async function (artifacts) {
-  var channelTxArtifacts = fs.readFileSync(artifacts.channelTxPath);
-  var channelConfig = fs.readFileSync(artifacts.channelConfigPath);
-
-  let insert = await sql.saveRow(tableName,
-    {
-      'name': artifacts.channelName,
-      'channel_hash': artifacts.channelHash,
-      'channel_config': channelConfig,
-      'channel_tx': channelTxArtifacts,
-      'createdt': new Date()
-    });
-  logger.info("Create Channel: added a record to sql table");
-}
-
-exports.saveChannelRow = saveChannelRow
 exports.createChannel = createChannel

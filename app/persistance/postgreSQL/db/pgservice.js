@@ -15,10 +15,12 @@
  */
 
 const { Client } = require("pg");
-var config = require("../../appconfig.json");
+var config = require("./pgconfig.json");
 var pgconfig = config.pg;
-var helper = require("../helper.js");
+var helper = require("../../../helper.js");
 var logger = helper.getLogger("pgservice");
+
+
 
 const connectionString =
   "postgres://" +
@@ -39,10 +41,22 @@ const client = new Client({
   connectionString: connectionString
 });
 
-function handleDisconnect() {
+async function handleDisconnect() {
   var port = pgconfig.port ? pgconfig.port : "5432";
 
-  client.connect(err => {
+  try {
+
+    client.on("error", err => {
+      console.log("db error", err);
+      if (err.code === "PROTOCOL_CONNECTION_LOST") {
+        handleDisconnect();
+      } else {
+        throw err;
+      }
+    });
+
+    await client.connect()
+  } catch(err) {
     if (err) {
       // We introduce a delay before attempting to reconnect,
       // to avoid a hot loop, and to allow our node script to
@@ -50,18 +64,9 @@ function handleDisconnect() {
       console.log("error when connecting to db:", err);
       setTimeout(handleDisconnect, 2000);
     }
-  });
-  client.on("error", err => {
-    console.log("db error", err);
-    if (err.code === "PROTOCOL_CONNECTION_LOST") {
-      handleDisconnect();
-    } else {
-      throw err;
-    }
-  });
+  }
 }
 
-handleDisconnect();
 //open connection
 function openconnection() {
   client.connect();
@@ -536,3 +541,4 @@ exports.getSQL2Map4Arr = getSQL2Map4Arr;
 
 exports.openconnection = openconnection;
 exports.closeconnection = closeconnection;
+exports.handleDisconnect = handleDisconnect;

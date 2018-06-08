@@ -13,14 +13,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-var ledgerMgr = require('../utils/ledgerMgr.js')
-var helper = require('../helper.js')
 var Metrics = require('../metrics/metrics.js')
 var BlockListener = require('../listener/BlockListener.js')
 var BlockScanner = require('../service/BlockScanner.js')
 
-var PlatformBuilder = require('../platform/PlatformBuilder.js')
-var configuration = require('../platform/fabric/FabricConfiguration.js')
 
 
 var blockPerMinMeter = Metrics.blockMetrics
@@ -29,12 +25,9 @@ var txnPerMinMeter = Metrics.txMetrics
 
 // var stomp=require('../socket/websocketserver.js').stomp()
 
-var statusMertics = require('../platform/fabric/service/metricservice.js')
+async function start(platform, persistance) {
 
-
-async function start(platform) {
-
-        blockScanner = new BlockScanner(platform);
+        blockScanner = new BlockScanner(platform, persistance);
         blockListener = new BlockListener(blockScanner);
 
         setInterval(function () {
