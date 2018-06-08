@@ -10,6 +10,7 @@
     "chart.js": "^2.7.2",
     "immutable": "^3.8.1",
     "jquery": "^3.0.0",
+    "js-beautify": "^1.7.5",
     "lodash": "^4.17.4",
     "match-sorter": "^2.2.1",
     "material-ui": "^1.0.0-beta.29",

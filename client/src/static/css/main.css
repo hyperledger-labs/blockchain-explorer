@@ -255,3 +255,11 @@ svg.custom path.link {
     display: flex;
     flex-wrap: wrap;
 }
+
+.source-code{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width : 800px;
+    height: 600px;
+}

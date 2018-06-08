@@ -9,14 +9,16 @@ import "react-table/react-table.css";
 import matchSorter from "match-sorter";
 import Dialog from "material-ui/Dialog";
 import ChaincodeForm from "../Forms/ChaincodeForm";
-
+import ChaincodeView from '../View/ChaincodeView';
 class Chaincodes extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       chaincodeCount: this.props.countHeader.chaincodeCount,
-      dialogOpen: false
+      dialogOpen: false,
+      sourceDialog: false,
+      chaincode:{}
     };
   }
 
@@ -36,12 +38,21 @@ class Chaincodes extends Component {
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
-
+  sourceDialogOpen = chaincode => {
+    this.setState({chaincode:chaincode});
+     this.setState({ sourceDialog: true });
+  };
+  sourceDialogClose = () => {
+    this.setState({ sourceDialog: false });
+  };
   reactTableSetup = () => {
     return [
       {
         Header: "Chaincode Name",
         accessor: "chaincodename",
+        Cell: row => (
+                <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#" >{row.value}</a>
+        ),
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
@@ -131,6 +142,14 @@ class Chaincodes extends Component {
           maxWidth={"md"}
         >
           <ChaincodeForm />
+        </Dialog>
+        <Dialog
+          open={this.state.sourceDialog}
+          onClose={this.sourceDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <ChaincodeView chaincode = {this.state.chaincode} />
         </Dialog>
       </div>
     );

@@ -2,57 +2,65 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
-import Card, { CardContent } from 'material-ui/Card';
+import FontAwesome from 'react-fontawesome';
 import Typography from 'material-ui/Typography';
+import {
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from 'material-ui/Dialog';
+import moment from 'moment-timezone';
 
+var beautify = require('js-beautify');
 const styles = theme => ({
-    root: {
-        flexGrow: 1,
-        paddingTop: 42,
-        position: 'relative',
+    container: {
+        border: "3px solid #afeeee"
     },
-    card: {
-        height: 250,
-        minWidth: 1290,
-        margin: 20,
-        textAlign: 'left',
-        display: 'inline-block',
-    },
-    title: {
-        fontSize: 16,
-        color: theme.palette.text.secondary,
-        position: 'absolute',
-        left: 40,
-        top: 60
-    },
-    content: {
-        fontSize: 12,
-        color: theme.palette.text.secondary,
-        position: 'absolute',
-        left: 40,
-        top: 70
+    container1: {
+        display: "flex",
+        flexWrap: "wrap"
     }
 });
 
-function ChaincodeView(props) {
-    const { classes } = props;
-    return (
-        <div>
-            <Card className={classes.card} title={'Chaincode List'}>
-                <CardContent>
-                    <Typography className={classes.title}>Chaincode List </Typography>
-                </CardContent>
-                <CardContent className={classes.content}>
-                    Chain code details goes here
-                </CardContent>
-            </Card>
-        </div>
-    );
-}
+class ChaincodeView extends Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            loading: false
+        }
+    }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({ loading: false });
+    }
+
+    render() {
+        var formattedSrc = beautify(this.props.chaincode.source, { indent_size: 4 });
+        var srcHeader = this.props.chaincode.chaincodename + " " + this.props.chaincode.version;
+        const { classes } = this.props;
+
+        return (
+
+            < div className={["card", classes.container].join(" ")} >
+                <div className="card-header" align="center">
+                    <h3> {srcHeader}</h3>
+                </div>
+                <div className="card-body">
+                    <div className={classes.container1}>
+                        <textarea className="source-code" readOnly>
+                            {formattedSrc}
+                        </textarea>
+
+                    </div>
+                </div>
+            </div >
+
+        );
+    }
+}
 
 ChaincodeView.propTypes = {
     classes: PropTypes.object.isRequired,

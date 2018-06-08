@@ -55,8 +55,8 @@ class LandingPage extends Component {
       this.props.getBlocksPerMin(nextProps.channel.currentChannel);
       this.props.getTransactionList(nextProps.channel.currentChannel, 0);
       this.props.getBlockList(nextProps.channel.currentChannel, 0);
-      this.props.getChaincodes(nextProps.channel.currentChannel);
       this.props.getTxByOrg(nextProps.channel.currentChannel);
+      this.props.getChaincodes(nextProps.channel.currentChannel);
     }
   }
 

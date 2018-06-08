@@ -3,7 +3,7 @@
 */
 
 var requtil = require("./requestutils.js");
-
+var chaincodeService = require('../../../app/platform/fabric/service/chaincodeService');
 const dbroutes = (app, persist) => {
 
   var statusMetrics = persist.getMetricService();
@@ -160,7 +160,11 @@ const dbroutes = (app, persist) => {
   app.get("/api/chaincode/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, function (data) {
+      statusMetrics.getTxPerChaincode(channelName, async function (data) {
+        for (let chaincode of data) {
+          let temp = await chaincodeService.loadChaincodeSrc(chaincode.path);
+          chaincode.source = temp;
+        }
         res.send({ status: 200, chaincode: data });
       });
     } else {
