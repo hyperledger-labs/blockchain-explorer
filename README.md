@@ -46,8 +46,8 @@ Connect to PostgreSQL database.
 
 Run create database script.
 
-- `\i app/db/explorerpg.sql`
-- `\i app/db/updatepg.sql`
+- `\i app/persistance/postgreSQL/db/explorerpg.sql`
+- `\i app/persistance/postgreSQL/db/updatepg.sql`
 
 Run db status commands.
 

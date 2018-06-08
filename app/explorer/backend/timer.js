@@ -13,17 +13,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-var Metrics = require('../metrics/metrics.js')
-var BlockListener = require('../listener/BlockListener.js')
-var BlockScanner = require('../service/BlockScanner.js')
+var Metrics = require('./metrics')
+var BlockListener = require('./BlockListener')
+var BlockScanner = require('./BlockScanner')
 
 
 
 var blockPerMinMeter = Metrics.blockMetrics
 var txnPerSecMeter = Metrics.txnPerSecMeter
 var txnPerMinMeter = Metrics.txMetrics
-
-// var stomp=require('../socket/websocketserver.js').stomp()
 
 async function start(platform, persistance) {
 
