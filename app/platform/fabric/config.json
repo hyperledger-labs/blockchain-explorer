@@ -43,6 +43,7 @@
 	},
 	"channel": "mychannel",
 	"keyValueStore": "/tmp/fabric-client-kvs",
+	"configtxgenToolPath": "fabric-path/fabric-samples/bin",
 	"eventWaitTime": "30000",
     "license": "Apache-2.0",
     "version": "1.1"

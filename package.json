@@ -9,8 +9,8 @@
     "v1.1.1 fabric nodesdk sample"
   ],
   "engines": {
-    "node": "^8.9.0",
-    "npm": "^5.5.1"
+    "node": "^8.11.2",
+    "npm": "^5.10.0"
   },
   "dependencies": {
     "ajv": "^5.5.2",
