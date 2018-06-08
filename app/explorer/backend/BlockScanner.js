@@ -2,7 +2,7 @@
 *SPDX-License-Identifier: Apache-2.0
 */
 
-var helper = require('../helper.js')
+var helper = require('../../helper.js')
 var logger = helper.getLogger('blockscanner');
 var sha = require('js-sha256');
 var asn = require('asn1.js');

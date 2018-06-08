@@ -4,8 +4,8 @@
 
 var EventEmitter = require('events').EventEmitter;
 
-var blockMetrics = require('../metrics/metrics').blockMetrics
-var txMetrics = require('../metrics/metrics').txMetrics
+var blockMetrics = require('./metrics').blockMetrics
+var txMetrics = require('./metrics').txMetrics
 
 class  BlockListener extends EventEmitter{
 

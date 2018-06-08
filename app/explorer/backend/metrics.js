@@ -14,7 +14,7 @@
  limitations under the License.
  */
 var Stats = require('fast-stats').Stats;
-var helper=require('../helper.js')
+var helper=require('../../helper.js')
 var logger = helper.getLogger('metrics');
 
 class Metrics {
