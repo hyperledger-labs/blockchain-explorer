@@ -11,6 +11,7 @@ var EventHub = require('fabric-client/lib/EventHub.js');
 var helper = require('../../helper.js');
 var logger = helper.getLogger('Query');
 var configuration = require('./Configuration.js');
+var chaincodeService = require('./service/chaincodeService.js');
 
 class Proxy {
 
@@ -259,9 +260,18 @@ class Proxy {
 			let jc = jch.joinChannel(channelName, peers, orgName);
 			return jc;
 		}
-		
 
+		getDefaultChannel(){
+			return configuration.getCurrChannel();
+		}
 
+		changeChannel(){
+			return configuration.changeChannel(channel);
+		}
+
+		async loadChaincodeSrc(path) {
+			return chaincodeService.loadChaincodeSrc(path);
+		}
 }
 
 module.exports = Proxy;

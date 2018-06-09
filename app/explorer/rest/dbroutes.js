@@ -3,7 +3,6 @@
 */
 
 var requtil = require("./requestutils.js");
-var chaincodeService = require('../../../app/platform/fabric/service/chaincodeService');
 const dbroutes = (app, persist) => {
 
   var statusMetrics = persist.getMetricService();
@@ -140,37 +139,6 @@ const dbroutes = (app, persist) => {
     }
   });
 
-
-  /**
-  Chaincode list
-  GET /chaincodelist -> /api/chaincode
-  curl -i 'http://<host>:<port>/api/chaincode/<channel>'
-  Response:
-  [
-    {
-      "channelName": "mychannel",
-      "chaincodename": "mycc",
-      "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02",
-      "version": "1.0",
-      "txCount": 0
-    }
-  ]
-  */
-
-  app.get("/api/chaincode/:channel", function (req, res) {
-    let channelName = req.params.channel;
-    if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function (data) {
-        for (let chaincode of data) {
-          let temp = await chaincodeService.loadChaincodeSrc(chaincode.path);
-          chaincode.source = temp;
-        }
-        res.send({ status: 200, chaincode: data });
-      });
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
-  });
 
   /***
    List of blocks and transaction list per block

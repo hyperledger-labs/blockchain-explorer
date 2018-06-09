@@ -1,7 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var dbroutes = require("./rest/dbroutes");
-var platformroutes = require("./rest/platformroutes");
+var dbroutes = require("./rest/dbroutes.js");
+var platformroutes = require("./rest/platformroutes.js");
 var explorerconfig = require("./explorerconfig.json");
 var PersistanceFactory = require("../persistance/PersistanceFactory.js");
 var timer = require("./backend/timer.js");
@@ -21,13 +21,13 @@ class Explorer {
         return this.app;
     }
 
-    async initialize() {
+    async initialize(broadcaster) {
 
         this.persistance = await PersistanceFactory.create(explorerconfig["persistance"]);
         dbroutes(this.app, this.persistance);
         for (let pltfrm of this.platforms) {
           await platformroutes(this.app, pltfrm, this.persistance);
-          timer.start(platform, this.persistance);
+          timer.start(platform, this.persistance, broadcaster);
         }
     }
 }

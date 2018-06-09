@@ -39,50 +39,56 @@ Response:
  *
  */
 
-var explorer = new Explorer();
+class Broadcaster extends WebSocket.Server {
+   constructor(server) {
+      super({server});
+
+      this.on("connection", function connection(ws, req) {
+        const location = url.parse(req.url, true);
+
+      this.on("message", function incoming(message) {
+          console.log("received: %s", message);
+        });
+      });
+
+   }
+
+  broadcast(data) {
+    this.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
+  }
+
+ }
 
 
 async function startExplorer() {
-  await explorer.initialize();
+
+  var explorer = new Explorer();
+
+  //============ web socket ==============//
+  var server = http.createServer(explorer.getApp());
+
+  var broadcaster = new Broadcaster(server);
+
+  await explorer.initialize(broadcaster);
 
   explorer.getApp().use(express.static(path.join(__dirname, "client/build")));
 
   logger.info(
     "Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging."
   );
+
+  // ============= start server =======================
+  server.listen(port, function () {
+    console.log(`Please open web browser to access ：http://${host}:${port}/`);
+  });
 }
 
 startExplorer();
 
-
-//============ web socket ==============//
-var server = http.createServer(explorer.getApp());
-var wss = new WebSocket.Server({ server });
-wss.on("connection", function connection(ws, req) {
-  const location = url.parse(req.url, true);
-  // You might use location.query.access_token to authenticate or share sessions
-  // or req.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
-
-  ws.on("message", function incoming(message) {
-    console.log("received: %s", message);
-  });
-});
-
-function broadcast(data) {
-  wss.clients.forEach(function each(client) {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
-}
-
-
-exports.wss = wss;
-exports.broadcast = broadcast;
-// ============= start server =======================
-server.listen(port, function () {
-  console.log(`Please open web browser to access ：http://${host}:${port}/`);
-});
 
 // this is for the unit testing
 //module.exports = app;

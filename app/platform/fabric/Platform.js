@@ -161,11 +161,6 @@ class Platform {
       );
     });
   }
-
-  getDefaultChannel(){
-    return configuration.getCurrChannel();
-  }
-
 }
 
 module.exports = Platform;

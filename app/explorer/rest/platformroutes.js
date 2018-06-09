@@ -17,6 +17,7 @@ const platformroutes = async function(app, pltfrm, persistance) {
 
       platform = await PlatformBuilder.build(pltfrm);
       proxy = platform.getDefaultProxy();
+      statusMetrics = persistance.getMetricService();
 
       /***
           Block by number
@@ -72,7 +73,7 @@ const platformroutes = async function(app, pltfrm, persistance) {
         curl -i 'http://<host>:<port>/api/curChannel'
         */
         app.get("/api/curChannel", function (req, res) {
-          res.send({ currentChannel: platform.getDefaultChannel() });
+          res.send({ currentChannel: proxy.getDefaultChannel() });
         });
 
         /**
@@ -84,7 +85,7 @@ const platformroutes = async function(app, pltfrm, persistance) {
           let channelName = req.params.channelName;
           configuration.changeChannel(channelName);
           ledgerMgr.ledgerEvent.emit("changeLedger");
-          res.send({ currentChannel: platform.getDefaultChannel() });
+          res.send({ currentChannel: proxy.getDefaultChannel() });
         });
 
 
@@ -165,7 +166,36 @@ const platformroutes = async function(app, pltfrm, persistance) {
         }
       });
 
+      /**
+          Chaincode list
+          GET /chaincodelist -> /api/chaincode
+          curl -i 'http://<host>:<port>/api/chaincode/<channel>'
+          Response:
+          [
+            {
+              "channelName": "mychannel",
+              "chaincodename": "mycc",
+              "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02",
+              "version": "1.0",
+              "txCount": 0
+            }
+          ]
+        */
 
+        app.get("/api/chaincode/:channel", function (req, res) {
+            let channelName = req.params.channel;
+            if (channelName) {
+              statusMetrics.getTxPerChaincode(channelName, async function (data) {
+                 for (let chaincode of data) {
+                   let temp = await proxy.loadChaincodeSrc(chaincode.path);
+                   chaincode.source = temp;
+                 }
+                 res.send({ status: 200, chaincode: data });
+               });
+            } else {
+               return requtil.invalidRequest(req, res);
+            }
+        });
 }
 
 module.exports = platformroutes;
