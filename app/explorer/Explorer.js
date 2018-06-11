@@ -1,3 +1,6 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
 var express = require("express");
 var bodyParser = require("body-parser");
 var dbroutes = require("./rest/dbroutes.js");
