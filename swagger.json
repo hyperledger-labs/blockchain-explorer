@@ -1,0 +1,677 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Hyperledger Explorer REST API Swagger",
+        "description": "Rest API for fabric .",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Hyperledger Team",
+            "email": ""
+        }
+    },
+    "host": "localhost:8080",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/api",
+    "produces": [
+        "application/json"
+    ],
+    "tags": [
+        {
+            "name": "Channel",
+            "description": "Everything about your channel"
+        },
+        {
+            "name": "Chaincodes",
+            "description": "Everything about your chaincodes"
+        },
+        {
+            "name": "Blocks",
+            "description": "Everything about your blocks"
+        },
+        {
+            "name": "Transactions",
+            "description": "Everything about your transactions"
+        }
+    ],
+    "paths": {
+        "/channels": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Query to fetch channels",
+                "description": "Query to fetch channels",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/Channels"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/curChannel": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "get Current channel",
+                "description": "get Current channel",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/curChannel"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/changeChannel/{channelName}": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Query to get BlockCount on a channel",
+                "description": "Query to get BlockCount on a channel",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelName",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/changeChannel"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/chaincodes": {
+            "get": {
+                "tags": [
+                    "Chaincodes"
+                ],
+                "summary": "Query to fetch all Installed/instantiated chaincodes",
+                "description": "Query to fetch all Installed/instantiated chaincodes",
+                "parameters": [
+                    {
+                        "name": "channel",
+                        "in": "query",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "version": {
+                                        "type": "string"
+                                    },
+                                    "path": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Chaincodes"
+                ],
+                "summary": "Install chaincode on target peers",
+                "description": "Install chaincode on target peers",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "peers",
+                        "in": "formData",
+                        "description": "peers",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "chaincodeName",
+                        "in": "formData",
+                        "description": "chaincode Name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodePath",
+                        "in": "formData",
+                        "description": "chaincode Path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodeVersion",
+                        "in": "formData",
+                        "description": "chaincode Version",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Query for Channel Information",
+                "description": "Query for Channel Information",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peer",
+                        "in": "query",
+                        "description": "peer",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}/blocks": {
+            "get": {
+                "tags": [
+                    "Blocks"
+                ],
+                "summary": "Query Get Block by Hash",
+                "description": "Query Get Block by Hash",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "hash",
+                        "in": "query",
+                        "description": "block hash",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peer",
+                        "in": "query",
+                        "description": "peer",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}/transactions/{txid}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query Get Transaction by Transaction ID",
+                "description": "Query Get Transaction by Transaction ID",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "txid",
+                        "in": "path",
+                        "description": "Transaction id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peer",
+                        "in": "query",
+                        "description": "peer",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}/blocks/{blockNumber}": {
+            "get": {
+                "tags": [
+                    "Blocks"
+                ],
+                "summary": "Query Get Block by BlockNumber",
+                "description": "Query Get Block by BlockNumber",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "blockNumber",
+                        "in": "path",
+                        "description": "blockNumber",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peer",
+                        "in": "query",
+                        "description": "peer",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}/chaincodes/{chaincodeName}": {
+            "get": {
+                "tags": [
+                    "Chaincodes"
+                ],
+                "summary": "Query on chaincode on target peers",
+                "description": "Query on chaincode on target peers",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodeName",
+                        "in": "path",
+                        "description": "chaincodeName",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peer",
+                        "in": "query",
+                        "description": "peer",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fcn",
+                        "in": "query",
+                        "description": "function name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "args",
+                        "in": "query",
+                        "description": "argument",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Chaincodes"
+                ],
+                "summary": "Invoke transaction on chaincode on target peers",
+                "description": "Invoke transaction on chaincode on target peers",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodeName",
+                        "in": "formData",
+                        "description": "chaincodeName",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "peers",
+                        "in": "formData",
+                        "description": "peers",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fcn",
+                        "in": "formData",
+                        "description": "function name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "args",
+                        "in": "formData",
+                        "description": "arguments",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "transaction id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/{channelName}/chaincodes": {
+            "post": {
+                "tags": [
+                    "Chaincodes"
+                ],
+                "summary": "Instantiate chaincode on target peers",
+                "description": "Instantiate chaincode on target peers",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodeName",
+                        "in": "formData",
+                        "description": "chaincode name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "chaincodeVersion",
+                        "in": "formData",
+                        "description": "chaincodeVersion",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "functionName",
+                        "in": "formData",
+                        "description": "functionName",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "args",
+                        "in": "formData",
+                        "description": "arguments",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/channels/:channelName/peers": {
+            "post": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Join Channel",
+                "description": "Join Channel",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "peers",
+                        "in": "formData",
+                        "description": "peers",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Channels": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "type": "array",
+                "items": {
+                    "type": "integer"
+                }
+            }
+        },
+        "curChannel": {
+            "type": "object",
+            "properties": {
+                "currentChannel": {
+                    "type": "string"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
