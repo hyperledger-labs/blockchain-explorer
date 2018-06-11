@@ -6,14 +6,15 @@ var path = require("path");
 var helper = require("../../helper.js");
 var logger = helper.getLogger("platform");
 var configuration = require("./Configuration.js");
-var util = require("util");
 var fs = require("fs-extra");
-var User = require("fabric-client/lib/User.js");
-var crypto = require("crypto");
 var FabricChannel = require("./FabricChannel.js");
 var Proxy = require("./Proxy.js");
 var hfc = require("fabric-client");
 hfc.addConfigFile(path.join(__dirname, "./config.json"));
+var helper = require('../../helper.js');
+var logger = helper.getLogger('networkservice');
+var path = require('path');
+
 
 class Platform {
   constructor() {
@@ -160,6 +161,50 @@ class Platform {
         channel_event_hub
       );
     });
+  }
+
+
+  async  getClientFromPath(userorg, orgPath, networkCfgPath) {
+    try {
+      let config = '-connection-profile-path';
+      let networkConfig = 'network' + config;
+      hfc.setConfigSetting(networkConfig, networkCfgPath);
+      hfc.setConfigSetting(userorg + config, orgPath);
+      let client = hfc.loadFromConfig(hfc.getConfigSetting(networkConfig));
+      client.loadFromConfig(hfc.getConfigSetting(userorg + config));
+      await client.initCredentialStores();
+      return client;
+    }catch(err) {
+      logger.error("getClientForOrg", err);
+      return null;
+    }
+  }
+
+  async createChannel(artifacts) {
+      logger.info("############### C R E A T E  C H A N N E L ###############");
+      logger.info("Creating channel: " + artifacts.orgName, artifacts.orgConfigPath, artifacts.channelConfigPath);
+      try {
+        var client = await this.getClientFromPath(artifacts.orgName, artifacts.orgConfigPath,
+          artifacts.channelConfigPath);
+        var envelope = fs.readFileSync(artifacts.channelTxPath);
+        var channelConfig = client.extractChannelConfig(envelope);
+        let signature = client.signChannelConfig(channelConfig);
+
+        let request = {
+          config: channelConfig,
+          signatures: [signature],
+          name: artifacts.channelName,
+          txId: client.newTransactionID(true)
+        };
+
+        var response = await client.createChannel(request);
+
+        return response;
+
+      } catch (error) {
+        logger.error("createChannel", error)
+        return null;
+      }
   }
 }
 

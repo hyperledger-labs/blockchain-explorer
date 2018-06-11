@@ -46,9 +46,10 @@ class Broadcaster extends WebSocket.Server {
       this.on("connection", function connection(ws, req) {
         const location = url.parse(req.url, true);
 
-      this.on("message", function incoming(message) {
+      ws.on("message", function incoming(message) {
           console.log("received: %s", message);
         });
+
       });
 
    }

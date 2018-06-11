@@ -9,8 +9,6 @@ var requtil = require("./requestutils");
 var helper=require('../../helper.js')
 var logger = helper.getLogger("main");
 
-var chModel = require("../../platform/fabric/models/channel.js");
-var chs = require("../../platform/fabric/service/channelservice.js");
 
 
 const platformroutes = async function(app, pltfrm, persistance) {
@@ -18,6 +16,7 @@ const platformroutes = async function(app, pltfrm, persistance) {
       platform = await PlatformBuilder.build(pltfrm);
       proxy = platform.getDefaultProxy();
       statusMetrics = persistance.getMetricService();
+      crudService = persistance.getCrudService();
 
       /***
           Block by number
@@ -115,29 +114,8 @@ const platformroutes = async function(app, pltfrm, persistance) {
       app.post('/api/channel', async function (req, res) {
         try {
           // upload channel config, and org config
-          let artifacts = await chModel.aSyncUpload(req, res);
-          if (artifacts) {
-            if (artifacts.channelName && artifacts.profile && artifacts.genesisBlock) {
-              // generate genesis block and channel transaction             //
-              let channelGenesis = await chModel.generateChannelArtifacts(artifacts);
-              artifacts.channelTxPath = channelGenesis.channelTxPath;
-              try {
-                let channelCreate = await chs.createChannel(artifacts);
-                res.send(channelCreate)
-              } catch (err) {
-                res.send({ success: false, message: err })
-              }
-            } else {
-              let response = {
-                success: false,
-                message: "Invalid request " + artifacts
-              };
-              return response;
-            }
-          } else {
-            res.send({ success: false, message: 'no artifacts' })
-          }
-
+          let artifacts = await requtil.aSyncUpload(req, res);
+          chs.createChannel(artifacts, platform);
         } catch (err) {
           logger.error(err)
           return res.send({ success: false, message: "Invalid request, payload" });
