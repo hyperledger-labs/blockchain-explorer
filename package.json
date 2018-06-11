@@ -32,7 +32,7 @@
     "prettyjson": "^1.2.1",
     "stomp-broker-js": "^0.1.3",
     "stompjs": "^2.3.3",
-    "swagger-ui-express": "latest",
+    "swagger-ui-express": "^3.0.9",
     "winston": "^2.2.0",
     "ws": "^5.1.1"
   },
