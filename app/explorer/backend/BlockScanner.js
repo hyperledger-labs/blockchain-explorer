@@ -4,8 +4,8 @@
 
 var helper = require('../../helper.js')
 var logger = helper.getLogger('blockscanner');
-var sha = require('js-sha256');
-var asn = require('asn1.js');
+var fileUtil = require('../rest/logical/utils/fileUtils.js');
+
 
 class BlockScanner {
 
@@ -42,30 +42,21 @@ class BlockScanner {
         if (!firstTxTimestamp) {
             firstTxTimestamp = null
         }
-        let headerAsn = asn.define('headerAsn', function () {
-            this.seq().obj(this.key('Number').int(),
-                this.key('PreviousHash').octstr(), this.key('DataHash').octstr());
-        });
-
-        let output = headerAsn.encode({
-            Number: parseInt(block.header.number),
-            PreviousHash: Buffer.from(block.header.previous_hash, 'hex'),
-            DataHash: Buffer.from(block.header.data_hash, 'hex')
-        }, 'der');
+        let blockhash = await fileUtil.generateBlockHash(block.header);
 
         var blockRecord = {
-            'blockNum' : block.header.number,
+            'blockNum': block.header.number,
             'txCount': block.data.data.length,
-            'preHash' : block.header.previous_hash,
-            'dataHash' : block.header.data_hash,
-            'channelName' : header.channel_header.channel_id,
-            'firstTxTimestamp' : header.channel_header.timestamp,
-            'blockhash' : sha.sha256(output)
+            'preHash': block.header.previous_hash,
+            'dataHash': block.header.data_hash,
+            'channelName': header.channel_header.channel_id,
+            'firstTxTimestamp': header.channel_header.timestamp,
+            'blockhash': blockhash
         };
 
         var blockSaved = await this.crudService.saveBlock(blockRecord);
 
-        if(blockSaved){
+        if (blockSaved) {
 
             //push last block
             var notify = {
@@ -85,71 +76,71 @@ class BlockScanner {
     }
 
     async saveTransactions(block) {
-            //////////chaincode//////////////////
-            //syncChaincodes();
-            //////////tx/////////////////////////
-            let first_tx = block.data.data[0]; //get the first Transaction
-            let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
-            let channelName = header.channel_header.channel_id;
+        //////////chaincode//////////////////
+        //syncChaincodes();
+        //////////tx/////////////////////////
+        let first_tx = block.data.data[0]; //get the first Transaction
+        let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
+        let channelName = header.channel_header.channel_id;
 
-            let txLen = block.data.data.length
-            for (let i = 0; i < txLen; i++) {
-                let tx = block.data.data[i]
-                let chaincode
-                try {
-                    chaincode = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace
-                } catch (err) {
-                    chaincode = ""
-                }
-
-                let rwset
-                let readSet
-                let writeSet
-                try {
-                    rwset = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
-                    readSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.reads } })
-                    writeSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.writes } })
-                } catch (err) {
-                }
-
-                let chaincodeID
-                try {
-                    chaincodeID =
-                        new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
-                } catch (err) {
-                }
-
-                let status
-                try {
-                    status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
-                } catch (err) {
-                }
-
-                let mspId = []
-
-                try {
-                    mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
-                } catch (err) {
-                }
-
-                var transaction = {
-                    'channelname': channelName,
-                    'blockid': block.header.number.toString(),
-                    'txhash': tx.payload.header.channel_header.tx_id,
-                    'createdt': new Date(tx.payload.header.channel_header.timestamp),
-                    'chaincodename': chaincode,
-                    'chaincode_id': String.fromCharCode.apply(null, chaincodeID),
-                    'status': status,
-                    'creator_msp_id': tx.payload.header.signature_header.creator.Mspid,
-                    'endorser_msp_id': mspId,
-                    'type': tx.payload.header.channel_header.typeString,
-                    'read_set': JSON.stringify(readSet, null, 2),
-                    'write_set': JSON.stringify(writeSet, null, 2)
-                };
-
-                await this.crudService.saveTransaction(transaction);
-
+        let txLen = block.data.data.length
+        for (let i = 0; i < txLen; i++) {
+            let tx = block.data.data[i]
+            let chaincode
+            try {
+                chaincode = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace
+            } catch (err) {
+                chaincode = ""
             }
+
+            let rwset
+            let readSet
+            let writeSet
+            try {
+                rwset = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
+                readSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.reads } })
+                writeSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.writes } })
+            } catch (err) {
+            }
+
+            let chaincodeID
+            try {
+                chaincodeID =
+                    new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
+            } catch (err) {
+            }
+
+            let status
+            try {
+                status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
+            } catch (err) {
+            }
+
+            let mspId = []
+
+            try {
+                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
+            } catch (err) {
+            }
+
+            var transaction = {
+                'channelname': channelName,
+                'blockid': block.header.number.toString(),
+                'txhash': tx.payload.header.channel_header.tx_id,
+                'createdt': new Date(tx.payload.header.channel_header.timestamp),
+                'chaincodename': chaincode,
+                'chaincode_id': String.fromCharCode.apply(null, chaincodeID),
+                'status': status,
+                'creator_msp_id': tx.payload.header.signature_header.creator.Mspid,
+                'endorser_msp_id': mspId,
+                'type': tx.payload.header.channel_header.typeString,
+                'read_set': JSON.stringify(readSet, null, 2),
+                'write_set': JSON.stringify(writeSet, null, 2)
+            };
+
+            await this.crudService.saveTransaction(transaction);
+
+        }
 
     }
 
@@ -160,7 +151,7 @@ class BlockScanner {
 
             try {
                 var savedNewBlock = await this.saveBlockRange(block)
-                if(savedNewBlock) {
+                if (savedNewBlock) {
                     this.broadcaster.broadcast();
                 }
             }
@@ -292,7 +283,7 @@ class BlockScanner {
 
     syncChannelEventHubBlock() {
         var self = this;
-        this.proxy.syncChannelEventHubBlock(block => { self.saveBlockRange(block); } );
+        this.proxy.syncChannelEventHubBlock(block => { self.saveBlockRange(block); });
     }
 }
 
