@@ -1,9 +1,11 @@
 /**
-*    SPDX-License-Identifier: Apache-2.0
-*/
+ *    SPDX-License-Identifier: Apache-2.0
+ */
 
 var sql = require('./db/pgservice.js');
 var helper = require('../../helper.js')
+var fs = require('fs');
+var path = require('path');
 var logger = helper.getLogger('blockscanner');
 
 class CRUDService {
@@ -46,32 +48,45 @@ class CRUDService {
     async saveChannelRow(artifacts) {
         var channelTxArtifacts = fs.readFileSync(artifacts.channelTxPath);
         var channelConfig = fs.readFileSync(artifacts.channelConfigPath);
+        try {
 
-        let insert = await sql.saveRow('channel',
-          {
-            'name': artifacts.channelName,
-            'channel_hash': artifacts.channelHash,
-            'channel_config': channelConfig,
-            'channel_tx': channelTxArtifacts,
-            'createdt': new Date()
-          });
-        logger.info("Create Channel: added a record to sql table");
+            let insert = await sql.saveRow('channel', {
+                'name': artifacts.channelName,
+                'channel_hash': artifacts.channelHash,
+                'channel_config': channelConfig,
+                'channel_tx': channelTxArtifacts,
+                'createdt': new Date()
+            });
+
+            let resp = {
+                success: true,
+                message: 'Channel ' + artifacts.channelName + " saved"
+            };
+
+            return resp;
+        } catch (err) {
+            let resp = {
+                success: false,
+                message: 'Faile to save channel ' + artifacts.channelName + " in database "
+            };
+            return resp;
+        }
+
     }
 
     async saveBlock(block) {
 
         let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${block.blockNum}' and txcount='${block.txCount}' and prehash='${block.preHash}' and datahash='${block.dataHash}' and channelname='${block.channelName}' `)
         if (c.c == 0) {
-            await sql.saveRow('blocks',
-                {
-                    'blocknum': block.blockNum,
-                    'channelname': block.channelName,
-                    'prehash': block.preHash,
-                    'datahash': block.dataHash,
-                    'blockhash':block.blockhash,
-                    'txcount': block.txCount,
-                    'createdt': new Date(block.firstTxTimestamp)
-                });
+            await sql.saveRow('blocks', {
+                'blocknum': block.blockNum,
+                'channelname': block.channelName,
+                'prehash': block.preHash,
+                'datahash': block.dataHash,
+                'blockhash': block.blockhash,
+                'txcount': block.txCount,
+                'createdt': new Date(block.firstTxTimestamp)
+            });
 
             return true;
         }
@@ -80,7 +95,7 @@ class CRUDService {
     }
 
     async saveTransaction(transaction) {
-        await sql.saveRow('transaction',transaction);
+        await sql.saveRow('transaction', transaction);
         await sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${transaction.chaincodename}' and channelname='${transaction.channelname}' `);
     }
 
@@ -107,8 +122,7 @@ class CRUDService {
 
     // ====================chaincodes=====================================
     async saveChaincode(chaincode) {
-
-        let c = await sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' and channelname='${chaincode.channelName}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and version='${chaincode.version}' and path='${chaincode.path}' and channelname='${chaincode.channelname}' `)
         if (c.c == 0) {
             await sql.saveRow('chaincodes', chaincode)
         }
@@ -118,7 +132,13 @@ class CRUDService {
     async saveChannel(channel) {
         let c = await sql.getRowByPkOne(`select count(1) as c from channel where name='${channel.name}'`)
         if (c.c == 0) {
-            await sql.saveRow('channel', { "name": channel.name, "createdt": channel.createdt, "blocks": channel.blocks, "trans": channel.trans, "channel_hash": channel.channel_hash })
+            await sql.saveRow('channel', {
+                "name": channel.name,
+                "createdt": channel.createdt,
+                "blocks": channel.blocks,
+                "trans": channel.trans,
+                "channel_hash": channel.channel_hash
+            })
         } else {
             await sql.updateBySql(`update channel set blocks='${channel.blocks}',trans='${channel.trans}',channel_hash='${channel.channel_hash}' where name='${channel.name}'`)
         }

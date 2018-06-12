@@ -4,21 +4,15 @@
 
 var util = require('util');
 var path = require('path');
-var fs = require('fs');
-var hfc = require('fabric-client');
 var helper = require('../../../helper.js');
-var networkService = require('./networkservice.js');
-//var config = require('../config.json');
 var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml');
 var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml');
-var chModel = require("../models/channel.js");
-var fileUtil = require('../../../utils/fileUtils.js');
 var logger = helper.getLogger('joinChannel');
 
 /*
  * Have an organization join a channel
  */
-var joinChannel = async function (channel_name, peers, org_name) {
+var joinChannel = async function (channel_name, peers, org_name, platform) {
     logger.debug('\n\n============ Join Channel start ============\n')
     var error_message = null;
     var all_eventhubs = [];
@@ -26,7 +20,7 @@ var joinChannel = async function (channel_name, peers, org_name) {
 
         logger.info('Calling peers in organization "%s" to join the channel', org_name);
         // first setup the client for this org
-        var client = await networkService.getClientForOrg(org_name, orgPath, networkCfgPath);
+        var client = await platform.getClientFromPath(org_name, orgPath, networkCfgPath);
         logger.debug('Successfully got the fabric client for the organization "%s"', org_name);
         var channel = client.getChannel(channel_name);
         if (!channel) {

@@ -11,10 +11,6 @@ var FabricChannel = require("./FabricChannel.js");
 var Proxy = require("./Proxy.js");
 var hfc = require("fabric-client");
 hfc.addConfigFile(path.join(__dirname, "./config.json"));
-var helper = require('../../helper.js');
-var logger = helper.getLogger('networkservice');
-var path = require('path');
-
 
 class Platform {
   constructor() {
@@ -164,8 +160,9 @@ class Platform {
   }
 
 
-  async  getClientFromPath(userorg, orgPath, networkCfgPath) {
+  async getClientFromPath(userorg, orgPath, networkCfgPath) {
     try {
+      logger.info(userorg, orgPath, networkCfgPath)
       let config = '-connection-profile-path';
       let networkConfig = 'network' + config;
       hfc.setConfigSetting(networkConfig, networkCfgPath);
@@ -174,38 +171,44 @@ class Platform {
       client.loadFromConfig(hfc.getConfigSetting(userorg + config));
       await client.initCredentialStores();
       return client;
-    }catch(err) {
+    } catch (err) {
       logger.error("getClientForOrg", err);
       return null;
     }
   }
 
   async createChannel(artifacts) {
-      logger.info("############### C R E A T E  C H A N N E L ###############");
-      logger.info("Creating channel: " + artifacts.orgName, artifacts.orgConfigPath, artifacts.channelConfigPath);
-      try {
-        var client = await this.getClientFromPath(artifacts.orgName, artifacts.orgConfigPath,
-          artifacts.channelConfigPath);
-        var envelope = fs.readFileSync(artifacts.channelTxPath);
-        var channelConfig = client.extractChannelConfig(envelope);
-        let signature = client.signChannelConfig(channelConfig);
+    logger.info("############### C R E A T E  C H A N N E L ###############");
+    logger.info("Creating channel: " + artifacts.orgName, artifacts.orgConfigPath, artifacts.channelConfigPath);
+    try {
+      var client = await this.getClientFromPath(artifacts.orgName, artifacts.orgConfigPath,
+        artifacts.channelConfigPath);
+      var envelope = fs.readFileSync(artifacts.channelTxPath);
+      var channelConfig = client.extractChannelConfig(envelope);
+      let signature = client.signChannelConfig(channelConfig);
 
-        let request = {
-          config: channelConfig,
-          signatures: [signature],
-          name: artifacts.channelName,
-          txId: client.newTransactionID(true)
-        };
+      let request = {
+        config: channelConfig,
+        signatures: [signature],
+        name: artifacts.channelName,
+        txId: client.newTransactionID(true)
+      };
 
-        var response = await client.createChannel(request);
-
-        return response;
-
-      } catch (error) {
-        logger.error("createChannel", error)
-        return null;
+      var response = await client.createChannel(request);
+      let channelResponse = {
+        status: response.status ? response.status : '',
+        message: response.info ? response.info : '',
+        txId: request.txId.getTransactionID()
       }
+      return channelResponse;
+
+    } catch (error) {
+      logger.error("createChannel", error)
+      return null;
+    }
   }
 }
+
+
 
 module.exports = Platform;

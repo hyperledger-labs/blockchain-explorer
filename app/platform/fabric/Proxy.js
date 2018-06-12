@@ -12,6 +12,7 @@ var helper = require('../../helper.js');
 var logger = helper.getLogger('Query');
 var configuration = require('./Configuration.js');
 var chaincodeService = require('./service/chaincodeService.js');
+var jch = require('./service/joinChannel.js');
 
 class Proxy {
 
@@ -256,8 +257,8 @@ class Proxy {
 			return curBlockNum
 		}
 
-		joinChannel(channelName, peers, orgName) {
-			let jc = jch.joinChannel(channelName, peers, orgName);
+		joinChannel(channelName, peers, orgName, platform) {
+			let jc = jch.joinChannel(channelName, peers, orgName, platform);
 			return jc;
 		}
 

@@ -50,7 +50,7 @@ channels:
   ## Setup your own network using [Build your network] http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html
   ## You can use blockchain-explorer/app/config/network-config-tls.yaml file as a template to create a new channel, all the paths needs to be
   # updated to you fabric network path, search for "fabric-path"
-  newchannel:
+  demochannel30:
     # Every new channel creation requires single configuration
     # Required. list of orderers designated by the application to use for transactions on this
     # channel. This list can be a result of access control ("org1" can only access "ordererA"), or

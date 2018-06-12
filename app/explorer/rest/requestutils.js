@@ -27,8 +27,7 @@ function reqPayload(req) {
         reqPayload = req.query
     } else if (req.body) {
         reqPayload = req.body
-    }
-    else if (req.params) {
+    } else if (req.params) {
         reqPayload = req.params
     }
     return reqPayload;
@@ -91,6 +90,7 @@ function aSyncUpload(req, res) {
                     channelTxPath: "",
                     channelHash: ""
                 }
+
                 if (err) {
                     reject(err)
                 }
@@ -111,4 +111,9 @@ function aSyncUpload(req, res) {
 }
 
 
-module.exports = { invalidRequest, notFound, reqPayload, aSyncUpload };
+module.exports = {
+    invalidRequest,
+    notFound,
+    reqPayload,
+    aSyncUpload
+};

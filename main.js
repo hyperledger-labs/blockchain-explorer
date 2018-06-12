@@ -55,8 +55,11 @@ async function startExplorer() {
   );
   // ============= start server =======================
   server.listen(port, function () {
+    console.log('\n')
     console.log(`Please open web browser to access ：http://${host}:${port}/`);
+    console.log('\n')
     console.log('pid is ' + process.pid)
+    console.log('\n')
   });
 }
 
