@@ -87,7 +87,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   */
   app.get("/api/changeChannel/:channelName", function (req, res) {
     let channelName = req.params.channelName;
-    configuration.changeChannel(channelName);
+    proxy.changeChannel(channelName);
     ledgerMgr.ledgerEvent.emit("changeLedger");
     res.send({
       currentChannel: proxy.getDefaultChannel()

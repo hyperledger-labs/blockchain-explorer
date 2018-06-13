@@ -22,14 +22,25 @@ function notFound(req, res) {
 }
 
 function reqPayload(req) {
-    let reqPayload = {};
-    if (req.query) {
-        reqPayload = req.query
-    } else if (req.body) {
-        reqPayload = req.body
-    } else if (req.params) {
-        reqPayload = req.params
-    }
+    let reqPayload = [];
+    const {     params,
+        query,
+        body
+    } = req;
+
+
+
+    reqPayload.push({
+        "params": params
+    })
+
+    reqPayload.push({
+        "query": query
+    })
+
+    reqPayload.push({
+        "body": body
+    })
     return reqPayload;
 }
 

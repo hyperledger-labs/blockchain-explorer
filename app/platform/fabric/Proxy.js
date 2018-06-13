@@ -266,7 +266,7 @@ class Proxy {
 			return configuration.getCurrChannel();
 		}
 
-		changeChannel(){
+		changeChannel(channel){
 			return configuration.changeChannel(channel);
 		}
 
