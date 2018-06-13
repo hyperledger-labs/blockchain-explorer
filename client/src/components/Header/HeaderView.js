@@ -18,6 +18,7 @@ import AdminPanel from '../Panels/AdminPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import FontAwesome from 'react-fontawesome';
 import Drawer from 'material-ui/Drawer';
+import Button from 'material-ui/Button';
 import NotificationPanel from '../Panels/Notifications';
 import Websocket from 'react-websocket';
 import Badge from 'material-ui/Badge';
@@ -131,11 +132,16 @@ export class HeaderView extends Component {
       <div>
         <Websocket url="ws://localhost:8080/"
           onMessage={this.handleData.bind(this)} reconnect={true} />
-        <Navbar color="faded" light expand="md">
+        <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
           {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
+          <Button href="/#" className={classes.margin} >DASHBOARD</Button>
+          <Button href="#/network" className={classes.margin} >NETWORK</Button>
+          <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
+          <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
+          <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
@@ -178,6 +184,6 @@ export default compose(withStyles(styles), connect((state) => ({
   channelList: getChannelList(state),
   notification: getNotification(state)
 }), {
-  getNotifcation: notification,
+  getNotification: notification,
   getChangeChannel: changeChannel
 }))(HeaderView)

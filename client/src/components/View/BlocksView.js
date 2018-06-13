@@ -9,14 +9,19 @@ import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Card, { CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
-import Chaincodes from '../Lists/Chaincodes';
+import Blocks from '../Lists/Blocks';
 import {
-    getChaincodes,
+    getBlockList,
     getChannelSelector,
-    getCountHeader
+    getCountHeader,
+    getTransaction,
+    getTransactionList,
 } from '../../store/selectors/selectors';
+import { blockList } from '../../store/actions/block/action-creators';
 import { countHeader } from '../../store/actions/header/action-creators';
-import { chaincodes } from '../../store/actions/chaincodes/action-creators';
+import { latestBlock } from '../../store/actions/latestBlock/action-creators';
+import { transactionInfo } from '../../store/actions/transaction/action-creators';
+import { transactionList } from '../../store/actions/transactions/action-creators';
 
 const styles = theme => ({
     root: {
@@ -47,22 +52,36 @@ const styles = theme => ({
     }
 });
 
-export class ChaincodeView extends Component {
+export class BlocksView extends Component {
     constructor(props) {
         super(props);
         this.state = {
             activeView: 'Network',
         }
     }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
+            this.syncData(nextProps.channel.currentChannel)
+        }
+    }
+
+    syncData = (currentChannel) => {
+        this.props.getCountHeader(currentChannel);
+        this.props.getLatestBlock(currentChannel);
+        this.props.getBlockList(currentChannel);
+    }
+
     render() {
         const { classes } = this.props;
         return (
             <div className="view-fullwidth" >
                 <div className="view-display">
-                    <Chaincodes channel={this.props.channel}
+                    <Blocks blockList={this.props.blockList}
+                        channel={this.props.channel}
                         countHeader={this.props.countHeader}
-                        chaincodes={this.props.chaincodes}
-                        getChaincodes={this.props.getChaincodes} />
+                        getBlockList={this.props.getBlockList}
+                        transaction={this.props.transaction}
+                        getTransactionInfo={this.props.getTransactionInfo} />
                 </div>
             </div>
         );
@@ -70,16 +89,22 @@ export class ChaincodeView extends Component {
 }
 
 
-ChaincodeView.propTypes = {
+BlocksView.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 export default compose(withStyles(styles), connect((state) => ({
+    blockList: getBlockList(state),
     channel: getChannelSelector(state),
     countHeader: getCountHeader(state),
-    chaincodes: getChaincodes(state)
+    transaction: getTransaction(state),
+    transactionList: getTransactionList(state)
 }),
     {
-        getChaincodes: chaincodes,
+        getBlockList: blockList,
         getCountHeader: countHeader,
-    }))(ChaincodeView);
+        getLatestBlock: latestBlock,
+        getTransactionInfo: transactionInfo,
+        getTransactionList: transactionList
+
+    }))(BlocksView);
