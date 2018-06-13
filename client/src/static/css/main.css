@@ -180,7 +180,17 @@ div.menuItems > nav{
     margin-left: 150px;
 }
 .dashboard{
-    margin-left: 300px;
+    /* margin-left: 300px; */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+}
+.dash-stats{
+    display: block;
+    margin-left: 50px;
+    margin-right: auto;
+    width: 100%;
 }
 .wip{
     color:#bdc3c7;
@@ -263,3 +273,19 @@ svg.custom path.link {
     width : 800px;
     height: 600px;
 }
+.view-fullwidth{
+    width: 100%;
+    margin-top:105px;
+}
+.view-display{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    /* width: 30px; */
+}
+/* .app-header{
+    z-index: 100;
+    background-color: #FFFFFF;
+    height: 60px;
+} */

@@ -46,53 +46,45 @@ class Transactions extends Component {
         Header: "Tx Id",
         accessor: "txhash",
         Cell: row => (
-          <a onClick={() => this.handleDialogOpen(row.value)} href="#" >{row.value}</a>
+          <a onClick={() => this.handleDialogOpen(row.value)} href="#/transactions" >{row.value}</a>
         ),
         filterMethod: (filter, rows) =>
-        matchSorter(rows, filter.value, { keys: ["txhash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-      filterAll: true
+          matchSorter(rows, filter.value, { keys: ["txhash"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+        filterAll: true
       },
       {
         Header: "Type",
         accessor: "type",
         filterMethod: (filter, rows) =>
-        matchSorter(rows, filter.value, { keys: ["type"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-      filterAll: true
+          matchSorter(rows, filter.value, { keys: ["type"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+        filterAll: true
       },
       {
         Header: "Chaincode",
         accessor: "chaincodename",
         filterMethod: (filter, rows) =>
-        matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-      filterAll: true
+          matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+        filterAll: true
       },
       {
         Header: "Timestamp",
         accessor: "createdt",
         filterMethod: (filter, rows) =>
-        matchSorter(rows, filter.value, { keys: ["createdt"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-      filterAll: true
+          matchSorter(rows, filter.value, { keys: ["createdt"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+        filterAll: true
       }
     ];
 
     return (
       <div>
-        <Container>
-          <Row>
-            <Col>
-              <div className="scrollTable">
-                <ReactTable
-                  data={this.props.transactionList}
-                  columns={columnHeaders}
-                  defaultPageSize={10}
-                  className="-striped -highlight"
-                  filterable
-                  minRows = {0}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Container>
+        <ReactTable
+          data={this.props.transactionList}
+          columns={columnHeaders}
+          defaultPageSize={10}
+          className="-striped -highlight"
+          filterable
+          minRows={0}/>
+
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}

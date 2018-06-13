@@ -13,7 +13,9 @@ import { Card, Row, Col, CardBody } from 'reactstrap';
 import { countHeader as getCountHeaderCreator } from '../../store/actions/header/action-creators';
 import { getTxByOrg as getTxByOrgCreator } from '../../store/actions/charts/action-creators';
 import FontAwesome from 'react-fontawesome';
-
+import {
+  getBlockList,
+} from '../../store/selectors/selectors';
 class DashboardView extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +38,8 @@ class DashboardView extends Component {
   componentDidMount() {
     setInterval(() => {
       this.props.getTxByOrg(this.props.channel.currentChannel);
-    }, 60000);
+      this.props.getCountHeader(this.props.channel.currentChannel);
+    }, 3000);
 
     let arr = [];
     for (let i = 0; i < 3; i++) {
@@ -57,52 +60,54 @@ class DashboardView extends Component {
 
   render() {
     return (
-      <div className="dashboard" >
-        <div className="dash-stats">
+      <div className="view-fullwidth" >
+        <div className="dashboard" >
+          <div className="dash-stats">
+            <Row>
+              <Card className="count-card dark-card">
+                <CardBody>
+                  <h1>{this.props.countHeader.countHeader.latestBlock}</h1>
+                  <h4> <FontAwesome name="cube" /> Blocks</h4>
+                </CardBody>
+              </Card>
+              <Card className="count-card light-card" >
+                <CardBody>
+                  <h1>{this.props.countHeader.countHeader.txCount}</h1>
+                  <h4><FontAwesome name="list-alt" /> Transactions</h4>
+                </CardBody>
+              </Card>
+              <Card className="count-card dark-card" >
+                <CardBody>
+                  <h1>{this.props.countHeader.countHeader.peerCount}</h1>
+                  <h4><FontAwesome name="users" />Nodes</h4>
+                </CardBody>
+              </Card>
+              <Card className="count-card light-card" >
+                <CardBody>
+                  <h1>{this.props.countHeader.countHeader.chaincodeCount}</h1>
+                  <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
+                </CardBody>
+              </Card>
+            </Row>
+          </div>
           <Row>
-            <Card className="count-card dark-card">
-              <CardBody>
-                <h1>{this.props.countHeader.countHeader.latestBlock}</h1>
-                <h4> <FontAwesome name="cube" /> Blocks</h4>
-              </CardBody>
-            </Card>
-            <Card className="count-card light-card" >
-              <CardBody>
-                <h1>{this.props.countHeader.countHeader.txCount}</h1>
-                <h4><FontAwesome name="list-alt" /> Transactions</h4>
-              </CardBody>
-            </Card>
-            <Card className="count-card dark-card" >
-              <CardBody>
-                <h1>{this.props.countHeader.countHeader.peerCount}</h1>
-                <h4><FontAwesome name="users" />Nodes</h4>
-              </CardBody>
-            </Card>
-            <Card className="count-card light-card" >
-              <CardBody>
-                <h1>{this.props.countHeader.countHeader.chaincodeCount}</h1>
-                <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
-              </CardBody>
-            </Card>
+            <Col lg="6">
+              <ChartStats />
+            </Col>
+            <Col lg="6">
+              <OrgPieChart txByOrg={this.props.txByOrg} />
+            </Col>
           </Row>
-        </div>
-        <Row>
-          <Col lg="6">
-            <ChartStats />
-          </Col>
-          <Col lg="6">
-            <OrgPieChart txByOrg={this.props.txByOrg} />
-          </Col>
-        </Row>
-        <Row className="lower-dash">
-          <Col lg="6">
-            <TimelineStream notifications={this.state.notifications} />
-          </Col>
-          <Col lg="6">
-            <PeerGraph peerList={this.props.peerList} />
-          </Col>
-        </Row>
-      </div >
+          <Row className="lower-dash">
+            <Col lg="6">
+              <TimelineStream notifications={this.state.notifications} />
+            </Col>
+            <Col lg="6">
+              <PeerGraph peerList={this.props.peerList} />
+            </Col>
+          </Row>
+        </div >
+      </div>
     );
   }
 }
@@ -117,7 +122,8 @@ const mapStateToProps = state => ({
   txByOrg: state.txByOrg.txByOrg,
   channel: state.channel.channel,
   notification: state.notification.notification,
-  peerList: state.peerList.peerList
+  peerList: state.peerList.peerList,
+  blockList: state.blockList.blockList
 });
 
 export default compose(

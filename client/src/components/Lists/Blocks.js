@@ -87,7 +87,7 @@ class Blocks extends Component {
             <ul>
               {row.value.map(tid =>
                 <li key={tid} style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                  <a className="hash-hide" onClick={() => this.handleDialogOpen(tid)} href="#" >{tid}</a>
+                  <a className="hash-hide" onClick={() => this.handleDialogOpen(tid)} href="#/blocks" >{tid}</a>
                 </li>
               )}
             </ul>
@@ -102,23 +102,14 @@ class Blocks extends Component {
 
   render() {
     return (
-      <div className="blockPage">
-        <Container>
-          <Row>
-            <Col >
-              <div className="scrollTable" >
-                <ReactTable
-                  data={this.props.blockList}
-                  columns={this.reactTableSetup()}
-                  defaultPageSize={10}
-                  className="-striped -highlight"
-                  filterable
-                  minRows={0}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Container>
+      <div >
+        <ReactTable
+          data={this.props.blockList}
+          columns={this.reactTableSetup()}
+          defaultPageSize={10}
+          className="-striped -highlight"
+          filterable
+          minRows={0} />
         <Dialog open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
           fullWidth={true}

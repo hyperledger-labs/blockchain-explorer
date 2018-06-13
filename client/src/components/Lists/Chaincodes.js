@@ -9,7 +9,7 @@ import "react-table/react-table.css";
 import matchSorter from "match-sorter";
 import Dialog from "material-ui/Dialog";
 import ChaincodeForm from "../Forms/ChaincodeForm";
-import ChaincodeView from '../View/ChaincodeView';
+import ChaincodeModal from '../View/ChaincodeModal';
 class Chaincodes extends Component {
   constructor(props) {
     super(props);
@@ -18,7 +18,7 @@ class Chaincodes extends Component {
       chaincodeCount: this.props.countHeader.chaincodeCount,
       dialogOpen: false,
       sourceDialog: false,
-      chaincode:{}
+      chaincode: {}
     };
   }
 
@@ -39,8 +39,8 @@ class Chaincodes extends Component {
     this.setState({ dialogOpen: false });
   };
   sourceDialogOpen = chaincode => {
-    this.setState({chaincode:chaincode});
-     this.setState({ sourceDialog: true });
+    this.setState({ chaincode: chaincode });
+    this.setState({ sourceDialog: true });
   };
   sourceDialogClose = () => {
     this.setState({ sourceDialog: false });
@@ -51,7 +51,7 @@ class Chaincodes extends Component {
         Header: "Chaincode Name",
         accessor: "chaincodename",
         Cell: row => (
-                <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#" >{row.value}</a>
+          <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
         ),
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -115,43 +115,35 @@ class Chaincodes extends Component {
 
   render() {
     return (
-      <div className="blockPage">
-        <Container>
-          <Button className="button" onClick={() => this.handleDialogOpen()}>
-            Add Chaincode
+      <div >
+        <Button className="button" onClick={() => this.handleDialogOpen()}>
+          Add Chaincode
           </Button>
-          <Row>
-            <Col>
-              <div className="scrollTable">
-                <ReactTable
-                  data={this.props.chaincodes}
-                  columns={this.reactTableSetup()}
-                  defaultPageSize={5}
-                  className="-striped -highlight"
-                  filterable
-                  minRows={0}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Container>
-        <Dialog
-          open={this.state.dialogOpen}
-          onClose={this.handleDialogClose}
-          fullWidth={true}
-          maxWidth={"md"}
-        >
-          <ChaincodeForm />
-        </Dialog>
-        <Dialog
-          open={this.state.sourceDialog}
-          onClose={this.sourceDialogClose}
-          fullWidth={true}
-          maxWidth={"md"}
-        >
-          <ChaincodeView chaincode = {this.state.chaincode} />
-        </Dialog>
-      </div>
+        <ReactTable
+          data={this.props.chaincodes}
+          columns={this.reactTableSetup()}
+          defaultPageSize={5}
+          className="-striped -highlight"
+          filterable
+          minRows={0}
+        />
+      <Dialog
+        open={this.state.dialogOpen}
+        onClose={this.handleDialogClose}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <ChaincodeForm />
+      </Dialog>
+      <Dialog
+        open={this.state.sourceDialog}
+        onClose={this.sourceDialogClose}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <ChaincodeModal chaincode={this.state.chaincode} />
+      </Dialog>
+      </div >
     );
   }
 }
