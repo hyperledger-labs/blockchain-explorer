@@ -130,7 +130,7 @@ export class HeaderView extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <Websocket url="ws://localhost:8080/"
+        <Websocket url={`${window.location.protocol.replace("http", "ws")}//${window.location.host}/`}
           onMessage={this.handleData.bind(this)} reconnect={true} />
         <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
@@ -187,5 +187,5 @@ export default compose(withStyles(styles), connect((state) => ({
   notification: getNotification(state)
 }), {
   getNotification: notification,
-  getChangeChannel: changeChannel
+  changeChannel: changeChannel
 }))(HeaderView)
