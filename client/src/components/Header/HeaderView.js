@@ -142,6 +142,8 @@ export class HeaderView extends Component {
           <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
           <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
           <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
+          <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
+
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."

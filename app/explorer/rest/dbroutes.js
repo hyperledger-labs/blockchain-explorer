@@ -296,6 +296,26 @@ const dbroutes = (app, persist) => {
     }
   });
 
+ /**
+          Channels
+          GET /channels -> /api/channels/info
+          curl -i 'http://<host>:<port>/api/channels/<info>'
+          Response:
+          [
+            {
+              "channelName": "mychannel",
+              "channel_hash": "",
+              "craetedat": "1/1/2018"
+            }
+          ]
+        */
+
+       app.get("/api/channels/info", function (req, res) {
+        crudService.getChannelsInfo().then(data=>{
+          res.send({ status: 200, channels:data })
+        }).catch(err=>res.send({status:500}))
+    });
+
 
 }
 

@@ -16,4 +16,5 @@ export const getNotification = (state) => (state.notification.notification);
 export const getPeerList = (state) => (state.peerList.peerList);
 export const getTransaction = (state) => (state.transaction.transaction);
 export const getTransactionList = (state) => (state.transactionList.transactionList);
+export const getChannels = (state) => (state.channels.channels);
 

@@ -13,10 +13,12 @@ import DashboardView from '../View/DashboardView';
 import Chaincodes from '../Lists/Chaincodes';
 import { blockList } from '../../store/actions/block/action-creators';
 import { chaincodes } from '../../store/actions/chaincodes/action-creators';
+import { getChannelsData } from '../../store/actions/channels/action-creators';
 import { countHeader } from '../../store/actions/header/action-creators';
 import { latestBlock } from '../../store/actions/latestBlock/action-creators';
 import { transactionInfo } from '../../store/actions/transaction/action-creators';
 import { transactionList } from '../../store/actions/transactions/action-creators';
+import Channels from '../Lists/Channels';
 import {
   getBlock,
   getBlockList,
@@ -26,7 +28,8 @@ import {
   getCountHeader,
   getPeerList,
   getTransaction,
-  getTransactionList
+  getTransactionList,
+  getChannels
 } from '../../store/selectors/selectors'
 import {
   Navbar,
@@ -56,7 +59,7 @@ export class MenuBar extends Component {
     super(props);
     this.state = {
       activeView: 'DashboardView',
-      activeTab: { dashboardTab: true, networkTab: false, blocksTab: false, chaincodesTab: false },
+      activeTab: { dashboardTab: true, networkTab: false, blocksTab: false, chaincodesTab: false, channelTab: false },
       countHeader: { countHeader: this.props.getCountHeader() }
     }
   }
@@ -65,6 +68,7 @@ export class MenuBar extends Component {
     if (JSON.stringify(nextProps.countHeader) !== JSON.stringify(this.props.countHeader)) {
       this.setState({ countHeader: nextProps.countHeader });
     }
+
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.syncData(nextProps.channel.currentChannel)
     }
@@ -94,7 +98,8 @@ export class MenuBar extends Component {
         networkTab: false,
         blocksTab: false,
         txTab: true,
-        chaincodesTab: false
+        chaincodesTab: false,
+        channelTab: false
       }
     });
   }
@@ -107,7 +112,8 @@ export class MenuBar extends Component {
         networkTab: false,
         blocksTab: true,
         txTab: false,
-        chaincodesTab: false
+        chaincodesTab: false,
+        channelTab: false
       }
     });
   }
@@ -120,7 +126,8 @@ export class MenuBar extends Component {
         networkTab: true,
         blocksTab: false,
         txTab: false,
-        chaincodesTab: false
+        chaincodesTab: false,
+        channelTab: false
       }
     });
   }
@@ -133,7 +140,8 @@ export class MenuBar extends Component {
         networkTab: false,
         blocksTab: false,
         txTab: false,
-        chaincodesTab: false
+        chaincodesTab: false,
+        channelTab: false
       }
     });
   }
@@ -146,7 +154,22 @@ export class MenuBar extends Component {
         networkTab: false,
         blocksTab: false,
         txTab: false,
-        chaincodesTab: true
+        chaincodesTab: true,
+        channelTab: false
+      }
+    });
+  }
+
+  handleClickChannelsView = () => {
+    this.setState({ activeView: 'ChannelsView' });
+    this.setState({
+      activeTab: {
+        dashboardTab: false,
+        networkTab: false,
+        blocksTab: false,
+        txTab: false,
+        chaincodesTab: false,
+        channelTab: true
       }
     });
   }
@@ -169,6 +192,9 @@ export class MenuBar extends Component {
       case 'ChaincodeView':
         currentView = <Chaincodes channel={this.props.channel} countHeader={this.props.countHeader} chaincodes={this.props.chaincodes} getChaincodes={this.props.getChaincodes} />
         break;
+      case 'ChannelsView':
+        currentView = <Channels channels ={this.props.channels}  getChannels={this.props.getChannels} />
+        break;
       default:
         currentView = <DashboardView />;
         break;
@@ -184,6 +210,7 @@ export class MenuBar extends Component {
               <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
               <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
               <NavItem active={this.state.activeTab.chaincodesTab} onClick={this.handleClickChaincodeView}>CHAINCODES</NavItem>
+              <NavItem active={this.state.activeTab.channelTab} onClick={this.handleClickChannelsView}>CHANNELS</NavItem>
             </Nav>
           </Navbar>
         </div>
@@ -204,12 +231,14 @@ export default compose(withStyles(styles), connect((state) => ({
     countHeader: getCountHeader(state),
     peerList: getPeerList(state),
     transaction: getTransaction(state),
-    transactionList: getTransactionList(state)
+    transactionList: getTransactionList(state),
+    channels: getChannels(state)
 }), {
       getBlockList: blockList,
       getChaincodes: chaincodes,
       getCountHeader: countHeader,
       getLatestBlock: latestBlock,
       getTransactionInfo: transactionInfo,
-      getTransactionList: transactionList
+      getTransactionList: transactionList,
+      getChannels:getChannelsData
   }))(MenuBar);

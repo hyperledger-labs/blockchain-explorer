@@ -12,11 +12,12 @@ var port = process.env.PORT || appconfig.port;
 var sinon = require('sinon');
 var request = require('request');
 const base = 'http://localhost:1337';
-const blocksbyhour = require('./fixtures/blocksbyhour.json');
+const channelsinfo = require('./fixtures/channelsinfo.json');
 
 
 
-describe('GET /api/blocksByHour/:channel/:day', () => {
+
+describe('GET /api/channels/info', () => {
     before(() => {
         this.get = sinon.stub(request, 'get');
         this.post = sinon.stub(request, 'post');
@@ -30,19 +31,18 @@ describe('GET /api/blocksByHour/:channel/:day', () => {
         request.put.restore();
         request.delete.restore();
     });
-    it('should return blockbyhour ', (done) => {
-        const obj =blocksbyhour;
+    it('should return channelsinfo ', (done) => {
+        const obj = channelsinfo;
         this.get.yields(null, JSON.stringify(obj));
-        request.get(`${base}` + '/api/blocksByHour/'+config['channel']+'/1', (err, body) => {
+        request.get(`${base}` + '/api/channels/info', (err, body) => {
             body = JSON.parse(body);
             body.should.include.keys(
-                'status','rows');
+                'status','channels');
             body.status.should.eql(200);
-            for(let i=0;i<body.rows.length;i++){
-                body.rows[i].should.include.keys(
-                 'datetime','count'
-
-                )
+            for(let i=0;i<body.channels.length;i++){
+                body.channels[i].should.include.keys(
+                    'id','channelname','blocks',
+                    'transactions','channel_hash','createdat' )
             }
             done();
         });

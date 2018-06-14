@@ -150,6 +150,12 @@ class CRUDService {
             await sql.saveRow('peer', peer)
         }
     }
+
+    async getChannelsInfo() {
+        var channels = await sql.getRowsBySQlNoCondtion(`select c.id as id,c.name as channelname,c.blocks as blocks ,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c`);
+
+        return channels
+      }
 }
 
 module.exports = CRUDService;
