@@ -108,6 +108,12 @@ From new terminal.
 - `./start.sh`  (it will have the backend up).
 - Launch the URL http://localhost:8080 on a browser.
 
+- If the blockchain-explorer was used previously in your browser be sure to clear the cache before relaunching.
+
+## Swagger Documentation
+
+- Once the blockchain-explorer has been launched go to http://localhost:8080/api-docs to view the Swagger documentation
+
 ## Logs
 - Please visit the [./logs/console]() folder to view the logs relating to console and [./logs/app]() to view the application logs and visit the [./logs/db]() to view the database logs.
 - Logs rotate for every 7 days.
