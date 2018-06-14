@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import { Button } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
@@ -180,11 +181,11 @@ class MenuBar extends Component {
         <div className="menuItems">
           <Navbar color="faded" light expand="md">
             <Nav className="ml-auto" navbar>
-              <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}>DASHBOARD </NavItem>
-              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}>NETWORK  </NavItem>
-              <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}>BLOCKS </NavItem>
-              <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}>TRANSACTIONS</NavItem>
-              <NavItem active={this.state.activeTab.chaincodesTab} onClick={this.handleClickChaincodeView }>CHAINCODES</NavItem>
+              <NavItem active={this.state.activeTab.dashboardTab} onClick={this.handleClickDashboardView}><Button>DASHBOARDY</Button></NavItem>
+              <NavItem active={this.state.activeTab.peersTab} onClick={this.handleClickPeerView}><Button>NETWORK</Button></NavItem>
+              <NavItem active={this.state.activeTab.blocksTab} onClick={this.handleClickBlockView}><Button>BLOCKS</Button></NavItem>
+              <NavItem active={this.state.activeTab.txTab} onClick={this.handleClickTransactionView}><Button>TRANSACTIONS</Button></NavItem>
+              <NavItem active={this.state.activeTab.chaincodesTab} onClick={this.handleClickChaincodeView }><Button>CHAINCODES</Button></NavItem>
             </Nav>
           </Navbar>
         </div>
