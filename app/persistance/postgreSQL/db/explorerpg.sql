@@ -89,6 +89,24 @@ CREATE TABLE peer_ref_channel (
   createdt Timestamp DEFAULT NULL
 );
 ALTER table peer_ref_channel owner to hppoc;
+
+-- ====================Orderer BE-303=====================================
+-- ----------------------------
+--  Table structure for `orderer`
+-- ----------------------------
+DROP TABLE IF EXISTS orderer;
+
+--   state character(1) NOT NULL DEFAULT 'A' CHECK (state in ('A', 'D', 'S'))
+
+CREATE TABLE orderer (
+  id SERIAL PRIMARY KEY,
+  requests varchar(64) DEFAULT NULL,
+  server_hostname varchar(64) DEFAULT NULL,
+  createdt timestamp DEFAULT NULL
+);
+ALTER table orderer owner to hppoc;
+
+--// ====================Orderer BE-303=====================================
 -- ----------------------------
 --  Table structure for `transaction`
 -- ----------------------------

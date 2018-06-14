@@ -252,7 +252,20 @@ class BlockScanner {
             this.crudService.savePeer(peers);
         }
     }
+// ====================Orderer BE-303=====================================
+    async saveOrdererlist(channelName) {
 
+        var ordererlists = await this.proxy.getConnectedOrderers(channelName);
+        let ordererlen = ordererlists.length
+        for (let i = 0; i < ordererlen; i++) {
+            var orderers = {};
+            let ordererlist = ordererlists[i]
+            orderers.requests = ordererlist._url;
+            orderers.server_hostname = ordererlist._options["grpc.default_authority"];
+            this.crudService.saveOrderer(orderers);
+        }
+    }
+// ====================Orderer BE-303=====================================
     async syncChaincodes() {
 
         try {
@@ -280,7 +293,19 @@ class BlockScanner {
             logger.error(err)
         }
     }
+// ====================Orderer BE-303=====================================
+    syncOrdererlist() {
 
+        try {
+			var channels = this.proxy.getChannels();
+			for (let channelName of channels) {
+				this.saveOrdererlist(channelName);
+			}
+        } catch (err) {
+            logger.error(err)
+        }
+    }
+// ====================Orderer BE-303=====================================
     syncChannelEventHubBlock() {
         var self = this;
         this.proxy.syncChannelEventHubBlock(block => { self.saveBlockRange(block); });

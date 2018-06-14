@@ -38,6 +38,9 @@ async function start(platform, persistance, broadcaster) {
         blockListener.emit('syncChannels');
         blockListener.emit('syncChaincodes');
         blockListener.emit('syncPeerlist');
+		// ====================Orderer BE-303=====================================
+		blockListener.emit('syncOrdererlist');
+		// ====================Orderer BE-303=====================================
         blockListener.emit('syncBlock');
         blockListener.emit('syncChannelEventHubBlock');
 }

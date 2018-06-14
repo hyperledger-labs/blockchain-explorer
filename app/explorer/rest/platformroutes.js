@@ -194,6 +194,29 @@ const platformroutes = async function (app, pltfrm, persistance) {
       return requtil.invalidRequest(req, res);
     }
   });
+
+  /***Peer Status List
+  GET /peerlist -> /api/peersStatus
+  curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
+  Response:
+  [
+    {
+      "requests": "grpcs://127.0.0.1:7051",
+      "server_hostname": "peer0.org1.example.com"
+    }
+  ]
+  */
+
+  app.get("/api/peersStatus/:channel", function (req, res) {
+    let channelName = req.params.channel;
+    if (channelName) {
+      platform.getPeersStatus(channelName,function (data) {
+        res.send({ status: 200, peers: data });
+      });
+    } else {
+      return requtil.invalidRequest(req, res);
+    }
+  });
 }
 
 module.exports = platformroutes;

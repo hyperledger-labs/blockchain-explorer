@@ -1,4 +1,4 @@
-{
+	{
 	"network-config": {
 		"org1": {
 			"name": "peerOrg1",
@@ -42,10 +42,18 @@
 		}
 	},
 	"channel": "mychannel",
+	"orderers":[
+				{
+				"mspid": "OrdererMSP",
+				"server-hostname":"orderer.example.com",
+				"requests":"grpcs://127.0.0.1:7050",
+				"tls_cacerts":"fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt"
+				}
+				],
 	"keyValueStore": "/tmp/fabric-client-kvs",
 	"configtxgenToolPath": "fabric-path/fabric-samples/bin",
 	"eventWaitTime": "30000",
-    "license": "Apache-2.0",
-    "version": "1.1"
-}
+	"license": "Apache-2.0",
+	"version": "1.1"
+	}
 

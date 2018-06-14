@@ -170,7 +170,14 @@ class Proxy {
 		getConnectedPeers(channelName) {
 			return this.getChannel(channelName).getPeers();
 		}
-
+		
+		//Orderer Info BE-303
+		getConnectedOrderers(channelName) {		
+			return this.getChannel(channelName).getOrderers();
+		}
+		//Orderer Info BE-303
+		
+		
 		async getChannelHeight(channelName) {
 			var response =  await this.getChainInfo(channelName);
 			if (response) {

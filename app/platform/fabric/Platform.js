@@ -10,6 +10,7 @@ var fs = require("fs-extra");
 var FabricChannel = require("./FabricChannel.js");
 var Proxy = require("./Proxy.js");
 var hfc = require("fabric-client");
+var Admin = require("./Admin.js");
 hfc.addConfigFile(path.join(__dirname, "./config.json"));
 
 class Platform {
@@ -18,6 +19,10 @@ class Platform {
     this.channels = {};
     this.caClients = {};
     this.peers = {};
+    this.peersStatus = {};
+    //	Orderer Info BE-303
+    this.orderers = {};
+    //Orderer Info BE-303
   }
 
   getDefaultProxy() {
@@ -35,6 +40,10 @@ class Platform {
     );
   }
 
+  addStatusPeer(org, key, url, opts){
+        this.peersStatus[[org, key]] = new Admin(url, opts);
+  }
+
   getDefaultPeer() {
     return this.getPeerObject(
       configuration.getDefaultOrg(),
@@ -50,6 +59,11 @@ class Platform {
     return this.peers[[org, peer]];
   }
 
+// ====================Orderer BE-303=====================================
+  getOrdererObject(org, orderer) {
+    return this.orderers[[org, orderer]];
+  }
+// ====================Orderer BE-303=====================================
   getDefaultClient() {
     return this.getClientForOrg(configuration.getDefaultOrg());
   }
@@ -86,8 +100,26 @@ class Platform {
       console.log("error-admin--" + err.stack);
       throw err;
     }
-
     return admin;
+  }
+
+  async getPeersStatus(channelName,cb){
+      try {
+        var promises = [];
+        Object.keys(this.peersStatus).forEach(peer => {
+          var client = this.peersStatus[[peer]];
+          var psPromise = client.GetStatus(client._options["grpc.ssl_target_name_override"]);
+          promises.push(psPromise);
+        });
+        Promise.all(promises).then(function(successMessage){
+          logger.debug("GetStatus All! " , successMessage);
+          cb(successMessage);
+        });
+      } catch(err) {
+        console.log(err);
+        logger.error(err)
+        cb([])
+    }
   }
 
   // set up the client and channel objects for each org
@@ -132,8 +164,15 @@ class Platform {
             "server-hostname"
           ]
         });
+        this.addStatusPeer(org, key,configuration.getOrg(org)[key].requests, {
+          pem: Buffer.from(data).toString(),
+          "ssl-target-name-override": configuration.getOrg(org)[key][
+            "server-hostname"
+          ]
+        });
       } else {
         peer = client.newPeer(configuration.getOrg(org)[key].requests);
+        this.addStatusPeer(org, key,configuration.getOrg(org)[key].requests);
       }
 
       this.peers[[org, key]] = peer;
@@ -150,6 +189,7 @@ class Platform {
       var channelName = chan.channel_id;
       let channel = client.newChannel(channelName);
       channel.addPeer(this.getDefaultPeer());
+      this.setupOrderers(client,channel);
       var channel_event_hub = channel.newChannelEventHub(this.getDefaultPeer());
       this.channels[channelName] = new FabricChannel(
         channelName,
@@ -158,7 +198,23 @@ class Platform {
       );
     });
   }
-
+  //BE303
+  async setupOrderers(client,channel) {
+    configuration.getOrderersByOrg().forEach(val => {
+    //console.log("Line179-setupOrderers"+JSON.stringify(val));
+      let orderer;
+      if (val.tls_cacerts != undefined) {
+        let data = fs.readFileSync(val.tls_cacerts);
+        orderer = client.newOrderer(val.requests, {
+          pem: Buffer.from(data).toString(),"ssl-target-name-override": val["server-hostname"]
+          });
+      } else {
+        orderer = client.newOrderer(val.requests);
+      }
+    channel.addOrderer(orderer);
+    });
+  }
+//BE303
 
   async getClientFromPath(userorg, orgPath, networkCfgPath) {
     try {

@@ -78,6 +78,11 @@ class Configuration {
     }
     return peerList;
   }
+  //BE -303
+  getOrderersByOrg() {
+    return config.orderers;
+  }
+  //BE -303
   getOrgMapFromConfig() {
     var orgs = Object.keys(this.networkConfig);
     var peerlist = [];

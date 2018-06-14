@@ -156,6 +156,15 @@ class CRUDService {
 
         return channels
       }
-}
+
+    // ====================Orderer BE-303=====================================
+    async saveOrderer(orderer) {
+            let c = await sql.getRowByPkOne(`select count(1) as c from orderer where requests='${orderer.requests}' `)
+            if (c.c == 0) {
+                await sql.saveRow('orderer', orderer)
+        }
+    }
+    // ====================Orderer BE-303=====================================
+    }
 
 module.exports = CRUDService;

@@ -39,7 +39,17 @@ class MetricService {
       }
       return peerArray
     }
-
+//BE -303
+	async getOrdererData() {
+      let ordererArray = []
+      var c1 = await sql.getRowsBySQlNoCondtion(`select c.requests as requests,c.server_hostname as server_hostname from orderer c`);
+      for (var i = 0, len = c1.length; i < len; i++) {
+        var item = c1[i];
+        ordererArray.push({  'requests': item.requests, 'server_hostname': item.server_hostname })
+      }
+      return ordererArray
+    }
+//BE -303
     async getTxPerChaincodeGenerate(channelName) {
       let txArray = []
       var c = await sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
@@ -97,7 +107,17 @@ class MetricService {
         cb([])
       }
     }
-
+	//BE -303
+	async getOrdererList(cb) {
+      try {
+          var ordererArray = await this.getOrdererData();
+          cb(ordererArray)
+      } catch(err) {
+        logger.error(err)
+        cb([])
+      }
+    }
+//BE -303
     //transaction metrics
 
     getTxByMinute(channelName, hours) {
