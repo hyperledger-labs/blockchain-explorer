@@ -24,4 +24,5 @@ export const NOTIFICATION_LOAD = `${namespaces}/NOTIFICATION_LOAD`;
 export const TX_CHART_ORG = `${namespaces}/TX_CHART_ORG`;
 export const CHANGECHANNEL = `${namespaces}/CHANGECHANNEL`;
 export const CHANNELS = `${namespaces}/CHANNELS`;
+export const PEER_STATUS_POST = `${namespaces}/PEER_STATUS_POST`;
 

@@ -8,7 +8,7 @@ import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import { countHeader as getCountHeaderCreator } from '../../store/actions/header/action-creators';
-import { getPeerList as getPeerListCreator } from '../../store/actions/peer/action-creators';
+import { getPeerList as getPeerListCreator, getPeerStatus as getPeerStatusCreator} from '../../store/actions/peer/action-creators';
 import { blockList as getBlockListCreator } from '../../store/actions/block/action-creators';
 import { transactionList as getTransactionListCreator } from '../../store/actions/transactions/action-creators';
 import { getChannelList as getChannelListCreator } from '../../store/actions/chanelList/action-creators';
@@ -48,6 +48,7 @@ class LandingPage extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.props.getPeerList(nextProps.channel.currentChannel);
+      this.props.getPeerStatus(nextProps.channel.currentChannel);
       this.props.getHeaderCount(nextProps.channel.currentChannel);
       this.props.getTxPerHour(nextProps.channel.currentChannel);
       this.props.getTxPerMin(nextProps.channel.currentChannel);
@@ -85,6 +86,7 @@ const mapDispatchToProps = (dispatch) => ({
   getTransactionList: (curChannel, offset) => dispatch(getTransactionListCreator(curChannel, offset)),
   getBlockList: (curChannel, offset) => dispatch(getBlockListCreator(curChannel, offset)),
   getPeerList: (curChannel) => dispatch(getPeerListCreator(curChannel)),
+  getPeerStatus: (curChannel) => dispatch(getPeerStatusCreator(curChannel)),
   getChaincodes: (curChannel) => dispatch(getChaincodesCreator(curChannel)),
   getTxByOrg: (curChannel) => dispatch(getTxByOrgCreator(curChannel))
 });

@@ -4,6 +4,7 @@
 
 import { combineReducers } from 'redux'
 import peerList from './peerList.js'
+import peerStatus from './peerStatus.js'
 import channelList from './channelList.js'
 import blockList  from './blockList.js'
 import transactionList  from './transactionList'
@@ -35,5 +36,6 @@ export default combineReducers({
     chaincodes,
     notification,
     txByOrg,
-    channels 
+    channels, 
+    peerStatus
 })

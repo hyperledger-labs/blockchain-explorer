@@ -210,7 +210,7 @@ const platformroutes = async function (app, pltfrm, persistance) {
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      platform.getPeersStatus(channelName,function (data) {
+       platform.getPeersStatus(channelName,function (data) {
         res.send({ status: 200, peers: data });
       });
     } else {

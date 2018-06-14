@@ -41,7 +41,7 @@ class Platform {
   }
 
   addStatusPeer(org, key, url, opts){
-        this.peersStatus[[org, key]] = new Admin(url, opts);
+       this.peersStatus[[org, key]] = new Admin(url, opts);
   }
 
   getDefaultPeer() {
@@ -112,7 +112,7 @@ class Platform {
           promises.push(psPromise);
         });
         Promise.all(promises).then(function(successMessage){
-          logger.debug("GetStatus All! " , successMessage);
+          logger.debug("GetStatus All!" , successMessage);
           cb(successMessage);
         });
       } catch(err) {

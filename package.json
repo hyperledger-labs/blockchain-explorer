@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "ajv": "^5.5.2",
+    "app-root-path": "^2.0.1",
     "asn1.js": "^5.0.1",
     "body-parser": "^1.17.2",
     "child_process": "^1.0.2",

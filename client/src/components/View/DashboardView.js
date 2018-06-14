@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import ChartStats from '../Charts/ChartStats';
-import PeerGraph from '../Charts/PeerGraph';
+import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import { Card, Row, Col, CardBody } from 'reactstrap';
@@ -103,7 +103,7 @@ class DashboardView extends Component {
               <TimelineStream notifications={this.state.notifications} />
             </Col>
             <Col lg="6">
-              <PeerGraph peerList={this.props.peerList} />
+            <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />
             </Col>
           </Row>
         </div >
@@ -122,7 +122,7 @@ const mapStateToProps = state => ({
   txByOrg: state.txByOrg.txByOrg,
   channel: state.channel.channel,
   notification: state.notification.notification,
-  peerList: state.peerList.peerList,
+  peerStatus: state.peerStatus.peerStatus,
   blockList: state.blockList.blockList
 });
 

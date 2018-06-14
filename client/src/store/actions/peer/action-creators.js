@@ -22,3 +22,12 @@ export const getPeerList = (channel) => dispatch => {
         })
 }
 
+export const getPeerStatus = (channel) => dispatch => {
+    get('/api/peersStatus/'+channel)
+        .then(resp => {			
+            dispatch(createAction(actionTypes.PEER_STATUS_POST)(resp))
+        }).catch((error) => {
+            console.error(error);
+        })
+}
+

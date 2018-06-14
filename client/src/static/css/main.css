@@ -160,6 +160,10 @@ div.menuItems > nav{
     margin-left: 300px;
     max-width: 550px;
 }
+.peerStatus{
+    margin-left: 300px;
+    max-width: 550px;
+}
 .scrollTable{
     /* height: 750px; */
     /* overflow: auto; */
