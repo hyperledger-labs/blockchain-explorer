@@ -42,18 +42,16 @@ class DashboardView extends Component {
     }, 3000);
 
     let arr = [];
-    for (let i = 0; i < 3; i++) {
-      if (this.props.blockList !== undefined) {
-        const block = this.props.blockList[i];
-        const notify = {
-          'title': 'Block ' + block.blocknum + ' Added',
-          'type': 'block',
-          'time': block.createdt,
-          'txcount': block.txcount,
-          'datahash': block.datahash
-        };
-        arr.push(notify);
-      }
+    for (let i = 0; i < 3 && this.props.blockList && this.props.blockList[i]; i++) {
+      const block = this.props.blockList[i];
+      const notify = {
+        'title': 'Block ' + block.blocknum + ' Added',
+        'type': 'block',
+        'time': block.createdt,
+        'txcount': block.txcount,
+        'datahash': block.datahash
+      };
+      arr.push(notify);
     }
     this.setState({ notifications: arr });
   }
@@ -103,7 +101,7 @@ class DashboardView extends Component {
               <TimelineStream notifications={this.state.notifications} />
             </Col>
             <Col lg="6">
-            <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />
+              <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />
             </Col>
           </Row>
         </div >
