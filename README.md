@@ -9,7 +9,8 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 	├── db			   Postgres script and help class
 	├── listener       Websocket listener
 	├── metrics        Metrics
-	├── mock_server	   Mock server used for development
+	├── platform       Blockchain platform
+	  	├── fabric     Fabric platform specific
 	├── service        The service
 	├── socket		   Push real time data to front end
 	├── test		   Endpoint tests
@@ -23,12 +24,14 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 ## Requirements
 
 Following are the software dependencies required to install and run hyperledger explorer
-* nodejs 6.9.x (Note that v7.x is not yet supported)
+* nodejs 8.9.x (Note that v9.x is not yet supported)
 * PostgreSQL 9.5 or greater
 
-Hyperledger Explorer works with Hyperledger Fabric 1.0.  Install the following software dependencies to manage fabric network.
+Hyperledger Explorer works with Hyperledger Fabric 1.1.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
 * docker-compose 1.14.0 [https://docs.docker.com/compose/]
+* node 8.11.2
+* npm 5.10.0
 
 ## Clone Repository
 
@@ -45,8 +48,8 @@ Connect to PostgreSQL database.
 
 Run create database script.
 
-- `\i app/db/explorerpg.sql`
-- `\i app/db/updatepg.sql`
+- `\i app/persistance/postgreSQL/db/explorerpg.sql`
+- `\i app/persistance/postgreSQL/db/updatepg.sql`
 
 Run db status commands.
 
@@ -103,8 +106,17 @@ From new terminal.
 
 - `cd blockchain-explorer/`
 - `./start.sh`  (it will have the backend up).
-- `tail -f log.log` (view log)
 - Launch the URL http://localhost:8080 on a browser.
+
+- If the blockchain-explorer was used previously in your browser be sure to clear the cache before relaunching.
+
+## Swagger Documentation
+
+- Once the blockchain-explorer has been launched go to http://localhost:8080/api-docs to view the Swagger documentation
+
+## Logs
+- Please visit the [./logs/console]() folder to view the logs relating to console and [./logs/app]() to view the application logs and visit the [./logs/db]() to view the database logs.
+- Logs rotate for every 7 days.
 
 ## License
 

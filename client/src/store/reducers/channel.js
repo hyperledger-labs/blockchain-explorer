@@ -19,6 +19,13 @@ const channel = handleActions({
         .set('loaded', true)
         .set('channel', action.payload)
         .set('errors', action.error),
+    [actionTypes.CHANGECHANNEL]: (state = InitialState(), action) => state
+        .set('loaded', true)
+        .set('channel', action.payload)
+        .set('errors', action.error)
 }, new InitialState())
 
+/*const sampleCallBack = (state, action) => {
+    return { state: channel, ...action.payload };
+}*/
 export default channel

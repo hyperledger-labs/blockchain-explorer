@@ -6,7 +6,7 @@ import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
 import { get } from '../../../services/request.js';
 
-export const getTransactionInfo = (channel,txid) => dispatch => {
+export const transactionInfo = (channel,txid) => dispatch => {
     get('/api/transaction/' + channel + '/' + txid )
         .then(resp => {
             dispatch(createAction(actionTypes.TRANSACTION_POST)(resp))

@@ -3,99 +3,154 @@
  */
 
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
+import Dialog from 'material-ui/Dialog';
+import ChaincodeForm from '../Forms/ChaincodeForm';
+import ChaincodeModal from '../View/ChaincodeModal';
 
 class Chaincodes extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            toolTipOpen: false,
-            toolTipOpen2: false,
-            loading: false,
-            chaincodeCount: this.props.countHeader.chaincodeCount,
-        }
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      chaincodeCount: this.props.countHeader.chaincodeCount,
+      dialogOpen: false,
+      sourceDialog: false,
+      chaincode: {}
+    };
+  }
 
-    componentWillMount() {
+  componentWillReceiveProps(nextProps) {
+    this.setState({ chaincodeCount: this.props.countHeader.chaincodeCount });
+  }
 
-    }
+  componentDidMount() {
+    setInterval(() => {
+      this.props.getChaincodes(this.props.channel.currentChannel);
+    }, 60000);
+  }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ totalBlocks: this.props.countHeader.latestBlock });
-    }
+  handleDialogOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
 
-    componentDidMount() {
-        setInterval(() => {
-            this.props.getChaincodes(this.props.channel.currentChannel,this.state.currentOffset);
-        }, 60000)
-    }
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
 
-    componentDidUpdate(prevProps, prevState) {
-    }
+  sourceDialogOpen = chaincode => {
+    this.setState({ chaincode: chaincode });
+    this.setState({ sourceDialog: true });
+  };
 
-    render() {
+  sourceDialogClose = () => {
+    this.setState({ sourceDialog: false });
+  };
 
-        const columnHeaders = [
-            {
-              Header: "Chaincode Name",
-              accessor: "chaincodename",
-              filterMethod: (filter, rows) =>
-                matchSorter(rows, filter.value, { keys: ["chaincodename"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-              filterAll: true
-            },
-            {
-              Header: "Channel Name",
-              accessor: "channelName",
-              filterMethod: (filter, rows) =>
-              matchSorter(rows, filter.value, { keys: ["channelName"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-            filterAll: true
-            },
-            {
-              Header: "Path",
-              accessor: "path",
-              filterMethod: (filter, rows) =>
-              matchSorter(rows, filter.value, { keys: ["path"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-            filterAll: true
-            },
-            {
-              Header: "Transaction Count",
-              accessor: "txCount",
-              filterMethod: (filter, rows) =>
-              matchSorter(rows, filter.value, { keys: ["txCount"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-            filterAll: true
-            },
-            {
-              Header: "Version",
-              accessor: "version",
-              filterMethod: (filter, rows) =>
-              matchSorter(rows, filter.value, { keys: ["version"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
-            filterAll: true
-            }
-          ];
+  reactTableSetup = () => {
+    return [
+      {
+        Header: 'Chaincode Name',
+        accessor: 'chaincodename',
+        Cell: row => (
+          <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
+        ),
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['chaincodename'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
+        Header: 'Channel Name',
+        accessor: 'channelName',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelName'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
+        Header: 'Path',
+        accessor: 'path',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['path'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
+        Header: 'Transaction Count',
+        accessor: 'txCount',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['txCount'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
+        Header: 'Version',
+        accessor: 'version',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['version'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      }
+    ];
+  };
 
-        return (
-            <div className="blockPage">
-                <Container>
-                    <Row>
-                        <Col >
-                            <div className="scrollTable" >
-                            <ReactTable
-                                data={this.props.chaincodes}
-                                columns={columnHeaders}
-                                defaultPageSize={5}
-                                className="-striped -highlight"
-                                filterable
-                            />
-                            </div>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
-        );
-    }
-};
+  render() {
+    return (
+      <div >
+        <Button className="button" onClick={() => this.handleDialogOpen()}>
+          Add Chaincode
+          </Button>
+        <ReactTable
+          data={this.props.chaincodes}
+          columns={this.reactTableSetup()}
+          defaultPageSize={5}
+          className="-striped -highlight"
+          filterable
+          minRows={0}
+        />
+      <Dialog
+        open={this.state.dialogOpen}
+        onClose={this.handleDialogClose}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <ChaincodeForm />
+      </Dialog>
+      <Dialog
+        open={this.state.sourceDialog}
+        onClose={this.sourceDialogClose}
+        fullWidth={true}
+        maxWidth={"md"}
+      >
+        <ChaincodeModal chaincode={this.state.chaincode} />
+      </Dialog>
+      </div >
+    );
+  }
+}
 
-export default Chaincodes
+export default Chaincodes;

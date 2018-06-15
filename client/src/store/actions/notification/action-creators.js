@@ -4,10 +4,9 @@
 
 import { createAction } from 'redux-actions'
 import * as actionTypes from '../action-types'
-import { get } from '../../../services/request.js';
 
-export const getNotification = (notification) => dispatch => {
-     var notify = JSON.parse(notification);
+export const notification = (notification) => dispatch => {
+    var notify = JSON.parse(notification);
     dispatch(createAction(actionTypes.NOTIFICATION_LOAD)(notify))
 
 }

@@ -10,7 +10,6 @@ const InitialState = new Record({
     loaded: false,
     blockPerMin: [],
     errors: {},
-
 })
 
 const blockPerMin = handleActions({
@@ -18,8 +17,6 @@ const blockPerMin = handleActions({
         .set('blockPerMin', action.payload)
         .set('loaded', true)
         .set('errors', action.error)
-
 }, new InitialState());
-
 
 export default blockPerMin

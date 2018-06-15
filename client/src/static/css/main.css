@@ -18,12 +18,22 @@ font-weight: 300;
     margin-right: 10px;
     padding-right: 15px;
 }
-.bell{
+.button{
+    background-color:#afeeee;
+    font-size: 16px;
+    color: black;
+    padding: 7px 35px;
+    margin: 14px 0px;
+    display:block;
+    border: none;
+    box-shadow: 0px 9px 10px  rgba(0,0,0,0.05)
+}
+.cog, .bell{
     margin-top: 36px;
     color: #5F6164;
     font-size: 18pt;
 }
-.bell:hover{
+.bell:hover, .cog:hover{
     margin-top: 36px;
     color: #24272a;
     font-size: 18pt;
@@ -95,6 +105,14 @@ div.menuItems > nav{
     background-color:#cfcfce;
     padding: 5px;
 }
+.scrollable-card{
+    height: 300px;
+    overflow-y: scroll;
+}
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}
 .card-header{
     background-color: #24272a;
      color:#f7f7f7;
@@ -142,6 +160,10 @@ div.menuItems > nav{
     margin-left: 300px;
     max-width: 550px;
 }
+.peerStatus{
+    margin-left: 300px;
+    max-width: 550px;
+}
 .scrollTable{
     /* height: 750px; */
     /* overflow: auto; */
@@ -162,7 +184,17 @@ div.menuItems > nav{
     margin-left: 150px;
 }
 .dashboard{
-    margin-left: 300px;
+    /* margin-left: 300px; */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+}
+.dash-stats{
+    display: block;
+    margin-left: 50px;
+    margin-right: auto;
+    width: 100%;
 }
 .wip{
     color:#bdc3c7;
@@ -237,3 +269,110 @@ svg.custom path.link {
     display: flex;
     flex-wrap: wrap;
 }
+
+.source-code{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width : 800px;
+    height: 600px;
+}
+.view-fullwidth{
+    width: 100%;
+    margin-top:105px;
+}
+.view-display{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    /* width: 30px; */
+}
+/* .app-header{
+    z-index: 100;
+    background-color: #FFFFFF;
+    height: 60px;
+} */
+
+.dialogTitle{
+    background:linear-gradient(45deg,#2A45A8,#5c6fef);
+    text-align: center;
+
+    color:#fff !important;
+    font:normal bold 30px Verdana Sans-Serif;
+    font-weight:400;
+    letter-spacing:3px
+}
+.dialog{
+    border-style:solid;
+    border-color :#D8D6D6;
+    border-width:7px;
+    filter: drop-shadow(0 0 0.75rem #D8D6D6);
+
+}
+Card{
+    border-style:solid;
+    border-color :rgb(133, 30, 30);
+    border-width:10px;
+
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
+    transition:background-color 1s ease;
+    background-color:#53b4b1;
+    opacity:0.8
+
+
+}
+tr{
+
+    border-style:hidden !important
+}
+th{
+    font-weight:bold;
+}
+.table th,.table td{
+    padding:5px;
+}
+.closeBtn{
+    float:right;
+    border-color:transparent;
+    color:#8b0000;
+background-color:transparent;
+margin:3px 10px 3px 0px;
+font-size:25px;
+height:30px;
+cursor:pointer;
+filter: "drop-shadow(0 0 0.75rem #D8D6D6)"
+}
+.closeBtn:focus{
+    outline:none;
+    color:#c00404;
+}
+.copyBtn{
+    float:right;
+    border-color:transparent;
+    color:#4c69c7;
+background-color:transparent;
+cursor:pointer;
+text-shadow: 1px 1px 2px rgba(129, 129, 129, 0.753);
+}
+.copyBtn:focus{
+    outline:none
+}
+.cubeIcon{
+    color:#FF9900;
+    margin-right:20px
+}
+.listIcon{
+    color:rgb(39, 221, 33);
+    margin-right:20px
+}
+.eyeBtn{
+    color:rgb(28, 145, 24);
+    margin-left:10px;
+    font-size:20px
+}
+.hash-hide{
+    letter-spacing:2px
+}
+

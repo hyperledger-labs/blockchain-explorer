@@ -3,24 +3,32 @@
  */
 
 import 'react-select/dist/react-select.css';
-
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import Select from 'react-select';
 import {
-  Nav, Navbar, NavbarBrand, NavbarToggler
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavbarToggler
 } from 'reactstrap';
-import AdminPanel from '../Panels/Admin';
+import AdminPanel from '../Panels/AdminPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import FontAwesome from 'react-fontawesome';
 import Drawer from 'material-ui/Drawer';
-import NotificationPanel from '../Panels/Notifications';
+import Button from 'material-ui/Button';
+import NotificationsPanel from '../Panels/NotificationsPanel';
 import Websocket from 'react-websocket';
-// import { Badge } from 'reactstrap';
 import Badge from 'material-ui/Badge';
-import { getNotification as getNotificationCreator } from '../../store/actions/notification/action-creators';
+import { notification } from '../../store/actions/notification/action-creators';
+import { changeChannel } from '../../store/actions/channel/action-creators';
+import {
+  getChannelList,
+  getChannel,
+  getNotification
+} from '../../store/selectors/selectors'
 
 const styles = theme => ({
   margin: {
@@ -30,7 +38,10 @@ const styles = theme => ({
     padding: `0 ${theme.spacing.unit * 2}px`,
   },
 });
-class HeaderView extends Component {
+
+
+
+export class HeaderView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,28 +53,24 @@ class HeaderView extends Component {
       notifications: [],
       modalOpen: false
     }
-    this.toggle = this.toggle.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleDrawOpen = this.handleDrawOpen.bind(this);
-    this.handleDrawClose = this.handleDrawClose.bind(this);
-
   }
-  toggle() {
+
+  toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
     });
   }
+
   handleData(notification) {
     this.props.getNotification(notification);
-    var notifyArr = this.state.notifications;
+    let notifyArr = this.state.notifications;
     notifyArr.unshift(JSON.parse(notification));
     this.setState({ notifications: notifyArr });
     this.setState({ notifyCount: this.state.notifyCount + 1 });
   }
+
   componentDidMount() {
-    // this.props.actions.loadTrades();
-    var arr = [];
+    let arr = [];
     this.props.channelList.channels.forEach(element => {
       arr.push({
         value: element,
@@ -72,73 +79,80 @@ class HeaderView extends Component {
     });
 
     this.setState({ channels: arr });
-
-    this.setState({ selectedOption: arr[0] })
-
-  }
-  componentWillReceiveProps(nextProps) {
-    // console.log(nextProps.trades);
-    // this.setState({loading:false});
+    this.setState({ selectedOption: this.props.channel.currentChannel })
   }
 
   handleChange = (selectedOption) => {
-    this.setState({ selectedOption: selectedOption });
+    this.setState({ selectedOption: selectedOption.value });
+    this.props.getChangeChannel(selectedOption.value);
   }
-  handleOpen() {
+
+  handleOpen = () => {
     this.setState({ modalOpen: true });
   }
 
-  handleClose() {
+  handleClose = () => {
     this.setState({ modalOpen: false });
   }
-  handleDrawOpen(drawer) {
+
+  handleDrawOpen = (drawer) => {
     switch (drawer) {
-      case "notifyDrawer":
+      case 'notifyDrawer': {
         this.setState({ notifyDrawer: true });
         this.setState({ notifyCount: 0 });
-
         break;
-      case "adminDrawer":
+      }
+      case 'adminDrawer': {
         this.setState({ adminDrawer: true });
-
         break;
-
-      default:
+      }
+      default: {
         break;
+      }
     }
   }
-  handleDrawClose(drawer) {
+
+  handleDrawClose = (drawer) => {
     switch (drawer) {
-      case "notifyDrawer":
-        this.setState({ notifyDrawer: false });
-
+      case 'notifyDrawer': {
+      this.setState({ notifyDrawer: false });
         break;
-      case "adminDrawer":
+      }
+      case 'adminDrawer': {
         this.setState({ adminDrawer: false });
-
         break;
-
-      default:
+      }
+      default: {
         break;
+      }
     }
   }
 
   render() {
     const { classes } = this.props;
+    const { hostname, port } = window.location;
+    var webSocketUrl = `ws://${hostname}:${port}/`;
 
     return (
       <div>
-        <Websocket url='ws://localhost:8080/'
+        {/* production */}
+        {/* development */}
+        <Websocket url={webSocketUrl}
           onMessage={this.handleData.bind(this)} reconnect={true} />
-        <Navbar color="faded" light expand="md">
+        <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
-          {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
-            <div className='channel-dropdown'>
+          <Button href="/#" className={classes.margin} >DASHBOARD</Button>
+          <Button href="#/network" className={classes.margin} >NETWORK</Button>
+          <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
+          <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
+          <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
+          <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
+            <div className="channel-dropdown">
               <Select
-                placeholder='Select Channel...'
-                required='true'
+                placeholder="Select Channel..."
+                required={true}
                 name="form-field-name"
                 value={this.state.selectedOption}
                 onChange={this.handleChange}
@@ -149,7 +163,7 @@ class HeaderView extends Component {
               <Badge className={classes.margin} badgeContent={this.state.notifyCount} color="primary"></Badge>
             </div>
             <div className="admin-buttons">
-              <FontAwesome name="cog" className="bell" onClick={() => this.handleDrawOpen("adminDrawer")} />
+              <FontAwesome name="cog" className="cog" onClick={() => this.handleDrawOpen("adminDrawer")} />
             </div>
           </Nav>
         </Navbar>
@@ -157,7 +171,7 @@ class HeaderView extends Component {
           <div
             tabIndex={0}
             role="button" >
-            <NotificationPanel notifications={this.state.notifications} />
+            <NotificationsPanel notifications={this.state.notifications} />
           </div>
         </Drawer>
         <Drawer anchor="right" open={this.state.adminDrawer} onClose={() => this.handleDrawClose("adminDrawer")}>
@@ -170,16 +184,13 @@ class HeaderView extends Component {
       </div>
     );
   }
+}
 
-}
-function mapStateToProps(state, ownProps) {
-  return {
-    channelList: state.channelList.channelList,
-    channel: state.channel.channel,
-    notification: state.notification.notification
-  }
-}
-const mapDispatchToProps = (dispatch) => ({
-  getNotification: (notification) => dispatch(getNotificationCreator(notification)),
-});
-export default compose (withStyles(styles), connect(mapStateToProps, mapDispatchToProps))(HeaderView);
+export default compose(withStyles(styles), connect((state) => ({
+  channel: getChannel(state),
+  channelList: getChannelList(state),
+  notification: getNotification(state)
+}), {
+  getNotification: notification,
+  getChangeChannel: changeChannel
+}))(HeaderView)

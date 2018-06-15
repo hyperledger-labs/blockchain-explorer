@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "hyperledger-explorer",
   "private": true,
   "main": "main.js",
@@ -9,24 +9,31 @@
     "v1.1.1 fabric nodesdk sample"
   ],
   "engines": {
-    "node": ">=6.9.5",
-    "npm": ">=3.10.10"
+    "node": "^8.11.2",
+    "npm": "^5.10.0"
   },
   "dependencies": {
     "ajv": "^5.5.2",
+    "app-root-path": "^2.0.1",
+    "asn1.js": "^5.0.1",
     "body-parser": "^1.17.2",
+    "child_process": "^1.0.2",
     "co": "^4.6.0",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
+    "express-fileupload": "^0.4.0",
     "fabric-ca-client": "^1.1.0",
     "fabric-client": "^1.1.0",
     "fast-stats": "0.0.3",
     "http-status-codes": "^1.3.0",
+    "js-sha256": "^0.9.0",
     "log4js": "^0.6.38",
+    "multer": "^1.3.0",
     "pg": "^7.4.1",
     "prettyjson": "^1.2.1",
     "stomp-broker-js": "^0.1.3",
     "stompjs": "^2.3.3",
+    "swagger-ui-express": "^3.0.9",
     "winston": "^2.2.0",
     "ws": "^5.1.1"
   },
