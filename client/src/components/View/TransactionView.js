@@ -43,7 +43,7 @@ const styles = theme => ({
   }
 });
 
-class TransactionView extends Component {
+export class TransactionView extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -82,17 +82,17 @@ class TransactionView extends Component {
               <b>Time:</b> {moment(this.props.transaction.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")} <br />
               <b>Reads:</b>
               <ul>
-                {this.props.transaction.read_set.map(function (item, index) {
+                {this.props.transaction.read_set.map((item, index) => {
                   return item === null ? '' :
                     <li key={index}><Typography variant="subheading"> {item.chaincode}</Typography>
-                      <ul>{item.set.map(function (x, index) {
-                        var block_num = '';
-                        var tx_num = '';
+                      <ul>{item.set.map((x, index) => {
+                        let block_num = '';
+                        let tx_num = '';
                         if (x.version !== null) {
                           block_num = x.version.block_num;
                           tx_num = x.version.tx_num;
                         }
-                        return x === null ? '' : <li key={index}>key:{x.key} ,version:( block:{block_num},tx:{tx_num})  </li>
+                        return x === null ? '' : <li key={index}>key: {x.key}, version:( block: {block_num}, tx: {tx_num})  </li>
                       })}</ul>
                       <br />
                     </li>;
@@ -100,10 +100,10 @@ class TransactionView extends Component {
               </ul>
               <b>Writes:</b>
               <ul>
-                {this.props.transaction.write_set.map(function (item, index) {
+                {this.props.transaction.write_set.map((item, index) => {
                   return item === null ? '' :
                     <li key={index}><Typography variant="subheading"> {item.chaincode}</Typography>
-                      <ul>{item.set.map(function (x, index) {
+                      <ul>{item.set.map((x, index) => {
                         return x === null ? '' : <li key={index}>key:{x.key} ,is_delete:{x.is_delete.toString()},value:{x.value}  </li>
                       })}</ul>
                       <br />

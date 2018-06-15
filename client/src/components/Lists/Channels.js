@@ -2,27 +2,20 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-import matchSorter from "match-sorter";
-
+import React, { Component } from 'react';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
 
 class Channels extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
-    //   channelsCount: this.props.countHeader.chaincodeCount,
-    //   dialogOpen: false
-    };
   }
 
-  componentWillReceiveProps(nextProps) {  }
   componentWillMount() {
    this.props.getChannels()
   }
+
   componentDidMount() {
     setInterval(() => {
     this.props.getChannels()
@@ -32,72 +25,75 @@ class Channels extends Component {
   reactTableSetup = () => {
     return [
       {
-        Header: "Id",
-        accessor: "id",
+        Header: 'ID',
+        accessor: 'id',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["id"] },
+            { keys: ['id'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true,
+        width: 100
+      },
+      {
+        Header: 'Channel Name',
+        accessor: 'channelname',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelname'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Channel Name",
-        accessor: "channelname",
+        Header: 'Channel Hash',
+        accessor: 'channel_hash',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["channelname"] },
+            { keys: ['channel_hash'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Channel Hash",
-        accessor: "channel_hash",
+        Header: 'Blocks',
+        accessor: 'blocks',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["channel_hash"] },
+            { keys: ['blocks'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
-        filterAll: true
-      },
-      {
-        Header: "Blocks",
-        accessor: "blocks",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ["blocks"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterAll: true,
+        width: 125
       }, {
-        Header: "Transactions",
-        accessor: "transactions",
+        Header: 'Transactions',
+        accessor: 'transactions',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["transactions"] },
+            { keys: ['transactions'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
-        filterAll: true
+        filterAll: true,
+        width: 125
       },
       {
-        Header: "Created At",
-        accessor: "createdat",
+        Header: 'Timestamp',
+        accessor: 'createdat',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["createdat"] },
+            { keys: ['createdat'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
@@ -108,7 +104,6 @@ class Channels extends Component {
   render() {
     return (
       <div className="blockPage">
-
                 <ReactTable
                   data={this.props.channels}
                   columns={this.reactTableSetup()}
@@ -117,7 +112,6 @@ class Channels extends Component {
                   filterable
                   minRows={0}
                 />
-
       </div>
     );
   }

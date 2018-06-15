@@ -19,14 +19,14 @@ import Logo from '../../static/images/Explorer_Logo.svg';
 import FontAwesome from 'react-fontawesome';
 import Drawer from 'material-ui/Drawer';
 import Button from 'material-ui/Button';
-import NotificationPanel from '../Panels/Notifications';
+import NotificationsPanel from '../Panels/NotificationsPanel';
 import Websocket from 'react-websocket';
 import Badge from 'material-ui/Badge';
 import { notification } from '../../store/actions/notification/action-creators';
 import { changeChannel } from '../../store/actions/channel/action-creators';
 import {
   getChannelList,
-  getChannelSelector,
+  getChannel,
   getNotification
 } from '../../store/selectors/selectors'
 
@@ -82,7 +82,7 @@ export class HeaderView extends Component {
 
   handleChange = (selectedOption) => {
     this.setState({ selectedOption: selectedOption.value });
-    this.props.changeChannel(selectedOption.value);
+    this.props.getChangeChannel(selectedOption.value);
   }
 
   handleOpen = () => {
@@ -130,11 +130,14 @@ export class HeaderView extends Component {
     const { classes } = this.props;
     return (
       <div>
-        <Websocket url={`${window.location.protocol.replace("http", "ws")}//${window.location.host}/`}
+        {/* production */}
+        {/* <Websocket url={`${window.location.protocol.replace("http", "ws")}//${window.location.host}/`} */}
+
+        {/* development */}
+        <Websocket url="ws://localhost:8080/"
           onMessage={this.handleData.bind(this)} reconnect={true} />
         <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
-          {/* <NavbarBrand href="/"> HYPERLEDGER EXPLORER</NavbarBrand> */}
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
           <Button href="/#" className={classes.margin} >DASHBOARD</Button>
@@ -143,7 +146,6 @@ export class HeaderView extends Component {
           <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
           <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
           <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
-
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
@@ -166,7 +168,7 @@ export class HeaderView extends Component {
           <div
             tabIndex={0}
             role="button" >
-            <NotificationPanel notifications={this.state.notifications} />
+            <NotificationsPanel notifications={this.state.notifications} />
           </div>
         </Drawer>
         <Drawer anchor="right" open={this.state.adminDrawer} onClose={() => this.handleDrawClose("adminDrawer")}>
@@ -182,10 +184,10 @@ export class HeaderView extends Component {
 }
 
 export default compose(withStyles(styles), connect((state) => ({
-  channel: getChannelSelector(state),
+  channel: getChannel(state),
   channelList: getChannelList(state),
   notification: getNotification(state)
 }), {
   getNotification: notification,
-  changeChannel: changeChannel
+  getChangeChannel: changeChannel
 }))(HeaderView)

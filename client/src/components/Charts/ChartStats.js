@@ -27,7 +27,7 @@ import {
   getBlockPerMin,
   getTxPerHour,
   getTxPerMin,
-  getChannelSelector
+  getChannel
 } from '../../store/selectors/selectors';
 import classnames from 'classnames';
 
@@ -62,7 +62,6 @@ export class ChartStats extends Component {
    timeDataSetup = (chartData = []) => {
     let displayData;
     let dataMax = 0;
-
     displayData = chartData.map(data => {
         if (parseInt(data.count, 10) > dataMax) {
         dataMax = parseInt(data.count, 10);
@@ -183,7 +182,7 @@ export default connect(
   blockPerMin: getBlockPerMin(state),
   txPerHour: getTxPerHour(state),
   txPerMin: getTxPerMin(state),
-  channel: getChannelSelector(state)
+  channel: getChannel(state)
   }),
   {
     getBlocksPerHour: blocksPerHour,

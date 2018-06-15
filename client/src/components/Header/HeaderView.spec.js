@@ -6,19 +6,20 @@ import { HeaderView } from './HeaderView';
 
 const setup = () => {
   const props = {
-    changeChannel: jest.fn(),
+    getChangeChannel: jest.fn(),
     channel: { currentChannel: 'mychannel' },
     channelList: {
       channels: ['mychannel'],
       status: 200
     },
     classes: {
-      margin: "Connect-HeaderView--margin-1",
-    padding: "Connect-HeaderView--padding-2"
+      margin: 'Connect-HeaderView--margin-1',
+    padding: 'Connect-HeaderView--padding-2'
     },
     getNotification: jest.fn(),
     notification: {}
   }
+
   const wrapper = shallow(<HeaderView {...props} />)
 
   return{
@@ -28,7 +29,7 @@ const setup = () => {
 }
 
 describe('HeaderView', () => {
-  test("HeaderView component should render", () => {
+  test('HeaderView component should render', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
   });
@@ -56,7 +57,7 @@ describe('HeaderView', () => {
     const selectedOption = { value: 'newChannel' }
     wrapper.instance().handleChange(selectedOption);
     expect(wrapper.state('selectedOption')).toBe('newChannel')
-    expect(props.changeChannel).toHaveBeenCalled()
+    expect(props.getChangeChannel).toHaveBeenCalled()
   })
 
   test('handleOpen sets modalOpen to true', () => {

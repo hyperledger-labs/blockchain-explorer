@@ -2,14 +2,15 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-import matchSorter from "match-sorter";
-import Dialog from "material-ui/Dialog";
-import ChaincodeForm from "../Forms/ChaincodeForm";
+import React, { Component } from 'react';
+import { Container, Row, Col, Button } from 'reactstrap';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
+import Dialog from 'material-ui/Dialog';
+import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
+
 class Chaincodes extends Component {
   constructor(props) {
     super(props);
@@ -32,24 +33,28 @@ class Chaincodes extends Component {
     }, 60000);
   }
 
-  handleDialogOpen = tid => {
+  handleDialogOpen = () => {
     this.setState({ dialogOpen: true });
   };
+
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
+
   sourceDialogOpen = chaincode => {
     this.setState({ chaincode: chaincode });
     this.setState({ sourceDialog: true });
   };
+
   sourceDialogClose = () => {
     this.setState({ sourceDialog: false });
   };
+
   reactTableSetup = () => {
     return [
       {
-        Header: "Chaincode Name",
-        accessor: "chaincodename",
+        Header: 'Chaincode Name',
+        accessor: 'chaincodename',
         Cell: row => (
           <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
         ),
@@ -57,55 +62,55 @@ class Chaincodes extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["chaincodename"] },
+            { keys: ['chaincodename'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Channel Name",
-        accessor: "channelName",
+        Header: 'Channel Name',
+        accessor: 'channelName',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["channelName"] },
+            { keys: ['channelName'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Path",
-        accessor: "path",
+        Header: 'Path',
+        accessor: 'path',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["path"] },
+            { keys: ['path'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Transaction Count",
-        accessor: "txCount",
+        Header: 'Transaction Count',
+        accessor: 'txCount',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["txCount"] },
+            { keys: ['txCount'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Version",
-        accessor: "version",
+        Header: 'Version',
+        accessor: 'version',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["version"] },
+            { keys: ['version'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true

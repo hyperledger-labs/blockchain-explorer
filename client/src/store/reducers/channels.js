@@ -2,26 +2,33 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { handleActions } from 'redux-actions'
-import { Record } from 'immutable'
-import * as actionTypes from '../actions/action-types'
+import { handleActions } from "redux-actions";
+import { Record } from "immutable";
+import * as actionTypes from "../actions/action-types";
+import moment from "moment-timezone";
 
 const InitialState = new Record({
-    loaded: false,
-    channels: [],
-    errors: {}
-})
+  loaded: false,
+  channels: [],
+  errors: {}
+});
 
+const channels = handleActions(
+  {
+    [actionTypes.CHANNELS]: (state = InitialState(), action) => {
+      action.payload.forEach(element => {
+        element.createdat = moment(element.createdat)
+          .tz(moment.tz.guess())
+          .format("M-D-YYYY h:mm A zz");
+      });
 
-const channels = handleActions({
-    [actionTypes.CHANNELS]: (state = InitialState(), action) => state
-        .set('channels', action.payload)
-        .set('loaded', true)
-        .set('errors', action.error),
+      return state
+        .set("channels", action.payload)
+        .set("loaded", true)
+        .set("errors", action.error);
+    }
+  },
+  new InitialState()
+);
 
-}, new InitialState())
-
-/*const sampleCallBack = (state, action) => {
-    return { state: channel, ...action.payload };
-}*/
-export default channels
+export default channels;
