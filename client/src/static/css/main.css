@@ -293,3 +293,86 @@ svg.custom path.link {
     background-color: #FFFFFF;
     height: 60px;
 } */
+
+.dialogTitle{
+    background:linear-gradient(45deg,#2A45A8,#5c6fef);
+    text-align: center;
+
+    color:#fff !important;
+    font:normal bold 30px Verdana Sans-Serif;
+    font-weight:400;
+    letter-spacing:3px
+}
+.dialog{
+    border-style:solid;
+    border-color :#D8D6D6;
+    border-width:7px;
+    filter: drop-shadow(0 0 0.75rem #D8D6D6);
+
+}
+Card{
+    border-style:solid;
+    border-color :rgb(133, 30, 30);
+    border-width:10px;
+
+}
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
+    transition:background-color 1s ease;
+    background-color:#53b4b1;
+    opacity:0.8
+
+
+}
+tr{
+
+    border-style:hidden !important
+}
+th{
+    font-weight:bold;
+}
+.table th,.table td{
+    padding:5px;
+}
+.closeBtn{
+    float:right;
+    border-color:transparent;
+    color:#8b0000;
+background-color:transparent;
+margin:3px 10px 3px 0px;
+font-size:25px;
+height:30px;
+cursor:pointer;
+filter: "drop-shadow(0 0 0.75rem #D8D6D6)"
+}
+.closeBtn:focus{
+    outline:none;
+    color:#c00404;
+}
+.copyBtn{
+    float:right;
+    border-color:transparent;
+    color:#4c69c7;
+background-color:transparent;
+cursor:pointer;
+text-shadow: 1px 1px 2px rgba(129, 129, 129, 0.753);
+}
+.copyBtn:focus{
+    outline:none
+}
+.cubeIcon{
+    color:#FF9900;
+    margin-right:20px
+}
+.listIcon{
+    color:rgb(39, 221, 33);
+    margin-right:20px
+}
+.eyeBtn{
+    color:rgb(28, 145, 24);
+    margin-left:10px;
+    font-size:20px
+}
+.hash-hide{
+    letter-spacing:2px
+}
+

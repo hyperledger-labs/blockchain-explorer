@@ -3,8 +3,8 @@
  */
 
 import Blocks from "./Blocks";
-import ReactTable from 'react-table';
-import TransactionView from '../View/TransactionView';
+import ReactTable from "react-table";
+import TransactionView from "../View/TransactionView";
 
 jest.useFakeTimers();
 
@@ -12,7 +12,8 @@ const setup = () => {
   const props = {
     blockList: [
       {
-        blockhash: "6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
+        blockhash:
+          "6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
         blocknum: 20,
         channelname: "mychannel",
         createdt: "2018-04-26T20:32:13.000Z",
@@ -29,7 +30,8 @@ const setup = () => {
         ]
       },
       {
-        blockhash: "7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
+        blockhash:
+          "7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f",
         blocknum: 19,
         channelname: "mychannel",
         createdt: "2018-04-26T20:32:11.000Z",
@@ -57,66 +59,68 @@ const setup = () => {
       currentChannel: "mychannel"
     },
     transaction: {
-      "id": 39,
-      "channelname": "mychannel",
-      "blockid": 19,
-      "txhash": "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6",
-      "createdt": "2018-04-26T20:32:12.000Z",
-      "chaincodename": "mycc",
-      "status": 200,
-      "creator_msp_id": "Org1MSP",
-      "endorser_msp_id": "{\"Org1MSP\"}",
-      "chaincode_id": "",
-      "type": "ENDORSER_TRANSACTION",
-      "read_set": [
+      id: 39,
+      channelname: "mychannel",
+      blockid: 19,
+      txhash:
+        "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6",
+      createdt: "2018-04-26T20:32:12.000Z",
+      chaincodename: "mycc",
+      status: 200,
+      creator_msp_id: "Org1MSP",
+      endorser_msp_id: '{"Org1MSP"}',
+      chaincode_id: "",
+      type: "ENDORSER_TRANSACTION",
+      read_set: [
         {
-          chaincode: 'lscc',
+          chaincode: "lscc",
           set: [
             {
-              key: 'mycc',
+              key: "mycc",
               version: {
-                blocknum: '3',
-                tx_num: '0'
+                blocknum: "3",
+                tx_num: "0"
               }
             }
           ]
         },
         {
-          chaincode: 'mycc',
+          chaincode: "mycc",
           set: [
             {
-              key: 'a',
+              key: "a",
               version: {
-                block_num: '18',
-                tx_num: '0'
+                block_num: "18",
+                tx_num: "0"
               }
             },
             {
-              key: 'b',
+              key: "b",
               version: {
-                block_num: '18',
-                tx_num: '0'
+                block_num: "18",
+                tx_num: "0"
               }
             }
           ]
-        }],
-      "write_set": [
+        }
+      ],
+      write_set: [
         {
-          chaincode: 'lscc',
+          chaincode: "lscc",
           set: []
         },
         {
-          chaincode: 'lscc',
+          chaincode: "lscc",
           set: [
             {
               is_delete: false,
-              key: 'a',
-              value: '-60'
+              key: "a",
+              value: "-60"
             },
             {
               is_delete: false,
-              key: 'b',
-              value: '360'
+              key: "b",
+              value: "360"
             }
           ]
         }
@@ -131,11 +135,11 @@ const setup = () => {
   return {
     props,
     wrapper
-  }
+  };
 };
 
 describe("Blocks", () => {
-  test('setInterval called', () => {
+  test("setInterval called", () => {
     const { wrapper, props } = setup();
     expect(setInterval).toHaveBeenCalledTimes(1);
     jest.runOnlyPendingTimers();
@@ -152,30 +156,120 @@ describe("Blocks", () => {
   test("Table displays block data", () => {
     const { wrapper } = setup();
     //Block Number
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains(20)).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains(20))
+        .exists()
+    ).toBe(true);
     //Number of Tx
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains(2)).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains(2))
+        .exists()
+    ).toBe(true);
     //Data Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n =>
+          n.contains(
+            "2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e"
+          )
+        )
+        .exists()
+    ).toBe(true);
     //Block Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains("6880fc"))
+        .exists()
+    ).toBe(true);
     //Previous Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n =>
+          n.contains(
+            "5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f"
+          )
+        )
+        .exists()
+    ).toBe(true);
     //Number of Transactions
-    expect(wrapper.find('TdComponent').findWhere(n => n.type() === 'div' && n.contains('308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80')).children().children().length).toBe(2);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(
+          n =>
+            n.type() === "div" &&
+            n.contains(
+              "308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80"
+            )
+        )
+        .children()
+        .children().length
+    ).toBe(2);
 
     //Block Number
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains(19)).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains(19))
+        .exists()
+    ).toBe(true);
     //Number of Tx
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains(3)).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains(3))
+        .exists()
+    ).toBe(true);
     //Data Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n =>
+          n.contains(
+            "1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf"
+          )
+        )
+        .exists()
+    ).toBe(true);
     //Block Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n => n.contains("7880fc"))
+        .exists()
+    ).toBe(true);
     //Previous Hash
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d')).exists()).toBe(true);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(n =>
+          n.contains(
+            "68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d"
+          )
+        )
+        .exists()
+    ).toBe(true);
     //Number of Transactions
-    expect(wrapper.find('TdComponent').findWhere(n => n.type() === 'div' && n.contains('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')).children().children().length).toBe(3);
+    expect(
+      wrapper
+        .find("TdComponent")
+        .findWhere(
+          n =>
+            n.type() === "div" &&
+            n.contains(
+              "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6"
+            )
+        )
+        .children()
+        .children().length
+    ).toBe(3);
   });
 
   test("Modal for transaction View should not exist", () => {
@@ -185,68 +279,122 @@ describe("Blocks", () => {
 
   test("handleDialogOpen should set dialogOpen to true", () => {
     const { wrapper } = setup();
-    wrapper.instance().handleDialogOpen('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')
-    expect(wrapper.state('dialogOpen')).toBe(true);
-    wrapper.update()
+    wrapper
+      .instance()
+      .handleDialogOpen(
+        "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6"
+      );
+    expect(wrapper.state("dialogOpen")).toBe(true);
+    wrapper.update();
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
   test("handleDialogClose should set dialogOpen to false", () => {
     const { wrapper } = setup();
-    wrapper.setState({ dialogOpen: true })
-    wrapper.update()
-    wrapper.instance().handleDialogClose()
-    wrapper.update()
-    expect(wrapper.state('dialogOpen')).toBe(false);
+    wrapper.setState({ dialogOpen: true });
+    wrapper.update();
+    wrapper.instance().handleDialogClose();
+    wrapper.update();
+    expect(wrapper.state("dialogOpen")).toBe(false);
   });
 
   test("componentWillReceiveProps sets the state of totalBlocks", () => {
     const { wrapper } = setup();
-    wrapper.instance().componentWillReceiveProps()
-    wrapper.update()
-    expect(wrapper.state('totalBlocks')).toBe(20);
+    wrapper.instance().componentWillReceiveProps();
+    wrapper.update();
+    expect(wrapper.state("totalBlocks")).toBe(20);
   });
 
   test("Simulate Block Number filterMethod should have one result when given a value of 20", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '0-blocknum').find('input').simulate('change', { target: { value: '20' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "0-blocknum")
+      .find("input")
+      .simulate("change", { target: { value: "20" } });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simulate Number of Tx filterMethod should have one result when given a value of 3", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '1-txcount').find('input').simulate('change', { target: { value: '3' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "1-txcount")
+      .find("input")
+      .simulate("change", { target: { value: "3" } });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simluate Data filterMethod should have one result when given a datahash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '2-datahash').find('input').simulate('change', { target: { value: '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "2-datahash")
+      .find("input")
+      .simulate("change", {
+        target: {
+          value:
+            "2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e"
+        }
+      });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simulate Block Hash filterMethod should have one result when given a block hash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '3-blockhash').find('input').simulate('change', { target: { value: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "3-blockhash")
+      .find("input")
+      .simulate("change", {
+        target: {
+          value:
+            "6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f"
+        }
+      });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simulate Previous Hash filterMethod should have one result when given a previous hash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '4-prehash').find('input').simulate('change', { target: { value: '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "4-prehash")
+      .find("input")
+      .simulate("change", {
+        target: {
+          value:
+            "5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f"
+        }
+      });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simulate Transaction filterMethod should have one result when given a transaction hash", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '5-txhash').find('input').simulate('change', { target: { value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
+    wrapper
+      .find("ThComponent")
+      .findWhere(n => n.key() === "5-txhash")
+      .find("input")
+      .simulate("change", {
+        target: {
+          value:
+            "308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80"
+        }
+      });
+    expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
   test("Simulate onClick when a tansaction is clicked the TransactionView modal should exist", () => {
-    const { wrapper } = setup();
-    expect(wrapper.find(TransactionView).exists()).toBe(false);
-    wrapper.find('TdComponent').find('a').first().simulate('click')
+
+  const { wrapper } = setup();
+
+  expect(wrapper.find(TransactionView).exists()).toBe(false);
+    wrapper
+      .find("TdComponent")
+      .find("a")
+      .at(1)
+      .simulate("click");
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 });

@@ -155,9 +155,9 @@ describe("Transactions", () => {
     //Creator
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('Org1MSP')).exists()).toBe(true);
     //Tx Id
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80')).exists()).toBe(true);
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1')).exists()).toBe(true);
-    expect(wrapper.find('TdComponent').findWhere(n => n.contains('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')).exists()).toBe(true);
+    expect(wrapper.find('TdComponent').findWhere(n => n.contains('308a24')).exists()).toBe(true);
+    expect(wrapper.find('TdComponent').findWhere(n => n.contains('9abc8c')).exists()).toBe(true);
+    expect(wrapper.find('TdComponent').findWhere(n => n.contains('912cd6')).exists()).toBe(true);
     //Type
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('ENDORSER_TRANSACTION')).exists()).toBe(true);
     //Chaincode
