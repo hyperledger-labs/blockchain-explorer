@@ -39,6 +39,8 @@ const styles = theme => ({
   },
 });
 
+
+
 export class HeaderView extends Component {
   constructor(props) {
     super(props);
@@ -128,13 +130,14 @@ export class HeaderView extends Component {
 
   render() {
     const { classes } = this.props;
+    const { hostname, port } = window.location;
+    var webSocketUrl = `ws://${hostname}:${port}/`;
+
     return (
       <div>
         {/* production */}
-        {/* <Websocket url={`${window.location.protocol.replace("http", "ws")}//${window.location.host}/`} */}
-
         {/* development */}
-        <Websocket url="ws://localhost:8080/"
+        <Websocket url={webSocketUrl}
           onMessage={this.handleData.bind(this)} reconnect={true} />
         <Navbar color="light" light expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
