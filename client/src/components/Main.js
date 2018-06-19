@@ -23,7 +23,8 @@ import {
   getPeerList,
   getTransaction,
   getTransactionList,
-  getTxByOrg
+  getTxByOrg,
+  getPeerStatus
 } from '../store/selectors/selectors';
 import { blockList } from '../store/actions/block/action-creators';
 import { chaincodes } from '../store/actions/chaincodes/action-creators';
@@ -67,6 +68,7 @@ export const Main = (props) => {
     countHeader: props.countHeader,
     notification: props.notification,
     peerList: props.peerList,
+    peerStatus : props.peerStatus,
     txByOrg: props.txByOrg,
     getTxByOrg: props.getTxByOrg,
     getCountHeader: props.getCountHeader
@@ -112,6 +114,7 @@ export default connect((state) => ({
   countHeader: getCountHeader(state),
   notification: getNotification(state),
   peerList: getPeerList(state),
+  peerStatus: getPeerStatus(state),
   transaction: getTransaction(state),
   transactionList: getTransactionList(state),
   channels: getChannels(state),
