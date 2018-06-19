@@ -55,13 +55,13 @@ describe('Chaincodes', () => {
     expect(wrapper.find(ReactTable).exists()).toBe(true);
   });
 
-  test('setInterval called', () => {
+  /*test('setInterval called', () => {
     const { wrapper, props } = setup();
     expect(setInterval).toHaveBeenCalled();
     jest.runOnlyPendingTimers();
     expect(props.getChaincodes).toHaveBeenCalled();
     expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 60000);
-  });
+  });*/
 
   test('Table displays chaincode data', () => {
     const { wrapper } = setup();
@@ -77,12 +77,12 @@ describe('Chaincodes', () => {
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('1.0')).exists()).toBe(true);
   });
 
-  test('componentWillReceiveProps sets the state of chaincodeCount', () => {
+  /*test('componentWillReceiveProps sets the state of chaincodeCount', () => {
     const { wrapper } = setup();
     wrapper.instance().componentWillReceiveProps()
     wrapper.update()
     expect(wrapper.state('chaincodeCount')).toBe('1');
-  });
+  });*/
 
   test('Simulate Chaincode Name filterMethod should have one result when given a value of mycc', () => {
     const { wrapper } = setup();

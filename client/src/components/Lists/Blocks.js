@@ -19,7 +19,6 @@ class Blocks extends Component {
       dialogOpen: false,
       loading: false,
       dialogOpenBlockHash: false,
-      totalBlocks: this.props.countHeader.latestBlock
     };
   }
 
@@ -33,7 +32,7 @@ class Blocks extends Component {
   };
 
   handleDialogOpenBlockHash = rowValue => {
-    const data = find(this.props.blockList, function(item) {
+    const data = find(this.props.blockList, function (item) {
       return item.blockhash === rowValue;
     });
     this.setState({ dialogOpenBlockHash: true, blockHash: data });
@@ -46,14 +45,8 @@ class Blocks extends Component {
     const data = Object.assign({}, this.state.selection, { [row.index]: !val });
     this.setState({ selection: data });
   };
-  componentWillReceiveProps(nextProps) {
-    this.setState({ totalBlocks: this.props.countHeader.latestBlock });
-  }
 
   componentDidMount() {
-    setInterval(() => {
-      this.props.getBlockList(this.props.channel.currentChannel);
-    }, 60000);
     const selection = {};
     this.props.blockList.forEach(element => {
       selection[element.blocknum] = false;

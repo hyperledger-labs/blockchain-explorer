@@ -48,10 +48,7 @@ export class ChaincodeView extends Component {
       <div className="view-fullwidth">
         <div className="view-display">
           <Chaincodes
-            channel={this.props.channel}
-            countHeader={this.props.countHeader}
             chaincodes={this.props.chaincodes}
-            getChaincodes={this.props.getChaincodes}
           />
         </div>
       </div>

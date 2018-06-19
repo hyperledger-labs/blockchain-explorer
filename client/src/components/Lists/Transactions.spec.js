@@ -195,12 +195,12 @@ describe("Transactions", () => {
     expect(wrapper.state('dialogOpen')).toBe(false);
   });
 
-  test("componentWillReceiveProps sets the state of totalBlocks", () => {
+  /*test("componentWillReceiveProps sets the state of totalBlocks", () => {
     const { wrapper } = setup();
     wrapper.instance().componentWillReceiveProps()
     wrapper.update()
     expect(wrapper.state('totalTransactions')).toBe("36");
-  });
+  });*/
 
   test("Simulate Creator filterMethod should have no results when given a value of 2", () => {
     const { wrapper } = setup();

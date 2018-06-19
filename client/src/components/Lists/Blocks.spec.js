@@ -139,13 +139,13 @@ const setup = () => {
 };
 
 describe("Blocks", () => {
-  test("setInterval called", () => {
+  /*test("setInterval called", () => {
     const { wrapper, props } = setup();
     expect(setInterval).toHaveBeenCalledTimes(1);
     jest.runOnlyPendingTimers();
     expect(props.getBlockList).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 60000);
-  });
+  });*/
 
   test("Blocks and ReactTable components should render", () => {
     const { wrapper } = setup();
@@ -298,12 +298,12 @@ describe("Blocks", () => {
     expect(wrapper.state("dialogOpen")).toBe(false);
   });
 
-  test("componentWillReceiveProps sets the state of totalBlocks", () => {
+  /*test("componentWillReceiveProps sets the state of totalBlocks", () => {
     const { wrapper } = setup();
     wrapper.instance().componentWillReceiveProps();
     wrapper.update();
     expect(wrapper.state("totalBlocks")).toBe(20);
-  });
+  });*/
 
   test("Simulate Block Number filterMethod should have one result when given a value of 20", () => {
     const { wrapper } = setup();

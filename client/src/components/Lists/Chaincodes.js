@@ -16,21 +16,10 @@ class Chaincodes extends Component {
     super(props);
     this.state = {
       loading: false,
-      chaincodeCount: this.props.countHeader.chaincodeCount,
       dialogOpen: false,
       sourceDialog: false,
       chaincode: {}
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ chaincodeCount: this.props.countHeader.chaincodeCount });
-  }
-
-  componentDidMount() {
-    setInterval(() => {
-      this.props.getChaincodes(this.props.channel.currentChannel);
-    }, 60000);
   }
 
   handleDialogOpen = () => {
@@ -132,22 +121,22 @@ class Chaincodes extends Component {
           filterable
           minRows={0}
         />
-      <Dialog
-        open={this.state.dialogOpen}
-        onClose={this.handleDialogClose}
-        fullWidth={true}
-        maxWidth={"md"}
-      >
-        <ChaincodeForm />
-      </Dialog>
-      <Dialog
-        open={this.state.sourceDialog}
-        onClose={this.sourceDialogClose}
-        fullWidth={true}
-        maxWidth={"md"}
-      >
-        <ChaincodeModal chaincode={this.state.chaincode} />
-      </Dialog>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <ChaincodeForm />
+        </Dialog>
+        <Dialog
+          open={this.state.sourceDialog}
+          onClose={this.sourceDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <ChaincodeModal chaincode={this.state.chaincode} />
+        </Dialog>
       </div >
     );
   }

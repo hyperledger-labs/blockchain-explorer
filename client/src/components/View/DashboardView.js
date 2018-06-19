@@ -24,22 +24,10 @@ export class DashboardView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (Object.keys(nextProps.notification).length !== 0 && this.props.notification !== nextProps.notification) {
-      let arr = this.state.notifications;
-      arr.unshift(nextProps.notification);
-      this.setState({ notifications: arr });
-    }
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getTxByOrg(nextProps.channel.currentChannel);
-    }
+    this.setNotifications(this.props.blockList)
   }
 
   componentDidMount() {
-    setInterval(() => {
-      this.props.getTxByOrg(this.props.channel.currentChannel);
-      this.props.getCountHeader(this.props.channel.currentChannel);
-    }, 3000);
-
     this.setNotifications(this.props.blockList)
   }
 

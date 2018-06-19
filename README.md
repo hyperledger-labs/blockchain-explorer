@@ -107,6 +107,7 @@ From new terminal.
 - `cd blockchain-explorer/`
 - `./start.sh`  (it will have the backend up).
 - Launch the URL http://localhost:8080 on a browser.
+- `./stop.sh`  (it will stop the node server).
 
 - If the blockchain-explorer was used previously in your browser be sure to clear the cache before relaunching.
 

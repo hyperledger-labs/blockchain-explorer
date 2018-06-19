@@ -16,7 +16,6 @@ class Transactions extends Component {
     super(props);
     this.state = {
       loading: false,
-      totalTransactions: this.props.countHeader.txCount,
       dialogOpen: false
     };
   }
@@ -30,9 +29,6 @@ class Transactions extends Component {
     this.setState({ dialogOpen: false });
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ totalTransactions: this.props.countHeader.txCount });
-  }
   handleEye = (row, val) => {
     const data = Object.assign({}, this.state.selection, { [row.index]: !val });
     this.setState({ selection: data });

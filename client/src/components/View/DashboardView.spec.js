@@ -98,10 +98,10 @@ describe('DashboardView', () => {
     expect(wrapper.state('notifications')).not.toBe(previousState)
   })
 
-  test('componentWillReceiveProps gets a channel', () => {
+/*  test('componentWillReceiveProps gets a channel', () => {
     const { wrapper, props } = setup();
     const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: newChannel, notification: {} })
    expect(props.getTxByOrg).toHaveBeenCalled();
-  })
+  })*/
 });

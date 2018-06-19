@@ -27,8 +27,21 @@ import { changeChannel } from '../../store/actions/channel/action-creators';
 import {
   getChannelList,
   getChannel,
-  getNotification
+  getNotification,
+  getCountHeader
 } from '../../store/selectors/selectors'
+import { countHeader } from '../../store/actions/header/action-creators';
+import { peerList, peerStatus } from '../../store/actions/peer/action-creators';
+import { blockList } from '../../store/actions/block/action-creators';
+import { transactionList } from '../../store/actions/transactions/action-creators';
+import { chaincodes } from '../../store/actions/chaincodes/action-creators';
+import {
+  txByOrg,
+  blocksPerHour,
+  blocksPerMin,
+  txPerHour,
+  txPerMin
+} from '../../store/actions/charts/action-creators';
 
 const styles = theme => ({
   margin: {
@@ -80,6 +93,41 @@ export class HeaderView extends Component {
 
     this.setState({ channels: arr });
     this.setState({ selectedOption: this.props.channel.currentChannel })
+
+    setInterval(
+      () => this.syncDatas(),
+      30000
+    );
+  }
+
+  syncDatas() {
+    this.props.getPeerList(this.props.channel.currentChannel);
+    this.props.getCountHeader(this.props.channel.currentChannel);
+    this.props.getPeerStatus(this.props.channel.currentChannel);
+    this.props.getTxPerHour(this.props.channel.currentChannel);
+    this.props.getTxPerMin(this.props.channel.currentChannel);
+    this.props.getBlocksPerHour(this.props.channel.currentChannel);
+    this.props.getBlocksPerMin(this.props.channel.currentChannel);
+    this.props.getTransactionList(this.props.channel.currentChannel, 0);
+    this.props.getBlockList(this.props.channel.currentChannel, 0);
+    this.props.getTxByOrg(this.props.channel.currentChannel);
+    this.props.getChaincodes(this.props.channel.currentChannel);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
+      this.props.getPeerList(nextProps.channel.currentChannel);
+      this.props.getCountHeader(nextProps.channel.currentChannel);
+      this.props.getPeerStatus(nextProps.channel.currentChannel);
+      this.props.getTxPerHour(nextProps.channel.currentChannel);
+      this.props.getTxPerMin(nextProps.channel.currentChannel);
+      this.props.getBlocksPerHour(nextProps.channel.currentChannel);
+      this.props.getBlocksPerMin(nextProps.channel.currentChannel);
+      this.props.getTransactionList(nextProps.channel.currentChannel, 0);
+      this.props.getBlockList(nextProps.channel.currentChannel, 0);
+      this.props.getTxByOrg(nextProps.channel.currentChannel);
+      this.props.getChaincodes(nextProps.channel.currentChannel);
+    }
   }
 
   handleChange = (selectedOption) => {
@@ -115,7 +163,7 @@ export class HeaderView extends Component {
   handleDrawClose = (drawer) => {
     switch (drawer) {
       case 'notifyDrawer': {
-      this.setState({ notifyDrawer: false });
+        this.setState({ notifyDrawer: false });
         break;
       }
       case 'adminDrawer': {
@@ -143,12 +191,12 @@ export class HeaderView extends Component {
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
-          <Button href="/#" className={classes.margin} >DASHBOARD</Button>
-          <Button href="#/network" className={classes.margin} >NETWORK</Button>
-          <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
-          <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
-          <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
-          <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
+            <Button href="/#" className={classes.margin} >DASHBOARD</Button>
+            <Button href="#/network" className={classes.margin} >NETWORK</Button>
+            <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
+            <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
+            <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
+            <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
@@ -191,6 +239,17 @@ export default compose(withStyles(styles), connect((state) => ({
   channelList: getChannelList(state),
   notification: getNotification(state)
 }), {
-  getNotification: notification,
-  getChangeChannel: changeChannel
-}))(HeaderView)
+    getNotification: notification,
+    getChangeChannel: changeChannel,
+    getCountHeader: countHeader,
+    getTxPerHour: txPerHour,
+    getTxPerMin: txPerMin,
+    getBlocksPerHour: blocksPerHour,
+    getBlocksPerMin: blocksPerMin,
+    getTransactionList: transactionList,
+    getBlockList: blockList,
+    getPeerList: peerList,
+    getPeerStatus: peerStatus,
+    getChaincodes: chaincodes,
+    getTxByOrg: txByOrg
+  }))(HeaderView)
