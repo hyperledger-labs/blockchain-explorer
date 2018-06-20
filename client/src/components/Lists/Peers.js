@@ -35,6 +35,8 @@ const Peers = ({ peerList }) => {
                 className="-striped -highlight"
                 filterable
                 minRows={0}
+                showPagination={peerList.length < 5  ?  false : true }
+
             />
         </div>
     );

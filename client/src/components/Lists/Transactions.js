@@ -138,6 +138,8 @@ class Transactions extends Component {
           className="-striped -highlight"
           filterable
           minRows={0}
+          showPagination={ this.props.transactionList.length < 5  ?  false : true }
+
         />
 
         <Dialog
