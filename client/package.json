@@ -8,6 +8,7 @@
     "aphrodite": "^1.2.5",
     "bootstrap": "^4.0.0",
     "chart.js": "^2.7.2",
+    "font-awesome": "^4.7.0",
     "immutable": "^3.8.1",
     "jquery": "^3.0.0",
     "js-beautify": "^1.7.5",
@@ -41,6 +42,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^0.9.1",
     "redux-thunk": "^2.2.0",
+    "slick-carousel": "^1.8.1",
     "superagent": "^3.8.2",
     "typeface-roboto": "0.0.50"
   },
