@@ -1,10 +1,11 @@
 /*
-*SPDX-License-Identifier: Apache-2.0
-*/
+ *SPDX-License-Identifier: Apache-2.0
+ */
 
 var helper = require('../../helper.js')
 var logger = helper.getLogger('blockscanner');
 var fileUtil = require('../rest/logical/utils/fileUtils.js');
+var dateUtils = require("../rest/logical/utils/dateUtils.js");
 
 
 class BlockScanner {
@@ -17,23 +18,43 @@ class BlockScanner {
 
     async syncBlock() {
         try {
+            // sync block data historicaly
+            var syncStartDate = this.proxy.getSyncStartDate();
             var channels = this.proxy.getChannels();
 
             for (let channelName of channels) {
-                let maxBlockNum
-                let curBlockNum
+                let maxBlockNum;
+                let curBlockNum;
+
                 [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
                     this.crudService.getCurBlockNum(channelName)
                 ]);
 
-                await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
+                if (syncStartDate) {
+                    await this.syncBlocksFromDate(channelName, maxBlockNum, syncStartDate);
+                } else {
+                    await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
+                }
             };
         } catch (err) {
             console.log(err);
         }
     }
 
+    async getBlockTimeStamp(block) {
+        var blockTimestamp = null;
+        try {
+            if (block && block.data && block.data.data[0]) {
+                let first_tx = block.data.data[0];
+                let header = first_tx.payload.header;
+                blockTimestamp = header.channel_header.timestamp;
+            }
+        } catch (err) {
+            logger.error(err)
+        }
+        return blockTimestamp;
+    };
     async saveBlockRange(block) {
 
         let first_tx = block.data.data[0]; //get the first Transaction
@@ -98,30 +119,38 @@ class BlockScanner {
             let writeSet
             try {
                 rwset = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
-                readSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.reads } })
-                writeSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.writes } })
-            } catch (err) {
-            }
+                readSet = rwset.map(i => {
+                    return {
+                        'chaincode': i.namespace,
+                        'set': i.rwset.reads
+                    }
+                })
+                writeSet = rwset.map(i => {
+                    return {
+                        'chaincode': i.namespace,
+                        'set': i.rwset.writes
+                    }
+                })
+            } catch (err) {}
 
             let chaincodeID
             try {
                 chaincodeID =
                     new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
-            } catch (err) {
-            }
+            } catch (err) {}
 
             let status
             try {
                 status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
-            } catch (err) {
-            }
+            } catch (err) {}
 
             let mspId = []
 
             try {
-                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
-            } catch (err) {
-            }
+                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => {
+                    return i.endorser.Mspid
+                })
+            } catch (err) {}
 
             var transaction = {
                 'channelname': channelName,
@@ -144,7 +173,53 @@ class BlockScanner {
 
     }
 
+    /**
+     *
+     * @param {*} channelName
+     * @param {*} maxBlockNum
+     * @param {*} syncStartDate
+     * Method provides the ability to sync based on configured property syncStartDate in config.json
+     */
+    async syncBlocksFromDate(channelName, maxBlockNum, syncStartDate) {
+        var applyFilter = syncStartDate ? true : false;
+        var saveRecord = true;
+        var END = 0;
+        var START = maxBlockNum - 1;
+        // get blocks backwards
+        while (END <= START) {
+            saveRecord = false;
+            try {
+                let block = await this.proxy.getBlockByNumber(channelName, START)
+                if (block && applyFilter) {
+                    let blockTimeStamp = await this.getBlockTimeStamp(block);
+                    let blockUTC = dateUtils.toUTCmilliseconds(blockTimeStamp);
 
+                    if (blockUTC && syncStartDate) {
+                        if (blockUTC >= syncStartDate) {
+                            saveRecord = true;
+                        } else {
+                            saveRecord = false;
+                        }
+                    }
+                }
+                if (saveRecord) {
+                    try {
+                        var savedNewBlock = await this.saveBlockRange(block)
+                        if (savedNewBlock) {
+                            this.broadcaster.broadcast();
+                        }
+                    } catch (err) {
+                        console.log(err.stack);
+                        logger.error(err)
+                    }
+                }
+            } catch (err) {
+                logger.error(err)
+            }
+            // decrease the block number
+            START--
+        }
+    }
     async getBlockByNumber(channelName, start, end) {
         while (start < end) {
             let block = await this.proxy.getBlockByNumber(channelName, start)
@@ -154,8 +229,7 @@ class BlockScanner {
                 if (savedNewBlock) {
                     this.broadcaster.broadcast();
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.log(err.stack);
                 logger.error(err)
             }
@@ -168,7 +242,11 @@ class BlockScanner {
             this.seq().obj(this.key('Number').int(), this.key('PreviousHash').octstr(), this.key('DataHash').octstr());
         });
 
-        let output = headerAsn.encode({ Number: parseInt(header.number), PreviousHash: Buffer.from(header.previous_hash, 'hex'), DataHash: Buffer.from(header.data_hash, 'hex') }, 'der');
+        let output = headerAsn.encode({
+            Number: parseInt(header.number),
+            PreviousHash: Buffer.from(header.previous_hash, 'hex'),
+            DataHash: Buffer.from(header.data_hash, 'hex')
+        }, 'der');
         let hash = sha.sha256(output);
         return hash;
     };
@@ -252,7 +330,7 @@ class BlockScanner {
             this.crudService.savePeer(peers);
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     async saveOrdererlist(channelName) {
 
         var ordererlists = await this.proxy.getConnectedOrderers(channelName);
@@ -265,7 +343,7 @@ class BlockScanner {
             this.crudService.saveOrderer(orderers);
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     async syncChaincodes() {
 
         try {
@@ -293,22 +371,24 @@ class BlockScanner {
             logger.error(err)
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     syncOrdererlist() {
 
         try {
-			var channels = this.proxy.getChannels();
-			for (let channelName of channels) {
-				this.saveOrdererlist(channelName);
-			}
+            var channels = this.proxy.getChannels();
+            for (let channelName of channels) {
+                this.saveOrdererlist(channelName);
+            }
         } catch (err) {
             logger.error(err)
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     syncChannelEventHubBlock() {
         var self = this;
-        this.proxy.syncChannelEventHubBlock(block => { self.saveBlockRange(block); });
+        this.proxy.syncChannelEventHubBlock(block => {
+            self.saveBlockRange(block);
+        });
     }
 }
 
