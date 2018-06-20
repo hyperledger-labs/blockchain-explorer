@@ -59,6 +59,52 @@
                 }
             }
         },
+        "/status/{channelName}": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Query to get BlockCount on a channel",
+                "description": "Query to get BlockCount on a channel",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelName",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "chaincodeCount": {
+                                    "type": "string"
+                                },
+                                "txCount": {
+                                    "type": "string"
+                                },
+                                "peerCount": {
+                                    "type": "string"
+                                },
+                                "latestBLock": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        },
         "/curChannel": {
             "get": {
                 "tags": [
@@ -87,8 +133,8 @@
                 "tags": [
                     "Channel"
                 ],
-                "summary": "Query to get BlockCount on a channel",
-                "description": "Query to get BlockCount on a channel",
+                "summary": "Query to get Change Channel on a channel",
+                "description": "Query to get Change Channel on a channel",
                 "parameters": [
                     {
                         "name": "channelName",
@@ -114,7 +160,7 @@
                 }
             }
         },
-        "/chaincodes": {
+        "/chaincode/{channelName}": {
             "get": {
                 "tags": [
                     "Chaincodes"
@@ -123,9 +169,9 @@
                 "description": "Query to fetch all Installed/instantiated chaincodes",
                 "parameters": [
                     {
-                        "name": "channel",
-                        "in": "query",
-                        "description": "channelname",
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelName",
                         "required": true,
                         "type": "string"
                     }
@@ -158,13 +204,15 @@
                         }
                     }
                 }
-            },
+           }
+        },
+        "/channel": {
             "post": {
                 "tags": [
-                    "Chaincodes"
+                    "Channel"
                 ],
-                "summary": "Install chaincode on target peers",
-                "description": "Install chaincode on target peers",
+                "summary": "Install channel on target peers",
+                "description": "Install channel on target peers",
                 "consumes": [
                     "application/json",
                     "application/x-www-form-urlencoded"
@@ -174,33 +222,30 @@
                 ],
                 "parameters": [
                     {
-                        "name": "peers",
+                        "name": "channelName",
                         "in": "formData",
-                        "description": "peers",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "chaincodeName",
-                        "in": "formData",
-                        "description": "chaincode Name",
+                        "description": "channel name",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "chaincodePath",
+                        "name": "genesisBlock",
                         "in": "formData",
-                        "description": "chaincode Path",
+                        "description": "gensis block",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "chaincodeVersion",
+                        "name": "orgName",
                         "in": "formData",
-                        "description": "chaincode Version",
+                        "description": "organation name ",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "profile",
+                        "in": "formData",
+                        "description": "block profile",
                         "required": true,
                         "type": "string"
                     }
@@ -209,7 +254,15 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type":"object",
+                            "properties":{
+                                "success":{
+                                    "type":"boolean"
+                                },
+                                "message":{
+                                    "type":"string"
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -221,25 +274,32 @@
                 }
             }
         },
-        "/channels/{channelName}": {
-            "get": {
+        "/joinChannel": {
+            "post": {
                 "tags": [
                     "Channel"
                 ],
-                "summary": "Query for Channel Information",
-                "description": "Query for Channel Information",
+                "summary": "join channel ",
+                "description": "join  channel ",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
-                        "name": "channelName",
-                        "in": "path",
-                        "description": "channelname",
+                        "name": "orgName",
+                        "in": "formData",
+                        "description": "organization name",
                         "required": true,
-                        "type": "string"
+                            "type": "string"
                     },
                     {
-                        "name": "peer",
-                        "in": "query",
-                        "description": "peer",
+                        "name": "channelName",
+                        "in": "formData",
+                        "description": "channel name",
                         "required": true,
                         "type": "string"
                     }
@@ -248,7 +308,28 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type":"array",
+                            "items":{
+                                "type":"object",
+                                "properties":{
+                                    "channelName":{
+                                        "type":"boolean"
+                                    },
+                                    "chaincodename":{
+                                        "type":"string"
+                                    },
+                                    "path":{
+                                        "type":"boolean"
+                                    },
+                                    "version":{
+                                        "type":"string"
+                                    },
+                                    "txCount":{
+                                        "type":"number"
+                                    }
+                                }
+
+                            }
                         }
                     },
                     "default": {
@@ -260,13 +341,13 @@
                 }
             }
         },
-        "/channels/{channelName}/blocks": {
+        "/block/{channelName}/{number}": {
             "get": {
                 "tags": [
                     "Blocks"
                 ],
-                "summary": "Query Get Block by Hash",
-                "description": "Query Get Block by Hash",
+                "summary": "Query to Fetch Blocks",
+                "description": "Query to Fetch Blocks",
                 "parameters": [
                     {
                         "name": "channelName",
@@ -276,16 +357,9 @@
                         "type": "string"
                     },
                     {
-                        "name": "hash",
-                        "in": "query",
-                        "description": "block hash",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "peer",
-                        "in": "query",
-                        "description": "peer",
+                        "name": "number",
+                        "in": "path",
+                        "description": "block number",
                         "required": true,
                         "type": "string"
                     }
@@ -294,7 +368,46 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "number": {
+                                    "type": "string"
+                                },
+                                "previous_hash": {
+                                    "type": "string"
+                                },
+                                "data_hash": {
+                                    "type": "string"
+                                },
+                                "transactions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "signature": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "data": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "number"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "payload": {
+                                                "$ref": "#/definitions/blockPayload"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -306,13 +419,63 @@
                 }
             }
         },
-        "/channels/{channelName}/transactions/{txid}": {
+        "/block/transactions/{channelName}/{number}": {
             "get": {
                 "tags": [
                     "Transactions"
                 ],
-                "summary": "Query Get Transaction by Transaction ID",
-                "description": "Query Get Transaction by Transaction ID",
+                "summary": "Query to Fetch Block Transactions",
+                "description": "Query to Fetch Block Transactions",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "number",
+                        "in": "path",
+                        "description": "block number",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "number": {
+                                    "type": "number"
+                                },
+                                "txCount": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/transaction/{channelName}/{txid}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query to Get Transaction by Txid",
+                "description": "Query to Get Transaction by Txid",
                 "parameters": [
                     {
                         "name": "channelName",
@@ -324,14 +487,7 @@
                     {
                         "name": "txid",
                         "in": "path",
-                        "description": "Transaction id",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "peer",
-                        "in": "query",
-                        "description": "peer",
+                        "description": "transaction id",
                         "required": true,
                         "type": "string"
                     }
@@ -340,7 +496,62 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "row": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "number"
+                                        },
+                                        "channelname": {
+                                            "type": "string"
+                                        },
+                                        "blockid": {
+                                            "type": "number"
+                                        },
+                                        "txhash": {
+                                            "type": "string"
+                                        },
+                                        "createdt": {
+                                            "type": "string"
+                                        },
+                                        "chaincodename": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "number"
+                                        },
+                                        "creator_msp_id": {
+                                            "type": "string"
+                                        },
+                                        "endorser_msp_id": {
+                                            "type": "string"
+                                        },
+                                        "chancode_id": {
+                                            "type": "string"
+                                        },
+                                        "type": {
+                                            "type": "string"
+                                        },
+                                        "read_set": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/Set"
+                                            }
+                                        },
+                                        "write_set": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/Set"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -352,41 +563,409 @@
                 }
             }
         },
-        "/channels/{channelName}/blocks/{blockNumber}": {
+        "/txList/{channelName}/{number}/{txid}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query to Get Trasaction List",
+                "description": "Query to Get Trasaction List",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channelname",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "number",
+                        "in": "path",
+                        "description": "block number",
+                        "required": true,
+                        "type": "number"
+                    },
+                    {
+                        "name": "txid",
+                        "in": "path",
+                        "description": "block number",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "number"
+                                            },
+                                            "channelname": {
+                                                "type": "string"
+                                            },
+                                            "blockid": {
+                                                "type": "number"
+                                            },
+                                            "txhash": {
+                                                "type": "string"
+                                            },
+                                            "createdt": {
+                                                "type": "string"
+                                            },
+                                            "chaincodename": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/peers/{channelName}": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Peers",
+                "description": "Peers",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "peers": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "requests": {
+                                                "type": "string"
+                                            },
+                                            "server_hostname": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/peersStatus/{channelName}": {
+            "get": {
+                "tags": [
+                    "Channel"
+                ],
+                "summary": "Query Get PeersStatus",
+                "description": "Query Get PeersStatus",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "peers": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "requests": {
+                                                "type": "string"
+                                            },
+                                            "server_hostname": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/blockAndTxList/{channelName}/{number}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query to Get Block And Transaction List",
+                "description": "Query to Get Block And Transaction List",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "number",
+                        "in": "path",
+                        "description": "block number",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "number"
+                                            },
+                                            "blocknum": {
+                                                "type": "number"
+                                            },
+                                            "data_hash": {
+                                                "type": "string"
+                                            },
+                                            "prehash": {
+                                                "type": "string"
+                                            },
+                                            "channelname": {
+                                                "type": "string"
+                                            },
+                                            "txCount": {
+                                                "type": "number"
+                                            },
+                                            "createdt": {
+                                                "type": "string"
+                                            },
+                                            "prev_blockhash": {
+                                                "type": "string"
+                                            },
+                                            "blockhash": {
+                                                "type": "string"
+                                            },
+                                            "txhash": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/txByMinute/{channelName}/{hours}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query to Get Trasaction BY Minute",
+                "description": "Query to Get Trasaction By Minute",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "hours",
+                        "in": "path",
+                        "description": "hours ",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/TxCount"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/txByHour/{channelName}/{days}": {
+            "get": {
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Query to Get Trasaction By Hour",
+                "description": "Queryto  Get Trasaction BY Hour",
+                "parameters": [
+                    {
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "days",
+                        "in": "path",
+                        "description": "days",
+                        "required": true,
+                        "type": "number"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/TxCount"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/blocksByMinute/{channelName}/{hours}": {
             "get": {
                 "tags": [
                     "Blocks"
                 ],
-                "summary": "Query Get Block by BlockNumber",
-                "description": "Query Get Block by BlockNumber",
+                "summary": "Query to Get Blocks BY Minute",
+                "description": "Query to Get Blocks By Minute",
                 "parameters": [
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "channel name",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "blockNumber",
+                        "name": "hours",
                         "in": "path",
-                        "description": "blockNumber",
+                        "description": "hours ",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "peer",
-                        "in": "query",
-                        "description": "peer",
-                        "required": true,
-                        "type": "string"
+                        "type": "number"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/TxCount"
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -398,125 +977,45 @@
                 }
             }
         },
-        "/channels/{channelName}/chaincodes/{chaincodeName}": {
+        "/blocksByHour/{channelName}/{days}": {
             "get": {
                 "tags": [
-                    "Chaincodes"
+                    "Blocks"
                 ],
-                "summary": "Query on chaincode on target peers",
-                "description": "Query on chaincode on target peers",
+                "summary": "Query to Get Blocks By Hour",
+                "description": "Query to Get Blocks By Hour",
                 "parameters": [
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "channel name",
                         "required": true,
                         "type": "string"
                     },
                     {
-                        "name": "chaincodeName",
+                        "name": "days",
                         "in": "path",
-                        "description": "chaincodeName",
+                        "description": "days",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "peer",
-                        "in": "query",
-                        "description": "peer",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "fcn",
-                        "in": "query",
-                        "description": "function name",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "args",
-                        "in": "query",
-                        "description": "argument",
-                        "required": true,
-                        "type": "string"
+                        "type": "number"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "default": {
-                        "description": "Unexpected error",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Chaincodes"
-                ],
-                "summary": "Invoke transaction on chaincode on target peers",
-                "description": "Invoke transaction on chaincode on target peers",
-                "consumes": [
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "channelName",
-                        "in": "path",
-                        "description": "channelname",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "chaincodeName",
-                        "in": "formData",
-                        "description": "chaincodeName",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "peers",
-                        "in": "formData",
-                        "description": "peers",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "fcn",
-                        "in": "formData",
-                        "description": "function name",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "args",
-                        "in": "formData",
-                        "description": "arguments",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "transaction id",
-                        "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/TxCount"
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -528,65 +1027,46 @@
                 }
             }
         },
-        "/channels/{channelName}/chaincodes": {
-            "post": {
+        "/txByOrg/{channelName}": {
+            "get": {
                 "tags": [
-                    "Chaincodes"
+                    "Blocks"
                 ],
-                "summary": "Instantiate chaincode on target peers",
-                "description": "Instantiate chaincode on target peers",
-                "consumes": [
-                    "application/json",
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "summary": "Query Get Trasaction By Org",
+                "description": "Query Get Trasaction BY Org",
                 "parameters": [
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "channel name",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "name": "chaincodeName",
-                        "in": "formData",
-                        "description": "chaincode name",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "chaincodeVersion",
-                        "in": "formData",
-                        "description": "chaincodeVersion",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "functionName",
-                        "in": "formData",
-                        "description": "functionName",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "args",
-                        "in": "formData",
-                        "description": "arguments",
-                        "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "rows": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "count": {
+                                                "type": "string"
+                                            },
+                                            "creator_msp_id": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -598,37 +1078,55 @@
                 }
             }
         },
-        "/channels/:channelName/peers": {
-            "post": {
+        "/channels/info": {
+            "get": {
                 "tags": [
-                    "Channel"
+                    "Channels"
                 ],
-                "summary": "Join Channel",
-                "description": "Join Channel",
-                "consumes": [
-                    "application/json",
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
+                "summary": "Query to Get Channels Inforamtion",
+                "description": "Query to Get channel Information",
                 "parameters": [
                     {
-                        "name": "peers",
-                        "in": "formData",
-                        "description": "peers",
+                        "name": "channelName",
+                        "in": "path",
+                        "description": "channel name",
                         "required": true,
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
+                        "type": "string"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "number"
+                                },
+                                "channels": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "channelName": {
+                                                "type": "string"
+                                            },
+                                            "channel_hash": {
+                                                "type": "string"
+                                            },
+                                            "createdat": {
+                                                "type": "string"
+                                            },
+                                            "blocks":{
+                                                "type":"number"
+                                            },
+                                            "transactions":{
+                                                "type":"number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     },
                     "default": {
@@ -658,6 +1156,113 @@
             "type": "object",
             "properties": {
                 "currentChannel": {
+                    "type": "string"
+                }
+            }
+        },
+        "blockPayload": {
+            "type": "object",
+            "properties": {
+                "header": {
+                    "type": "object",
+                    "properties": {
+                        "channel_header": {
+                            "type": "object",
+                            "properties": {
+                                "version": {
+                                    "type": "number"
+                                },
+                                "type": {
+                                    "type": "number"
+                                },
+                                "time_stamp": {
+                                    "type": "string"
+                                },
+                                "channel_id": {
+                                    "type": "string"
+                                },
+                                "txid": {
+                                    "type": "string"
+                                },
+                                "epoch": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "signature_header": {
+                        "type": "object",
+                        "properties": {
+                            "creator": {
+                                "type": "object",
+                                "properties": {
+                                    "Mspid": {
+                                        "type": "string"
+                                    },
+                                    "Idbytes": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "nonce": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        }
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "data": {
+                    "type": "object"
+                }
+            }
+        },
+        "Set": {
+            "type": "object",
+            "properties": {
+                "chaincode": {
+                    "type": "string"
+                },
+                "set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "version": {
+                                "type": "object",
+                                "properties": {
+                                    "block_num": {
+                                        "type": "number"
+                                    },
+                                    "tx_num": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "TxCount": {
+            "type": "object",
+            "properties": {
+                "datetime": {
+                    "type": "string"
+                },
+                "count": {
                     "type": "string"
                 }
             }
