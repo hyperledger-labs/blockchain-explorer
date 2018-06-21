@@ -111,6 +111,8 @@ class Channels extends Component {
                   className="-striped -highlight"
                   filterable
                   minRows={0}
+                  showPagination={ this.props.channels.length < 5  ?  false : true }
+
                 />
       </div>
     );

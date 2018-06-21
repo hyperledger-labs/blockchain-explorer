@@ -120,6 +120,7 @@ class Chaincodes extends Component {
           className="-striped -highlight"
           filterable
           minRows={0}
+          showPagination={ this.props.chaincodes.length < 5  ?  false : true }
         />
         <Dialog
           open={this.state.dialogOpen}
