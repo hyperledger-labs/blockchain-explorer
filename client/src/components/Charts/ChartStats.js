@@ -91,12 +91,7 @@ export class ChartStats extends Component {
 
   render() {
     return (
-      <div className="chart-stats">
-        <Card>
-          <CardHeader>
-            <h5>Analytics</h5>
-          </CardHeader>
-          <CardBody>
+      <div >
             <Nav tabs>
               <NavItem>
                 <NavLink
@@ -169,8 +164,6 @@ export class ChartStats extends Component {
                 />
               </TabPane>
             </TabContent>
-          </CardBody>
-        </Card>
       </div>
     );
   }

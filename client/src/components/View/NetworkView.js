@@ -7,6 +7,7 @@ import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Peers from '../Lists/Peers';
+import Card from 'material-ui/Card';
 
 const styles = theme => ({
   root: {
@@ -47,7 +48,9 @@ export class NetworkView extends Component {
     return (
       <div className="view-fullwidth">
         <div className="view-display">
-          <Peers peerList={this.props.peerList} />
+          <Card className="table-card">
+            <Peers peerList={this.props.peerList} />
+          </Card>
         </div>
       </div>
     );

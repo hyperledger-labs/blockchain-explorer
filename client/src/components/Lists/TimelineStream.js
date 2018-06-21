@@ -35,12 +35,7 @@ class TimelineStream extends Component {
 
   render() {
     return (
-      <div className="activity-stream">
-        <Card>
-          <CardHeader>
-            <h5>Activity</h5>
-          </CardHeader>
-          <CardBody>
+      <div >
             <div className="scrollable-card">
               <Timeline>
                 {this.props.notifications.map(item => (
@@ -50,8 +45,9 @@ class TimelineStream extends Component {
                     icon={<FontAwesome name="cube" />}
                     iconColor="#0D3799"
                     container="card"
+                    className="timeline-event"
                     titleStyle={{ fontWeight: "bold" }}
-                    style={{ width: "400px" }}
+                    style={{ width: "65%" }}
                     cardHeaderStyle={{
                       backgroundColor: "#6283D0",
                       fontSize: "13pt"
@@ -84,8 +80,7 @@ class TimelineStream extends Component {
                 ))}
               </Timeline>
             </div>
-          </CardBody>
-        </Card>
+
         <Dialog
           open={this.state.dialogOpenBlockHash}
           onClose={this.handleDialogCloseBlockHash}

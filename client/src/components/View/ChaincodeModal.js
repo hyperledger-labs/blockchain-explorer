@@ -6,7 +6,12 @@ import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import beautify from 'js-beautify';
-
+import FontAwesome from "react-fontawesome";
+import {
+  Card,
+  CardBody,
+  CardTitle
+} from "reactstrap";
 const styles = theme => ({
   container: {
     border: '3px solid #afeeee'
@@ -28,18 +33,18 @@ export class ChaincodeModal extends Component {
     const { classes } = this.props;
 
     return (
-      < div className={["card", classes.container].join(" ")} >
-        <div className="card-header" align="center">
-          <h3> {srcHeader}</h3>
-        </div>
-        <div className="card-body">
-          <div className={classes.container1}>
-            <lable className="source-code" readOnly>
+      <div className="dialog">
+        <Card>
+          <CardTitle className="dialogTitle">
+            <FontAwesome name="file-text" className="cubeIcon" />{srcHeader}
+          </CardTitle>
+          <CardBody>
+            <textarea className="source-code" readOnly>
               {formattedSrc}
-            </lable>
-          </div>
-        </div>
-      </div >
+            </textarea>
+          </CardBody>
+        </Card>
+      </div>
     );
   }
 }

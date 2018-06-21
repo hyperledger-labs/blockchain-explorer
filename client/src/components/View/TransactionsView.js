@@ -7,6 +7,7 @@ import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Transactions from '../Lists/Transactions';
+import Card from 'material-ui/Card';
 
 const styles = theme => ({
   root: {
@@ -47,12 +48,14 @@ export class TransactionsView extends Component {
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
-          <Transactions
-            channel={this.props.channel}
-            transactionList={this.props.transactionList.rows}
-            getTransactionList={this.props.getTransactionList}
-            transaction={this.props.transaction}
-            getTransactionInfo={this.props.getTransactionInfo} />
+          <Card className="table-card">
+            <Transactions
+              channel={this.props.channel}
+              transactionList={this.props.transactionList.rows}
+              getTransactionList={this.props.getTransactionList}
+              transaction={this.props.transaction}
+              getTransactionInfo={this.props.getTransactionInfo} />
+          </Card>
         </div>
       </div>
     );

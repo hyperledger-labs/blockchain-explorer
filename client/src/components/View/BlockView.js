@@ -10,10 +10,8 @@ import moment from "moment-timezone";
 import {
   Table,
   Card,
-  CardText,
   CardBody,
   CardTitle,
-  CardSubtitle,
   Button
 } from "reactstrap";
 
@@ -65,6 +63,7 @@ class BlockView extends Component {
         <div className="dialog">
           <Card>
             <CardTitle className="dialogTitle">
+
               <FontAwesome name="cube" className="cubeIcon" />Block Details
               <button onClick={this.handleClose} className="closeBtn">
                 <FontAwesome name="close" />

@@ -14,6 +14,7 @@ import {
   NavbarBrand,
   NavbarToggler
 } from 'reactstrap';
+import Switch from 'material-ui/Switch';
 import AdminPanel from '../Panels/AdminPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import FontAwesome from 'react-fontawesome';
@@ -64,7 +65,8 @@ export class HeaderView extends Component {
       channels: [],
       notifyCount: 0,
       notifications: [],
-      modalOpen: false
+      modalOpen: false,
+      isLight: true
     }
   }
 
@@ -175,6 +177,10 @@ export class HeaderView extends Component {
       }
     }
   }
+  handleThemeChange = () => {
+    var theme = !this.state.isLight;
+    this.setState({ isLight: theme });
+  }
 
   render() {
     const { classes } = this.props;
@@ -187,7 +193,7 @@ export class HeaderView extends Component {
         {/* development */}
         <Websocket url={webSocketUrl}
           onMessage={this.handleData.bind(this)} reconnect={true} />
-        <Navbar color="light" light expand="md" fixed="top">
+        <Navbar className="navbar-header" expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
@@ -212,6 +218,11 @@ export class HeaderView extends Component {
             </div>
             <div className="admin-buttons">
               <FontAwesome name="cog" className="cog" onClick={() => this.handleDrawOpen("adminDrawer")} />
+            </div>
+            <div className="admin-buttons theme-switch">
+              <Switch
+                onChange={() => this.handleThemeChange()}
+                value={this.state.isLight} />
             </div>
           </Nav>
         </Navbar>

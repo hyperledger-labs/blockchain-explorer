@@ -44,19 +44,12 @@ class OrgPieChart extends Component {
 
   render() {
     return (
-      <div className="chart-stats">
-        <Card>
-          <CardHeader>
-            <h5>Organization Transactions</h5>
-          </CardHeader>
-          <CardBody>
-            <PieChart width={535} height={230}>
-              <Legend align="right" height={15} />
-              <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50} label fill="fill" />
-              <Tooltip />
-            </PieChart>
-          </CardBody>
-        </Card>
+      <div className="org-pie">
+        <PieChart width={485}  height={290}>
+          <Legend align="right" height={10} />
+          <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label fill="fill" />
+          <Tooltip />
+        </PieChart>
       </div>
     );
   }

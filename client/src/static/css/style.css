@@ -1,7 +1,9 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
+ html{
+	/* background-color: #F0F5F9; */
+}
 body {
 	background: #f0f0f0;
 	line-height: normal;

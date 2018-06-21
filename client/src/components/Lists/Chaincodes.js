@@ -110,9 +110,9 @@ class Chaincodes extends Component {
   render() {
     return (
       <div >
-        <Button className="button" onClick={() => this.handleDialogOpen()}>
+        {/* <Button className="button" onClick={() => this.handleDialogOpen()}>
           Add Chaincode
-          </Button>
+          </Button> */}
         <ReactTable
           data={this.props.chaincodes}
           columns={this.reactTableSetup()}

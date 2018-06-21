@@ -141,9 +141,9 @@ describe('Chaincodes', () => {
     expect(wrapper.state('sourceDialog')).toBe(false)
   })
 
-  test('button onClick', () => {
+/*   test('button onClick', () => {
     const { wrapper } = setup();
     wrapper.find('Button').simulate('click')
     expect(wrapper.state('dialogOpen')).toBe(true)
-  })
+  }) */
 });
