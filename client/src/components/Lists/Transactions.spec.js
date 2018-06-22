@@ -2,34 +2,34 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import Transactions from "./Transactions";
+import Transactions from './Transactions';
 import ReactTable from 'react-table';
 import TransactionView from '../View/TransactionView';
 
 const setup = () => {
   const props = {
     countHeader: {
-      chaincodeCount: "1",
+      chaincodeCount: '1',
       latestBlock: 20,
-      peerCount: "4",
-      txCount: "36"
+      peerCount: '4',
+      txCount: '36'
     },
     channel: {
-      currentChannel: "mychannel"
+      currentChannel: 'mychannel'
     },
     transaction: {
-      "id": 39,
-      "channelname": "mychannel",
-      "blockid": 19,
-      "txhash": "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6",
-      "createdt": "2018-04-26T20:32:12.000Z",
-      "chaincodename": "mycc",
-      "status": 200,
-      "creator_msp_id": "Org1MSP",
-      "endorser_msp_id": "{\"Org1MSP\"}",
-      "chaincode_id": "",
-      "type": "ENDORSER_TRANSACTION",
-      "read_set": [
+      'id': 39,
+      'channelname': 'mychannel',
+      'blockid': 19,
+      'txhash': '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+      'createdt': '2018-04-26T20:32:12.000Z',
+      'chaincodename': 'mycc',
+      'status': 200,
+      'creator_msp_id': 'Org1MSP',
+      'endorser_msp_id': '{\'Org1MSP\'}',
+      'chaincode_id': '',
+      'type': 'ENDORSER_TRANSACTION',
+      'read_set': [
         {
           chaincode: 'lscc',
           set: [
@@ -61,7 +61,7 @@ const setup = () => {
             }
           ]
         }],
-      "write_set": [
+      'write_set': [
         {
           chaincode: 'lscc',
           set: []
@@ -86,47 +86,47 @@ const setup = () => {
     transactionList: [
       {
         blockid: 20,
-        chaincode_id: "",
-        chaincodename: "mycc",
-        channelname: "mychannel",
-        createdt: "4-26-2018 4:32 PM EDT",
-        creator_msp_id: "Org1MSP",
-        endorser_msp_id: "{\"Org1MSP\"}",
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: '{\'Org1MSP\'}',
         id: 41,
         read_set: [],
         status: 200,
-        txhash: "308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80",
-        type: "ENDORSER_TRANSACTION",
+        txhash: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+        type: 'ENDORSER_TRANSACTION',
         write_set: []
       },
       {
         blockid: 20,
-        chaincode_id: "",
-        chaincodename: "mycc",
-        channelname: "mychannel",
-        createdt: "4-26-2018 4:32 PM EDT",
-        creator_msp_id: "Org1MSP",
-        endorser_msp_id: "{\"Org1MSP\"}",
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: '{\'Org1MSP\'}',
         id: 40,
         read_set: [],
         status: 200,
-        txhash: "9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1",
-        type: "ENDORSER_TRANSACTION",
+        txhash: '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        type: 'ENDORSER_TRANSACTION',
         write_set: []
       },
       {
         blockid: 19,
-        chaincode_id: "",
-        chaincodename: "mycc",
-        channelname: "mychannel",
-        createdt: "4-26-2018 4:32 PM EDT",
-        creator_msp_id: "Org1MSP",
-        endorser_msp_id: "{\"Org1MSP\"}",
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: '{\'Org1MSP\'}',
         id: 39,
         read_set: [],
         status: 200,
-        txhash: "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6",
-        type: "ENDORSER_TRANSACTION",
+        txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+        type: 'ENDORSER_TRANSACTION',
         write_set: []
       }
     ],
@@ -142,15 +142,14 @@ const setup = () => {
   }
 };
 
-
-describe("Transactions", () => {
-  test("Transactions and ReactTable components should render", () => {
+describe('Transactions', () => {
+  test('Transactions and ReactTable components should render', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find(ReactTable).exists()).toBe(true);
   });
 
-  test("Table displays transaction data", () => {
+  test('Table displays transaction data', () => {
     const { wrapper } = setup();
     //Creator
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('Org1MSP')).exists()).toBe(true);
@@ -166,19 +165,19 @@ describe("Transactions", () => {
     expect(wrapper.find('TdComponent').findWhere(n => n.contains('4-26-2018 4:32 PM EDT')).exists()).toBe(true);
   });
 
-  test("Modal for transaction View should not exist", () => {
+  test('Modal for transaction View should not exist', () => {
     const { wrapper } = setup();
     expect(wrapper.find(TransactionView).exists()).toBe(false);
   });
 
-  test("Modal for transaction View should exist", () => {
+  test('Modal for transaction View should exist', () => {
     const { wrapper } = setup();
     wrapper.setState({ dialogOpen: true})
     wrapper.update()
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
-  test("handleDialogOpen should set dialogOpen to true", () => {
+  test('handleDialogOpen should set dialogOpen to true', () => {
     const { wrapper } = setup();
     wrapper.instance().handleDialogOpen('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')
     expect(wrapper.state('dialogOpen')).toBe(true);
@@ -186,7 +185,7 @@ describe("Transactions", () => {
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
-  test("handleDialogClose should set dialogOpen to false", () => {
+  test('handleDialogClose should set dialogOpen to false', () => {
     const { wrapper } = setup();
     wrapper.setState({ dialogOpen: true})
     wrapper.update()
@@ -195,40 +194,55 @@ describe("Transactions", () => {
     expect(wrapper.state('dialogOpen')).toBe(false);
   });
 
-  /*test("componentWillReceiveProps sets the state of totalBlocks", () => {
-    const { wrapper } = setup();
-    wrapper.instance().componentWillReceiveProps()
-    wrapper.update()
-    expect(wrapper.state('totalTransactions')).toBe("36");
-  });*/
-
-  test("Simulate Creator filterMethod should have no results when given a value of 2", () => {
+  test('Simulate Creator filterMethod should have no results when given a value of 2', () => {
     const { wrapper } = setup();
     wrapper.find('ThComponent').findWhere(n => n.key() === '0-creator_msp_id').find('input').simulate('change', {target: {value: '2'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(0);
   });
 
-  test("Simulate Tx Id filterMethod should have one result when given a transaction hash", () => {
+  test('Simulate Tx Id filterMethod should have one result when given a transaction hash', () => {
     const { wrapper } = setup();
     wrapper.find('ThComponent').findWhere(n => n.key() === '1-txhash').find('input').simulate('change', {target: {value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
-  test("Simulate Type filterMethod should have three result when given a value of end", () => {
+  test('Simulate Type filterMethod should have three result when given a value of end', () => {
     const { wrapper } = setup();
     wrapper.find('ThComponent').findWhere(n => n.key() === '2-type').find('input').simulate('change', {target: {value: 'end'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(3);
   });
 
-  test("Simulate Chaincode filterMethod should have no results when given a value of newcc", () => {
+  test('Simulate Chaincode filterMethod should have no results when given a value of newcc', () => {
     const { wrapper } = setup();
     wrapper.find('ThComponent').findWhere(n => n.key() === '3-chaincodename').find('input').simulate('change', {target: {value: 'newcc'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(0);
   });
 
-  test("Simulate Timestamp filterMethod should have three results when given a value of 4-26", () => {
+  test('Simulate Timestamp filterMethod should have three results when given a value of 4-26', () => {
     const { wrapper } = setup();
     wrapper.find('ThComponent').findWhere(n => n.key() === '4-createdt').find('input').simulate('change', {target: {value: '4-26'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(3);
   });
+
+  test('click on eye', () => {
+    const { wrapper } = setup()
+    wrapper.find('.eyeBtn').at(0).simulate('click')
+    expect(Object.values(wrapper.state('selection'))).toContain(true)
+  })
+
+  test('click on transactionLink', () => {
+    const { wrapper } = setup();
+    wrapper.find('.transactionLink').at(0).simulate('click')
+    expect(wrapper.state('dialogOpen')).toBe(true)
+  })
+
+  test('pagination when transactionList is greater than 4', () => {
+    const { wrapper, props } = setup()
+    const transactions = props.transactionList
+    const transaction = props.transactionList[0]
+    Array.prototype.push.apply(transactions, [transaction, transaction, transaction])
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
+    wrapper.setProps({ transactionList: transactions })
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
+  })
 });

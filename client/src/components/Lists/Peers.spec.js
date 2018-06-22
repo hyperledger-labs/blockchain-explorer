@@ -67,4 +67,17 @@ describe("Peers", () => {
     wrapper.find('ThComponent').findWhere(n => n.key() === '1-requests').find('input').simulate('change', {target: {value: '9'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
+
+  test('pagination when peerList is greater than 4', () => {
+    const { wrapper, props } = setup()
+    const peers = props.peerList
+    const peer = {
+      requests: "grpcs://127.0.0.1:7051",
+      server_hostname: "peer0.org1.example.com"
+    }
+    peers.push(peer)
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
+    wrapper.setProps({ peerList: peers })
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
+  })
 });

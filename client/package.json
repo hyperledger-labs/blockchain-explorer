@@ -17,6 +17,7 @@
     "material-ui": "^1.0.0-beta.29",
     "material-ui-icons": "^1.0.0-beta.17",
     "moment-timezone": "^0.5.16",
+    "nock": "^9.3.3",
     "pg": "^7.4.1",
     "react": "^16.4.1",
     "react-copy-to-clipboard": "^5.0.1",

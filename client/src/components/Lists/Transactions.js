@@ -2,14 +2,14 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import { Container, Row, Col } from "reactstrap";
-import Dialog, { DialogTitle } from "material-ui/Dialog";
-import TransactionView from "../View/TransactionView";
-import FontAwesome from "react-fontawesome";
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-import matchSorter from "match-sorter";
+import React, { Component } from 'react';
+import { Container, Row, Col } from 'reactstrap';
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import TransactionView from '../View/TransactionView';
+import FontAwesome from 'react-fontawesome';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
 
 class Transactions extends Component {
   constructor(props) {
@@ -44,23 +44,24 @@ class Transactions extends Component {
   render() {
     const columnHeaders = [
       {
-        Header: "Creator",
-        accessor: "creator_msp_id",
+        Header: 'Creator',
+        accessor: 'creator_msp_id',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["creator_msp_id"] },
+            { keys: ['creator_msp_id'] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
       },
       {
-        Header: "Tx Id",
-        accessor: "txhash",
+        Header: 'Tx Id',
+        accessor: 'txhash',
         Cell: row => (
           <span>
             <a
+              className="transactionLink"
               onClick={() => this.handleDialogOpen(row.value)}
               href="#/transactions"
             >
@@ -155,4 +156,3 @@ class Transactions extends Component {
 }
 
 export default Transactions;
-

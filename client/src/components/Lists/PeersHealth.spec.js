@@ -4,6 +4,7 @@
 
 import PeersHealth from "./PeersHealth";
 import ReactTable from 'react-table';
+import nock from 'nock';
 
 const setup = () => {
   const props = {
@@ -41,6 +42,4 @@ describe("PeersHealth", () => {
     expect(wrapper.exists()).toBe(true);
     expect(wrapper.find(ReactTable).exists()).toBe(true);
   });
-
-
 });

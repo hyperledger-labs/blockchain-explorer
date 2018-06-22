@@ -29,7 +29,6 @@ import {
   getChannelList,
   getChannel,
   getNotification,
-  getCountHeader
 } from '../../store/selectors/selectors'
 import { countHeader } from '../../store/actions/header/action-creators';
 import { peerList, peerStatus } from '../../store/actions/peer/action-creators';
@@ -52,8 +51,6 @@ const styles = theme => ({
     padding: `0 ${theme.spacing.unit * 2}px`,
   },
 });
-
-
 
 export class HeaderView extends Component {
   constructor(props) {
@@ -97,38 +94,28 @@ export class HeaderView extends Component {
     this.setState({ selectedOption: this.props.channel.currentChannel })
 
     setInterval(
-      () => this.syncDatas(),
+      () => this.syncData(this.props.channel.currentChannel),
       30000
     );
   }
 
-  syncDatas() {
-    this.props.getPeerList(this.props.channel.currentChannel);
-    this.props.getCountHeader(this.props.channel.currentChannel);
-    this.props.getPeerStatus(this.props.channel.currentChannel);
-    this.props.getTxPerHour(this.props.channel.currentChannel);
-    this.props.getTxPerMin(this.props.channel.currentChannel);
-    this.props.getBlocksPerHour(this.props.channel.currentChannel);
-    this.props.getBlocksPerMin(this.props.channel.currentChannel);
-    this.props.getTransactionList(this.props.channel.currentChannel, 0);
-    this.props.getBlockList(this.props.channel.currentChannel, 0);
-    this.props.getTxByOrg(this.props.channel.currentChannel);
-    this.props.getChaincodes(this.props.channel.currentChannel);
+  syncData(currentChannel) {
+    this.props.getPeerList(currentChannel);
+    this.props.getCountHeader(currentChannel);
+    this.props.getPeerStatus(currentChannel);
+    this.props.getTxPerHour(currentChannel);
+    this.props.getTxPerMin(currentChannel);
+    this.props.getBlocksPerHour(currentChannel);
+    this.props.getBlocksPerMin(currentChannel);
+    this.props.getTransactionList(currentChannel, 0);
+    this.props.getBlockList(currentChannel, 0);
+    this.props.getTxByOrg(currentChannel);
+    this.props.getChaincodes(currentChannel);
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getPeerList(nextProps.channel.currentChannel);
-      this.props.getCountHeader(nextProps.channel.currentChannel);
-      this.props.getPeerStatus(nextProps.channel.currentChannel);
-      this.props.getTxPerHour(nextProps.channel.currentChannel);
-      this.props.getTxPerMin(nextProps.channel.currentChannel);
-      this.props.getBlocksPerHour(nextProps.channel.currentChannel);
-      this.props.getBlocksPerMin(nextProps.channel.currentChannel);
-      this.props.getTransactionList(nextProps.channel.currentChannel, 0);
-      this.props.getBlockList(nextProps.channel.currentChannel, 0);
-      this.props.getTxByOrg(nextProps.channel.currentChannel);
-      this.props.getChaincodes(nextProps.channel.currentChannel);
+      this.syncData(nextProps.channel.currentChannel)
     }
   }
 
@@ -178,7 +165,7 @@ export class HeaderView extends Component {
     }
   }
   handleThemeChange = () => {
-    var theme = !this.state.isLight;
+    const theme = !this.state.isLight;
     this.setState({ isLight: theme });
   }
 
