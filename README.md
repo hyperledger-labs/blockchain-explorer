@@ -125,4 +125,4 @@ Hyperledger Explorer Project source code is released under the Apache 2.0 licens
 
 ## TROUBLESHOOT
 
-- Please visit the [./TROUBLESHOOT.md]() folder to view the Troubleshooting technotes for Hyperledger Explorer.
+- Please visit the [TROUBLESHOOT.md](https://github.com/hyperledger/blockchain-explorer/blob/release-3.3/TROUBLESHOOT.md) folder to view the Troubleshooting technotes for Hyperledger Explorer.
