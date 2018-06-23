@@ -78,4 +78,13 @@ describe('Channels', () => {
     wrapper.find('ThComponent').findWhere(n => n.key() === '5-createdat').find('input').simulate('change', { target: { value: '2018' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
+
+  test('pagination when channels is greater than 4', () => {
+    const { wrapper, props } = setup()
+    const channel = props.channels[0]
+    const channels = [channel, channel, channel, channel, channel, channel]
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
+    wrapper.setProps({ channels: channels })
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
+  })
 });

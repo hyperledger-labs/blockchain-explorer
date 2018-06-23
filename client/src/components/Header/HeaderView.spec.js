@@ -4,6 +4,8 @@
 
 import { HeaderView } from './HeaderView';
 
+jest.useFakeTimers();
+
 const setup = () => {
   const props = {
     getChangeChannel: jest.fn(),
@@ -14,10 +16,21 @@ const setup = () => {
     },
     classes: {
       margin: 'Connect-HeaderView--margin-1',
-    padding: 'Connect-HeaderView--padding-2'
+      padding: 'Connect-HeaderView--padding-2'
     },
     getNotification: jest.fn(),
-    notification: {}
+    notification: {},
+    getPeerList: jest.fn(),
+    getCountHeader: jest.fn(),
+    getPeerStatus: jest.fn(),
+    getTxPerHour: jest.fn(),
+    getTxPerMin: jest.fn(),
+    getBlocksPerHour: jest.fn(),
+    getBlocksPerMin: jest.fn(),
+    getTransactionList: jest.fn(),
+    getBlockList: jest.fn(),
+    getTxByOrg: jest.fn(),
+    getChaincodes: jest.fn()
   }
 
   const wrapper = shallow(<HeaderView {...props} />)
@@ -133,5 +146,41 @@ describe('HeaderView', () => {
     wrapper.find('WithStyles(Drawer)').at(1).simulate('close')
     expect(wrapper.state('adminDrawer')).toBe(false);
     expect(spy).toHaveBeenCalledTimes(1);
+  })
+
+  test('handleThemeChange toggles isLight', () => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance();
+    expect(wrapper.state('isLight')).toBe(true)
+    instance.handleThemeChange()
+    expect(wrapper.state('isLight')).toBe(false)
+  })
+  // 71.19 |       75 |    72.73 |    72.41
+  test('componentWillReceiveProps calls syncData', () => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance();
+    const spy = jest.spyOn(instance, 'syncData')
+    const newChannel = { currentChannel: 'newChannel' }
+    wrapper.setProps({ channel: newChannel })
+    expect(spy).toHaveBeenCalled()
+  })
+
+  test('componentDidMount calls setInterval', () => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance();
+    const spy = jest.spyOn(instance, 'syncData')
+    expect(setInterval).toHaveBeenCalled()
+    jest.runOnlyPendingTimers();
+    expect(spy).toHaveBeenCalled()
+  })
+
+  test('switch calls handleThemeChange', () => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance()
+    const spy = jest.spyOn(instance, 'handleThemeChange');
+    wrapper.setState({ adminDrawer: true });
+    wrapper.find('WithStyles(Switch)').at(0).simulate('change')
+    expect(wrapper.state('isLight')).toBe(false);
+    expect(spy).toHaveBeenCalled();
   })
 })

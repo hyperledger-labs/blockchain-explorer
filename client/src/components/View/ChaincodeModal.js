@@ -12,6 +12,7 @@ import {
   CardBody,
   CardTitle
 } from "reactstrap";
+
 const styles = theme => ({
   container: {
     border: '3px solid #afeeee'
@@ -39,9 +40,9 @@ export class ChaincodeModal extends Component {
             <FontAwesome name="file-text" className="cubeIcon" />{srcHeader}
           </CardTitle>
           <CardBody>
-            <textarea className="source-code" readOnly>
+            <label className="source-code" readOnly>
               {formattedSrc}
-            </textarea>
+            </label>
           </CardBody>
         </Card>
       </div>

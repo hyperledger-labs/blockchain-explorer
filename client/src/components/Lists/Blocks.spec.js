@@ -139,14 +139,6 @@ const setup = () => {
 };
 
 describe("Blocks", () => {
-  /*test("setInterval called", () => {
-    const { wrapper, props } = setup();
-    expect(setInterval).toHaveBeenCalledTimes(1);
-    jest.runOnlyPendingTimers();
-    expect(props.getBlockList).toHaveBeenCalledTimes(1);
-    expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 60000);
-  });*/
-
   test("Blocks and ReactTable components should render", () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
@@ -298,13 +290,6 @@ describe("Blocks", () => {
     expect(wrapper.state("dialogOpen")).toBe(false);
   });
 
-  /*test("componentWillReceiveProps sets the state of totalBlocks", () => {
-    const { wrapper } = setup();
-    wrapper.instance().componentWillReceiveProps();
-    wrapper.update();
-    expect(wrapper.state("totalBlocks")).toBe(20);
-  });*/
-
   test("Simulate Block Number filterMethod should have one result when given a value of 20", () => {
     const { wrapper } = setup();
     wrapper
@@ -386,9 +371,7 @@ describe("Blocks", () => {
   });
 
   test("Simulate onClick when a tansaction is clicked the TransactionView modal should exist", () => {
-
   const { wrapper } = setup();
-
   expect(wrapper.find(TransactionView).exists()).toBe(false);
     wrapper
       .find("TdComponent")
@@ -397,4 +380,56 @@ describe("Blocks", () => {
       .simulate("click");
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
+
+  test('handleEye toggles the state correctly',() => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance();
+    const row = { index: 19 }
+    let val = false
+    expect(wrapper.state('selection')[19]).toBe(false)
+    instance.handleEye(row, val)
+    expect(wrapper.state('selection')[19]).toBe(true)
+  })
+
+  test('handleDialogOpenBlockHash sets the correct state', () => {
+    const { wrapper } = setup()
+    const instance = wrapper.instance()
+    const blockHash = '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
+    expect(wrapper.state('dialogOpenBlockHash')).toBe(false)
+    expect(wrapper.state('blockHash')).not.toMatchObject({ blockhash: blockHash })
+    instance.handleDialogOpenBlockHash(blockHash)
+    expect(wrapper.state('dialogOpenBlockHash')).toBe(true)
+    expect(wrapper.state('blockHash')).toMatchObject({ blockhash: blockHash })
+  })
+
+  test('handleDialogCloseBlockHash sets dialogOpenBlockHash to fasle', () => {
+    const { wrapper } = setup();
+    const instance = wrapper.instance()
+    wrapper.setState({ dialogOpenBlockHash: true})
+    instance.handleDialogCloseBlockHash()
+    expect(wrapper.state('dialogOpenBlockHash')).toBe(false)
+  })
+
+  test('click on block hash', () => {
+    const { wrapper } = setup()
+    wrapper.find('.hash-hide').at(0).simulate('click')
+    expect(wrapper.state('dialogOpenBlockHash')).toBe(true)
+    expect(wrapper.state('blockHash')).toMatchObject({ blockhash: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' })
+  })
+
+  test('click on eye', () => {
+    const { wrapper } = setup()
+    wrapper.find('.eyeBtn').at(0).simulate('click')
+    expect(Object.values(wrapper.state('selection'))).toContain(true)
+  })
+
+  test('pagination when blockList is greater than 4', () => {
+    const { wrapper, props } = setup()
+    const blocks = props.blockList
+    const block = props.blockList[0]
+    Array.prototype.push.apply(blocks, [block, block, block])
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
+    wrapper.setProps({ blockList: blocks })
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
+  })
 });
