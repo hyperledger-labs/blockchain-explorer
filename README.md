@@ -95,8 +95,7 @@ On another terminal.
 - `cd blockchain-explorer/app/test`
 - `npm install`
 - `npm run test`
-- `cd blockchain-explorer`
-- `cd client/`
+- `cd blockchain-explorer/client`
 - `npm install`
 - `npm test -- -u --coverage`
 - `npm run build`
