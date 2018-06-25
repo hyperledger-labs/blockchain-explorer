@@ -92,10 +92,10 @@ On another terminal.
 
 - `cd blockchain-explorer`
 - `npm install`
-- `cd blockchain-explorer/app/test`
+- `cd app/test`
 - `npm install`
 - `npm run test`
-- `cd blockchain-explorer/client`
+- `cd ../client`
 - `npm install`
 - `npm test -- -u --coverage`
 - `npm run build`
