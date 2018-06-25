@@ -90,12 +90,12 @@ protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the
 
 On another terminal.
 
-- `cd blockchain-explorer/app/test`
-- `npm install`
-- `npm run test`
 - `cd blockchain-explorer`
 - `npm install`
-- `cd client/`
+- `cd app/test`
+- `npm install`
+- `npm run test`
+- `cd ../client`
 - `npm install`
 - `npm test -- -u --coverage`
 - `npm run build`
