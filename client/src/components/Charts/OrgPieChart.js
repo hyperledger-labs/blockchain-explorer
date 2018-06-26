@@ -45,7 +45,7 @@ class OrgPieChart extends Component {
   render() {
     return (
       <div className="org-pie">
-        <PieChart width={485}  height={290}>
+        <PieChart width={485}  height={290} className="pie-chart">
           <Legend align="right" height={10} />
           <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label fill="fill" />
           <Tooltip />

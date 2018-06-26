@@ -20,12 +20,14 @@ class PeersHealth extends Component {
       {
         Header: 'Peer Name',
         accessor: 'server_hostname',
-        filterAll: false
+        filterAll: false,
+        className: 'center-column',
       },
       {
         Header: 'Status',
         accessor: 'status',
         filterAll: false,
+        className: 'center-column',
         Cell: row => <Badge color="success">{row.value}</Badge>
       }
     ];

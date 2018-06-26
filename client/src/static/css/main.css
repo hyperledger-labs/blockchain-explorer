@@ -415,12 +415,20 @@ margin-top:-10px;
     height: 335px;
     overflow-y: scroll;
 }
+.center-column{
+    text-align: center;
+}
+
 .dash-section{
     height: 335px;
     margin-bottom: 2%;
 }
 .org-pie{
    padding-left:10%;
+}
+.pie-chart{
+    top:-30px;
+
 }
 .dash-view{
    padding-top: 85px;
@@ -476,5 +484,7 @@ margin-top:-10px;
     color: #407B20 !important;
     background-color: #D0ECDA!important;
 }
-
+.org-header{
+    font-weight: 300;
+}
 

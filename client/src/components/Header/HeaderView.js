@@ -50,6 +50,11 @@ const styles = theme => ({
   padding: {
     padding: `0 ${theme.spacing.unit * 2}px`,
   },
+  menuButtons:{
+    margin: theme.spacing.unit,
+    fontSize:'1.05rem !important',
+    fontWeight:'800'
+  }
 });
 
 export class HeaderView extends Component {
@@ -184,12 +189,12 @@ export class HeaderView extends Component {
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
           <Nav className="ml-auto" navbar>
-            <Button href="/#" className={classes.margin} >DASHBOARD</Button>
-            <Button href="#/network" className={classes.margin} >NETWORK</Button>
-            <Button href="#/blocks" className={classes.margin} >BLOCKS</Button>
-            <Button href="#/transactions" className={classes.margin} >TRANSACTIONS</Button>
-            <Button href="#/chaincodes" className={classes.margin} >CHAINCODES</Button>
-            <Button href="#/channels" className={classes.margin} >CHANNELS</Button>
+            <Button href="/#" className={classes.menuButtons} >DASHBOARD</Button>
+            <Button href="#/network" className={classes.menuButtons} >NETWORK</Button>
+            <Button href="#/blocks" className={classes.menuButtons} >BLOCKS</Button>
+            <Button href="#/transactions" className={classes.menuButtons} >TRANSACTIONS</Button>
+            <Button href="#/chaincodes" className={classes.menuButtons} >CHAINCODES</Button>
+            <Button href="#/channels" className={classes.menuButtons} >CHANNELS</Button>
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
