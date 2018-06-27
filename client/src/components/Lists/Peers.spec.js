@@ -64,7 +64,7 @@ describe("Peers", () => {
 
   test("Simulate Request Url filterMethod should have one result when given a value of 9", () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '2-requests').find('input').simulate('change', {target: {value: '9'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '1-requests').find('input').simulate('change', {target: {value: '9'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 

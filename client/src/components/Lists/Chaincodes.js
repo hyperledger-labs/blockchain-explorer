@@ -56,18 +56,6 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: "Genesis Block ",
-        accessor: "genesis_block_hash",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ["genesis_block_hash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
         Header: 'Channel Name',
         accessor: 'channelName',
         filterMethod: (filter, rows) =>

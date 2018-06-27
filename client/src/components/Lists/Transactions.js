@@ -56,6 +56,18 @@ class Transactions extends Component {
         filterAll: true
       },
       {
+        Header: 'Channel Name',
+        accessor: 'channelname',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelname'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
         Header: 'Tx Id',
         accessor: 'txhash',
         Cell: row => (
@@ -124,18 +136,6 @@ class Transactions extends Component {
           ),
         filterAll: true
       },
-      {
-        Header: "Genesis Block ",
-        accessor: "genesis_block_hash",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ["genesis_block_hash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      }
     ];
 
     return (

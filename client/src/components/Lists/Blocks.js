@@ -76,6 +76,18 @@ class Blocks extends Component {
         width: 150
       },
       {
+        Header: 'Channel Name',
+        accessor: 'channelname',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelname'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
         Header: "Number of Tx",
         accessor: "txcount",
         filterMethod: (filter, rows) =>
@@ -96,18 +108,6 @@ class Blocks extends Component {
             rows,
             filter.value,
             { keys: ["datahash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
-        Header: "Genesis Block ",
-        accessor: "genesis_block_hash",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ["genesis_block_hash"] },
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true

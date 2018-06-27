@@ -305,7 +305,7 @@ describe("Blocks", () => {
     const { wrapper } = setup();
     wrapper
       .find("ThComponent")
-      .findWhere(n => n.key() === "1-txcount")
+      .findWhere(n => n.key() === "2-txcount")
       .find("input")
       .simulate("change", { target: { value: "3" } });
     expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
@@ -315,7 +315,7 @@ describe("Blocks", () => {
     const { wrapper } = setup();
     wrapper
       .find("ThComponent")
-      .findWhere(n => n.key() === "2-datahash")
+      .findWhere(n => n.key() === "3-datahash")
       .find("input")
       .simulate("change", {
         target: {
