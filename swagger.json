@@ -70,7 +70,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelName",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     }
@@ -139,7 +139,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelName",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     }
@@ -171,7 +171,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelName",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     }
@@ -192,6 +192,9 @@
                                     },
                                     "path": {
                                         "type": "string"
+                                    },
+                                    "genesis_block_hash": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -204,17 +207,16 @@
                         }
                     }
                 }
-           }
+            }
         },
         "/channel": {
             "post": {
                 "tags": [
                     "Channel"
                 ],
-                "summary": "Install channel on target peers",
-                "description": "Install channel on target peers",
+                "summary": "Create New channel on target peers  ",
+                "description": "Create New channel on target peers",
                 "consumes": [
-                    "application/json",
                     "application/x-www-form-urlencoded"
                 ],
                 "produces": [
@@ -243,6 +245,16 @@
                         "type": "string"
                     },
                     {
+                        "name": "channelArtificats",
+                        "in": "formData",
+                        "description": "channelArtificats",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "file"
+                        }
+                    },
+                    {
                         "name": "profile",
                         "in": "formData",
                         "description": "block profile",
@@ -254,13 +266,13 @@
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type":"object",
-                            "properties":{
-                                "success":{
-                                    "type":"boolean"
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
                                 },
-                                "message":{
-                                    "type":"string"
+                                "message": {
+                                    "type": "string"
                                 }
                             }
                         }
@@ -290,45 +302,41 @@
                 ],
                 "parameters": [
                     {
-                        "name": "orgName",
-                        "in": "formData",
-                        "description": "organization name",
-                        "required": true,
-                            "type": "string"
-                    },
-                    {
-                        "name": "channelName",
-                        "in": "formData",
-                        "description": "channel name",
-                        "required": true,
-                        "type": "string"
+                        "in":"body",
+                        "name":"body",
+                        "description": "payload",
+                        "schema": {
+                            "type": "object",
+                            "required":true,
+                            "properties": {
+                                "channelName": {
+                                    "type": "string"
+                                },
+                                "orgName": {
+                                    "type": "string"
+                                },
+                                "peers": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "schema": {
-                            "type":"array",
-                            "items":{
-                                "type":"object",
-                                "properties":{
-                                    "channelName":{
-                                        "type":"boolean"
-                                    },
-                                    "chaincodename":{
-                                        "type":"string"
-                                    },
-                                    "path":{
-                                        "type":"boolean"
-                                    },
-                                    "version":{
-                                        "type":"string"
-                                    },
-                                    "txCount":{
-                                        "type":"number"
-                                    }
+                            "type": "object",
+                            "properties": {
+                                "success": {
+                                    "type": "boolean"
+                                },
+                                "message": {
+                                    "type": "string"
                                 }
-
                             }
                         }
                     },
@@ -352,7 +360,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -377,6 +385,9 @@
                                     "type": "string"
                                 },
                                 "previous_hash": {
+                                    "type": "string"
+                                },
+                                "genesis_block_hash": {
                                     "type": "string"
                                 },
                                 "data_hash": {
@@ -430,7 +441,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -480,7 +491,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -506,6 +517,9 @@
                                     "properties": {
                                         "id": {
                                             "type": "number"
+                                        },
+                                        "genesis_block_hash": {
+                                            "type": "string"
                                         },
                                         "channelname": {
                                             "type": "string"
@@ -574,7 +588,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channelname",
+                        "description": "gensis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -611,6 +625,9 @@
                                                 "type": "number"
                                             },
                                             "channelname": {
+                                                "type": "string"
+                                            },
+                                            "genesis_block_hash": {
                                                 "type": "string"
                                             },
                                             "blockid": {
@@ -651,7 +668,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     }
@@ -671,6 +688,9 @@
                                         "type": "object",
                                         "properties": {
                                             "requests": {
+                                                "type": "string"
+                                            },
+                                            "genesis_block_hash": {
                                                 "type": "string"
                                             },
                                             "server_hostname": {
@@ -753,7 +773,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -784,6 +804,9 @@
                                             },
                                             "blocknum": {
                                                 "type": "number"
+                                            },
+                                            "genesis_block_hash": {
+                                                "type": "string"
                                             },
                                             "data_hash": {
                                                 "type": "string"
@@ -838,7 +861,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -888,7 +911,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -938,7 +961,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -988,7 +1011,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     },
@@ -1038,7 +1061,7 @@
                     {
                         "name": "channelName",
                         "in": "path",
-                        "description": "channel name",
+                        "description": "genesis_block_hash",
                         "required": true,
                         "type": "string"
                     }
@@ -1085,15 +1108,6 @@
                 ],
                 "summary": "Query to Get Channels Inforamtion",
                 "description": "Query to Get channel Information",
-                "parameters": [
-                    {
-                        "name": "channelName",
-                        "in": "path",
-                        "description": "channel name",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -1111,17 +1125,20 @@
                                             "channelName": {
                                                 "type": "string"
                                             },
+                                            "genesis_block_hash": {
+                                                "type": "string"
+                                            },
                                             "channel_hash": {
                                                 "type": "string"
                                             },
                                             "createdat": {
                                                 "type": "string"
                                             },
-                                            "blocks":{
-                                                "type":"number"
+                                            "blocks": {
+                                                "type": "number"
                                             },
-                                            "transactions":{
-                                                "type":"number"
+                                            "transactions": {
+                                                "type": "number"
                                             }
                                         }
                                     }
@@ -1280,3 +1297,16 @@
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
