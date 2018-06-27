@@ -101,6 +101,18 @@ class Blocks extends Component {
         filterAll: true
       },
       {
+        Header: "Genesis Block ",
+        accessor: "genesis_block_hash",
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ["genesis_block_hash"] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      },
+      {
         Header: "Block Hash",
         accessor: "blockhash",
         Cell: row => (

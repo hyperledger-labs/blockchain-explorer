@@ -75,9 +75,12 @@ const platformroutes = async function (app, pltfrm, persistance) {
   curl -i 'http://<host>:<port>/api/curChannel'
   */
   app.get("/api/curChannel", function (req, res) {
-    res.send({
-      currentChannel: proxy.getDefaultChannel()
-    });
+ this.proxy.getGenesisBlockHash().then((data)=>{
+  res.send({
+    currentChannel: data
+  });
+ })
+
   });
 
   /**

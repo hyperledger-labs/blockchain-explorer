@@ -29,19 +29,24 @@ import {
   getChannelList,
   getChannel,
   getNotification,
+  getCountHeader,
+  getChannels
 } from '../../store/selectors/selectors'
 import { countHeader } from '../../store/actions/header/action-creators';
 import { peerList, peerStatus } from '../../store/actions/peer/action-creators';
 import { blockList } from '../../store/actions/block/action-creators';
 import { transactionList } from '../../store/actions/transactions/action-creators';
 import { chaincodes } from '../../store/actions/chaincodes/action-creators';
+import { channelsData } from '../../store/actions/channels/action-creators';
+
 import {
   txByOrg,
   blocksPerHour,
   blocksPerMin,
   txPerHour,
-  txPerMin
+  txPerMin,
 } from '../../store/actions/charts/action-creators';
+import { isNullOrUndefined } from 'util';
 
 const styles = theme => ({
   margin: {
@@ -67,7 +72,9 @@ export class HeaderView extends Component {
       channels: [],
       notifyCount: 0,
       notifications: [],
+      isLoading:true,
       modalOpen: false,
+      selectedOption:"",
       isLight: true
     }
   }
@@ -87,46 +94,61 @@ export class HeaderView extends Component {
   }
 
   componentDidMount() {
-    let arr = [];
-    this.props.channelList.channels.forEach(element => {
-      arr.push({
-        value: element,
-        label: element
-      })
-    });
-
-    this.setState({ channels: arr });
-    this.setState({ selectedOption: this.props.channel.currentChannel })
-
+    this.props.getChannelsInfo();
     setInterval(
-      () => this.syncData(this.props.channel.currentChannel),
+      () =>this.syncData(this.props.channel.currentChannel),
       30000
     );
   }
 
-  syncData(currentChannel) {
-    this.props.getPeerList(currentChannel);
-    this.props.getCountHeader(currentChannel);
-    this.props.getPeerStatus(currentChannel);
-    this.props.getTxPerHour(currentChannel);
-    this.props.getTxPerMin(currentChannel);
-    this.props.getBlocksPerHour(currentChannel);
-    this.props.getBlocksPerMin(currentChannel);
-    this.props.getTransactionList(currentChannel, 0);
-    this.props.getBlockList(currentChannel, 0);
-    this.props.getTxByOrg(currentChannel);
-    this.props.getChaincodes(currentChannel);
+  syncData() {
+    this.props.getChannelsInfo();
+    if(this.props.channel.currentChannel != null &&this.props.channel.currentChannel != undefined ){
+    this.props.getPeerList(this.props.channel.currentChannel);
+    this.props.getCountHeader(this.props.channel.currentChannel);
+    this.props.getPeerStatus(this.props.channel.currentChannel);
+    this.props.getTxPerHour(this.props.channel.currentChannel);
+    this.props.getTxPerMin(this.props.channel.currentChannel);
+    this.props.getBlocksPerHour(this.props.channel.currentChannel);
+    this.props.getBlocksPerMin(this.props.channel.currentChannel);
+    this.props.getTransactionList(this.props.channel.currentChannel, 0);
+    this.props.getBlockList(this.props.channel.currentChannel, 0);
+    this.props.getTxByOrg(this.props.channel.currentChannel);
+    this.props.getChaincodes(this.props.channel.currentChannel);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
+    let options = []
+    let selectedValue ={}
+    if(nextProps.channels.length >0){
+
+      nextProps.channels.forEach(element => {
+      options.push({value:element.genesis_block_hash,label:element.channelname})
+      if (nextProps.channel.currentChannel  == null ||  nextProps.channel.currentChannel== undefined){
+        if(element.genesis_block_hash!=null){
+          selectedValue ={value:element.genesis_block_hash,label:element.channelname}
+        }
+      }
+      else if(element.genesis_block_hash === nextProps.channel.currentChannel){
+        selectedValue ={value:element.genesis_block_hash,label:element.channelname}
+      }
+    });
+    }
+
+    if (nextProps.channel.currentChannel  == null ||  nextProps.channel.currentChannel== undefined){
+      this.props.getChangeChannel(selectedValue.value)
+    }
+
+    this.setState({channels:options,isLoading:false,selectedOption:selectedValue})
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
       this.syncData(nextProps.channel.currentChannel)
     }
   }
 
   handleChange = (selectedOption) => {
-    this.setState({ selectedOption: selectedOption.value });
-    this.props.getChangeChannel(selectedOption.value);
+   this.setState({ selectedOption});
+   this.props.getChangeChannel( selectedOption.value);
   }
 
   handleOpen = () => {
@@ -174,11 +196,11 @@ export class HeaderView extends Component {
     this.setState({ isLight: theme });
   }
 
+
   render() {
     const { classes } = this.props;
     const { hostname, port } = window.location;
     var webSocketUrl = `ws://${hostname}:${port}/`;
-
     return (
       <div>
         {/* production */}
@@ -200,6 +222,7 @@ export class HeaderView extends Component {
                 placeholder="Select Channel..."
                 required={true}
                 name="form-field-name"
+                isLoading={this.state.isLoading}
                 value={this.state.selectedOption}
                 onChange={this.handleChange}
                 options={this.state.channels} />
@@ -237,9 +260,11 @@ export class HeaderView extends Component {
   }
 }
 
-export default compose(withStyles(styles), connect((state) => ({
+export default compose(withStyles(styles), connect((state) => (
+ {
   channel: getChannel(state),
   channelList: getChannelList(state),
+  channels:getChannels(state),
   notification: getNotification(state)
 }), {
     getNotification: notification,
@@ -254,5 +279,6 @@ export default compose(withStyles(styles), connect((state) => ({
     getPeerList: peerList,
     getPeerStatus: peerStatus,
     getChaincodes: chaincodes,
-    getTxByOrg: txByOrg
+    getTxByOrg: txByOrg,
+    getChannelsInfo: channelsData
   }))(HeaderView)

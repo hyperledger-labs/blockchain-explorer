@@ -10,6 +10,7 @@ const setup = () => {
   const props = {
     getChangeChannel: jest.fn(),
     channel: { currentChannel: 'mychannel' },
+    channels:[],
     channelList: {
       channels: ['mychannel'],
       status: 200
@@ -30,7 +31,8 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getBlockList: jest.fn(),
     getTxByOrg: jest.fn(),
-    getChaincodes: jest.fn()
+    getChaincodes: jest.fn(),
+    getChannelsInfo:jest.fn()
   }
 
   const wrapper = shallow(<HeaderView {...props} />)
@@ -69,7 +71,7 @@ describe('HeaderView', () => {
     const { wrapper, props } = setup();
     const selectedOption = { value: 'newChannel' }
     wrapper.instance().handleChange(selectedOption);
-    expect(wrapper.state('selectedOption')).toBe('newChannel')
+    expect(wrapper.state('selectedOption').value).toBe('newChannel')
     expect(props.getChangeChannel).toHaveBeenCalled()
   })
 

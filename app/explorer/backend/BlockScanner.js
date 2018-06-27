@@ -6,7 +6,7 @@ var helper = require('../../helper.js')
 var logger = helper.getLogger('blockscanner');
 var fileUtil = require('../rest/logical/utils/fileUtils.js');
 var dateUtils = require("../rest/logical/utils/dateUtils.js");
-
+var BlockDecoder = require('fabric-client/lib/BlockDecoder.js')
 
 class BlockScanner {
 
@@ -25,7 +25,6 @@ class BlockScanner {
             for (let channelName of channels) {
                 let maxBlockNum;
                 let curBlockNum;
-
                 [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
                     this.crudService.getCurBlockNum(channelName)
@@ -63,8 +62,10 @@ class BlockScanner {
         if (!firstTxTimestamp) {
             firstTxTimestamp = null
         }
+        let genesisBlock =  await this.proxy.getGenesisBlock()
+       let temp = BlockDecoder.decodeBlock(genesisBlock)
+        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let blockhash = await fileUtil.generateBlockHash(block.header);
-
         var blockRecord = {
             'blockNum': block.header.number,
             'txCount': block.data.data.length,
@@ -72,7 +73,8 @@ class BlockScanner {
             'dataHash': block.header.data_hash,
             'channelName': header.channel_header.channel_id,
             'firstTxTimestamp': header.channel_header.timestamp,
-            'blockhash': blockhash
+            'blockhash': blockhash,
+            'genesis_block_hash': genesisBlockHash
         };
 
         var blockSaved = await this.crudService.saveBlock(blockRecord);
@@ -147,11 +149,12 @@ class BlockScanner {
             let mspId = []
 
             try {
-                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => {
-                    return i.endorser.Mspid
-                })
-            } catch (err) {}
-
+                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
+            } catch (err) {
+            }
+            let genesisBlock =  await this.proxy.getGenesisBlock()
+            let temp = BlockDecoder.decodeBlock(genesisBlock)
+             let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
             var transaction = {
                 'channelname': channelName,
                 'blockid': block.header.number.toString(),
@@ -164,7 +167,8 @@ class BlockScanner {
                 'endorser_msp_id': mspId,
                 'type': tx.payload.header.channel_header.typeString,
                 'read_set': JSON.stringify(readSet, null, 2),
-                'write_set': JSON.stringify(writeSet, null, 2)
+                'write_set': JSON.stringify(writeSet, null, 2),
+                'genesis_block_hash' : genesisBlockHash
             };
 
             await this.crudService.saveTransaction(transaction);
@@ -271,9 +275,13 @@ class BlockScanner {
             logger.debug(chaincodes)
             return
         }
+        let genesisBlock =  await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < len; i++) {
             let chaincode = chaincodes[i]
             chaincode.channelname = channelName;
+            chaincode.genesis_block_hash = genesisBlockHash
             this.crudService.saveChaincode(chaincode);
         }
 
@@ -281,7 +289,9 @@ class BlockScanner {
 
     async saveChannel() {
         var channels = this.proxy.getChannels();
-
+        let genesisBlock =  await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < channels.length; i++) {
             let date = new Date()
             var channel = {
@@ -289,7 +299,8 @@ class BlockScanner {
                 trans: 0,
                 name: channels[i],
                 createdt: date,
-                channel_hash: ''
+                channel_hash: '',
+                genesis_block_hash:genesisBlockHash
             };
             channel.blocks = await this.proxy.getChannelHeight(channel.name)
             for (let j = 0; j < channel.blocks; j++) {
@@ -318,15 +329,17 @@ class BlockScanner {
     async savePeerlist(channelName) {
 
         var peerlists = await this.proxy.getConnectedPeers(channelName);
-
+        let genesisBlock =  await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let peerlen = peerlists.length
         for (let i = 0; i < peerlen; i++) {
             var peers = {};
             let peerlist = peerlists[i]
             peers.name = channelName;
             peers.requests = peerlist._url;
+            peers.genesis_block_hash = genesisBlockHash;
             peers.server_hostname = peerlist._options["grpc.default_authority"];
-
             this.crudService.savePeer(peers);
         }
     }
