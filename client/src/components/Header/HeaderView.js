@@ -2,29 +2,24 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import 'react-select/dist/react-select.css';
-import React, { Component } from 'react';
-import compose from 'recompose/compose';
-import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
-import Select from 'react-select';
-import {
-  Nav,
-  Navbar,
-  NavbarBrand,
-  NavbarToggler
-} from 'reactstrap';
-import Switch from 'material-ui/Switch';
-import AdminPanel from '../Panels/AdminPanel';
-import Logo from '../../static/images/Explorer_Logo.svg';
-import FontAwesome from 'react-fontawesome';
-import Drawer from 'material-ui/Drawer';
-import Button from 'material-ui/Button';
-import NotificationsPanel from '../Panels/NotificationsPanel';
-import Websocket from 'react-websocket';
-import Badge from 'material-ui/Badge';
-import { notification } from '../../store/actions/notification/action-creators';
-import { changeChannel } from '../../store/actions/channel/action-creators';
+import "react-select/dist/react-select.css";
+import React, { Component, PropTypes } from "react";
+import compose from "recompose/compose";
+import { connect } from "react-redux";
+import { withStyles } from "material-ui/styles";
+import Select from "react-select";
+import { Nav, Navbar, NavbarBrand, NavbarToggler } from "reactstrap";
+import Switch from "material-ui/Switch";
+import AdminPanel from "../Panels/AdminPanel";
+import Logo from "../../static/images/Explorer_Logo.svg";
+import FontAwesome from "react-fontawesome";
+import Drawer from "material-ui/Drawer";
+import Button from "material-ui/Button";
+import NotificationsPanel from "../Panels/NotificationsPanel";
+import Websocket from "react-websocket";
+import Badge from "material-ui/Badge";
+import { notification } from "../../store/actions/notification/action-creators";
+import { changeChannel } from "../../store/actions/channel/action-creators";
 import {
   getChannelList,
   getChannel,
@@ -190,17 +185,21 @@ export class HeaderView extends Component {
         break;
       }
     }
-  }
+  };
   handleThemeChange = () => {
-    const theme = !this.state.isLight;
+    const theme =
+      sessionStorage.getItem("toggleTheme") === "true" ? false : true;
+    sessionStorage.setItem("toggleTheme", theme);
     this.setState({ isLight: theme });
-  }
-
+    this.props.refresh(theme);
+  };
 
   render() {
     const { classes } = this.props;
     const { hostname, port } = window.location;
     var webSocketUrl = `ws://${hostname}:${port}/`;
+    const themeIcon = sessionStorage.getItem("toggleTheme") === "true";
+
     return (
       <div>
         {/* production */}
@@ -210,13 +209,25 @@ export class HeaderView extends Component {
         <Navbar className="navbar-header" expand="md" fixed="top">
           <NavbarBrand href="/"> <img src={Logo} className="logo" alt="Hyperledger Logo" /></NavbarBrand>
           <NavbarToggler onClick={this.toggle} />
-          <Nav className="ml-auto" navbar>
-            <Button href="/#" className={classes.menuButtons} >DASHBOARD</Button>
-            <Button href="#/network" className={classes.menuButtons} >NETWORK</Button>
-            <Button href="#/blocks" className={classes.menuButtons} >BLOCKS</Button>
-            <Button href="#/transactions" className={classes.menuButtons} >TRANSACTIONS</Button>
-            <Button href="#/chaincodes" className={classes.menuButtons} >CHAINCODES</Button>
-            <Button href="#/channels" className={classes.menuButtons} >CHANNELS</Button>
+          <Nav className="ml-auto " navbar>
+            <Button href="/#" className="dashButtons">
+              DASHBOARD
+            </Button>
+            <Button href="#/network" className="dashButtons">
+              NETWORK
+            </Button>
+            <Button href="#/blocks" className="dashButtons">
+              BLOCKS
+            </Button>
+            <Button href="#/transactions" className="dashButtons">
+              TRANSACTIONS
+            </Button>
+            <Button href="#/chaincodes" className="dashButtons">
+              CHAINCODES
+            </Button>
+            <Button href="#/channels" className="dashButtons">
+              CHANNELS
+            </Button>
             <div className="channel-dropdown">
               <Select
                 placeholder="Select Channel..."
@@ -228,16 +239,27 @@ export class HeaderView extends Component {
                 options={this.state.channels} />
             </div>
             <div className="admin-buttons">
-              <FontAwesome name="bell" className="bell" onClick={() => this.handleDrawOpen("notifyDrawer")} />
-              <Badge className={classes.margin} badgeContent={this.state.notifyCount} color="primary"></Badge>
+              <FontAwesome
+                name="bell"
+                className="bell"
+                onClick={() => this.handleDrawOpen("notifyDrawer")}
+              />
+              <Badge
+                className="navIcons"
+                badgeContent={this.state.notifyCount}
+                color="primary"
+              />
             </div>
             <div className="admin-buttons">
               <FontAwesome name="cog" className="cog" onClick={() => this.handleDrawOpen("adminDrawer")} />
             </div>
             <div className="admin-buttons theme-switch">
+              <FontAwesome name="sun-o" className="sunIcon" />
               <Switch
                 onChange={() => this.handleThemeChange()}
-                value={this.state.isLight} />
+                checked={themeIcon}
+              />
+              <FontAwesome name="moon-o" className="moonIcon" />
             </div>
           </Nav>
         </Navbar>

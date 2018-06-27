@@ -91,7 +91,7 @@ export class ChartStats extends Component {
 
   render() {
     return (
-      <div >
+      <div className="chartCard" >
             <Nav tabs>
               <NavItem>
                 <NavLink
@@ -142,8 +142,8 @@ export class ChartStats extends Component {
                         </NavLink>
               </NavItem>
             </Nav>
-            <TabContent activeTab={this.state.activeTab}>
-              <TabPane tabId="1">
+            <TabContent activeTab={this.state.activeTab} className="activeChartTab">
+              <TabPane tabId="1" className="TabPane">
                 <TimeChart
                   chartData={this.timeDataSetup(this.props.blockPerHour.rows)}
                 />

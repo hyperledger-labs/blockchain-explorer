@@ -21,47 +21,60 @@ class AdminPanel extends Component {
         super(props, context);
     }
 
-    handleChange = () => {
+    handleChange = () => {}
 
-    }
-
-    render() {
-        return (
-            <div>
-                <Typography variant="headline"><FontAwesome name="cogs" /> ADMIN PANEL</Typography>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subheading">MANAGE CHANNEL  </Typography>
-                        <Typography variant='caption' color="primary" >
-                            {this.props.channel.currentChannel} <br />
-                        </Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        {/* <Typography variant='subheading' color="textSecondary">
+  render() {
+    return (
+      <div className="admin-panel">
+        <Typography variant="headline" className="admin-panel">
+          <FontAwesome name="cogs" className="admin-panel"/> ADMIN PANEL
+        </Typography>
+        <ExpansionPanel className="admin-panel">
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon />}
+            className="admin-panel"
+          >
+            <Typography variant="subheading" className="admin-panel">
+              MANAGE CHANNEL{" "}
+            </Typography>
+            <Typography variant="caption" className="admin-panelCurrent">
+              {this.props.channel.currentChannel} <br />
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className="admin-panel">
+            {/* <Typography variant='subheading' color="textSecondary">
                             Select Channel
                             </Typography> */}
-                        <form>
-                            <FormControl className="select-channel">
-                                <Select
-                                    value={20}
-                                    onChange={this.handleChange}
-                                    helperText="select channel"
-                                    inputProps={{
-                                        name: 'age',
-                                        id: 'age-simple',
-                                    }}
-                                >
-                                    <MenuItem value="">
-                                        <em>None</em>
-                                    </MenuItem>
-                                    <MenuItem value={10}>mock1</MenuItem>
-                                    <MenuItem value={20}>mychannel</MenuItem>
-                                    <MenuItem value={30}>mock2</MenuItem>
-                                </Select>
-                                <FormHelperText>select a channel</FormHelperText>
-                            </FormControl>
-                        </form>
-                        {/* <div className='channel-dropdown'>
+            <form className="admin-panel">
+              <FormControl className="select-channel" className="admin-panel">
+                <Select
+                  value={20}
+                  onChange={this.handleChange}
+                  helperText="select channel"
+                  inputProps={{
+                    name: "age",
+                    id: "age-simple"
+                  }}
+                >
+                  <MenuItem value="" className="admin-panel">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem className="admin-panel" value={10}>
+                    mock1
+                  </MenuItem>
+                  <MenuItem className="admin-panel" value={20}>
+                    mychannel
+                  </MenuItem>
+                  <MenuItem className="admin-panel" value={30}>
+                    mock2
+                  </MenuItem>
+                </Select>
+                <FormHelperText className="admin-panel">
+                  select a channel
+                </FormHelperText>
+              </FormControl>
+            </form>
+            {/* <div className='channel-dropdown'>
                                 <Select
                                     placeholder='Select Channel...'
                                     required='true'
@@ -70,26 +83,31 @@ class AdminPanel extends Component {
                                     onChange={handleChange}
                                     options={channels} />
                             </div> */}
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-                <ExpansionPanel>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="subheading">ADD CHANNEL</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <ChannelForm />
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            </div>
-        );
-    }
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <ExpansionPanel className="admin-panel">
+          <ExpansionPanelSummary
+            className="admin-panel"
+            expandIcon={<ExpandMoreIcon />}
+          >
+            <Typography variant="subheading" className="admin-panel">
+              ADD CHANNEL
+            </Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className="admin-panel">
+            <ChannelForm />
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state, ownProps) {
-    return {
-        channelList: state.channelList.channelList,
-        channel: state.channel.channel
-    }
+  return {
+    channelList: state.channelList.channelList,
+    channel: state.channel.channel
+  };
 }
 // function mapDispatchToProps(dispatch){
 //   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}

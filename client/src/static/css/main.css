@@ -13,9 +13,11 @@ font-weight: 300;
     padding-bottom: 0px;
     height: 75px;
 }
-body{
-    background-color: #F0F5F9 !important;
-}
+.dashButtons{
+    color:#000000!important;
+    font-size:1.05rem !important;
+     font-weight:800!important
+ }
 .admin-buttons{
     margin-left: 10px;
     margin-right: 10px;
@@ -402,6 +404,7 @@ margin-top:-10px;
     /* background-color: #DFF1FE; */
     height: 175px;
     margin-bottom: 20px;
+    background-color: #ffffff!important;
 }
 .vdivide::after {
    border-right:2px #DFF1FE solid;
@@ -456,6 +459,7 @@ margin-top:-10px;
     width: 25%;
     text-align: center;
     font-size: 18pt;
+    color:#000000
 }
 
 .stat-count{
@@ -472,7 +476,7 @@ margin-top:-10px;
     color:#FFA686 !important;
     background-color: #FFEED8!important;
 }
-.avatar-block{
+ .avatar-block{
     color:#004D6B !important;
     background-color: #B9D6E1 !important;
 }
@@ -484,7 +488,18 @@ margin-top:-10px;
     color: #407B20 !important;
     background-color: #D0ECDA!important;
 }
-.org-header{
-    font-weight: 300;
+/* Switch Theme */
+.sunIcon{
+    color:rgb(245, 185, 47);
 }
-
+.moonIcon{
+    color:rgb(104, 195, 245)
+}
+/*Time Chart and Chart stats */
+.recharts-layer{
+    fill:#5bc5c2!important
+ }
+ .recharts-scatter-line{
+    stroke:#5bc5c2!important;
+ stroke-width:2!important;
+ }

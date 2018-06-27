@@ -82,7 +82,7 @@ class PeerGraph extends Component {
           <CardHeader>
             <h5>PeerGraph</h5>
           </CardHeader>
-          <CardBody>
+          <CardBody className="peerGraphBody">
             <Graph id="graph-id"
               data={this.state.data}
               config={this.state.myConfig} />

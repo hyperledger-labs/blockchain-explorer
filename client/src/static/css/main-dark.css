@@ -2,8 +2,13 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 /* Dark-Theme is switched by the class name */
- .dark-theme body{
-    background-color: red !important;
+
+.dark-theme .logo{
+    /* width: 365px;
+    height: 70px; */
+    width: 260px;
+    height: 50px;
+
 }
 
 .dark-theme .cog,.dark-theme .bell{
@@ -201,8 +206,9 @@ margin-top:-10px;
     margin-right: 5% !important;
 }
 .dark-theme .dashButtons{
-   color:#ffffff!important;
-   font-weight:900!important
+   color:#242036!important;
+   font-size:1.05rem !important;
+    font-weight:800!important
 }
 .dark-theme .theme-switch{
     padding-top: 25px;
