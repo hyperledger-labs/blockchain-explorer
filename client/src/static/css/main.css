@@ -465,6 +465,17 @@ margin-top:-10px;
 .navbar-header{
     background-color: #E8E8E8!important;
 }
+.footer{
+    background-color: #E8E8E8;
+    text-align: center;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+.footerView{
+    margin:2%!important;
+ }
 .statistic{
     display: block;
     float: left;
