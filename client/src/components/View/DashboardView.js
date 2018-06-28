@@ -135,8 +135,8 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-		<h5 className="org-header">Transactions by Organziation</h5>
-                   <hr />
+                <h5 className="org-header">Transactions by Organization</h5>
+                <hr />
                 <OrgPieChart txByOrg={this.props.txByOrg} />
               </Card>
             </Col>

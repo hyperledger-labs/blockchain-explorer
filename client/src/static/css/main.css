@@ -16,7 +16,9 @@ font-weight: 300;
 .dashButtons{
     color:#000000!important;
     font-size:1.05rem !important;
-     font-weight:800!important
+     font-weight:800!important;
+     height: 60px!important;
+     margin-top: 22px!important;
  }
 .admin-buttons{
     margin-left: 10px;
@@ -33,6 +35,18 @@ font-weight: 300;
     border: none;
     box-shadow: 0px 9px 10px  rgba(0,0,0,0.05)
 }
+.activeTab{
+
+    color:#ffffff!important;
+    background-color:#808080!important;
+    height: 60px!important;
+    margin-top: 20px;
+}
+/*Channel Drop-Down*/
+.Select-control{
+    background-color:#E8E8E8!important;
+}
+
 .cog, .bell{
     margin-top: 36px;
     color: #5F6164;
@@ -346,7 +360,7 @@ th{
     border-color:transparent;
     color:#8b0000;
 background-color:transparent;
-margin:3px 10px 3px 0px;
+margin:-12px 10px 3px 0px;
 font-size:25px;
 height:30px;
 cursor:pointer;

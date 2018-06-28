@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer-client",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {

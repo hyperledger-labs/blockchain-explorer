@@ -10,6 +10,28 @@
     height: 50px;
 
 }
+/* Landing page css */
+.dark-theme .landingText{
+    margin-top: 450px;
+    margin-left: 550px;
+    background-color:#F0F5F9!important;
+}
+
+.dark-theme .activeTab{
+    font-size:100px!important;
+    color:#ffffff!important;
+    background-color:#453E68 !important;
+    height: 60px!important;
+    margin-top: 20px;
+}
+/*Channel Drop-Down*/
+.dark-theme  .Select-control{
+    background-color:#6a628e!important;
+    color:#ffffff!important;
+}
+.dark-theme .Select-value-label{
+    color:#000000!important
+}
 
 .dark-theme .cog,.dark-theme .bell{
     margin-top: 36px;
@@ -153,9 +175,9 @@
 .dark-theme .closeBtn{
     float:right;
     border-color:transparent;
-    color:orange;
+    color:#8b0000;
 background-color:transparent;
-margin:3px 10px 3px 0px;
+margin:-12px 10px 3px 0px;
 font-size:25px;
 height:30px;
 cursor:pointer;
@@ -206,9 +228,11 @@ margin-top:-10px;
     margin-right: 5% !important;
 }
 .dark-theme .dashButtons{
-   color:#242036!important;
+   color:#242036;
    font-size:1.05rem !important;
-    font-weight:800!important
+    font-weight:800!important;
+    height: 60px!important;
+    margin-top: 20px;
 }
 .dark-theme .theme-switch{
     padding-top: 25px;
