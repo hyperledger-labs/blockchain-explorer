@@ -10,6 +10,7 @@ import indigo from "material-ui/colors/indigo";
 import lightBlue from "material-ui/colors/lightBlue";
 import red from "material-ui/colors/red";
 import HeaderView from "../Header/HeaderView";
+import FooterView from '../Header/footerView';
 import LandingPage from "../View/LandingPage";
 import "../../static/css/main.css";
 import "../../static/css/main-dark.css";
@@ -69,6 +70,9 @@ class App extends Component {
         <div className={this.state.toggleClass ? "dark-theme" : ""}>
           <HeaderView refresh={this.refreshComponent.bind(this)} />
           <Main />
+          <div class="footerView">
+            <FooterView />
+          </div>
         </div>
       </MuiThemeProvider>
     );
