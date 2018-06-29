@@ -54,7 +54,9 @@ export class TransactionsView extends Component {
               transactionList={this.props.transactionList.rows}
               getTransactionList={this.props.getTransactionList}
               transaction={this.props.transaction}
-              getTransactionInfo={this.props.getTransactionInfo} />
+              getTransactionInfo={this.props.getTransactionInfo}
+              removeTransactionInfo={this.props.removeTransactionInfo}
+            />
           </Card>
         </div>
       </div>

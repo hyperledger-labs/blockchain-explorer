@@ -50,13 +50,15 @@ export class BlocksView extends Component {
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
-        <Card className="table-card">
-          <Blocks
-            blockList={this.props.blockList}
-            channel={this.props.channel}
-            transaction={this.props.transaction}
-            getTransactionInfo={this.props.getTransactionInfo} />
-       </Card>
+          <Card className="table-card">
+            <Blocks
+              blockList={this.props.blockList}
+              channel={this.props.channel}
+              transaction={this.props.transaction}
+              getTransactionInfo={this.props.getTransactionInfo}
+              removeTransactionInfo={this.props.removeTransactionInfo}
+            />
+          </Card>
         </div>
       </div>
     );

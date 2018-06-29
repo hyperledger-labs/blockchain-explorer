@@ -52,7 +52,7 @@ export class TransactionView extends Component {
 
   render() {
     const { classes } = this.props;
-    if (this.props.transaction.read_set === undefined) {
+    if (this.props.transaction && !this.props.transaction.read_set) {
       return (
         <div>
           <div>
@@ -74,7 +74,7 @@ export class TransactionView extends Component {
           </div>
         </div>
       );
-    } else {
+    } else if (this.props.transaction) {
       return (
         <div className="dialog">
           <Card>
@@ -218,6 +218,27 @@ export class TransactionView extends Component {
         </div>
       );
     }
+    return (
+      <div>
+        <div>
+          <CardTitle className="dialogTitle">
+            <FontAwesome name="list-alt" className="listIcon" />Transaction
+            Details
+            <button onClick={this.handleClose} className="closeBtn">
+              <FontAwesome name="close" />
+            </button>
+          </CardTitle>
+          <div align="center">
+            <CardBody>
+              <span className="loading-wheel">
+                {" "}
+                <FontAwesome name="circle-o-notch" size="3x" spin />
+              </span>
+            </CardBody>
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 

@@ -29,11 +29,12 @@ class Blocks extends Component {
   };
 
   handleDialogClose = () => {
+    this.props.removeTransactionInfo();
     this.setState({ dialogOpen: false });
   };
 
   handleDialogOpenBlockHash = blockHash => {
-    const data = find(this.props.blockList, (item) => {
+    const data = find(this.props.blockList, item => {
       return item.blockhash === blockHash;
     });
 

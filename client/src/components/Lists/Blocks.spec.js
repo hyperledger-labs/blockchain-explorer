@@ -128,6 +128,7 @@ const setup = () => {
       ]
     },
     getBlockList: jest.fn(),
+    removeTransactionInfo: jest.fn(),
     getTransactionInfo: jest.fn()
   };
 

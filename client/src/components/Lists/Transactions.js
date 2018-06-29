@@ -26,6 +26,7 @@ class Transactions extends Component {
   };
 
   handleDialogClose = () => {
+    this.props.removeTransactionInfo();
     this.setState({ dialogOpen: false });
   };
 

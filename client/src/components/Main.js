@@ -25,23 +25,25 @@ import {
   getTransactionList,
   getTxByOrg,
   getPeerStatus
-} from '../store/selectors/selectors';
-import { blockList } from '../store/actions/block/action-creators';
-import { chaincodes } from '../store/actions/chaincodes/action-creators';
-import { countHeader } from '../store/actions/header/action-creators';
-import { channelsData } from '../store/actions/channels/action-creators';
-import { latestBlock } from '../store/actions/latestBlock/action-creators';
-import { transactionInfo } from '../store/actions/transaction/action-creators';
-import { transactionList } from '../store/actions/transactions/action-creators';
-import { txByOrg } from '../store/actions/charts/action-creators';
+} from "../store/selectors/selectors";
+import { blockList } from "../store/actions/block/action-creators";
+import { chaincodes } from "../store/actions/chaincodes/action-creators";
+import { countHeader } from "../store/actions/header/action-creators";
+import { channelsData } from "../store/actions/channels/action-creators";
+import { latestBlock } from "../store/actions/latestBlock/action-creators";
+import { transactionInfo } from "../store/actions/transaction/action-creators";
+import { transactionList } from "../store/actions/transactions/action-creators";
+import { txByOrg } from "../store/actions/charts/action-creators";
+import { removeTransactionInfo } from "../store/actions/removeTransactionInfo/action-creators";
 
 export const Main = (props) => {
   const blocksViewProps = {
     blockList: props.blockList,
     channel: props.channel,
     transaction: props.transaction,
-    getTransactionInfo: props.getTransactionInfo
-  }
+    getTransactionInfo: props.getTransactionInfo,
+    removeTransactionInfo: props.removeTransactionInfo
+  };
 
   const chaincodeViewProps = {
     channel: props.channel,
@@ -70,6 +72,7 @@ export const Main = (props) => {
     transaction: props.transaction,
     transactionList: props.transactionList,
     getTransactionInfo: props.getTransactionInfo,
+    removeTransactionInfo: props.removeTransactionInfo,
     getTransactionList: props.getTransactionList
   }
 
@@ -86,24 +89,27 @@ export const Main = (props) => {
         </Switch>
       </div>
     </Router>
-  )
-}
+  );
+};
 
-export default connect((state) => ({
-  block: getBlock(state),
-  blockList: getBlockList(state),
-  chaincodes: getChaincodes(state),
-  channel: getChannel(state),
-  channelList: getChannelList(state),
-  countHeader: getCountHeader(state),
-  notification: getNotification(state),
-  peerList: getPeerList(state),
-  peerStatus: getPeerStatus(state),
-  transaction: getTransaction(state),
-  transactionList: getTransactionList(state),
-  channels: getChannels(state),
-  txByOrg: getTxByOrg(state)
-}), {
+export default connect(
+  state => ({
+    block: getBlock(state),
+    blockList: getBlockList(state),
+    chaincodes: getChaincodes(state),
+    channel: getChannel(state),
+    channelList: getChannelList(state),
+    countHeader: getCountHeader(state),
+    notification: getNotification(state),
+    peerList: getPeerList(state),
+    peerStatus: getPeerStatus(state),
+    transaction: getTransaction(state),
+    transactionList: getTransactionList(state),
+    channels: getChannels(state),
+    txByOrg: getTxByOrg(state),
+    removeTransactionInfo: removeTransactionInfo(state)
+  }),
+  {
     getBlockList: blockList,
     getChaincodes: chaincodes,
     getCountHeader: countHeader,
@@ -111,5 +117,7 @@ export default connect((state) => ({
     getTransactionInfo: transactionInfo,
     getTransactionList: transactionList,
     getChannels: channelsData,
+    removeTransactionInfo: removeTransactionInfo,
     getTxByOrg: txByOrg
-  })(Main);
+  }
+)(Main);

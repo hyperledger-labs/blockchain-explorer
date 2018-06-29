@@ -131,7 +131,9 @@ const setup = () => {
       }
     ],
     getTransactionList: jest.fn(),
-    getTransactionInfo: jest.fn()
+    getTransactionInfo: jest.fn(),
+    handleDialogClose: jest.fn(),
+    removeTransactionInfo:jest.fn()
   };
 
   const wrapper = mount(<Transactions {...props} />);
