@@ -4,6 +4,7 @@
 var config = require("./config.json");
 var helper = require("../../helper.js");
 var logger = helper.getLogger("FabricConfiguration");
+var dateUtils = require("../../explorer/rest/logical/utils/dateUtils.js");
 
 var defaultOrg;
 var defaultPeer;
@@ -114,6 +115,17 @@ class Configuration {
   changeChannel(channelName) {
     currChannel = channelName;
   }
-}
 
+  getSyncStartDate() {
+    var startSyncMills = null;
+    if (config.syncStartDate) {
+      console.log("\nProperty config.syncStartDate set to ", config.syncStartDate);
+      startSyncMills = dateUtils.toUTCmilliseconds(config.syncStartDate)
+    } else {
+      logger.error("Property config.syncStartDate missing");
+    }
+    return startSyncMills;
+  }
+
+}
 module.exports = new Configuration(config);

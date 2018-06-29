@@ -10,7 +10,8 @@ export const channelsData = () => dispatch => {
 
   get('/api/channels/info')
     .then(resp => {
-      dispatch(createAction(actionTypes.CHANNELS)(resp.channels))
+      let channels = [...resp.channels]
+      dispatch(createAction(actionTypes.CHANNELS)(channels))
     }).catch((error) => {
       console.error(error);
     })

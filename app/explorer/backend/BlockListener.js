@@ -31,7 +31,7 @@ class  BlockListener extends EventEmitter{
             this.on('syncChannels', function () {
                     blockScanner.syncChannels()
             });
-// ====================Orderer BE-303=====================================		
+// ====================Orderer BE-303=====================================
 			this.on('syncOrdererlist', function () {
                     blockScanner.syncOrdererlist()
             });

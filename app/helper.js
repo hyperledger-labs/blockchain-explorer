@@ -69,7 +69,7 @@ var getLogger = function(moduleName) {
       }
     ]
   });
-  logger.setLevel("INFO");
+  logger.setLevel("DEBUG");
   return logger;
 };
 

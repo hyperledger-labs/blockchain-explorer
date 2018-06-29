@@ -6,6 +6,7 @@
 --TODO research the prev_blockhash for the genesis block??
 ALTER TABLE Blocks ADD COLUMN prev_blockhash character varying(256) DEFAULT NULL;
 ALTER TABLE Blocks ADD COLUMN blockhash character varying(256) DEFAULT NULL;
+ALTER TABLE Blocks ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
 
 ALTER TABLE Transaction ADD COLUMN status  integer DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN creator_msp_id character varying(128) DEFAULT NULL;
@@ -14,12 +15,26 @@ ALTER TABLE Transaction ADD COLUMN chaincode_id character varying(256) DEFAULT N
 ALTER TABLE Transaction ADD COLUMN type character varying(128) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN read_set  json default NULL;
 ALTER TABLE Transaction ADD COLUMN write_set  json default NULL;
+ALTER TABLE Transaction ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
+
+ALTER TABLE channel ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
 ALTER TABLE channel ADD COLUMN channel_hash character varying(256) DEFAULT NULL;
 ALTER TABLE channel ADD COLUMN channel_config  bytea default NULL;
 ALTER TABLE channel ADD COLUMN channel_block  bytea DEFAULT NULL;
 ALTER TABLE channel ADD COLUMN channel_tx  bytea DEFAULT NULL;
 ALTER TABLE channel ADD COLUMN channel_version character varying(128) DEFAULT NULL;
 
+ALTER TABLE chaincodes ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
+ALTER TABLE peer ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
+ALTER TABLE Transaction ADD COLUMN validation_code character varying(50) DEFAULT NULL,
+ADD COLUMN envelope_signature character varying(800) DEFAULT NULL,
+ADD COLUMN payload_extension character varying(800) DEFAULT NULL,
+ADD COLUMN creator_id_bytes character varying(1000) DEFAULT NULL,
+ADD COLUMN creator_nonce character varying(800) DEFAULT NULL,
+ADD COLUMN chaincode_proposal_input character varying(800) DEFAULT NULL,
+ADD COLUMN payload_proposal_hash character varying(800) DEFAULT NULL,
+ADD COLUMN endorser_id_bytes character varying(1000) DEFAULT NULL,
+ADD COLUMN endorser_signature character varying(800) DEFAULT NULL;
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;
 CREATE INDEX ON Blocks (blocknum);

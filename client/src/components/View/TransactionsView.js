@@ -7,6 +7,7 @@ import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Transactions from '../Lists/Transactions';
+import Card from 'material-ui/Card';
 
 const styles = theme => ({
   root: {
@@ -42,29 +43,21 @@ export class TransactionsView extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.syncData(nextProps.channel.currentChannel)
-    }
-  }
-
-  syncData = (currentChannel) => {
-    this.props.getCountHeader(currentChannel);
-    this.props.getLatestBlock(currentChannel);
-    this.props.getTransactionList(currentChannel, 0);
-  }
-
   render() {
     const { classes } = this.props;
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
-          <Transactions channel={this.props.channel}
-            countHeader={this.props.countHeader}
-            transactionList={this.props.transactionList.rows}
-            getTransactionList={this.props.getTransactionList}
-            transaction={this.props.transaction}
-            getTransactionInfo={this.props.getTransactionInfo} />
+          <Card className="table-card">
+            <Transactions
+              channel={this.props.channel}
+              transactionList={this.props.transactionList.rows}
+              getTransactionList={this.props.getTransactionList}
+              transaction={this.props.transaction}
+              getTransactionInfo={this.props.getTransactionInfo}
+              removeTransactionInfo={this.props.removeTransactionInfo}
+            />
+          </Card>
         </div>
       </div>
     );

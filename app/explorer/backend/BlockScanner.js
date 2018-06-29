@@ -1,11 +1,42 @@
 /*
-*SPDX-License-Identifier: Apache-2.0
-*/
+ *SPDX-License-Identifier: Apache-2.0
+ */
 
 var helper = require('../../helper.js')
 var logger = helper.getLogger('blockscanner');
 var fileUtil = require('../rest/logical/utils/fileUtils.js');
+var dateUtils = require("../rest/logical/utils/dateUtils.js");
+var BlockDecoder = require('fabric-client/lib/BlockDecoder.js')
+var convertHex = require('convert-hex');
+var Enum = require('enum');
 
+var myEnum = new Enum({
+    VALID: 0,
+    NIL_ENVELOPE: 1,
+    BAD_PAYLOAD: 2,
+    BAD_COMMON_HEADER: 3,
+    BAD_CREATOR_SIGNATURE: 4,
+    INVALID_ENDORSER_TRANSACTION: 5,
+    INVALID_CONFIG_TRANSACTION: 6,
+    UNSUPPORTED_TX_PAYLOAD: 7,
+    BAD_PROPOSAL_TXID: 8,
+    DUPLICATE_TXID: 9,
+    ENDORSEMENT_POLICY_FAILURE: 10,
+    MVCC_READ_CONFLICT: 11,
+    PHANTOM_READ_CONFLICT: 12,
+    UNKNOWN_TX_TYPE: 13,
+    TARGET_CHAIN_NOT_FOUND: 14,
+    MARSHAL_TX_ERROR: 15,
+    NIL_TXACTION: 16,
+    EXPIRED_CHAINCODE: 17,
+    CHAINCODE_VERSION_CONFLICT: 18,
+    BAD_HEADER_EXTENSION: 19,
+    BAD_CHANNEL_HEADER: 20,
+    BAD_RESPONSE_PAYLOAD: 21,
+    BAD_RWSET: 22,
+    ILLEGAL_WRITESET: 23,
+    INVALID_OTHER_REASON: 255
+});
 
 class BlockScanner {
 
@@ -17,23 +48,42 @@ class BlockScanner {
 
     async syncBlock() {
         try {
+            // sync block data historicaly
+            var syncStartDate = this.proxy.getSyncStartDate();
             var channels = this.proxy.getChannels();
 
             for (let channelName of channels) {
-                let maxBlockNum
-                let curBlockNum
+                let maxBlockNum;
+                let curBlockNum;
                 [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
                     this.crudService.getCurBlockNum(channelName)
                 ]);
 
-                await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
+                if (syncStartDate) {
+                    await this.syncBlocksFromDate(channelName, maxBlockNum, syncStartDate);
+                } else {
+                    await this.getBlockByNumber(channelName, curBlockNum + 1, maxBlockNum);
+                }
             };
         } catch (err) {
             console.log(err);
         }
     }
 
+    async getBlockTimeStamp(block) {
+        var blockTimestamp = null;
+        try {
+            if (block && block.data && block.data.data[0]) {
+                let first_tx = block.data.data[0];
+                let header = first_tx.payload.header;
+                blockTimestamp = header.channel_header.timestamp;
+            }
+        } catch (err) {
+            logger.error(err)
+        }
+        return blockTimestamp;
+    };
     async saveBlockRange(block) {
 
         let first_tx = block.data.data[0]; //get the first Transaction
@@ -42,8 +92,10 @@ class BlockScanner {
         if (!firstTxTimestamp) {
             firstTxTimestamp = null
         }
+        let genesisBlock = await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let blockhash = await fileUtil.generateBlockHash(block.header);
-
         var blockRecord = {
             'blockNum': block.header.number,
             'txCount': block.data.data.length,
@@ -51,7 +103,8 @@ class BlockScanner {
             'dataHash': block.header.data_hash,
             'channelName': header.channel_header.channel_id,
             'firstTxTimestamp': header.channel_header.timestamp,
-            'blockhash': blockhash
+            'blockhash': blockhash,
+            'genesis_block_hash': genesisBlockHash
         };
 
         var blockSaved = await this.crudService.saveBlock(blockRecord);
@@ -79,72 +132,135 @@ class BlockScanner {
         //////////chaincode//////////////////
         //syncChaincodes();
         //////////tx/////////////////////////
-        let first_tx = block.data.data[0]; //get the first Transaction
-        let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
-        let channelName = header.channel_header.channel_id;
-
         let txLen = block.data.data.length
         for (let i = 0; i < txLen; i++) {
-            let tx = block.data.data[i]
-            let chaincode
-            try {
-                chaincode = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace
-            } catch (err) {
-                chaincode = ""
+            let txObj = block.data.data[i]
+            let txid = txObj.payload.header.channel_header.tx_id;
+            let validation_code = ''; let endorser_signature = ''; let payload_proposal_hash = '';
+            let endorser_id_bytes = ''; let chaincode_proposal_input = ''; let chaincode = '';
+            let rwset; let readSet; let writeSet; let chaincodeID; let status; let mspId = [];
+            let channelName = txObj.payload.header.channel_header.channel_id;
+            if (txid != undefined && txid != "") {
+                var processedTransaction = await this.proxy.getTransactionByID(channelName, txid);
+                txObj = processedTransaction.transactionEnvelope;
+                validation_code = myEnum.get(parseInt(processedTransaction.validationCode)).key;
             }
-
-            let rwset
-            let readSet
-            let writeSet
-            try {
-                rwset = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset
-                readSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.reads } })
-                writeSet = rwset.map(i => { return { 'chaincode': i.namespace, 'set': i.rwset.writes } })
-            } catch (err) {
-            }
-
-            let chaincodeID
-            try {
+            let envelope_signature = txObj.signature;
+            if (envelope_signature != undefined)
+                envelope_signature = convertHex.bytesToHex(envelope_signature)
+            let payload_extension = txObj.payload.header.channel_header.extension;
+            if (payload_extension != undefined)
+                payload_extension = convertHex.bytesToHex(payload_extension)
+            let creator_nonce = txObj.payload.header.signature_header.nonce;
+            if (creator_nonce != undefined)
+                creator_nonce = convertHex.bytesToHex(creator_nonce)
+            let creator_id_bytes = txObj.payload.header.signature_header.creator.IdBytes;
+            if (txObj.payload.data.actions != undefined) {
+                chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input;
+                if (chaincode_proposal_input != undefined)
+                    chaincode_proposal_input = convertHex.bytesToHex(chaincode_proposal_input)
+                endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
+                if (endorser_signature != undefined)
+                    endorser_signature = convertHex.bytesToHex(endorser_signature)
+                payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash;
+                endorser_id_bytes = txObj.payload.data.actions[0].payload.action.endorsements[0].endorser.IdBytes;
+                chaincode = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace;
+                rwset = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset;
+                readSet = rwset.map(i => {
+                    return {
+                        'chaincode': i.namespace,
+                        'set': i.rwset.reads
+                    }
+                })
+                writeSet = rwset.map(i => {
+                    return {
+                        'chaincode': i.namespace,
+                        'set': i.rwset.writes
+                    }
+                })
                 chaincodeID =
-                    new Uint8Array(tx.payload.data.actions[0].payload.action.proposal_response_payload.extension)
-            } catch (err) {
+                    new Uint8Array(txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension);
+                status = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status;
+                mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid });
             }
-
-            let status
-            try {
-                status = tx.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status
-            } catch (err) {
-            }
-
-            let mspId = []
-
-            try {
-                mspId = tx.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid })
-            } catch (err) {
-            }
-
+            let genesisBlock = await this.proxy.getGenesisBlock();
+            let temp = BlockDecoder.decodeBlock(genesisBlock);
+            let genesisBlockHash = await fileUtil.generateBlockHash(temp.header);
             var transaction = {
                 'channelname': channelName,
                 'blockid': block.header.number.toString(),
-                'txhash': tx.payload.header.channel_header.tx_id,
-                'createdt': new Date(tx.payload.header.channel_header.timestamp),
+                'txhash': txObj.payload.header.channel_header.tx_id,
+                'createdt': new Date(txObj.payload.header.channel_header.timestamp),
                 'chaincodename': chaincode,
                 'chaincode_id': String.fromCharCode.apply(null, chaincodeID),
                 'status': status,
-                'creator_msp_id': tx.payload.header.signature_header.creator.Mspid,
+                'creator_msp_id': txObj.payload.header.signature_header.creator.Mspid,
                 'endorser_msp_id': mspId,
-                'type': tx.payload.header.channel_header.typeString,
+                'type': txObj.payload.header.channel_header.typeString,
                 'read_set': JSON.stringify(readSet, null, 2),
-                'write_set': JSON.stringify(writeSet, null, 2)
+                'write_set': JSON.stringify(writeSet, null, 2),
+                'genesis_block_hash': genesisBlockHash,
+                'validation_code': validation_code,
+                'envelope_signature': envelope_signature,
+                'payload_extension': payload_extension,
+                'creator_nonce': creator_nonce,
+                'chaincode_proposal_input': chaincode_proposal_input,
+                'endorser_signature': endorser_signature,
+                'creator_id_bytes': creator_id_bytes,
+                'payload_proposal_hash': payload_proposal_hash,
+                'endorser_id_bytes': endorser_id_bytes
             };
-
             await this.crudService.saveTransaction(transaction);
-
         }
-
     }
 
+    /**
+     *
+     * @param {*} channelName
+     * @param {*} maxBlockNum
+     * @param {*} syncStartDate
+     * Method provides the ability to sync based on configured property syncStartDate in config.json
+     */
+    async syncBlocksFromDate(channelName, maxBlockNum, syncStartDate) {
+        var applyFilter = syncStartDate ? true : false;
+        var saveRecord = true;
+        var END = 0;
+        var START = maxBlockNum - 1;
+        // get blocks backwards
+        while (END <= START) {
+            saveRecord = false;
+            try {
+                let block = await this.proxy.getBlockByNumber(channelName, START)
+                if (block && applyFilter) {
+                    let blockTimeStamp = await this.getBlockTimeStamp(block);
+                    let blockUTC = dateUtils.toUTCmilliseconds(blockTimeStamp);
 
+                    if (blockUTC && syncStartDate) {
+                        if (blockUTC >= syncStartDate) {
+                            saveRecord = true;
+                        } else {
+                            saveRecord = false;
+                        }
+                    }
+                }
+                if (saveRecord) {
+                    try {
+                        var savedNewBlock = await this.saveBlockRange(block)
+                        if (savedNewBlock) {
+                            this.broadcaster.broadcast();
+                        }
+                    } catch (err) {
+                        console.log(err.stack);
+                        logger.error(err)
+                    }
+                }
+            } catch (err) {
+                logger.error(err)
+            }
+            // decrease the block number
+            START--
+        }
+    }
     async getBlockByNumber(channelName, start, end) {
         while (start < end) {
             let block = await this.proxy.getBlockByNumber(channelName, start)
@@ -154,8 +270,7 @@ class BlockScanner {
                 if (savedNewBlock) {
                     this.broadcaster.broadcast();
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.log(err.stack);
                 logger.error(err)
             }
@@ -168,7 +283,11 @@ class BlockScanner {
             this.seq().obj(this.key('Number').int(), this.key('PreviousHash').octstr(), this.key('DataHash').octstr());
         });
 
-        let output = headerAsn.encode({ Number: parseInt(header.number), PreviousHash: Buffer.from(header.previous_hash, 'hex'), DataHash: Buffer.from(header.data_hash, 'hex') }, 'der');
+        let output = headerAsn.encode({
+            Number: parseInt(header.number),
+            PreviousHash: Buffer.from(header.previous_hash, 'hex'),
+            DataHash: Buffer.from(header.data_hash, 'hex')
+        }, 'der');
         let hash = sha.sha256(output);
         return hash;
     };
@@ -193,9 +312,13 @@ class BlockScanner {
             logger.debug(chaincodes)
             return
         }
+        let genesisBlock = await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < len; i++) {
             let chaincode = chaincodes[i]
             chaincode.channelname = channelName;
+            chaincode.genesis_block_hash = genesisBlockHash
             this.crudService.saveChaincode(chaincode);
         }
 
@@ -203,7 +326,9 @@ class BlockScanner {
 
     async saveChannel() {
         var channels = this.proxy.getChannels();
-
+        let genesisBlock = await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < channels.length; i++) {
             let date = new Date()
             var channel = {
@@ -211,7 +336,8 @@ class BlockScanner {
                 trans: 0,
                 name: channels[i],
                 createdt: date,
-                channel_hash: ''
+                channel_hash: '',
+                genesis_block_hash: genesisBlockHash
             };
             channel.blocks = await this.proxy.getChannelHeight(channel.name)
             for (let j = 0; j < channel.blocks; j++) {
@@ -240,19 +366,21 @@ class BlockScanner {
     async savePeerlist(channelName) {
 
         var peerlists = await this.proxy.getConnectedPeers(channelName);
-
+        let genesisBlock = await this.proxy.getGenesisBlock()
+        let temp = BlockDecoder.decodeBlock(genesisBlock)
+        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let peerlen = peerlists.length
         for (let i = 0; i < peerlen; i++) {
             var peers = {};
             let peerlist = peerlists[i]
             peers.name = channelName;
             peers.requests = peerlist._url;
+            peers.genesis_block_hash = genesisBlockHash;
             peers.server_hostname = peerlist._options["grpc.default_authority"];
-
             this.crudService.savePeer(peers);
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     async saveOrdererlist(channelName) {
 
         var ordererlists = await this.proxy.getConnectedOrderers(channelName);
@@ -265,7 +393,7 @@ class BlockScanner {
             this.crudService.saveOrderer(orderers);
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     async syncChaincodes() {
 
         try {
@@ -293,22 +421,24 @@ class BlockScanner {
             logger.error(err)
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     syncOrdererlist() {
 
         try {
-			var channels = this.proxy.getChannels();
-			for (let channelName of channels) {
-				this.saveOrdererlist(channelName);
-			}
+            var channels = this.proxy.getChannels();
+            for (let channelName of channels) {
+                this.saveOrdererlist(channelName);
+            }
         } catch (err) {
             logger.error(err)
         }
     }
-// ====================Orderer BE-303=====================================
+    // ====================Orderer BE-303=====================================
     syncChannelEventHubBlock() {
         var self = this;
-        this.proxy.syncChannelEventHubBlock(block => { self.saveBlockRange(block); });
+        this.proxy.syncChannelEventHubBlock(block => {
+            self.saveBlockRange(block);
+        });
     }
 }
 

@@ -94,8 +94,3 @@ var shutDown = function () {
 process.on('SIGTERM', shutDown);
 // listen for INT signal e.g. Ctrl-C
 process.on('SIGINT', shutDown);
-
-
-/*setInterval(() => server.getConnections(
-  (err, connections) => console.log(`${connections} connections currently open`)
-), 1000);*/

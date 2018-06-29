@@ -52,7 +52,7 @@ export class TransactionView extends Component {
 
   render() {
     const { classes } = this.props;
-    if (this.props.transaction.read_set === undefined) {
+    if (this.props.transaction && !this.props.transaction.read_set) {
       return (
         <div>
           <div>
@@ -74,7 +74,7 @@ export class TransactionView extends Component {
           </div>
         </div>
       );
-    } else {
+    } else if (this.props.transaction) {
       return (
         <div className="dialog">
           <Card>
@@ -97,6 +97,18 @@ export class TransactionView extends Component {
                           <FontAwesome name="copy" />
                         </CopyToClipboard>
                       </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Validation Code:</th>
+                    <td>
+                      {this.props.transaction.validation_code}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Payload Proposal Hash:</th>
+                    <td>
+                      {this.props.transaction.payload_proposal_hash}
                     </td>
                   </tr>
                   <tr>
@@ -127,40 +139,40 @@ export class TransactionView extends Component {
                     <th style={reads}>Reads:</th>
                     <td>
                       {" "}
-                      {this.props.transaction.read_set.map(function(
+                      {this.props.transaction.read_set.map(function (
                         item,
                         index
                       ) {
                         return item === null ? (
                           ""
                         ) : (
-                          <li key={index}>
-                            <Typography variant="subheading">
-                              {" "}
-                              {item.chaincode}
-                            </Typography>
-                            <ul>
-                              {item.set.map(function(x, index) {
-                                var block_num = "";
-                                var tx_num = "";
-                                if (x.version !== null) {
-                                  block_num = x.version.block_num;
-                                  tx_num = x.version.tx_num;
-                                }
-                                return x === null ? (
-                                  ""
-                                ) : (
-                                  <li key={index}>
-                                    key:{x.key} ,version:( block:{block_num},tx:{
-                                      tx_num
-                                    }){" "}
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                            <br />
-                          </li>
-                        );
+                            <li key={index}>
+                              <Typography variant="subheading">
+                                {" "}
+                                {item.chaincode}
+                              </Typography>
+                              <ul>
+                                {item.set.map(function (x, index) {
+                                  var block_num = "";
+                                  var tx_num = "";
+                                  if (x.version !== null) {
+                                    block_num = x.version.block_num;
+                                    tx_num = x.version.tx_num;
+                                  }
+                                  return x === null ? (
+                                    ""
+                                  ) : (
+                                      <li key={index}>
+                                        key:{x.key} ,version:( block:{block_num},tx:{
+                                          tx_num
+                                        }){" "}
+                                      </li>
+                                    );
+                                })}
+                              </ul>
+                              <br />
+                            </li>
+                          );
                       })}
                     </td>
                   </tr>
@@ -168,34 +180,34 @@ export class TransactionView extends Component {
                     <th style={writes}>Writes:</th>
                     <td>
                       {" "}
-                      {this.props.transaction.write_set.map(function(
+                      {this.props.transaction.write_set.map(function (
                         item,
                         index
                       ) {
                         return item === null ? (
                           ""
                         ) : (
-                          <li key={index}>
-                            <Typography variant="subheading">
-                              {" "}
-                              {item.chaincode}
-                            </Typography>
-                            <ul>
-                              {item.set.map(function(x, index) {
-                                return x === null ? (
-                                  ""
-                                ) : (
-                                  <li key={index}>
-                                    key:{x.key} ,is_delete:{x.is_delete.toString()},value:{
-                                      x.value
-                                    }{" "}
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                            <br />
-                          </li>
-                        );
+                            <li key={index}>
+                              <Typography variant="subheading">
+                                {" "}
+                                {item.chaincode}
+                              </Typography>
+                              <ul>
+                                {item.set.map(function (x, index) {
+                                  return x === null ? (
+                                    ""
+                                  ) : (
+                                      <li key={index}>
+                                        key:{x.key} ,is_delete:{x.is_delete.toString()},value:{
+                                          x.value
+                                        }{" "}
+                                      </li>
+                                    );
+                                })}
+                              </ul>
+                              <br />
+                            </li>
+                          );
                       })}
                     </td>
                   </tr>
@@ -206,6 +218,27 @@ export class TransactionView extends Component {
         </div>
       );
     }
+    return (
+      <div>
+        <div>
+          <CardTitle className="dialogTitle">
+            <FontAwesome name="list-alt" className="listIcon" />Transaction
+            Details
+            <button onClick={this.handleClose} className="closeBtn">
+              <FontAwesome name="close" />
+            </button>
+          </CardTitle>
+          <div align="center">
+            <CardBody>
+              <span className="loading-wheel">
+                {" "}
+                <FontAwesome name="circle-o-notch" size="3x" spin />
+              </span>
+            </CardBody>
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 

@@ -7,7 +7,7 @@ import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Blocks from '../Lists/Blocks';
-
+import Card from 'material-ui/Card';
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -45,29 +45,20 @@ export class BlocksView extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel && nextProps.channel.currentChannel !== undefined) {
-      this.syncData(nextProps.channel.currentChannel)
-    }
-  }
-
-  syncData = (currentChannel) => {
-    this.props.getCountHeader(currentChannel);
-    this.props.getLatestBlock(currentChannel);
-    this.props.getBlockList(currentChannel);
-  }
-
   render() {
     const { classes } = this.props;
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
-          <Blocks blockList={this.props.blockList}
-            channel={this.props.channel}
-            countHeader={this.props.countHeader}
-            getBlockList={this.props.getBlockList}
-            transaction={this.props.transaction}
-            getTransactionInfo={this.props.getTransactionInfo} />
+          <Card className="table-card">
+            <Blocks
+              blockList={this.props.blockList}
+              channel={this.props.channel}
+              transaction={this.props.transaction}
+              getTransactionInfo={this.props.getTransactionInfo}
+              removeTransactionInfo={this.props.removeTransactionInfo}
+            />
+          </Card>
         </div>
       </div>
     );

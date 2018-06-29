@@ -2,12 +2,12 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
-import { Card, CardHeader, CardBody } from 'reactstrap';
-import { PieChart, Pie, Tooltip, Legend } from 'recharts';
-import txByOrg from '../../store/reducers/txByOrg';
+import React, { Component } from "react";
+import { Card, CardHeader, CardBody } from "reactstrap";
+import { PieChart, Pie, Tooltip, Legend } from "recharts";
+import txByOrg from "../../store/reducers/txByOrg";
 
-const colors = ['#0B091A', '#6283D0', '#0D3799', '#7C7C7C'];
+const colors = ["#0B091A", "#6283D0", "#0D3799", "#7C7C7C"];
 
 class OrgPieChart extends Component {
   constructor(props) {
@@ -44,19 +44,12 @@ class OrgPieChart extends Component {
 
   render() {
     return (
-      <div className="chart-stats">
-        <Card>
-          <CardHeader>
-            <h5>Organization Transactions</h5>
-          </CardHeader>
-          <CardBody>
-            <PieChart width={535} height={230}>
-              <Legend align="right" height={15} />
-              <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={50} label fill="fill" />
-              <Tooltip />
-            </PieChart>
-          </CardBody>
-        </Card>
+      <div className="org-pie">
+        <PieChart width={485}  height={290} className="pie-chart">
+          <Legend align="right" height={10} />
+          <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label fill="fill" />
+          <Tooltip />
+        </PieChart>
       </div>
     );
   }

@@ -7,6 +7,7 @@ import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import PropTypes from 'prop-types';
 import Chaincodes from '../Lists/Chaincodes';
+import Card from 'material-ui/Card';
 
 const styles = theme => ({
   root: {
@@ -47,12 +48,11 @@ export class ChaincodeView extends Component {
     return (
       <div className="view-fullwidth">
         <div className="view-display">
-          <Chaincodes
-            channel={this.props.channel}
-            countHeader={this.props.countHeader}
-            chaincodes={this.props.chaincodes}
-            getChaincodes={this.props.getChaincodes}
-          />
+          <Card className="table-card">
+            <Chaincodes
+              chaincodes={this.props.chaincodes}
+            />
+          </Card>
         </div>
       </div>
     );

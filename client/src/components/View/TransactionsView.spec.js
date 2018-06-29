@@ -154,7 +154,7 @@ describe('TransactionsView', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('componentWillReceiveProps calls syncData()', () => {
+  /*test('componentWillReceiveProps calls syncData()', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance()
     const spy = jest.spyOn(instance, 'syncData');
@@ -170,5 +170,5 @@ describe('TransactionsView', () => {
     const channel = { currentChannel: 'mychannel' }
     wrapper.setProps({ channel });
     expect(spy).not.toHaveBeenCalled();
-  })
+  })*/
 });

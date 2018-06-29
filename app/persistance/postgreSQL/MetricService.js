@@ -15,48 +15,48 @@ class MetricService {
 
         //==========================query counts ==========================
     getChaincodeCount(channelName) {
-      return sql.getRowsBySQlCase(`select count(1) c from chaincodes where channelname='${channelName}' `)
+      return sql.getRowsBySQlCase(`select count(1) c from chaincodes where genesis_block_hash='${channelName}' `)
     }
 
     getPeerlistCount(channelName) {
-      return sql.getRowsBySQlCase(`select count(1) c from peer where name='${channelName}' `)
+      return sql.getRowsBySQlCase(`select count(1) c from peer where genesis_block_hash='${channelName}' `)
     }
 
     getTxCount(channelName) {
-      return sql.getRowsBySQlCase(`select count(1) c from transaction where channelname='${channelName}'`)
+      return sql.getRowsBySQlCase(`select count(1) c from transaction where genesis_block_hash='${channelName}'`)
     }
 
     getBlockCount(channelName) {
-      return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where channelname='${channelName}'`)
+      return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where genesis_block_hash='${channelName}'`)
     }
 
     async getPeerData(channelName) {
       let peerArray = []
-      var c1 = await sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.server_hostname as server_hostname from peer c where c.name='${channelName}'`);
+      var c1 = await sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.genesis_block_hash as genesis_block_hash ,c.server_hostname as server_hostname from peer c where c.genesis_block_hash='${channelName}'`);
       for (var i = 0, len = c1.length; i < len; i++) {
         var item = c1[i];
-        peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname })
+        peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname ,"genesis_block_hash":item.genesis_block_hash})
       }
       return peerArray
     }
 //BE -303
 	async getOrdererData() {
       let ordererArray = []
-      var c1 = await sql.getRowsBySQlNoCondtion(`select c.requests as requests,c.server_hostname as server_hostname from orderer c`);
+      var c1 = await sql.getRowsBySQlNoCondtion(`select c.requests as requests,c.server_hostname as server_hostname,c.genesis_block_hash as genesis_block_hash from orderer c`);
       for (var i = 0, len = c1.length; i < len; i++) {
         var item = c1[i];
-        ordererArray.push({  'requests': item.requests, 'server_hostname': item.server_hostname })
+        ordererArray.push({  'requests': item.requests, 'server_hostname': item.server_hostname,'genesis_block_hash':item.genesis_block_hash })
       }
       return ordererArray
     }
 //BE -303
     async getTxPerChaincodeGenerate(channelName) {
       let txArray = []
-      var c = await sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.path as path ,txcount  as c from chaincodes c where  c.channelname='${channelName}' `);
+      var c = await sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.genesis_block_hash as genesis_block_hash,c.path as path ,txcount  as c from chaincodes c where  c.genesis_block_hash='${channelName}' `);
       //console.log("chaincode---" + c)
       if (c) {
         c.forEach((item, index) => {
-          txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c })
+          txArray.push({ 'channelName': item.channelname, 'chaincodename': item.chaincodename, 'path': item.path, 'version': item.version, 'txCount': item.c,'genesis_block_hash':item.genesis_block_hash })
         })
       }
       return txArray
@@ -132,7 +132,7 @@ class MetricService {
             minutes.datetime,
             count(createdt)
           from minutes
-          left join TRANSACTION on date_trunc('min', TRANSACTION.createdt) = minutes.datetime and channelname ='${channelName}'
+          left join TRANSACTION on date_trunc('min', TRANSACTION.createdt) = minutes.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -151,7 +151,7 @@ class MetricService {
             hours.datetime,
             count(createdt)
           from hours
-          left join TRANSACTION on date_trunc('hour', TRANSACTION.createdt) = hours.datetime and channelname ='${channelName}'
+          left join TRANSACTION on date_trunc('hour', TRANSACTION.createdt) = hours.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -170,7 +170,7 @@ class MetricService {
             days.datetime,
             count(createdt)
           from days
-          left join TRANSACTION on date_trunc('day', TRANSACTION.createdt) =days.datetime and channelname ='${channelName}'
+          left join TRANSACTION on date_trunc('day', TRANSACTION.createdt) =days.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -189,7 +189,7 @@ class MetricService {
             weeks.datetime,
             count(createdt)
           from weeks
-          left join TRANSACTION on date_trunc('week', TRANSACTION.createdt) =weeks.datetime and channelname ='${channelName}'
+          left join TRANSACTION on date_trunc('week', TRANSACTION.createdt) =weeks.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -228,7 +228,7 @@ class MetricService {
             years.year,
             count(createdt)
           from years
-          left join TRANSACTION on date_trunc('year', TRANSACTION.createdt) =years.year and channelname ='${channelName}'
+          left join TRANSACTION on date_trunc('year', TRANSACTION.createdt) =years.year and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -249,7 +249,7 @@ class MetricService {
             minutes.datetime,
             count(createdt)
           from minutes
-          left join BLOCKS on date_trunc('min', BLOCKS.createdt) = minutes.datetime and channelname ='${channelName}'
+          left join BLOCKS on date_trunc('min', BLOCKS.createdt) = minutes.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1  `;
 
@@ -268,7 +268,7 @@ class MetricService {
             hours.datetime,
             count(createdt)
           from hours
-          left join BLOCKS on date_trunc('hour', BLOCKS.createdt) = hours.datetime and channelname ='${channelName}'
+          left join BLOCKS on date_trunc('hour', BLOCKS.createdt) = hours.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -287,7 +287,7 @@ class MetricService {
             days.datetime,
             count(createdt)
           from days
-          left join BLOCKS on date_trunc('day', BLOCKS.createdt) =days.datetime and channelname ='${channelName}'
+          left join BLOCKS on date_trunc('day', BLOCKS.createdt) =days.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -306,7 +306,7 @@ class MetricService {
             weeks.datetime,
             count(createdt)
           from weeks
-          left join BLOCKS on date_trunc('week', BLOCKS.createdt) =weeks.datetime and channelname ='${channelName}'
+          left join BLOCKS on date_trunc('week', BLOCKS.createdt) =weeks.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -325,7 +325,7 @@ class MetricService {
             months.datetime,
             count(createdt)
           from months
-          left join BLOCKS on date_trunc('month', BLOCKS.createdt) =months.datetime and channelname  ='${channelName}'
+          left join BLOCKS on date_trunc('month', BLOCKS.createdt) =months.datetime and genesis_block_hash  ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -344,7 +344,7 @@ class MetricService {
             years.year,
             count(createdt)
           from years
-          left join BLOCKS on date_trunc('year', BLOCKS.createdt) =years.year and channelname  ='${channelName}'
+          left join BLOCKS on date_trunc('year', BLOCKS.createdt) =years.year and genesis_block_hash  ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -354,7 +354,7 @@ class MetricService {
     getTxByOrgs(channelName) {
       let sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
       from transaction
-      where channelname ='${channelName}'
+      where genesis_block_hash ='${channelName}'
       group by  creator_msp_id`;
 
       return sql.getRowsBySQlQuery(sqlPerOrg);

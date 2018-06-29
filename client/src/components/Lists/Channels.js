@@ -13,12 +13,12 @@ class Channels extends Component {
   }
 
   componentWillMount() {
-   this.props.getChannels()
+    this.props.getChannels()
   }
 
   componentDidMount() {
     setInterval(() => {
-    this.props.getChannels()
+      this.props.getChannels()
     }, 600000);
   }
 
@@ -73,7 +73,8 @@ class Channels extends Component {
           ),
         filterAll: true,
         width: 125
-      }, {
+      },
+      {
         Header: 'Transactions',
         accessor: 'transactions',
         filterMethod: (filter, rows) =>
@@ -97,21 +98,22 @@ class Channels extends Component {
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
-      }
+      },
     ];
   };
 
   render() {
     return (
       <div className="blockPage">
-                <ReactTable
-                  data={this.props.channels}
-                  columns={this.reactTableSetup()}
-                  defaultPageSize={5}
-                  className="-striped -highlight"
-                  filterable
-                  minRows={0}
-                />
+        <ReactTable
+          data={this.props.channels}
+          columns={this.reactTableSetup()}
+          defaultPageSize={5}
+          className="-striped -highlight"
+          filterable
+          minRows={0}
+          showPagination={this.props.channels.length < 5 ? false : true}
+        />
       </div>
     );
   }

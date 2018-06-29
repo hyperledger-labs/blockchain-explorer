@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from "react";
-import { Container, Row, Col, Tooltip } from "reactstrap";
 import Dialog, { DialogTitle } from "material-ui/Dialog";
 import TransactionView from "../View/TransactionView";
 import BlockView from "../View/BlockView";
@@ -12,6 +11,7 @@ import "react-table/react-table.css";
 import matchSorter from "match-sorter";
 import FontAwesome from "react-fontawesome";
 import find from "lodash/find";
+
 class Blocks extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +19,7 @@ class Blocks extends Component {
       dialogOpen: false,
       loading: false,
       dialogOpenBlockHash: false,
-      totalBlocks: this.props.countHeader.latestBlock
+      blockHash: {}
     };
   }
 
@@ -29,15 +29,21 @@ class Blocks extends Component {
   };
 
   handleDialogClose = () => {
+    this.props.removeTransactionInfo();
     this.setState({ dialogOpen: false });
   };
 
-  handleDialogOpenBlockHash = rowValue => {
-    const data = find(this.props.blockList, function(item) {
-      return item.blockhash === rowValue;
+  handleDialogOpenBlockHash = blockHash => {
+    const data = find(this.props.blockList, item => {
+      return item.blockhash === blockHash;
     });
-    this.setState({ dialogOpenBlockHash: true, blockHash: data });
+
+    this.setState({
+      dialogOpenBlockHash: true,
+      blockHash: data
+    });
   };
+
   handleDialogCloseBlockHash = () => {
     this.setState({ dialogOpenBlockHash: false });
   };
@@ -46,14 +52,8 @@ class Blocks extends Component {
     const data = Object.assign({}, this.state.selection, { [row.index]: !val });
     this.setState({ selection: data });
   };
-  componentWillReceiveProps(nextProps) {
-    this.setState({ totalBlocks: this.props.countHeader.latestBlock });
-  }
 
   componentDidMount() {
-    setInterval(() => {
-      this.props.getBlockList(this.props.channel.currentChannel);
-    }, 60000);
     const selection = {};
     this.props.blockList.forEach(element => {
       selection[element.blocknum] = false;
@@ -75,6 +75,18 @@ class Blocks extends Component {
           ),
         filterAll: true,
         width: 150
+      },
+      {
+        Header: 'Channel Name',
+        accessor: 'channelname',
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelname'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: "Number of Tx",
@@ -116,13 +128,9 @@ class Blocks extends Component {
                 ? row.value
                 : row.value.slice(0, 6)}{" "}
             </a>
-            <span
-              onClick={() =>
+              <FontAwesome name="eye" className="eyeBtn" onClick={() =>
                 this.handleEye(row, this.state.selection[row.index])
-              }
-            >
-              <FontAwesome name="eye" className="eyeBtn" />{" "}
-            </span>
+              } />{" "}
           </span>
         ),
         filterMethod: (filter, rows) =>
@@ -194,7 +202,9 @@ class Blocks extends Component {
           className="-striped -highlight"
           filterable
           minRows={0}
+          showPagination={ this.props.blockList.length < 5  ?  false : true }
         />
+
         <Dialog
           open={this.state.dialogOpen}
           onClose={this.handleDialogClose}
@@ -205,7 +215,9 @@ class Blocks extends Component {
             transaction={this.props.transaction}
             onClose={this.handleDialogClose}
           />
+
         </Dialog>
+
         <Dialog
           open={this.state.dialogOpenBlockHash}
           onClose={this.handleDialogCloseBlockHash}
@@ -223,4 +235,3 @@ class Blocks extends Component {
 }
 
 export default Blocks;
-

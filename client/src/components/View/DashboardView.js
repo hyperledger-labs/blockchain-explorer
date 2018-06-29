@@ -8,111 +8,143 @@ import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import {
-  Card,
   Row,
-  Col,
-  CardBody
+  Col
 } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
+import Card from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
 
 export class DashboardView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       notifications: []
-    }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (Object.keys(nextProps.notification).length !== 0 && this.props.notification !== nextProps.notification) {
-      let arr = this.state.notifications;
-      arr.unshift(nextProps.notification);
-      this.setState({ notifications: arr });
-    }
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getTxByOrg(nextProps.channel.currentChannel);
-    }
+    this.setNotifications(this.props.blockList);
   }
 
   componentDidMount() {
-    setInterval(() => {
-      this.props.getTxByOrg(this.props.channel.currentChannel);
-      this.props.getCountHeader(this.props.channel.currentChannel);
-    }, 3000);
-
-    this.setNotifications(this.props.blockList)
+    this.setNotifications(this.props.blockList);
   }
 
-  setNotifications = (blockList) => {
+  setNotifications = blockList => {
     let notificationsArr = [];
     if (blockList !== undefined) {
-      for (let i = 0; i < 3 && this.props.blockList && this.props.blockList[i]; i++) {
+      for (
+        let i = 0;
+        i < 3 && this.props.blockList && this.props.blockList[i];
+        i++
+      ) {
         const block = this.props.blockList[i];
         const notify = {
-          'title': `Block ${block.blocknum} Added`,
-          'type': 'block',
-          'time': block.createdt,
-          'txcount': block.txcount,
-          'datahash': block.datahash
+          title: `Block ${block.blocknum} `,
+          type: "block",
+          time: block.createdt,
+          txcount: block.txcount,
+          datahash: block.datahash,
+          blockhash: block.blockhash
         };
         notificationsArr.push(notify);
       }
     }
     this.setState({ notifications: notificationsArr });
-  }
+  };
 
   render() {
     return (
-      <div className="view-fullwidth" >
-        <div className="dashboard" >
-          <div className="dash-stats">
-            <Row>
-              <Card className="count-card dark-card">
-                <CardBody>
-                  <h1>{this.props.countHeader.latestBlock}</h1>
-                  <h4> <FontAwesome name="cube" /> Blocks</h4>
-                </CardBody>
-              </Card>
-              <Card className="count-card light-card" >
-                <CardBody>
-                  <h1>{this.props.countHeader.txCount}</h1>
-                  <h4><FontAwesome name="list-alt" /> Transactions</h4>
-                </CardBody>
-              </Card>
-              <Card className="count-card dark-card" >
-                <CardBody>
-                  <h1>{this.props.countHeader.peerCount}</h1>
-                  <h4><FontAwesome name="users" />Nodes</h4>
-                </CardBody>
-              </Card>
-              <Card className="count-card light-card" >
-                <CardBody>
-                  <h1>{this.props.countHeader.chaincodeCount}</h1>
-                  <h4><FontAwesome name="handshake-o" />Chaincodes</h4>
-                </CardBody>
-              </Card>
-            </Row>
-          </div>
+      <div className="background-view">
+        <div className="dash-view" >
           <Row>
-            <Col lg="6">
-              <ChartStats />
-            </Col>
-            <Col lg="6">
-              <OrgPieChart txByOrg={this.props.txByOrg} />
+            <Col sm="12">
+              <Card className="stats-block ">
+
+                <div className="statistic vdivide">
+                  <Row>
+                    <Col sm="4">
+                      <Avatar className="stat-avatar avatar-block" >
+                        <FontAwesome name="cube" />
+                      </Avatar>
+                    </Col>
+                    <Col sm="4">
+                      <h1 className="stat-count">{this.props.countHeader.latestBlock}</h1>
+                    </Col>
+                  </Row>
+                  BLOCKS
+                    </div>
+                <div className="statistic vdivide">
+                  <Row>
+                    <Col sm="4">
+                      <Avatar className="stat-avatar avatar-tx" >
+                        <FontAwesome name="list-alt" />
+                      </Avatar>
+                    </Col>
+                    <Col sm="4">
+                      <h1 className="stat-count">{this.props.countHeader.txCount}</h1>
+                    </Col>
+                  </Row>
+                  TRANSACTIONS
+                   </div>
+                <div className="statistic vdivide">
+                  <Row>
+                    <Col sm="4">
+                      <Avatar className="stat-avatar avatar-node" >
+                        <FontAwesome name="users" />
+                      </Avatar>
+                    </Col>
+                    <Col sm="4">
+                      <h1 className="stat-count">{this.props.countHeader.peerCount}</h1>
+                    </Col>
+                  </Row>
+                  NODES
+                  </div>
+                <div className="statistic">
+                  <Row>
+                    <Col sm="4">
+                      <Avatar className="stat-avatar avatar-chaincode" >
+                        <FontAwesome name="handshake-o" />
+                      </Avatar>
+                    </Col>
+                    <Col sm="4">
+                      <h1 className="stat-count">{this.props.countHeader.chaincodeCount}</h1>
+
+                    </Col>
+                  </Row>
+                  CHAINCODES
+                  </div>
+              </Card>
             </Col>
           </Row>
-          <Row className="lower-dash">
-            <Col lg="6">
-              <TimelineStream notifications={this.state.notifications} />
+          <Row>
+            <Col sm="6" >
+              <Card className="dash-section">
+                <PeersHealth
+                  peerStatus={this.props.peerStatus}
+                  channel={this.props.channel.currentChannel}
+                />
+              </Card>
+              <Card className="dash-section">
+                <TimelineStream notifications={this.state.notifications} blockList={this.props.blockList} />
+              </Card>
             </Col>
-            <Col lg="6">
-              <PeersHealth peerStatus={this.props.peerStatus} channel={this.props.channel.currentChannel} />
+            <Col sm="6">
+              <Card className="dash-section">
+                <ChartStats />
+              </Card>
+              <Card className="dash-section center-column">
+                <h5 className="org-header">Transactions by Organization</h5>
+                <hr />
+                <OrgPieChart txByOrg={this.props.txByOrg} />
+              </Card>
             </Col>
           </Row>
-        </div >
+        </div>
       </div>
     );
   }
 }
 
-export default DashboardView
+export default DashboardView;

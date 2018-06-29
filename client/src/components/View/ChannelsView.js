@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
 import Channels from '../Lists/Channels';
+import Card from 'material-ui/Card';
 
 const styles = theme => ({
   root: {
@@ -45,7 +46,9 @@ export class ChannelsView extends Component {
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
-          <Channels channels={this.props.channels} getChannels={this.props.getChannels} />
+          <Card className="table-card">
+            <Channels channels={this.props.channels} getChannels={this.props.getChannels} />
+          </Card>
         </div>
       </div>
     );

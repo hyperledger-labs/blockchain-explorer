@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import { Container, Row, Col, Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
@@ -16,21 +15,10 @@ class Chaincodes extends Component {
     super(props);
     this.state = {
       loading: false,
-      chaincodeCount: this.props.countHeader.chaincodeCount,
       dialogOpen: false,
       sourceDialog: false,
       chaincode: {}
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ chaincodeCount: this.props.countHeader.chaincodeCount });
-  }
-
-  componentDidMount() {
-    setInterval(() => {
-      this.props.getChaincodes(this.props.channel.currentChannel);
-    }, 60000);
   }
 
   handleDialogOpen = () => {
@@ -121,9 +109,9 @@ class Chaincodes extends Component {
   render() {
     return (
       <div >
-        <Button className="button" onClick={() => this.handleDialogOpen()}>
+        {/* <Button className="button" onClick={() => this.handleDialogOpen()}>
           Add Chaincode
-          </Button>
+          </Button> */}
         <ReactTable
           data={this.props.chaincodes}
           columns={this.reactTableSetup()}
@@ -131,23 +119,24 @@ class Chaincodes extends Component {
           className="-striped -highlight"
           filterable
           minRows={0}
+          showPagination={ this.props.chaincodes.length < 5  ?  false : true }
         />
-      <Dialog
-        open={this.state.dialogOpen}
-        onClose={this.handleDialogClose}
-        fullWidth={true}
-        maxWidth={"md"}
-      >
-        <ChaincodeForm />
-      </Dialog>
-      <Dialog
-        open={this.state.sourceDialog}
-        onClose={this.sourceDialogClose}
-        fullWidth={true}
-        maxWidth={"md"}
-      >
-        <ChaincodeModal chaincode={this.state.chaincode} />
-      </Dialog>
+        <Dialog
+          open={this.state.dialogOpen}
+          onClose={this.handleDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <ChaincodeForm />
+        </Dialog>
+        <Dialog
+          open={this.state.sourceDialog}
+          onClose={this.sourceDialogClose}
+          fullWidth={true}
+          maxWidth={"md"}
+        >
+          <ChaincodeModal chaincode={this.state.chaincode} />
+        </Dialog>
       </div >
     );
   }

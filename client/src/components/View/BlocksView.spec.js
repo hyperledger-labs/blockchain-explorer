@@ -144,7 +144,7 @@ describe('BlocksView', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('componentWillReceiveProps calls syncData()', () => {
+  /*test('componentWillReceiveProps calls syncData()', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance()
     const spy = jest.spyOn(instance, 'syncData');
@@ -160,13 +160,13 @@ describe('BlocksView', () => {
     const channel = { currentChannel: 'mychannel' }
     wrapper.setProps({ channel });
     expect(spy).not.toHaveBeenCalled();
-  })
+  })*/
 
-  test('syncData calls the selectors', () => {
+  /*test('syncData calls the selectors', () => {
     const { wrapper, props } = setup();
     wrapper.instance().syncData('newData')
     expect(props.getCountHeader).toHaveBeenCalled();
     expect(props.getLatestBlock).toHaveBeenCalled();
     expect(props.getBlockList).toHaveBeenCalled();
-  })
+  })*/
 });
