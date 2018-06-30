@@ -164,7 +164,7 @@ class BlockScanner {
                     endorser_signature = convertHex.bytesToHex(endorser_signature)
                 payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash;
                 endorser_id_bytes = txObj.payload.data.actions[0].payload.action.endorsements[0].endorser.IdBytes;
-                chaincode = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset[1].namespace;
+		chaincode = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name;
                 rwset = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset;
                 readSet = rwset.map(i => {
                     return {
