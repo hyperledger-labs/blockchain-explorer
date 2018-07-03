@@ -6,7 +6,7 @@ import { get } from '../../../services/request.js';
 
 
 const blockPerHour = (channel) => (dispatch) => {
-    get('/api/blocksByHour/' + channel + '/1')
+   return get('/api/blocksByHour/' + channel + '/1')
         .then(resp => {
             dispatch(actions.getBlockPerHour(resp))
         }).catch((error) => {
@@ -15,7 +15,7 @@ const blockPerHour = (channel) => (dispatch) => {
 }
 
 const blockPerMin = (channel) => (dispatch) => {
-    get('/api/blocksByMinute/' + channel + '/1')
+   return get('/api/blocksByMinute/' + channel + '/1')
         .then(resp => {
             dispatch(actions.getBlockPerMin(resp))
         }).catch((error) => {
@@ -24,7 +24,7 @@ const blockPerMin = (channel) => (dispatch) => {
 }
 
 const transactionPerHour = (channel) => (dispatch) => {
-    get('/api/txByHour/' + channel + '/1')
+  return  get('/api/txByHour/' + channel + '/1')
         .then(resp => {
             dispatch(actions.getTransactionPerHour(resp))
         }).catch((error) => {
@@ -33,7 +33,7 @@ const transactionPerHour = (channel) => (dispatch) => {
 }
 
 const transactionPerMin = (channel) => (dispatch) => {
-    get('/api/txByMinute/' + channel + '/1')
+   return get('/api/txByMinute/' + channel + '/1')
         .then(resp => {
             dispatch(actions.getTransactionPerMin(resp))
         }).catch((error) => {
@@ -42,7 +42,7 @@ const transactionPerMin = (channel) => (dispatch) => {
 }
 
 const transactionByOrg = (channel) => (dispatch) => {
-    get('/api/txByOrg/' + channel)
+   return get('/api/txByOrg/' + channel)
         .then(resp => {
             dispatch(actions.getTransactionByOrg(resp))
         }).catch((error) => {
@@ -57,7 +57,7 @@ const notification = (notification) => dispatch => {
 }
 
 const dashStats = (channel) => (dispatch) => {
-    get('/api/status/' + channel)
+  return  get('/api/status/' + channel)
         .then(resp => {
             dispatch(actions.getDashStats(resp))
         }).catch((error) => {
@@ -66,7 +66,7 @@ const dashStats = (channel) => (dispatch) => {
 }
 
 const channel = () => dispatch => {
-    get('/api/curChannel')
+  return  get('/api/curChannel')
         .then(resp => {
             dispatch(actions.getChannel(resp) )
         }).catch((error) => {
@@ -75,7 +75,7 @@ const channel = () => dispatch => {
 }
 
 const channelList = () => dispatch => {
-    get('/api/channels')
+  return  get('/api/channels')
         .then(resp => {
             dispatch(actions.getChannelList(resp) )
         }).catch((error) => {
@@ -84,7 +84,7 @@ const channelList = () => dispatch => {
 }
 
 const changeChannel = (channel) => dispatch => {
-    get('/api/changeChannel/' + channel)
+  return  get('/api/changeChannel/' + channel)
         .then(resp => {
             dispatch(actions.updateChannel(resp) )
         }).catch((error) => {
@@ -93,7 +93,7 @@ const changeChannel = (channel) => dispatch => {
 }
 
 const peerStatus = (channel) => dispatch => {
-    get('/api/peersStatus/'+channel)
+  return  get('/api/peersStatus/'+channel)
     .then(resp => {
         dispatch(actions.getPeerStatus(resp))
     }).catch((error) => {

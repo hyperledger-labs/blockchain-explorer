@@ -13,9 +13,13 @@ font-weight: 300;
     padding-bottom: 0px;
     height: 75px;
 }
-body{
-    background-color: #F0F5F9 !important;
-}
+.dashButtons{
+    color:#000000!important;
+    font-size:1.05rem !important;
+     font-weight:800!important;
+     height: 60px!important;
+     margin-top: 22px!important;
+ }
 .admin-buttons{
     margin-left: 10px;
     margin-right: 10px;
@@ -31,6 +35,18 @@ body{
     border: none;
     box-shadow: 0px 9px 10px  rgba(0,0,0,0.05)
 }
+.activeTab{
+
+    color:#ffffff!important;
+    background-color:#808080!important;
+    height: 60px!important;
+    margin-top: 20px;
+}
+/*Channel Drop-Down*/
+.Select-control{
+    background-color:#E8E8E8!important;
+}
+
 .cog, .bell{
     margin-top: 36px;
     color: #5F6164;
@@ -177,8 +193,12 @@ word-wrap: break-word;
 }
 /* Landing page css */
 .landing{
+
     margin-top: 450px;
     margin-left: 550px;
+}
+.landingBackground{
+    background-color:#F0F5F9!important;
 }
 .landing > h1{
     font-size: 40pt;
@@ -307,6 +327,7 @@ svg.custom path.link {
     font-weight:400;
     letter-spacing:3px;
     padding-top:1%;
+    margin:0px
 }
 .dialog{
     border-style:solid;
@@ -344,7 +365,7 @@ th{
     border-color:transparent;
     color:#8b0000;
 background-color:transparent;
-margin:3px 10px 3px 0px;
+margin:-12px 10px 3px 0px;
 font-size:25px;
 height:30px;
 cursor:pointer;
@@ -402,6 +423,7 @@ margin-top:-10px;
     /* background-color: #DFF1FE; */
     height: 175px;
     margin-bottom: 20px;
+    background-color: #ffffff!important;
 }
 .vdivide::after {
    border-right:2px #DFF1FE solid;
@@ -448,6 +470,17 @@ margin-top:-10px;
 .navbar-header{
     background-color: #E8E8E8!important;
 }
+.footer{
+    background-color: #E8E8E8;
+    text-align: center;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+.footerView{
+    margin:2%!important;
+ }
 .statistic{
     display: block;
     float: left;
@@ -456,6 +489,7 @@ margin-top:-10px;
     width: 25%;
     text-align: center;
     font-size: 18pt;
+    color:#000000
 }
 
 .stat-count{
@@ -472,7 +506,7 @@ margin-top:-10px;
     color:#FFA686 !important;
     background-color: #FFEED8!important;
 }
-.avatar-block{
+ .avatar-block{
     color:#004D6B !important;
     background-color: #B9D6E1 !important;
 }
@@ -484,7 +518,18 @@ margin-top:-10px;
     color: #407B20 !important;
     background-color: #D0ECDA!important;
 }
-.org-header{
-    font-weight: 300;
+/* Switch Theme */
+.sunIcon{
+    color:rgb(245, 185, 47);
 }
-
+.moonIcon{
+    color:rgb(104, 195, 245)
+}
+/*Time Chart and Chart stats */
+.recharts-layer{
+    fill:#5bc5c2!important
+ }
+ .recharts-scatter-line{
+    stroke:#5bc5c2!important;
+ stroke-width:2!important;
+ }

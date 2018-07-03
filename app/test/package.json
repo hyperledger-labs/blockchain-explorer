@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer-test",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "hyperledger-explorer-test",
   "main": "test.js",
   "scripts": {

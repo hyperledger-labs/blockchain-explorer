@@ -3,7 +3,7 @@ import { get } from '../../../services/request.js';
 import moment from "moment-timezone";
 
 const blockList = (channel) => (dispatch) => {
-  get(`/api/blockAndTxList/${channel}/0`)
+ return get(`/api/blockAndTxList/${channel}/0`)
     .then( resp => {
       dispatch(actions.getBlockList(resp))
     }).catch((error) => {
@@ -12,7 +12,7 @@ const blockList = (channel) => (dispatch) => {
 }
 
 const chaincodeList = (channel) => (dispatch) => {
-  get(`/api/chaincode/${channel}`)
+ return get(`/api/chaincode/${channel}`)
     .then( resp => {
       dispatch(actions.getChaincodeList(resp))
     }).catch((error) => {
@@ -37,7 +37,7 @@ const channels = () => (dispatch) => {
 }
 
 const peerList = (channel) => (dispatch) => {
-  get(`/api/peers/${channel}`)
+ return get(`/api/peers/${channel}`)
     .then(resp => {
       dispatch(actions.getPeerList(resp))
     }).catch((error) => {

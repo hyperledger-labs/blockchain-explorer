@@ -9,8 +9,10 @@ var hfc = require('fabric-client');
 var Peer = require('fabric-client/lib/Peer.js');
 var EventHub = require('fabric-client/lib/EventHub.js');
 var helper = require('../../helper.js');
+var fileUtil = require('../../explorer/rest/logical/utils/fileUtils.js')
 var logger = helper.getLogger('Query');
 var configuration = require('./Configuration.js');
+var BlockDecoder = require('fabric-client/lib/BlockDecoder.js');
 var chaincodeService = require('./service/chaincodeService.js');
 var jch = require('./service/joinChannel.js');
 
@@ -88,6 +90,11 @@ class Proxy {
 		}
 		return {};
 
+	}
+	async getGenesisBlock() {
+
+		var channel = this.getChannel(this.getDefaultChannel());
+		return channel.getGenesisBlock()
 	}
 
 	getBlockByHash(channelName, hash) {
@@ -236,8 +243,14 @@ class Proxy {
 				err);
 			return 'Failed to send query due to error: ' + err.stack ? err.stack : err;
 		}
-	}
 
+	}
+	async getGenesisBlockHash() {
+		let genesisBlock = await this.getGenesisBlock()
+		let temp = BlockDecoder.decodeBlock(genesisBlock)
+		let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
+		return genesisBlockHash
+	}
 	async getCurBlockNum(channelName) {
 		try {
 			var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channelname='${channelName}'`);
@@ -266,6 +279,8 @@ class Proxy {
 	getDefaultChannel() {
 		return configuration.getCurrChannel();
 	}
+
+
 
 	changeChannel(channel) {
 		return configuration.changeChannel(channel);

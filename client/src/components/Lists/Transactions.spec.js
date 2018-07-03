@@ -203,25 +203,25 @@ describe('Transactions', () => {
 
   test('Simulate Tx Id filterMethod should have one result when given a transaction hash', () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '1-txhash').find('input').simulate('change', {target: {value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '2-txhash').find('input').simulate('change', {target: {value: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
   test('Simulate Type filterMethod should have three result when given a value of end', () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '2-type').find('input').simulate('change', {target: {value: 'end'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '3-type').find('input').simulate('change', {target: {value: 'end'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(3);
   });
 
   test('Simulate Chaincode filterMethod should have no results when given a value of newcc', () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '3-chaincodename').find('input').simulate('change', {target: {value: 'newcc'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '4-chaincodename').find('input').simulate('change', {target: {value: 'newcc'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(0);
   });
 
   test('Simulate Timestamp filterMethod should have three results when given a value of 4-26', () => {
     const { wrapper } = setup();
-    wrapper.find('ThComponent').findWhere(n => n.key() === '4-createdt').find('input').simulate('change', {target: {value: '4-26'}});
+    wrapper.find('ThComponent').findWhere(n => n.key() === '5-createdt').find('input').simulate('change', {target: {value: '4-26'}});
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(3);
   });
 

@@ -105,8 +105,8 @@ export const Main = (props) => {
         </Switch>
       </div>
     </Router>
-  )
-}
+  );
+};
 
 export default connect((state) => ({
   blockList: getBlockList(state),

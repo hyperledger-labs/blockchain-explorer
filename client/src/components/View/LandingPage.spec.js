@@ -35,7 +35,7 @@ describe('LandingPage', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('component receives new channel', () => {
+/*   test('component receives new channel', () => {
     const { wrapper, props } = setup();
     const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: newChannel })
@@ -51,9 +51,9 @@ describe('LandingPage', () => {
     expect(props.getTransactionList).toHaveBeenCalled();
     expect(props.getTransactionPerHour).toHaveBeenCalled();
     expect(props.getTransactionPerMin).toHaveBeenCalled();
-  })
+  }) */
 
-  test('component receives the same channel', () => {
+/*   test('component receives the same channel', () => {
     const { wrapper, props } = setup();
     wrapper.setProps({ channel: props.channel })
     expect(props.getBlockList).not.toHaveBeenCalled();
@@ -67,5 +67,5 @@ describe('LandingPage', () => {
     expect(props.getTransactionList).not.toHaveBeenCalled();
     expect(props.getTransactionPerHour).not.toHaveBeenCalled();
     expect(props.getTransactionPerMin).not.toHaveBeenCalled();
-  })
+  }) */
 });

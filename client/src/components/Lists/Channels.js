@@ -98,7 +98,7 @@ class Channels extends Component {
             { threshold: matchSorter.rankings.SIMPLEMATCH }
           ),
         filterAll: true
-      }
+      },
     ];
   };
 

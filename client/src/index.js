@@ -21,7 +21,6 @@ import { unregister } from './registerServiceWorker';
 const store = createStore();
 store.dispatch(chartsOperations.channel());
 store.dispatch(chartsOperations.channelList());
-
 unregister();
 ReactDOM.render(
     <Provider store={store} >

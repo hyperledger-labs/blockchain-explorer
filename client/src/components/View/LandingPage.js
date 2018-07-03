@@ -56,36 +56,47 @@ export class LandingPage extends Component {
     }
   }
 
-  componentDidMount() {
-    this.props.getChannels()
+  async componentDidMount() {
+    console.log("###load data start:");
+    await this.props.getChannel();
+    console.log(this.props.channel);
+    var currentChannel = this.props.channel.currentChannel;
+    await Promise.all([
+      this.props.getBlockList(currentChannel),
+      this.props.getBlocksPerHour(currentChannel),
+      this.props.getBlocksPerHour(currentChannel),
+      this.props.getChaincodeList(currentChannel),
+      this.props.getChannelList(currentChannel),
+      this.props.getChannels(),
+      this.props.getDashStats(currentChannel),
+      this.props.getPeerList(currentChannel),
+      this.props.getPeerStatus(currentChannel),
+      this.props.getTransactionByOrg(currentChannel),
+      this.props.getTransactionList(currentChannel),
+      this.props.getTransactionPerHour(currentChannel),
+      this.props.getTransactionPerMin(currentChannel)
+
+    ])
+    this.props.updateLoadStatus();
+    // this.setState({loading: false});
+
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getBlockList(nextProps.channel.currentChannel, 0);
-      this.props.getBlocksPerHour(nextProps.channel.currentChannel);
-      this.props.getBlocksPerMin(nextProps.channel.currentChannel);
-      this.props.getChaincodeList(nextProps.channel.currentChannel);
-      this.props.getChannels()
-      this.props.getDashStats(nextProps.channel.currentChannel);
-      this.props.getPeerList(nextProps.channel.currentChannel);
-      this.props.getPeerStatus(nextProps.channel.currentChannel);
-      this.props.getTransactionList(nextProps.channel.currentChannel, 0);
-      this.props.getTransactionByOrg(nextProps.channel.currentChannel);
-      this.props.getTransactionPerHour(nextProps.channel.currentChannel);
-      this.props.getTransactionPerMin(nextProps.channel.currentChannel);
-    }
+
   }
 
   render() {
     return (
-      <div className="landing" >
-        <img src={Logo} style={this.state.logoStyle} alt="Hyperledger Logo" />
-        <Slider {...this.state.settings}>
-          <div><h3>ACCESSING THE NETWORK</h3></div>
-          <div><h3>CONNECTING TO CHANNEL</h3></div>
-          <div><h3>LOADING BLOCKS</h3></div>
-        </Slider>
+      <div className="landingBackground">
+        <div className="landing" >
+          <img src={Logo} style={this.state.logoStyle} alt="Hyperledger Logo" />
+          <Slider {...this.state.settings}>
+            <div><h3>ACCESSING THE NETWORK</h3></div>
+            <div><h3>CONNECTING TO CHANNEL</h3></div>
+            <div><h3>LOADING BLOCKS</h3></div>
+          </Slider>
+        </div>
       </div>
     );
   }
@@ -93,13 +104,15 @@ export class LandingPage extends Component {
 
 export default connect((state) => ({
   channel: getChannel(state),
-  channelList: getChannelList,
+  channelList: getChannelList(state),
   dashStats: getDashStats(state)
 }), {
     getBlockList: blockList,
     getBlocksPerHour: blockPerHour,
     getBlocksPerMin: blockPerMin,
     getChaincodeList: chaincodeList,
+    getChannelList: channelList,
+    getChannel: channel,
     getChannels: channels,
     getDashStats: dashStats,
     getPeerList: peerList,
