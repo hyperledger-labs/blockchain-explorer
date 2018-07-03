@@ -4,7 +4,7 @@
 
 var Persist = require('./postgreSQL/Persist.js');
 
-class PersistanceFactory {
+class PersistenceFactory {
 
     static async create(db) {
 
@@ -18,4 +18,4 @@ class PersistanceFactory {
     }
 }
 
-module.exports = PersistanceFactory;
+module.exports = PersistenceFactory;

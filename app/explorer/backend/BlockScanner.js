@@ -40,9 +40,9 @@ var myEnum = new Enum({
 
 class BlockScanner {
 
-    constructor(platform, persistance, broadcaster) {
+    constructor(platform, persistence, broadcaster) {
         this.proxy = platform.getDefaultProxy();
-        this.crudService = persistance.getCrudService();
+        this.crudService = persistence.getCrudService();
         this.broadcaster = broadcaster;
     }
 
