@@ -6,67 +6,40 @@ import types from './types'
 
 const getBlockList = (blockList) => ({
   type: types.BLOCK_LIST,
-  payload: {
-    blockList
-  }
+  payload: blockList
 })
 
 const getChaincodeList = (chaincodeList) => ({
   type: types.CHAINCODE_LIST,
-  payload: {
-    chaincodeList
-  }
-})
-
-const getChannel = (channel) => ({
-  type: types.CHANNEL,
-  payload: {
-    channel
-  }
-})
-
-const getChannelList = (channelList) => ({
-  type: types.CHANNEL_LIST,
-  payload: {
-    channelList
-  }
+  payload: chaincodeList
 })
 
 const getChannels = (channels) => ({
   type: types.CHANNELS,
-  payload: {
-    channels
-  }
+  payload: channels
 })
 
 const getPeerList = (peerList) => ({
   type: types.PEER_LIST,
-  payload: {
-    peerList
-  }
+  payload: peerList
 })
 
-const getTransactionInfo = (transactionInfo) => ({
-  type: types.TRANSACTION_INFO,
-  payload: {
-    transactionInfo
-  }
+const getTransaction = (transaction) => ({
+  type: types.TRANSACTION,
+  payload: transaction
 })
 
-const getTransactionList = (transactionList) = ({
+
+const getTransactionList = (transactionList) => ({
   type: types.TRANSACTION_LIST,
-  payload: {
-    transactionList
-  }
+  payload: transactionList
 })
 
 export default {
   getBlockList,
   getChaincodeList,
-  getChannel,
-  getChannelList,
   getChannels,
   getPeerList,
-  getTransactionInfo,
+  getTransaction,
   getTransactionList
 }

@@ -13,7 +13,7 @@ const InitialState = new Record({
 });
 
 const block = handleActions({
-    [actionTypes.BLOCK_INFO_POST]: (state = InitialState(), action) => state
+    [actionTypes.BLOCK_INFO]: (state = InitialState(), action) => state
         .set('loaded', true)
         .set('block', action.payload)
         .set('errors', action.error),

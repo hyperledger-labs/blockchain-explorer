@@ -36,10 +36,10 @@ export class DashboardView extends Component {
     if (blockList !== undefined) {
       for (
         let i = 0;
-        i < 3 && this.props.blockList && this.props.blockList[i];
+        i < 3 && blockList && blockList[i];
         i++
       ) {
-        const block = this.props.blockList[i];
+        const block = blockList[i];
         const notify = {
           title: `Block ${block.blocknum} `,
           type: "block",
@@ -70,7 +70,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.latestBlock}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.latestBlock}</h1>
                     </Col>
                   </Row>
                   BLOCKS
@@ -83,7 +83,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.txCount}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.txCount}</h1>
                     </Col>
                   </Row>
                   TRANSACTIONS
@@ -96,7 +96,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.peerCount}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.peerCount}</h1>
                     </Col>
                   </Row>
                   NODES
@@ -109,8 +109,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.chaincodeCount}</h1>
-
+                      <h1 className="stat-count">{this.props.dashStats.chaincodeCount}</h1>
                     </Col>
                   </Row>
                   CHAINCODES
@@ -135,9 +134,9 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-		<h5 className="org-header">Transactions by Organziation</h5>
-                   <hr />
-                <OrgPieChart txByOrg={this.props.txByOrg} />
+                <h5 className="org-header">Transactions by Organziation</h5>
+                <hr />
+                <OrgPieChart transactionByOrg={this.props.transactionByOrg} />
               </Card>
             </Col>
           </Row>

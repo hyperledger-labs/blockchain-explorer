@@ -10,10 +10,7 @@ const setup = () => {
   const props = {
     getChangeChannel: jest.fn(),
     channel: { currentChannel: 'mychannel' },
-    channelList: {
-      channels: ['mychannel'],
-      status: 200
-    },
+    channelList: ['mychannel'],
     classes: {
       margin: 'Connect-HeaderView--margin-1',
       padding: 'Connect-HeaderView--padding-2'
@@ -21,7 +18,7 @@ const setup = () => {
     getNotification: jest.fn(),
     notification: {},
     getPeerList: jest.fn(),
-    getCountHeader: jest.fn(),
+    getDashStats: jest.fn(),
     getPeerStatus: jest.fn(),
     getTxPerHour: jest.fn(),
     getTxPerMin: jest.fn(),

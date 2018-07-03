@@ -60,13 +60,11 @@ const setup = () => {
       }
     ],
     channel: { currentChannel: 'mychannel' },
-    countHeader: {
-      countHeader: {
-        chaincodeCount: '3',
-        latestBlock: 12,
-        peerCount: '4',
-        txCount: '33'
-      }
+    dashStats: {
+      chaincodeCount: '3',
+      latestBlock: 12,
+      peerCount: '4',
+      txCount: '33'
     },
     getTxByOrg: jest.fn()
   }

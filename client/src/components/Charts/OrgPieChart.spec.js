@@ -6,7 +6,7 @@ import OrgPieChart from './OrgPieChart';
 
 const setup = () => {
   const props = {
-    txByOrg: [
+    transactionByOrg: [
       {
         count: "3",
         creator_msp_id: "OrdererMSP"

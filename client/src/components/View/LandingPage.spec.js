@@ -7,17 +7,18 @@ import { LandingPage } from './LandingPage';
 const setup = () => {
   const props = {
     channel: { currentChannel: 'mychannel' },
-    getCountHeader: jest.fn(),
-    getTxPerHour: jest.fn(),
-    getTxPerMin: jest.fn(),
+    getBlockList: jest.fn(),
     getBlocksPerHour: jest.fn(),
     getBlocksPerMin: jest.fn(),
-    getTransactionList: jest.fn(),
-    getBlockList: jest.fn(),
+    getChaincodeList: jest.fn(),
+    getChannels: jest.fn(),
+    getDashStats: jest.fn(),
     getPeerList: jest.fn(),
-    getChaincodes: jest.fn(),
-    getTxByOrg: jest.fn(),
-    getPeerStatus: jest.fn()
+    getPeerStatus: jest.fn(),
+    getTransactionByOrg: jest.fn(),
+    getTransactionList: jest.fn(),
+    getTransactionPerHour: jest.fn(),
+    getTransactionPerMin: jest.fn(),
   }
 
   const wrapper = shallow(<LandingPage {...props} />);
@@ -38,31 +39,33 @@ describe('LandingPage', () => {
     const { wrapper, props } = setup();
     const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: newChannel })
-    expect(props.getTxByOrg).toHaveBeenCalled();
-    expect(props.getChaincodes).toHaveBeenCalled();
-    expect(props.getPeerList).toHaveBeenCalled();
     expect(props.getBlockList).toHaveBeenCalled();
-    expect(props.getTransactionList).toHaveBeenCalled();
-    expect(props.getBlocksPerMin).toHaveBeenCalled();
     expect(props.getBlocksPerHour).toHaveBeenCalled();
-    expect(props.getTxPerHour).toHaveBeenCalled();
-    expect(props.getTxPerMin).toHaveBeenCalled();
-    expect(props.getCountHeader).toHaveBeenCalled();
+    expect(props.getBlocksPerMin).toHaveBeenCalled();
+    expect(props.getChaincodeList).toHaveBeenCalled();
+    expect(props.getChannels).toHaveBeenCalled();
+    expect(props.getDashStats).toHaveBeenCalled();
+    expect(props.getPeerList).toHaveBeenCalled();
+    expect(props.getPeerStatus).toHaveBeenCalled();
+    expect(props.getTransactionByOrg).toHaveBeenCalled();
+    expect(props.getTransactionList).toHaveBeenCalled();
+    expect(props.getTransactionPerHour).toHaveBeenCalled();
+    expect(props.getTransactionPerMin).toHaveBeenCalled();
   })
 
-  test('component receives new channel', () => {
+  test('component receives the same channel', () => {
     const { wrapper, props } = setup();
-    const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: props.channel })
-    expect(props.getTxByOrg).not.toHaveBeenCalled();
-    expect(props.getChaincodes).not.toHaveBeenCalled();
-    expect(props.getPeerList).not.toHaveBeenCalled();
     expect(props.getBlockList).not.toHaveBeenCalled();
-    expect(props.getTransactionList).not.toHaveBeenCalled();
-    expect(props.getBlocksPerMin).not.toHaveBeenCalled();
     expect(props.getBlocksPerHour).not.toHaveBeenCalled();
-    expect(props.getTxPerHour).not.toHaveBeenCalled();
-    expect(props.getTxPerMin).not.toHaveBeenCalled();
-    expect(props.getCountHeader).not.toHaveBeenCalled();
+    expect(props.getBlocksPerMin).not.toHaveBeenCalled();
+    expect(props.getChaincodeList).not.toHaveBeenCalled();
+    expect(props.getDashStats).not.toHaveBeenCalled();
+    expect(props.getPeerList).not.toHaveBeenCalled();
+    expect(props.getPeerStatus).not.toHaveBeenCalled();
+    expect(props.getTransactionByOrg).not.toHaveBeenCalled();
+    expect(props.getTransactionList).not.toHaveBeenCalled();
+    expect(props.getTransactionPerHour).not.toHaveBeenCalled();
+    expect(props.getTransactionPerMin).not.toHaveBeenCalled();
   })
 });

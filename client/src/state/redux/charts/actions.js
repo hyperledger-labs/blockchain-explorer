@@ -1,6 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+
 import * as types from "./types";
 
  const getBlockPerHour = (blockPerHour) => ({
@@ -25,7 +26,7 @@ import * as types from "./types";
 
 const getTransactionByOrg = (transactionByOrg) => ({
     type: types.TRANSACTION_CHART_ORG,
-    payload:{transactionByOrg}
+    payload: transactionByOrg
 });
 
 const getNotification = (notification) => ({
@@ -33,9 +34,9 @@ const getNotification = (notification) => ({
     payload:{notification}
 });
 
-const getDashStats = (stats) => ({
+const getDashStats = (dashStats) => ({
     type: types.DASHBOARD_STATS,
-    payload:{stats}
+    payload: dashStats
 });
 
 const getChannel = (channel) => ({
@@ -43,10 +44,20 @@ const getChannel = (channel) => ({
     payload:{channel}
 });
 
+const getChannelList = (channelList) => ({
+    type: types.CHANNEL_LIST,
+    payload: channelList
+});
+
 const updateChannel = (channel) => ({
     type: types.CHANGE_CHANNEL,
     payload:{channel}
 });
+
+const getPeerStatus = (peerStatus) => ({
+    type: types.PEER_STATUS,
+    payload: peerStatus
+})
 
 export default {
     getBlockPerHour,
@@ -57,5 +68,7 @@ export default {
     getNotification,
     getDashStats,
     getChannel,
-    updateChannel
+    getChannelList,
+    updateChannel,
+    getPeerStatus
 };

@@ -9,7 +9,7 @@ import { get } from '../../../services/request.js';
 export const transactionInfo = (channel,txid) => dispatch => {
     get('/api/transaction/' + channel + '/' + txid )
         .then(resp => {
-            dispatch(createAction(actionTypes.TRANSACTION_POST)(resp))
+            dispatch(createAction(actionTypes.TRANSACTION_INFO)(resp))
         }).catch((error) => {
             console.error(error);
         })

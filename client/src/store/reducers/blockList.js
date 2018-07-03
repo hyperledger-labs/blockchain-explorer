@@ -14,7 +14,7 @@ const InitialState = new Record({
 })
 
 const blockList = handleActions({
-    [actionTypes.BLOCK_LIST_POST]: (state = InitialState(), action) => state
+    [actionTypes.BLOCK_LIST]: (state = InitialState(), action) => state
         .set('blockList', action.payload.rows)
         .set('loaded', true)
         .set('errors', action.error)

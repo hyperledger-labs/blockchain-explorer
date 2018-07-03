@@ -20,8 +20,8 @@ class Transactions extends Component {
     };
   }
 
-  handleDialogOpen = tid => {
-    this.props.getTransactionInfo(this.props.channel.currentChannel, tid);
+  handleDialogOpen = async (tid) => {
+    await this.props.getTransaction(this.props.channel.currentChannel, tid);
     this.setState({ dialogOpen: true });
   };
 

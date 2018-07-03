@@ -20,4 +20,9 @@ export const DASHBOARD_STATS = `${namespaces}/DASHBOARD_STATS`;
 /* Channel  */
 export const CHANNEL = `${namespaces}/CHANNEL`;
 export const CHANGE_CHANNEL = `${namespaces}/CHANGE_CHANNEL`;
+export const CHANNEL_LIST = `${namespaces}/CHANNEL_LIST`;
+
+export const PEER_STATUS = `${namespaces}/PEER_STATUS`
+
+
 

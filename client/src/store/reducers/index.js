@@ -36,6 +36,6 @@ export default combineReducers({
     chaincodes,
     notification,
     txByOrg,
-    channels, 
+    channels,
     peerStatus
 })

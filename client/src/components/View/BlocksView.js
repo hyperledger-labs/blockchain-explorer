@@ -40,9 +40,6 @@ const styles = theme => ({
 export class BlocksView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      activeView: 'Network',
-    }
   }
 
   render() {
@@ -55,7 +52,7 @@ export class BlocksView extends Component {
             blockList={this.props.blockList}
             channel={this.props.channel}
             transaction={this.props.transaction}
-            getTransactionInfo={this.props.getTransactionInfo} />
+            getTransaction={this.props.getTransaction} />
        </Card>
         </div>
       </div>

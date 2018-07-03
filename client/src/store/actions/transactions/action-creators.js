@@ -9,7 +9,7 @@ import { get } from '../../../services/request.js';
 export const transactionList = (channel) => dispatch => {
     get('/api/txList/'+channel+'/0/0/')
         .then(resp => {
-            dispatch(createAction(actionTypes.TX_LIST)(resp))
+            dispatch(createAction(actionTypes.TRANSACTION_LIST)(resp))
         }).catch((error) => {
             console.error(error);
         })

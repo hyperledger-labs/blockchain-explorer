@@ -9,8 +9,12 @@ import { get } from '../../../services/request.js';
 export const blockList = (channel) => dispatch => {
     get(`/api/blockAndTxList/${channel}/0`)
         .then(resp => {
-            dispatch(createAction(actionTypes.BLOCK_LIST_POST)(resp))
+            dispatch(createAction(actionTypes.BLOCK_LIST)(resp))
         }).catch((error) => {
             console.error(error);
         })
+}
+
+export default {
+    blockList
 }

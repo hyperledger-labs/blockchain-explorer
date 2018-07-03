@@ -23,25 +23,35 @@ import Button from 'material-ui/Button';
 import NotificationsPanel from '../Panels/NotificationsPanel';
 import Websocket from 'react-websocket';
 import Badge from 'material-ui/Badge';
-import { notification } from '../../store/actions/notification/action-creators';
-import { changeChannel } from '../../store/actions/channel/action-creators';
 import {
   getChannelList,
   getChannel,
   getNotification,
 } from '../../store/selectors/selectors'
-import { countHeader } from '../../store/actions/header/action-creators';
-import { peerList, peerStatus } from '../../store/actions/peer/action-creators';
-import { blockList } from '../../store/actions/block/action-creators';
-import { transactionList } from '../../store/actions/transactions/action-creators';
-import { chaincodes } from '../../store/actions/chaincodes/action-creators';
-import {
-  txByOrg,
-  blocksPerHour,
-  blocksPerMin,
-  txPerHour,
-  txPerMin
-} from '../../store/actions/charts/action-creators';
+import chartsOperations from '../../state/redux/charts/operations'
+import tablesOperations from '../../state/redux/tables/operations'
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+  transactionByOrg,
+  notification,
+  dashStats,
+  channel,
+  channelList,
+  changeChannel,
+  peerStatus
+} = chartsOperations
+
+const {
+  blockList,
+  chaincodeList,
+  channels,
+  peerList,
+  transactionInfo,
+  transactionList
+} = tablesOperations
 
 const styles = theme => ({
   margin: {
@@ -88,7 +98,7 @@ export class HeaderView extends Component {
 
   componentDidMount() {
     let arr = [];
-    this.props.channelList.channels.forEach(element => {
+    this.props.channelList.forEach(element => {
       arr.push({
         value: element,
         label: element
@@ -106,7 +116,7 @@ export class HeaderView extends Component {
 
   syncData(currentChannel) {
     this.props.getPeerList(currentChannel);
-    this.props.getCountHeader(currentChannel);
+    this.props.getDashStats(currentChannel);
     this.props.getPeerStatus(currentChannel);
     this.props.getTxPerHour(currentChannel);
     this.props.getTxPerMin(currentChannel);
@@ -244,15 +254,15 @@ export default compose(withStyles(styles), connect((state) => ({
 }), {
     getNotification: notification,
     getChangeChannel: changeChannel,
-    getCountHeader: countHeader,
-    getTxPerHour: txPerHour,
-    getTxPerMin: txPerMin,
-    getBlocksPerHour: blocksPerHour,
-    getBlocksPerMin: blocksPerMin,
+    getDashStats: dashStats,
+    getTxPerHour: transactionPerHour,
+    getTxPerMin: transactionPerMin,
+    getBlocksPerHour: blockPerHour,
+    getBlocksPerMin: blockPerMin,
     getTransactionList: transactionList,
     getBlockList: blockList,
     getPeerList: peerList,
     getPeerStatus: peerStatus,
-    getChaincodes: chaincodes,
-    getTxByOrg: txByOrg
+    getChaincodes: chaincodeList,
+    getTxByOrg: transactionByOrg
   }))(HeaderView)

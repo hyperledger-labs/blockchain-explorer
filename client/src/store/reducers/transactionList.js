@@ -15,7 +15,7 @@ const InitialState = new Record({
 })
 
 const transactionList = handleActions({
-    [actionTypes.TX_LIST]: (state = InitialState(), action) => {
+    [actionTypes.TRANSACTION_LIST]: (state = InitialState(), action) => {
         action.payload.rows.forEach( element => {
             element.createdt = moment(element.createdt).tz(moment.tz.guess()).format("M-D-YYYY h:mm A zz")
         })

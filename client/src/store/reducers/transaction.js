@@ -13,7 +13,7 @@ const InitialState = new Record({
 });
 
 const transaction = handleActions({
-    [actionTypes.TRANSACTION_POST]: (state = InitialState(), action) => state
+    [actionTypes.TRANSACTION_INFO]: (state = InitialState(), action) => state
         .set('loaded', true)
         .set('transaction', action.payload.row)
         .set('errors', action.error),

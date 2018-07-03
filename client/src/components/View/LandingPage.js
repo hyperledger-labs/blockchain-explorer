@@ -6,19 +6,33 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
 import Logo from '../../static/images/Explorer_Logo.svg';
-import { countHeader } from '../../store/actions/header/action-creators';
-import { peerList, peerStatus } from '../../store/actions/peer/action-creators';
-import { blockList } from '../../store/actions/block/action-creators';
-import { transactionList } from '../../store/actions/transactions/action-creators';
-import { chaincodes } from '../../store/actions/chaincodes/action-creators';
-import { txByOrg } from '../../store/actions/charts/action-creators';
-import {
-  blocksPerHour,
-  blocksPerMin,
-  txPerHour,
-  txPerMin
-} from '../../store/actions/charts/action-creators';
-import { getCountHeader, getChannel } from '../../store/selectors/selectors';
+import { getDashStats, getChannel, getChannelList } from '../../store/selectors/selectors';
+import chartsOperations from '../../state/redux/charts/operations'
+import tablesOperations from '../../state/redux/tables/operations'
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+  transactionByOrg,
+  notification,
+  dashStats,
+  channel,
+  channelList,
+  changeChannel,
+  peerStatus
+} = chartsOperations
+
+const {
+  blockList,
+  chaincodeList,
+  channels,
+  peerList,
+  transactionInfo,
+  transactionList
+} = tablesOperations
+
+
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -42,19 +56,24 @@ export class LandingPage extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.getChannels()
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.props.getPeerList(nextProps.channel.currentChannel);
-      this.props.getCountHeader(nextProps.channel.currentChannel);
-      this.props.getPeerStatus(nextProps.channel.currentChannel);
-      this.props.getTxPerHour(nextProps.channel.currentChannel);
-      this.props.getTxPerMin(nextProps.channel.currentChannel);
+      this.props.getBlockList(nextProps.channel.currentChannel, 0);
       this.props.getBlocksPerHour(nextProps.channel.currentChannel);
       this.props.getBlocksPerMin(nextProps.channel.currentChannel);
+      this.props.getChaincodeList(nextProps.channel.currentChannel);
+      this.props.getChannels()
+      this.props.getDashStats(nextProps.channel.currentChannel);
+      this.props.getPeerList(nextProps.channel.currentChannel);
+      this.props.getPeerStatus(nextProps.channel.currentChannel);
       this.props.getTransactionList(nextProps.channel.currentChannel, 0);
-      this.props.getBlockList(nextProps.channel.currentChannel, 0);
-      this.props.getTxByOrg(nextProps.channel.currentChannel);
-      this.props.getChaincodes(nextProps.channel.currentChannel);
+      this.props.getTransactionByOrg(nextProps.channel.currentChannel);
+      this.props.getTransactionPerHour(nextProps.channel.currentChannel);
+      this.props.getTransactionPerMin(nextProps.channel.currentChannel);
     }
   }
 
@@ -74,17 +93,19 @@ export class LandingPage extends Component {
 
 export default connect((state) => ({
   channel: getChannel(state),
-  countHeader: getCountHeader(state)
+  channelList: getChannelList,
+  dashStats: getDashStats(state)
 }), {
-  getCountHeader: countHeader,
-  getTxPerHour: txPerHour,
-  getTxPerMin: txPerMin,
-  getBlocksPerHour: blocksPerHour,
-  getBlocksPerMin: blocksPerMin,
-  getTransactionList: transactionList,
-  getBlockList: blockList,
-  getPeerList: peerList,
-  getPeerStatus: peerStatus,
-  getChaincodes: chaincodes,
-  getTxByOrg: txByOrg
-})(LandingPage)
+    getBlockList: blockList,
+    getBlocksPerHour: blockPerHour,
+    getBlocksPerMin: blockPerMin,
+    getChaincodeList: chaincodeList,
+    getChannels: channels,
+    getDashStats: dashStats,
+    getPeerList: peerList,
+    getPeerStatus: peerStatus,
+    getTransactionByOrg: transactionByOrg,
+    getTransactionList: transactionList,
+    getTransactionPerHour: transactionPerHour,
+    getTransactionPerMin: transactionPerMin,
+  })(LandingPage)

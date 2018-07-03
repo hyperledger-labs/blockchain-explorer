@@ -20,19 +20,11 @@ const chaincodeList = (channel) => (dispatch) => {
     })
 }
 
-const channelList = () => (dispatch) => {
-  get('/api/curChannel')
-    .then(resp => {
-      dispatch(actions.getChannelList(resp))
-    }).catch((error) => {
-      console.error(error)
-    })
-}
-
+//table channel
 const channels = () => (dispatch) => {
-  get('/api/channels/info')
+  return get('/api/channels/info')
     .then(resp => {
-      resp.forEach(element => {
+      resp.channels.forEach(element => {
         element.createdat = moment(element.createdat)
           .tz(moment.tz.guess())
           .format("M-D-YYYY h:mm A zz");
@@ -53,19 +45,19 @@ const peerList = (channel) => (dispatch) => {
     })
 }
 
-const transactionInfo = (channel, transactionId) => (dispatch) => {
-  get(`/api/transaction/${channel}/${transactionId}`)
+const transaction = (channel, transactionId) => (dispatch) => {
+  return get(`/api/transaction/${channel}/${transactionId}`)
     .then(resp => {
-      dispatch(actions.getTransactionInfo(resp))
+      dispatch(actions.getTransaction(resp))
     }).catch(error => {
       console.error(error)
     })
 }
 
 const transactionList = (channel) => (dispatch) => {
-  get(`/api/txList/${channel}/0/0/`)
+  return get(`/api/txList/${channel}/0/0/`)
     .then(resp => {
-      resp.forEach(element => {
+      resp.rows.forEach(element => {
         element.createdat = moment(element.createdat)
           .tz(moment.tz.guess())
           .format("M-D-YYYY h:mm A zz");
@@ -78,9 +70,8 @@ const transactionList = (channel) => (dispatch) => {
 export default {
   blockList,
   chaincodeList,
-  channelList,
   channels,
   peerList,
-  transactionInfo,
+  transaction,
   transactionList
 }

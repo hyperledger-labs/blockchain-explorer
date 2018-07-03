@@ -65,19 +65,19 @@ const dashStats = (channel) => (dispatch) => {
         })
 }
 
-const dashStats = (channel) => (dispatch) => {
-    get('/api/status/' + channel)
+const channel = () => dispatch => {
+    get('/api/curChannel')
         .then(resp => {
-            dispatch(actions.getDashStats(resp))
+            dispatch(actions.getChannel(resp) )
         }).catch((error) => {
             console.error(error);
         })
 }
 
-const channel = () => dispatch => {
-    get('/api/curChannel')
+const channelList = () => dispatch => {
+    get('/api/channels')
         .then(resp => {
-            dispatch(actions.getChannel(resp) )
+            dispatch(actions.getChannelList(resp) )
         }).catch((error) => {
             console.error(error);
         })
@@ -92,6 +92,15 @@ const changeChannel = (channel) => dispatch => {
         })
 }
 
+const peerStatus = (channel) => dispatch => {
+    get('/api/peersStatus/'+channel)
+    .then(resp => {
+        dispatch(actions.getPeerStatus(resp))
+    }).catch((error) => {
+        console.error(error);
+    })
+}
+
 export default {
     blockPerHour,
     blockPerMin,
@@ -101,5 +110,7 @@ export default {
     notification,
     dashStats,
     channel,
-    changeChannel
+    channelList,
+    changeChannel,
+    peerStatus
 };

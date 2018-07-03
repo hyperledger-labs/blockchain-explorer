@@ -42,6 +42,10 @@ export class ChannelsView extends Component {
     super(props);
   }
 
+  componentWillMount() {
+    this.props.getChannels()
+  }
+
   render() {
     return (
       <div className="view-fullwidth" >

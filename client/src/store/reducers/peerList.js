@@ -14,7 +14,7 @@ const InitialState = new Record({
 })
 
 const peerList = handleActions({
-    [actionTypes.PEER_LIST_POST]: (state = InitialState(), action) => state
+    [actionTypes.PEER_LIST]: (state = InitialState(), action) => state
         .set('peerList', action.payload.peers)
         .set('loaded', true)
         .set('errors', action.error)

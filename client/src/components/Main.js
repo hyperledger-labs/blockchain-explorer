@@ -12,13 +12,12 @@ import ChaincodeView from './View/ChaincodeView';
 import DashboardView from './View/DashboardView';
 import ChannelsView from './View/ChannelsView';
 import {
-  getBlock,
   getBlockList,
-  getChaincodes,
+  getChaincodeList,
   getChannelList,
   getChannel,
   getChannels,
-  getCountHeader,
+  getDashStats,
   getNotification,
   getPeerList,
   getTransaction,
@@ -26,26 +25,45 @@ import {
   getTxByOrg,
   getPeerStatus
 } from '../store/selectors/selectors';
-import { blockList } from '../store/actions/block/action-creators';
-import { chaincodes } from '../store/actions/chaincodes/action-creators';
-import { countHeader } from '../store/actions/header/action-creators';
-import { channelsData } from '../store/actions/channels/action-creators';
-import { latestBlock } from '../store/actions/latestBlock/action-creators';
-import { transactionInfo } from '../store/actions/transaction/action-creators';
-import { transactionList } from '../store/actions/transactions/action-creators';
-import { txByOrg } from '../store/actions/charts/action-creators';
+
+import chartsOperations from '../state/redux/charts/operations'
+import tablesOperations from '../state/redux/tables/operations'
+
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+  transactionByOrg,
+  notification,
+  dashStats,
+  channel,
+  channelList,
+  changeChannel,
+  peerStatus
+} = chartsOperations
+
+const {
+  blockList,
+  chaincodeList,
+  channels,
+  peerList,
+  transaction,
+  transactionList
+} = tablesOperations
+
 
 export const Main = (props) => {
   const blocksViewProps = {
     blockList: props.blockList,
     channel: props.channel,
     transaction: props.transaction,
-    getTransactionInfo: props.getTransactionInfo
+    getTransaction: props.getTransaction
   }
 
   const chaincodeViewProps = {
     channel: props.channel,
-    chaincodes: props.chaincodes
+    chaincodeList: props.chaincodeList
   }
 
   const channelsViewProps = {
@@ -54,11 +72,12 @@ export const Main = (props) => {
   }
 
   const dashboardViewProps = {
-    countHeader: props.countHeader,
+    dashStats: props.dashStats,
     channel: props.channel,
-    txByOrg: props.txByOrg,
+    transactionByOrg: props.transactionByOrg,
     blockList: props.blockList,
-    peerStatus : props.peerStatus
+    peerStatus : props.peerStatus,
+    getChannels: props.getChannels
   }
 
   const networkViewProps = {
@@ -69,7 +88,7 @@ export const Main = (props) => {
     channel: props.channel,
     transaction: props.transaction,
     transactionList: props.transactionList,
-    getTransactionInfo: props.getTransactionInfo,
+    getTransaction: props.getTransaction,
     getTransactionList: props.getTransactionList
   }
 
@@ -90,26 +109,26 @@ export const Main = (props) => {
 }
 
 export default connect((state) => ({
-  block: getBlock(state),
   blockList: getBlockList(state),
-  chaincodes: getChaincodes(state),
+  chaincodeList: getChaincodeList(state),
   channel: getChannel(state),
   channelList: getChannelList(state),
-  countHeader: getCountHeader(state),
+  channels: getChannels(state),
+  dashStats: getDashStats(state),
   notification: getNotification(state),
   peerList: getPeerList(state),
   peerStatus: getPeerStatus(state),
   transaction: getTransaction(state),
   transactionList: getTransactionList(state),
-  channels: getChannels(state),
-  txByOrg: getTxByOrg(state)
+  transactionByOrg: getTxByOrg(state)
 }), {
     getBlockList: blockList,
-    getChaincodes: chaincodes,
-    getCountHeader: countHeader,
-    getLatestBlock: latestBlock,
-    getTransactionInfo: transactionInfo,
+    getChaincodeList: chaincodeList,
+    getDashStats: dashStats,
+    // getLatestBlock: latestBlock,
+    getTransaction: transaction,
     getTransactionList: transactionList,
-    getChannels: channelsData,
-    getTxByOrg: txByOrg
+    getChannels: channels,
+    getTransactionByOrg: transactionByOrg,
+    getPeerStatus: peerStatus
   })(Main);
