@@ -193,8 +193,12 @@ word-wrap: break-word;
 }
 /* Landing page css */
 .landing{
+
     margin-top: 450px;
     margin-left: 550px;
+}
+.landingBackground{
+    background-color:#F0F5F9!important;
 }
 .landing > h1{
     font-size: 40pt;
@@ -323,6 +327,7 @@ svg.custom path.link {
     font-weight:400;
     letter-spacing:3px;
     padding-top:1%;
+    margin:0px
 }
 .dialog{
     border-style:solid;

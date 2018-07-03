@@ -11,9 +11,11 @@
 
 }
 /* Landing page css */
-.dark-theme .landingText{
+.dark-theme .landing{
     margin-top: 450px;
     margin-left: 550px;
+}
+.dark-theme .landingBackground{
     background-color:#F0F5F9!important;
 }
 
@@ -141,14 +143,17 @@
 .dark-theme .dialogTitle{
 
     text-align: center;
-    background-color:red!important;
-    color:#fff !important;
+    background-color:#242036!important;
+    color:#ffffff!important;
     font: bold 30px;
     font-weight:400;
     letter-spacing:3px;
     padding-top:1%;
+    margin:0px
 }
 .dark-theme .dialog{
+    background-color:#453E68!important;
+    color:#fff !important;
     border-style:solid;
     /* border-color: #B9D6E1; */
     border-color :#D8D6D6;
@@ -156,13 +161,26 @@
     filter: drop-shadow(0 0 0.75rem #D8D6D6);
 
 }
-
-.dark-theme .table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
+.dark-theme .dialog .card-body,.dark-theme .dialog .card, .dark-theme .card-body, .dark-theme .card{
+    background-color: #453E68!important;
+    color:#ffffff!important
+}
+.dark-theme .dialogCells{
+    color:#ffffff
+}
+.dark-theme .table-hover tbody tr:hover td,.dark-theme .table-hover tbody tr:hover th,.dark-theme .dialogCells:hover{
     transition:background-color 1s ease;
-    background-color:#53b4b1;
+    background-color:#5e558e!important;
     opacity:0.8
-
-
+}
+/*Notification Panel*/
+.dark-theme .notificationPanel{
+background-color:#5e558e!important;
+color:white!important;
+}
+.dark-theme .notificationTime{
+    color:#ffffff!important;
+    background-color:#242036!important
 }
 .dark-theme  .table-card{
     background-color: #453E68!important;
@@ -190,10 +208,10 @@ filter: "drop-shadow(0 0 0.75rem #D8D6D6)"
 .dark-theme .copyBtn{
     float:right;
     border-color:transparent;
-    color:#4c69c7;
+    color:#8d7af5!important;
 background-color:transparent;
 cursor:pointer;
-text-shadow: 1px 1px 2px rgba(129, 129, 129, 0.753);
+
 }
 .dark-theme .copyBtn:focus{
     outline:none
@@ -367,8 +385,6 @@ stroke-width:2!important;
 /* Timeline Stream Chart*/
 .dark-theme .timeline-event{
     word-wrap: break-word;
-    color:red;
-    background-color:orange
     }
     /*Admin Panel & Notification Panel */
     .dark-theme .admin-panel, .dark-theme  .notification-panel, .dark-theme  .MuiPaper-root-65{
@@ -377,4 +393,11 @@ stroke-width:2!important;
     }
     .dark-theme .admin-panelCurrent{
         color:rgb(42, 173, 230)!important;
+    }
+    .dark-theme .MuiDrawer-paper-54{
+        background-color:#5e558e!important;
+    }
+    .dark-theme .footer{
+        color:#ffffff!important;
+        background-color:#5e558e!important;
     }

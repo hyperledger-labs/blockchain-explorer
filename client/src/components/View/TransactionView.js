@@ -13,12 +13,8 @@ import moment from "moment-timezone";
 import {
   Table,
   Card,
-  CardText,
   CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button
-} from "reactstrap";
+  CardTitle } from "reactstrap";
 
 const styles = theme => ({
   root: {
@@ -45,16 +41,19 @@ export class TransactionView extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({ loading: false });
   }
+  componentWillMount() {
+    const theme = sessionStorage.getItem("toggleTheme") === "true";
+    this.setState({ toggleClass: theme });
+  }
 
   handleClose = () => {
     this.props.onClose();
   };
 
   render() {
-    const { classes } = this.props;
     if (this.props.transaction && !this.props.transaction.read_set) {
       return (
-        <div>
+        <div className={this.state.toggleClass ? "dark-theme" : ""}>
           <div>
             <CardTitle className="dialogTitle">
               <FontAwesome name="list-alt" className="listIcon" />Transaction
@@ -64,7 +63,7 @@ export class TransactionView extends Component {
               </button>
             </CardTitle>
             <div align="center">
-              <CardBody>
+              <CardBody className="card-body">
                 <span className="loading-wheel">
                   {" "}
                   <FontAwesome name="circle-o-notch" size="3x" spin />
@@ -76,83 +75,83 @@ export class TransactionView extends Component {
       );
     } else if (this.props.transaction) {
       return (
-        <div className="dialog">
-          <Card>
-            <CardTitle className="dialogTitle">
-              <FontAwesome name="list-alt" className="listIcon" />Transaction
-              Details
-              <button onClick={this.handleClose} className="closeBtn">
-                <FontAwesome name="close" />
-              </button>
-            </CardTitle>
-            <CardBody>
-              <Table striped hover responsive className="table-striped">
-                <tbody>
-                  <tr>
-                    <th>Transaction ID:</th>
-                    <td>
-                      {this.props.transaction.txhash}
-                      <button className="copyBtn">
-                        <CopyToClipboard text={this.props.transaction.txhash}>
-                          <FontAwesome name="copy" />
-                        </CopyToClipboard>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Validation Code:</th>
-                    <td>
-                      {this.props.transaction.validation_code}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Payload Proposal Hash:</th>
-                    <td>
-                      {this.props.transaction.payload_proposal_hash}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Creator MSP:</th>
-                    <td>{this.props.transaction.creator_msp_id}</td>
-                  </tr>
-                  <tr>
-                    <th>Endoser:</th>
-                    <td>{this.props.transaction.endorser_msp_id}</td>
-                  </tr>
-                  <tr>
-                    <th>Chaincode Name:</th>
-                    <td>{this.props.transaction.chaincodename}</td>
-                  </tr>
-                  <tr>
-                    <th>Type:</th>
-                    <td>{this.props.transaction.type}</td>
-                  </tr>
-                  <tr>
-                    <th>Time:</th>
-                    <td>
-                      {moment(this.props.transaction.createdt)
-                        .tz(moment.tz.guess())
-                        .format("M-D-YYYY h:mm A zz")}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th style={reads}>Reads:</th>
-                    <td>
-                      {" "}
-                      {this.props.transaction.read_set.map(function (
-                        item,
-                        index
-                      ) {
-                        return item === null ? (
-                          ""
-                        ) : (
+        <div className={this.state.toggleClass ? "dark-theme" : ""}>
+          <div className="dialog">
+            <Card>
+              <CardTitle className="dialogTitle">
+                <FontAwesome name="list-alt" className="listIcon" />Transaction
+                Details
+                <button onClick={this.handleClose} className="closeBtn">
+                  <FontAwesome name="close" />
+                </button>
+              </CardTitle>
+              <CardBody>
+                <Table striped hover responsive className="table-striped">
+                  <tbody>
+                    <tr>
+                      <th>Transaction ID:</th>
+                      <td>
+                        {this.props.transaction.txhash}
+                        <button className="copyBtn">
+                          <CopyToClipboard text={this.props.transaction.txhash}>
+                            <FontAwesome name="copy" />
+                          </CopyToClipboard>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Validation Code:</th>
+                      <td>{this.props.transaction.validation_code}</td>
+                    </tr>
+                    <tr>
+                      <th>Payload Proposal Hash:</th>
+                      <td>{this.props.transaction.payload_proposal_hash}</td>
+                    </tr>
+                    <tr>
+                      <th>Creator MSP:</th>
+                      <td>{this.props.transaction.creator_msp_id}</td>
+                    </tr>
+                    <tr>
+                      <th>Endoser:</th>
+                      <td>{this.props.transaction.endorser_msp_id}</td>
+                    </tr>
+                    <tr>
+                      <th>Chaincode Name:</th>
+                      <td>{this.props.transaction.chaincodename}</td>
+                    </tr>
+                    <tr>
+                      <th>Type:</th>
+                      <td>{this.props.transaction.type}</td>
+                    </tr>
+                    <tr>
+                      <th>Time:</th>
+                      <td>
+                        {moment(this.props.transaction.createdt)
+                          .tz(moment.tz.guess())
+                          .format("M-D-YYYY h:mm A zz")}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th style={reads}>Reads:</th>
+                      <td>
+                        {" "}
+                        {this.props.transaction.read_set.map(function(
+                          item,
+                          index
+                        ) {
+                          return item === null ? (
+                            ""
+                          ) : (
                             <li key={index}>
-                              <Typography variant="subheading">
+                              <Typography
+                                variant="subheading"
+                                className="dialogCells"
+                              >
                                 {" "}
                                 {item.chaincode}
                               </Typography>
                               <ul>
-                                {item.set.map(function (x, index) {
+                                {item.set.map(function(x, index) {
                                   var block_num = "";
                                   var tx_num = "";
                                   if (x.version !== null) {
@@ -162,80 +161,82 @@ export class TransactionView extends Component {
                                   return x === null ? (
                                     ""
                                   ) : (
-                                      <li key={index}>
-                                        key:{x.key} ,version:( block:{block_num},tx:{
-                                          tx_num
-                                        }){" "}
-                                      </li>
-                                    );
+                                    <li key={index}>
+                                      key:{x.key} ,version:( block:{block_num},tx:{
+                                        tx_num
+                                      }){" "}
+                                    </li>
+                                  );
                                 })}
                               </ul>
                               <br />
                             </li>
                           );
-                      })}
-                    </td>
-                  </tr>
-                  <tr>
-                    <th style={writes}>Writes:</th>
-                    <td>
-                      {" "}
-                      {this.props.transaction.write_set.map(function (
-                        item,
-                        index
-                      ) {
-                        return item === null ? (
-                          ""
-                        ) : (
+                        })}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th style={writes}>Writes:</th>
+                      <td>
+                        {" "}
+                        {this.props.transaction.write_set.map(function(
+                          item,
+                          index
+                        ) {
+                          return item === null ? (
+                            ""
+                          ) : (
                             <li key={index}>
-                              <Typography variant="subheading">
+                              <Typography
+                                variant="subheading"
+                                className="dialogCells"
+                              >
                                 {" "}
                                 {item.chaincode}
                               </Typography>
                               <ul>
-                                {item.set.map(function (x, index) {
+                                {item.set.map(function(x, index) {
                                   return x === null ? (
                                     ""
                                   ) : (
-                                      <li key={index}>
-                                        key:{x.key} ,is_delete:{x.is_delete.toString()},value:{
-                                          x.value
-                                        }{" "}
-                                      </li>
-                                    );
+                                    <li key={index}>
+                                      key:{x.key} ,is_delete:{x.is_delete.toString()},value:{
+                                        x.value
+                                      }{" "}
+                                    </li>
+                                  );
                                 })}
                               </ul>
                               <br />
                             </li>
                           );
-                      })}
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
+                        })}
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          </div>
         </div>
       );
     }
     return (
-      <div>
-        <div>
-          <CardTitle className="dialogTitle">
-            <FontAwesome name="list-alt" className="listIcon" />Transaction
-            Details
-            <button onClick={this.handleClose} className="closeBtn">
-              <FontAwesome name="close" />
-            </button>
-          </CardTitle>
-          <div align="center">
-            <CardBody>
-              <span className="loading-wheel">
-                {" "}
-                <FontAwesome name="circle-o-notch" size="3x" spin />
-              </span>
-            </CardBody>
-          </div>
+      <div className={this.state.toggleClass ? "dark-theme" : ""}>
+        <CardTitle className="dialogTitle">
+          <FontAwesome name="list-alt" className="listIcon" />Transaction
+          Details
+          <button onClick={this.handleClose} className="closeBtn">
+            <FontAwesome name="close" />
+          </button>
+        </CardTitle>
+        <div align="center">
+          <CardBody className="card-body">
+            <span className="loading-wheel">
+              {" "}
+              <FontAwesome name="circle-o-notch" size="3x" spin />
+            </span>
+          </CardBody>
         </div>
       </div>
     );
@@ -247,4 +248,3 @@ TransactionView.propTypes = {
 };
 
 export default withStyles(styles)(TransactionView);
-
