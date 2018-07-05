@@ -20,12 +20,12 @@ class CRUDService {
     }
 
     getTransactionByID(channelName, txhash) {
-        let sqlTxById = ` select * from TRANSACTION where txhash = '${txhash}' `;
+        let sqlTxById = ` select txhash,validation_code,payload_proposal_hash,creator_msp_id,endorser_msp_id,chaincodename,type,createdt,read_set,write_set from TRANSACTION where txhash = '${txhash}' `;
         return sql.getRowByPkOne(sqlTxById);
     }
 
     getTxList(channelName, blockNum, txid) {
-        let sqlTxList = ` select * from transaction where  blockid >= ${blockNum} and id >= ${txid} and
+        let sqlTxList = ` select creator_msp_id,channelname,txhash,type,chaincodename,createdt from transaction where  blockid >= ${blockNum} and id >= ${txid} and
         genesis_block_hash = '${channelName}'  order by  transaction.id desc`;
         return sql.getRowsBySQlQuery(sqlTxList);
 
@@ -33,8 +33,8 @@ class CRUDService {
 
     getBlockAndTxList(channelName, blockNum) {
 
-        let sqlBlockTxList = ` select blocks.*,(
-        SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = blocks.genesis_block_hash group by transaction.blockid )  from blocks where
+        let sqlBlockTxList = ` select blocks.blocknum,blocks.channelname ,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,(
+        SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transaction.blockid )  from blocks where
          blocks.genesis_block_hash ='${channelName}' and blocknum >= ${blockNum}
          order by blocks.blocknum desc`;
         return sql.getRowsBySQlQuery(sqlBlockTxList);

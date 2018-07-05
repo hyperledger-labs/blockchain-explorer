@@ -56,3 +56,12 @@ CREATE INDEX ON Transaction (createdt);
 
 DROP INDEX IF EXISTS transaction_blockid_idx;
 CREATE INDEX ON Transaction (blockid);
+
+DROP INDEX IF EXISTS transaction_chaincode_proposal_input_idx;
+CREATE INDEX ON Transaction (chaincode_proposal_input);
+
+DROP INDEX IF EXISTS channel_genesis_block_hash_idx;
+CREATE INDEX ON channel (genesis_block_hash);
+
+DROP INDEX IF EXISTS channel_channel_hash_idx;
+CREATE INDEX ON channel (channel_hash);

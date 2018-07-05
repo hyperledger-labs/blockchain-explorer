@@ -21,7 +21,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 ```
 ├── app            	 Application backend root
 	├── explorer     Explorer configuration, REST API
-	├── persistance  Persistence layer
+	├── persistence  Persistence layer
 	├── platform     Platforms
 		├── fabric   Explorer API (Hyperledger Fabric)
 	├── test         Application backend test
@@ -54,8 +54,8 @@ Connect to PostgreSQL database.
 
 Run create database script.
 
-- `\i app/persistance/postgreSQL/db/explorerpg.sql`
-- `\i app/persistance/postgreSQL/db/updatepg.sql`
+- `\i app/persistence/postgreSQL/db/explorerpg.sql`
+- `\i app/persistence/postgreSQL/db/updatepg.sql`
 
 Run db status commands.
 
