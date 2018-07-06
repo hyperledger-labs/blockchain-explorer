@@ -20,7 +20,6 @@ class OrgPieChart extends Component {
   }
 
   orgDataSetup = (orgData) => {
-    console.log('orgDataetup', orgData)
     let temp = [];
     let index = 0;
     orgData.forEach(element => {
@@ -34,7 +33,9 @@ class OrgPieChart extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.orgDataSetup(nextProps.transactionByOrg)
+    if (nextProps.transactionByOrg !== this.props.transactionByOrg) {
+      this.orgDataSetup(nextProps.transactionByOrg)
+    }
   }
 
   componentDidMount() {
@@ -44,7 +45,7 @@ class OrgPieChart extends Component {
   render() {
     return (
       <div className="org-pie">
-        <PieChart width={485}  height={290} className="pie-chart">
+        <PieChart width={485} height={290} className="pie-chart">
           <Legend align="right" height={10} />
           <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label fill="fill" />
           <Tooltip />

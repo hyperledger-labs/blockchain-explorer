@@ -76,12 +76,12 @@ export class HeaderView extends Component {
       modalOpen: false,
       selectedChannel: "",
       isLight: true,
-      dashboard:"dashButtons activeTab",
-      network:"dashButtons",
-      transaction:"dashButtons",
-      channel:"dashButtons",
-      chaincode:"dashButtons",
-      block:"dashButtons"
+      dashboard: "dashButtons activeTab",
+      network: "dashButtons",
+      transaction: "dashButtons",
+      channel: "dashButtons",
+      chaincode: "dashButtons",
+      block: "dashButtons"
     };
   }
 
@@ -110,10 +110,10 @@ export class HeaderView extends Component {
 
     this.setState({ channels: arr });
     this.setState({ selectedChannel: this.props.currentChannel })
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
     setInterval(
       () => this.syncData(this.props.currentChannel),
-      30000
+      60000
     );
   }
 
@@ -183,30 +183,31 @@ export class HeaderView extends Component {
   handleChange = selectedChannel => {
     this.setState({ selectedChannel });
     this.props.getChangeChannel(selectedChannel.value);
+    this.syncData(selectedChannel.value);
   };
 
   enableTab = val => {
     const active = "dashButtons activeTab";
     const inactive = "dashButtons";
-    switch(val){
+    switch (val) {
       case 'dashboard':
-      this.setState({dashboard:active,network:inactive,transaction:inactive,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: active, network: inactive, transaction: inactive, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'network':
-      this.setState({dashboard:inactive,network:active,transaction:inactive,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: active, transaction: inactive, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'transaction':
-      this.setState({dashboard:inactive,network:inactive,transaction:active,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: active, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'chaincode':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:active,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: active, block: inactive, channel: inactive })
+        break;
       case 'block':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:inactive,block:active,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: inactive, block: active, channel: inactive })
+        break;
       case 'channel':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:inactive,block:inactive,channel:active})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: inactive, block: inactive, channel: active })
+        break;
     }
   }
 
@@ -272,51 +273,51 @@ export class HeaderView extends Component {
     );
 
     return (
-        <div>
-          {/* production */}
-          {/* development */}
-          <Websocket
-            url={webSocketUrl}
-            onMessage={this.handleData.bind(this)}
-            reconnect={true}
-          />
-          <Navbar className="navbar-header" expand="md" fixed="top">
-            <NavbarBrand href="/">
-              {" "}
-              <img src={Logo} className="logo" alt="Hyperledger Logo" />
-            </NavbarBrand>
-            <NavbarToggler onClick={this.toggle} />
-            <Nav className="ml-auto " navbar>
-              <Button href="#/"  onClick={() => this.enableTab('dashboard')} className={this.state.dashboard}>
-                DASHBOARD
+      <div>
+        {/* production */}
+        {/* development */}
+        <Websocket
+          url={webSocketUrl}
+          onMessage={this.handleData.bind(this)}
+          reconnect={true}
+        />
+        <Navbar className="navbar-header" expand="md" fixed="top">
+          <NavbarBrand href="/">
+            {" "}
+            <img src={Logo} className="logo" alt="Hyperledger Logo" />
+          </NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Nav className="ml-auto " navbar>
+            <Button href="#/" onClick={() => this.enableTab('dashboard')} className={this.state.dashboard}>
+              DASHBOARD
               </Button>
-              <Button href="#/network" onClick={() => this.enableTab('network')} className={this.state.network}>
-                NETWORK
+            <Button href="#/network" onClick={() => this.enableTab('network')} className={this.state.network}>
+              NETWORK
               </Button>
-              <Button href="#/blocks" onClick={() => this.enableTab('block')} className={this.state.block}>
-                BLOCKS
+            <Button href="#/blocks" onClick={() => this.enableTab('block')} className={this.state.block}>
+              BLOCKS
               </Button>
-              <Button href="#/transactions" onClick={() => this.enableTab('transaction')} className={this.state.transaction}>
-                TRANSACTIONS
+            <Button href="#/transactions" onClick={() => this.enableTab('transaction')} className={this.state.transaction}>
+              TRANSACTIONS
               </Button>
-              <Button href="#/chaincodes" onClick={() => this.enableTab('chaincode')} className={this.state.chaincode}>
-                CHAINCODES
+            <Button href="#/chaincodes" onClick={() => this.enableTab('chaincode')} className={this.state.chaincode}>
+              CHAINCODES
               </Button>
-              <Button href="#/channels" onClick={() => this.enableTab('channel')} className={this.state.channel}>
-                CHANNELS
+            <Button href="#/channels" onClick={() => this.enableTab('channel')} className={this.state.channel}>
+              CHANNELS
               </Button>
-              <div className="channel-dropdown">
-                <Select
-                  placeholder="Select Channel..."
-                  required={true}
-                  name="form-field-name"
-                  isLoading={this.state.isLoading}
-                  value={this.state.selectedChannel}
-                  onChange={this.handleChange}
-                  options={this.state.channels}
-                />
-              </div>
-              {
+            <div className="channel-dropdown">
+              <Select
+                placeholder="Select Channel..."
+                required={true}
+                name="form-field-name"
+                isLoading={this.state.isLoading}
+                value={this.state.selectedChannel}
+                onChange={this.handleChange}
+                options={this.state.channels}
+              />
+            </div>
+            {
               <div className="admin-buttons">
                 <FontAwesome
                   name="bell"
@@ -328,8 +329,8 @@ export class HeaderView extends Component {
                   badgeContent={this.state.notifyCount}
                   color="primary"
                 />
-              </div> }
-              {/*
+              </div>}
+            {/*
               //Use when Admin functionality is required
               <div className="admin-buttons">
                 <FontAwesome
@@ -338,35 +339,35 @@ export class HeaderView extends Component {
                   onClick={() => this.handleDrawOpen("adminDrawer")}
                 />
               </div> */}
-              <div className="admin-buttons theme-switch">
-                <FontAwesome name="sun-o" className="sunIcon" />
-                <Switch
-                  onChange={() => this.handleThemeChange()}
-                  checked={themeIcon}
-                />
-                <FontAwesome name="moon-o" className="moonIcon" />
-              </div>
-            </Nav>
-          </Navbar>
-          <Drawer
-            anchor="right"
-            open={this.state.notifyDrawer}
-            onClose={() => this.handleDrawClose("notifyDrawer")}
-          >
-            <div tabIndex={0} role="button">
-              <NotificationsPanel notifications={this.state.notifications} />
+            <div className="admin-buttons theme-switch">
+              <FontAwesome name="sun-o" className="sunIcon" />
+              <Switch
+                onChange={() => this.handleThemeChange()}
+                checked={themeIcon}
+              />
+              <FontAwesome name="moon-o" className="moonIcon" />
             </div>
-          </Drawer>
-          <Drawer
-            anchor="right"
-            open={this.state.adminDrawer}
-            onClose={() => this.handleDrawClose("adminDrawer")}
-          >
-            <div tabIndex={0} role="button">
-              <AdminPanel />
-            </div>
-          </Drawer>
-        </div>
+          </Nav>
+        </Navbar>
+        <Drawer
+          anchor="right"
+          open={this.state.notifyDrawer}
+          onClose={() => this.handleDrawClose("notifyDrawer")}
+        >
+          <div tabIndex={0} role="button">
+            <NotificationsPanel notifications={this.state.notifications} />
+          </div>
+        </Drawer>
+        <Drawer
+          anchor="right"
+          open={this.state.adminDrawer}
+          onClose={() => this.handleDrawClose("adminDrawer")}
+        >
+          <div tabIndex={0} role="button">
+            <AdminPanel />
+          </div>
+        </Drawer>
+      </div>
     );
   }
 }
