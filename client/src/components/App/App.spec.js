@@ -16,11 +16,11 @@ const setup = () => {
 };
 
 describe('App', () => {
-  test('setTimeout called', () => {
+ /*  test('setTimeout called', () => {
     const { wrapper } = setup();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 6000);
-  });
+  }); */
 
   test("App component should render", () => {
     const { wrapper } = setup();

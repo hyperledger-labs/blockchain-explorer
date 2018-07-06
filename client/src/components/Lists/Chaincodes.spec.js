@@ -9,7 +9,7 @@ jest.useFakeTimers();
 
 const setup = () => {
   const props = {
-    chaincodes: [
+    chaincodeList: [
       {
         chaincodename: 'mycc',
         channelName: 'mychannel',
@@ -130,7 +130,7 @@ describe('Chaincodes', () => {
     const { wrapper, chaincode } = setup()
     const chaincodes = [chaincode, chaincode, chaincode, chaincode, chaincode, chaincode]
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
-    wrapper.setProps({ chaincodes: chaincodes })
+    wrapper.setProps({ chaincodeList: chaincodes })
     expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
   })
 

@@ -14,9 +14,7 @@ const setup = () => {
       peerCount: '4',
       txCount: '36'
     },
-    channel: {
-      currentChannel: 'mychannel'
-    },
+    currentChannel: 'mychannel',
     transaction: {
       'id': 39,
       'channelname': 'mychannel',
@@ -131,9 +129,7 @@ const setup = () => {
       }
     ],
     getTransactionList: jest.fn(),
-    getTransactionInfo: jest.fn(),
-    handleDialogClose: jest.fn(),
-    removeTransactionInfo:jest.fn()
+    getTransaction: jest.fn()
   };
 
   const wrapper = mount(<Transactions {...props} />);
@@ -179,9 +175,9 @@ describe('Transactions', () => {
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
-  test('handleDialogOpen should set dialogOpen to true', () => {
+  test('handleDialogOpen should set dialogOpen to true', async () => {
     const { wrapper } = setup();
-    wrapper.instance().handleDialogOpen('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')
+    await wrapper.instance().handleDialogOpen('912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6')
     expect(wrapper.state('dialogOpen')).toBe(true);
     wrapper.update()
     expect(wrapper.find(TransactionView).exists()).toBe(true);
@@ -232,9 +228,9 @@ describe('Transactions', () => {
     expect(Object.values(wrapper.state('selection'))).toContain(true)
   })
 
-  test('click on transactionLink', () => {
+  test('click on transactionLink', async () => {
     const { wrapper } = setup();
-    wrapper.find('.transactionLink').at(0).simulate('click')
+    await wrapper.find('.transactionLink').at(0).simulate('click')
     expect(wrapper.state('dialogOpen')).toBe(true)
   })
 

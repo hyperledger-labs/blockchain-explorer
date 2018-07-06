@@ -8,7 +8,6 @@ import clientJson from '../../../package.json';
 import Version from '../../../src/FabricVerison';
 
 export class FooterView extends Component {
-
   handleChange = (selectedOption) => {
     this.setState({ selectedOption: selectedOption.value });
     this.props.getChangeChannel(selectedOption.value);
@@ -19,9 +18,7 @@ export class FooterView extends Component {
     this.setState({ isLight: theme });
   }
 
-
   render() {
-
     return (
       <div>
         <div class="footer">

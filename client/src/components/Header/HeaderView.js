@@ -2,47 +2,52 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import "react-select/dist/react-select.css";
-import React, { Component, PropTypes } from "react";
-import compose from "recompose/compose";
-import { connect } from "react-redux";
-import { withStyles } from "material-ui/styles";
-import Select from "react-select";
-import { Nav, Navbar, NavbarBrand, NavbarToggler } from "reactstrap";
-import { HashRouter as Router, Link } from "react-router-dom";
-import Switch from "material-ui/Switch";
-import AdminPanel from "../Panels/AdminPanel";
-import Logo from "../../static/images/Explorer_Logo.svg";
-import FontAwesome from "react-fontawesome";
-import Drawer from "material-ui/Drawer";
-import Button from "material-ui/Button";
-import NotificationsPanel from "../Panels/NotificationsPanel";
-import Websocket from "react-websocket";
-import Badge from "material-ui/Badge";
-import { notification } from "../../store/actions/notification/action-creators";
-import { changeChannel } from "../../store/actions/channel/action-creators";
+import 'react-select/dist/react-select.css';
+import React, { Component } from 'react';
+import compose from 'recompose/compose';
+import { connect } from 'react-redux';
+import { withStyles } from 'material-ui/styles';
+import Select from 'react-select';
 import {
-  getChannelList,
-  getChannel,
-  getNotification,
-  getCountHeader,
-  getChannels
-} from "../../store/selectors/selectors";
-import { countHeader } from "../../store/actions/header/action-creators";
-import { peerList, peerStatus } from "../../store/actions/peer/action-creators";
-import { blockList } from "../../store/actions/block/action-creators";
-import { transactionList } from "../../store/actions/transactions/action-creators";
-import { chaincodes } from "../../store/actions/chaincodes/action-creators";
-import { channelsData } from "../../store/actions/channels/action-creators";
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavbarToggler
+} from 'reactstrap';
+import { Link } from "react-router-dom";
+import Switch from 'material-ui/Switch';
+import AdminPanel from '../Panels/AdminPanel';
+import Logo from '../../static/images/Explorer_Logo.svg';
+import FontAwesome from 'react-fontawesome';
+import Drawer from 'material-ui/Drawer';
+import Button from 'material-ui/Button';
+import NotificationsPanel from '../Panels/NotificationsPanel';
+import Websocket from 'react-websocket';
+import Badge from 'material-ui/Badge';
+import { chartOperations, chartSelectors } from '../../state/redux/charts/';
+import { tableOperations, tableSelectors } from '../../state/redux/tables/';
 
-import {
-  txByOrg,
-  blocksPerHour,
-  blocksPerMin,
-  txPerHour,
-  txPerMin
-} from "../../store/actions/charts/action-creators";
-import { isNullOrUndefined } from "util";
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+  transactionByOrg,
+  dashStats,
+  changeChannel,
+  peerStatus
+} = chartOperations
+
+const {
+  blockList,
+  chaincodeList,
+  peerList,
+  transactionList
+} = tableOperations
+
+const { currentChannelSelector } = chartSelectors
+const { channelsSelector } = tableSelectors
+
 
 const styles = theme => ({
   margin: {
@@ -70,14 +75,14 @@ export class HeaderView extends Component {
       notifications: [],
       isLoading: true,
       modalOpen: false,
-      selectedOption: "",
+      selectedChannel: "",
       isLight: true,
-      dashboard:"dashButtons activeTab",
-      network:"dashButtons",
-      transaction:"dashButtons",
-      channel:"dashButtons",
-      chaincode:"dashButtons",
-      block:"dashButtons"
+      dashboard: "dashButtons activeTab",
+      network: "dashButtons",
+      transaction: "dashButtons",
+      channel: "dashButtons",
+      chaincode: "dashButtons",
+      block: "dashButtons"
     };
   }
 
@@ -88,7 +93,7 @@ export class HeaderView extends Component {
   };
 
   handleData(notification) {
-    this.props.getNotification(notification);
+    // this.props.getNotification(notification);
     let notifyArr = this.state.notifications;
     notifyArr.unshift(JSON.parse(notification));
     this.setState({ notifications: notifyArr });
@@ -96,28 +101,31 @@ export class HeaderView extends Component {
   }
 
   componentDidMount() {
-    this.props.getChannelsInfo();
-    setInterval(() => this.syncData(this.props.channel.currentChannel), 30000);
+    let arr = [];
+    this.props.channels.forEach(element => {
+      arr.push({
+        value: element.genesis_block_hash,
+        label: element.channelname
+      })
+    });
+
+    this.setState({ channels: arr });
+    this.setState({ selectedChannel: this.props.currentChannel })
+    this.setState({ isLoading: false });
+    setInterval(
+      () => this.syncData(this.props.currentChannel),
+      60000
+    );
   }
 
-  syncData() {
-    this.props.getChannelsInfo();
-    if (
-      this.props.channel.currentChannel != null &&
-      this.props.channel.currentChannel != undefined
-    ) {
-      this.props.getPeerList(this.props.channel.currentChannel);
-      this.props.getCountHeader(this.props.channel.currentChannel);
-      this.props.getPeerStatus(this.props.channel.currentChannel);
-      this.props.getTxPerHour(this.props.channel.currentChannel);
-      this.props.getTxPerMin(this.props.channel.currentChannel);
-      this.props.getBlocksPerHour(this.props.channel.currentChannel);
-      this.props.getBlocksPerMin(this.props.channel.currentChannel);
-      this.props.getTransactionList(this.props.channel.currentChannel, 0);
-      this.props.getBlockList(this.props.channel.currentChannel, 0);
-      this.props.getTxByOrg(this.props.channel.currentChannel);
-      this.props.getChaincodes(this.props.channel.currentChannel);
-    }
+  syncData(currentChannel) {
+    this.props.getBlockList(currentChannel, 0);
+    this.props.getChaincodeList(currentChannel);
+    this.props.getDashStats(currentChannel);
+    this.props.getPeerList(currentChannel);
+    this.props.getPeerStatus(currentChannel);
+    this.props.getTransactionByOrg(currentChannel);
+    this.props.getTransactionList(currentChannel, 0);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -130,8 +138,8 @@ export class HeaderView extends Component {
           label: element.channelname
         });
         if (
-          nextProps.channel.currentChannel == null ||
-          nextProps.channel.currentChannel == undefined
+          nextProps.currentChannel == null ||
+          nextProps.currentChannel == undefined
         ) {
           if (element.genesis_block_hash != null) {
             selectedValue = {
@@ -140,7 +148,7 @@ export class HeaderView extends Component {
             };
           }
         } else if (
-          element.genesis_block_hash === nextProps.channel.currentChannel
+          element.genesis_block_hash === nextProps.currentChannel
         ) {
           selectedValue = {
             value: element.genesis_block_hash,
@@ -151,8 +159,8 @@ export class HeaderView extends Component {
     }
 
     if (
-      nextProps.channel.currentChannel == null ||
-      nextProps.channel.currentChannel == undefined
+      nextProps.currentChannel == null ||
+      nextProps.currentChannel == undefined
     ) {
       this.props.getChangeChannel(selectedValue.value);
     }
@@ -160,41 +168,43 @@ export class HeaderView extends Component {
     this.setState({
       channels: options,
       isLoading: false,
-      selectedOption: selectedValue
+      selectedChannel: selectedValue
     });
     if (
-      nextProps.channel.currentChannel !== this.props.channel.currentChannel
+      nextProps.currentChannel !== this.props.currentChannel
     ) {
-      this.syncData(nextProps.channel.currentChannel);
+      this.syncData(nextProps.currentChannel);
     }
   }
 
-  handleChange = selectedOption => {
-    this.setState({ selectedOption });
-    this.props.getChangeChannel(selectedOption.value);
+  handleChange = selectedChannel => {
+    this.setState({ selectedChannel });
+    this.props.getChangeChannel(selectedChannel.value);
+    this.syncData(selectedChannel.value);
   };
+
   enableTab = val => {
     const active = "dashButtons activeTab";
     const inactive = "dashButtons";
-    switch(val){
+    switch (val) {
       case 'dashboard':
-      this.setState({dashboard:active,network:inactive,transaction:inactive,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: active, network: inactive, transaction: inactive, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'network':
-      this.setState({dashboard:inactive,network:active,transaction:inactive,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: active, transaction: inactive, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'transaction':
-      this.setState({dashboard:inactive,network:inactive,transaction:active,chaincode:inactive,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: active, chaincode: inactive, block: inactive, channel: inactive })
+        break;
       case 'chaincode':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:active,block:inactive,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: active, block: inactive, channel: inactive })
+        break;
       case 'block':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:inactive,block:active,channel:inactive})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: inactive, block: active, channel: inactive })
+        break;
       case 'channel':
-      this.setState({dashboard:inactive,network:inactive,transaction:inactive,chaincode:inactive,block:inactive,channel:active})
-      break;
+        this.setState({ dashboard: inactive, network: inactive, transaction: inactive, chaincode: inactive, block: inactive, channel: active })
+        break;
     }
   }
 
@@ -238,6 +248,7 @@ export class HeaderView extends Component {
       }
     }
   };
+
   handleThemeChange = () => {
     const theme =
       sessionStorage.getItem("toggleTheme") === "true" ? false : true;
@@ -259,51 +270,51 @@ export class HeaderView extends Component {
     );
 
     return (
-        <div>
-          {/* production */}
-          {/* development */}
-          <Websocket
-            url={webSocketUrl}
-            onMessage={this.handleData.bind(this)}
-            reconnect={true}
-          />
-          <Navbar className="navbar-header" expand="md" fixed="top">
-            <NavbarBrand href="/">
-              {" "}
-              <img src={Logo} className="logo" alt="Hyperledger Logo" />
-            </NavbarBrand>
-            <NavbarToggler onClick={this.toggle} />
-            <Nav className="ml-auto " navbar>
-              <Button href="#/"  onClick={() => this.enableTab('dashboard')} className={this.state.dashboard}>
-                DASHBOARD
+      <div>
+        {/* production */}
+        {/* development */}
+        <Websocket
+          url={webSocketUrl}
+          onMessage={this.handleData.bind(this)}
+          reconnect={true}
+        />
+        <Navbar className="navbar-header" expand="md" fixed="top">
+          <NavbarBrand href="/">
+            {" "}
+            <img src={Logo} className="logo" alt="Hyperledger Logo" />
+          </NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Nav className="ml-auto " navbar>
+            <Button href="#/" onClick={() => this.enableTab('dashboard')} className={this.state.dashboard}>
+              DASHBOARD
               </Button>
-              <Button href="#/network" onClick={() => this.enableTab('network')} className={this.state.network}>
-                NETWORK
+            <Button href="#/network" onClick={() => this.enableTab('network')} className={this.state.network}>
+              NETWORK
               </Button>
-              <Button href="#/blocks" onClick={() => this.enableTab('block')} className={this.state.block}>
-                BLOCKS
+            <Button href="#/blocks" onClick={() => this.enableTab('block')} className={this.state.block}>
+              BLOCKS
               </Button>
-              <Button href="#/transactions" onClick={() => this.enableTab('transaction')} className={this.state.transaction}>
-                TRANSACTIONS
+            <Button href="#/transactions" onClick={() => this.enableTab('transaction')} className={this.state.transaction}>
+              TRANSACTIONS
               </Button>
-              <Button href="#/chaincodes" onClick={() => this.enableTab('chaincode')} className={this.state.chaincode}>
-                CHAINCODES
+            <Button href="#/chaincodes" onClick={() => this.enableTab('chaincode')} className={this.state.chaincode}>
+              CHAINCODES
               </Button>
-              <Button href="#/channels" onClick={() => this.enableTab('channel')} className={this.state.channel}>
-                CHANNELS
+            <Button href="#/channels" onClick={() => this.enableTab('channel')} className={this.state.channel}>
+              CHANNELS
               </Button>
-              <div className="channel-dropdown">
-                <Select
-                  placeholder="Select Channel..."
-                  required={true}
-                  name="form-field-name"
-                  isLoading={this.state.isLoading}
-                  value={this.state.selectedOption}
-                  onChange={this.handleChange}
-                  options={this.state.channels}
-                />
-              </div>
-              {
+            <div className="channel-dropdown">
+              <Select
+                placeholder="Select Channel..."
+                required={true}
+                name="form-field-name"
+                isLoading={this.state.isLoading}
+                value={this.state.selectedChannel}
+                onChange={this.handleChange}
+                options={this.state.channels}
+              />
+            </div>
+            {
               <div className="admin-buttons">
                 <FontAwesome
                   name="bell"
@@ -315,8 +326,8 @@ export class HeaderView extends Component {
                   badgeContent={this.state.notifyCount}
                   color="primary"
                 />
-              </div> }
-              {/*
+              </div>}
+            {/*
               //Use when Admin functionality is required
               <div className="admin-buttons">
                 <FontAwesome
@@ -325,63 +336,53 @@ export class HeaderView extends Component {
                   onClick={() => this.handleDrawOpen("adminDrawer")}
                 />
               </div> */}
-              <div className="admin-buttons theme-switch">
-                <FontAwesome name="sun-o" className="sunIcon" />
-                <Switch
-                  onChange={() => this.handleThemeChange()}
-                  checked={themeIcon}
-                />
-                <FontAwesome name="moon-o" className="moonIcon" />
-              </div>
-            </Nav>
-          </Navbar>
-          <Drawer
-            anchor="right"
-            open={this.state.notifyDrawer}
-            onClose={() => this.handleDrawClose("notifyDrawer")}
-          >
-            <div tabIndex={0} role="button">
-              <NotificationsPanel notifications={this.state.notifications} />
+            <div className="admin-buttons theme-switch">
+              <FontAwesome name="sun-o" className="sunIcon" />
+              <Switch
+                onChange={() => this.handleThemeChange()}
+                checked={themeIcon}
+              />
+              <FontAwesome name="moon-o" className="moonIcon" />
             </div>
-          </Drawer>
-          <Drawer
-            anchor="right"
-            open={this.state.adminDrawer}
-            onClose={() => this.handleDrawClose("adminDrawer")}
-          >
-            <div tabIndex={0} role="button">
-              <AdminPanel />
-            </div>
-          </Drawer>
-        </div>
+          </Nav>
+        </Navbar>
+        <Drawer
+          anchor="right"
+          open={this.state.notifyDrawer}
+          onClose={() => this.handleDrawClose("notifyDrawer")}
+        >
+          <div tabIndex={0} role="button">
+            <NotificationsPanel notifications={this.state.notifications} />
+          </div>
+        </Drawer>
+        <Drawer
+          anchor="right"
+          open={this.state.adminDrawer}
+          onClose={() => this.handleDrawClose("adminDrawer")}
+        >
+          <div tabIndex={0} role="button">
+            <AdminPanel />
+          </div>
+        </Drawer>
+      </div>
     );
   }
 }
 
-export default compose(
-  withStyles(styles),
-  connect(
-    state => ({
-      channel: getChannel(state),
-      channelList: getChannelList(state),
-      channels: getChannels(state),
-      notification: getNotification(state)
-    }),
-    {
-      getNotification: notification,
-      getChangeChannel: changeChannel,
-      getCountHeader: countHeader,
-      getTxPerHour: txPerHour,
-      getTxPerMin: txPerMin,
-      getBlocksPerHour: blocksPerHour,
-      getBlocksPerMin: blocksPerMin,
-      getTransactionList: transactionList,
-      getBlockList: blockList,
-      getPeerList: peerList,
-      getPeerStatus: peerStatus,
-      getChaincodes: chaincodes,
-      getTxByOrg: txByOrg,
-      getChannelsInfo: channelsData
-    }
-  )
-)(HeaderView);
+export default compose(withStyles(styles), connect((state) => ({
+  currentChannel: currentChannelSelector(state),
+  channels: channelsSelector(state),
+}), {
+    getBlockList: blockList,
+    getBlocksPerHour: blockPerHour,
+    getBlocksPerMin: blockPerMin,
+    getChaincodeList: chaincodeList,
+    getChangeChannel: changeChannel, //not in syncdata
+    getDashStats: dashStats,
+    getPeerList: peerList,
+    getPeerStatus: peerStatus,
+    getTransactionByOrg: transactionByOrg,
+    getTransactionList: transactionList,
+    getTransactionPerHour: transactionPerHour,
+    getTransactionPerMin: transactionPerMin,
+  }))(HeaderView)
