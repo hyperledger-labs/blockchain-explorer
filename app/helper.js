@@ -52,18 +52,21 @@ var getLogger = function(moduleName) {
     appList.push(moduleName);
     var logger = log4js.getLogger(moduleName);
   }
-
+  var appLog = 'logs/app/app.log';
+  var dbLog = 'logs/db/db.log';
+  fs.ensureFileSync(appLog) ;
+  fs.ensureFileSync(dbLog);
   log4js.configure({
     appenders: [
       {
         type: "dateFile",
-        filename: "logs/app/app.log",
+        filename: appLog,
         pattern: "-yyyy-MM-dd",
         category: appList
       },
       {
         type: "dateFile",
-        filename: "logs/db/db.log",
+        filename: dbLog,
         pattern: "-yyyy-MM-dd",
         category: ["pgservice"]
       }
