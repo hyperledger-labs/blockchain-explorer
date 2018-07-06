@@ -35,11 +35,11 @@ describe('OrgPieChart', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  /* test('orgDataSetup gets called in componentWillReceiveProps when a new prop is set', () => {
+  test('orgDataSetup gets called in componentWillReceiveProps when a new prop is set', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance()
     const spy = jest.spyOn(instance, 'orgDataSetup');
-    const txByOrg = [
+    const transactionByOrg = [
         {
           count: "3",
           creator_msp_id: "OrdererMSP"
@@ -54,7 +54,7 @@ describe('OrgPieChart', () => {
         }
       ]
 
-    wrapper.setProps({ txByOrg });
+    wrapper.setProps({ transactionByOrg });
     expect(spy).toHaveBeenCalledTimes(1)
-  }) */
+  })
 })

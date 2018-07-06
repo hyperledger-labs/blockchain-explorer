@@ -1,6 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+
 const namespaces = 'charts';
 /* Analytics Charts */
 export const BLOCK_CHART_MIN = `${namespaces}/BLOCK_CHART_MIN`;
@@ -23,6 +24,3 @@ export const CHANGE_CHANNEL = `${namespaces}/CHANGE_CHANNEL`;
 export const CHANNEL_LIST = `${namespaces}/CHANNEL_LIST`;
 
 export const PEER_STATUS = `${namespaces}/PEER_STATUS`
-
-
-

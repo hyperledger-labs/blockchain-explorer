@@ -1,9 +1,9 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+
 import actions from "./actions";
 import { get } from '../../../services/request.js';
-
 
 const blockPerHour = (channel) => (dispatch) => {
    return get('/api/blocksByHour/' + channel + '/1')

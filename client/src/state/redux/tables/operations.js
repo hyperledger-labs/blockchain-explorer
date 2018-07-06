@@ -1,3 +1,7 @@
+/**
+ *    SPDX-License-Identifier: Apache-2.0
+ */
+
 import actions from './actions'
 import { get } from '../../../services/request.js';
 import moment from "moment-timezone";

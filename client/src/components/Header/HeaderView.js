@@ -24,12 +24,9 @@ import Button from 'material-ui/Button';
 import NotificationsPanel from '../Panels/NotificationsPanel';
 import Websocket from 'react-websocket';
 import Badge from 'material-ui/Badge';
-import {
-  getCurrentChannel,
-  getChannels
-} from '../../store/selectors/selectors'
-import chartsOperations from '../../state/redux/charts/operations';
-import tablesOperations from '../../state/redux/tables/operations';
+import { chartOperations, chartSelectors } from '../../state/redux/charts/';
+import { tableOperations, tableSelectors } from '../../state/redux/tables/';
+
 const {
   blockPerHour,
   blockPerMin,
@@ -39,14 +36,18 @@ const {
   dashStats,
   changeChannel,
   peerStatus
-} = chartsOperations
+} = chartOperations
 
 const {
   blockList,
   chaincodeList,
   peerList,
   transactionList
-} = tablesOperations
+} = tableOperations
+
+const { currentChannelSelector } = chartSelectors
+const { channelsSelector } = tableSelectors
+
 
 const styles = theme => ({
   margin: {
@@ -119,16 +120,12 @@ export class HeaderView extends Component {
 
   syncData(currentChannel) {
     this.props.getBlockList(currentChannel, 0);
-    // this.props.getBlocksPerHour(currentChannel);
-    // this.props.getBlocksPerMin(currentChannel);
     this.props.getChaincodeList(currentChannel);
     this.props.getDashStats(currentChannel);
     this.props.getPeerList(currentChannel);
     this.props.getPeerStatus(currentChannel);
     this.props.getTransactionByOrg(currentChannel);
     this.props.getTransactionList(currentChannel, 0);
-    // this.props.getTransactionPerHour(currentChannel);
-    // this.props.getTransactionPerMin(currentChannel);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -373,8 +370,8 @@ export class HeaderView extends Component {
 }
 
 export default compose(withStyles(styles), connect((state) => ({
-  currentChannel: getCurrentChannel(state),
-  channels: getChannels(state),
+  currentChannel: currentChannelSelector(state),
+  channels: channelsSelector(state),
 }), {
     getBlockList: blockList,
     getBlocksPerHour: blockPerHour,

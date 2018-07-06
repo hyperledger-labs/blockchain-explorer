@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
 import Logo from '../../static/images/Explorer_Logo.svg';
-import { getCurrentChannel } from '../../store/selectors/selectors';
-import chartsOperations from '../../state/redux/charts/operations'
-import tablesOperations from '../../state/redux/tables/operations'
+import { chartOperations } from '../../state/redux/charts/'
+import { tableOperations } from '../../state/redux/tables/'
+import { chartSelectors } from '../../state/redux/charts/'
 
 const {
   blockPerHour,
@@ -20,7 +20,7 @@ const {
   transactionByOrg,
   transactionPerHour,
   transactionPerMin
-} = chartsOperations
+} = chartOperations
 
 const {
   blockList,
@@ -28,7 +28,9 @@ const {
   channels,
   peerList,
   transactionList
-} = tablesOperations
+} = tableOperations
+
+const { currentChannelSelector } = chartSelectors
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -57,7 +59,7 @@ export class LandingPage extends Component {
     const currentChannel = this.props.currentChannel;
     await Promise.all([
       this.props.getBlockList(currentChannel),
-      this.props.getBlocksPerHour(currentChannel),
+      this.props.getBlocksPerMin(currentChannel),
       this.props.getBlocksPerHour(currentChannel),
       this.props.getChaincodeList(currentChannel),
       this.props.getChannelList(currentChannel),
@@ -90,7 +92,7 @@ export class LandingPage extends Component {
 }
 
 export default connect((state) => ({
-  currentChannel: getCurrentChannel(state),
+  currentChannel: currentChannelSelector(state),
 }), {
     getBlockList: blockList,
     getBlocksPerHour: blockPerHour,

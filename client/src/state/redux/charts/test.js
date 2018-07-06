@@ -7,7 +7,6 @@ var assert = require('assert');
 import reducer from "./reducers";
 import actions from "./actions";
 
-
 describe("chart reducers", function () {
     describe("initialize reducers", function () {
         const test = {

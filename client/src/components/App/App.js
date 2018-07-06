@@ -106,23 +106,3 @@ class App extends Component {
   }
 }
 export default App;
-/* export default connect((state) => ({
-  channel: getChannel(state),
-  channelList: getChannelList(state),
-  notification: getNotification(state)
-}), {
-    getBlockList: blockList,
-    getBlocksPerHour: blockPerHour,
-    getBlocksPerMin: blockPerMin,
-    getChaincodeList: chaincodeList,
-    getChannel: channel,
-    getChannelList: channelList,
-    getChannels: channels,
-    getDashStats: dashStats,
-    getPeerList: peerList,
-    getPeerStatus: peerStatus,
-    getTransactionByOrg: transactionByOrg,
-    getTransactionList: transactionList,
-    getTransactionPerHour: transactionPerHour,
-    getTransactionPerMin: transactionPerMin,
-  })(App); */

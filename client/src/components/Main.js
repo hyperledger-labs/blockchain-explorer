@@ -11,25 +11,29 @@ import TransactionsView from './View/TransactionsView';
 import ChaincodeView from './View/ChaincodeView';
 import DashboardView from './View/DashboardView';
 import ChannelsView from './View/ChannelsView';
-import {
-  getBlockList,
-  getChaincodeList,
-  getCurrentChannel,
-  getChannelList,
-  getChannels,
-  getDashStats,
-  getPeerList,
-  getPeerStatus,
-  getTransaction,
-  getTransactionList,
-  getTransactionByOrg,
-} from '../store/selectors/selectors';
+import { chartSelectors } from '../state/redux/charts/'
+import { tableOperations, tableSelectors } from '../state/redux/tables/'
 
-import tablesOperations from '../state/redux/tables/operations'
+const {
+  currentChannelSelector,
+  channelListSelector,
+  dashStatsSelector,
+  peerStatusSelector,
+  transactionByOrgSelector,
+} = chartSelectors
+
+const {
+  blockListSelector,
+  chaincodeListSelector,
+  channelsSelector,
+  peerListSelector,
+  transactionSelector,
+  transactionListSelector,
+} = tableSelectors
 
 const {
   transaction,
-} = tablesOperations
+} = tableOperations
 
 
 export const Main = (props) => {
@@ -83,17 +87,17 @@ export const Main = (props) => {
 };
 
 export default connect((state) => ({
-  blockList: getBlockList(state),
-  chaincodeList: getChaincodeList(state),
-  channelList: getChannelList(state),
-  channels: getChannels(state),
-  currentChannel: getCurrentChannel(state),
-  dashStats: getDashStats(state),
-  peerList: getPeerList(state),
-  peerStatus: getPeerStatus(state),
-  transaction: getTransaction(state),
-  transactionByOrg: getTransactionByOrg(state),
-  transactionList: getTransactionList(state)
+  blockList: blockListSelector(state),
+  chaincodeList: chaincodeListSelector(state),
+  channelList: channelListSelector(state),
+  channels: channelsSelector(state),
+  currentChannel: currentChannelSelector(state),
+  dashStats: dashStatsSelector(state),
+  peerList: peerListSelector(state),
+  peerStatus: peerStatusSelector(state),
+  transaction: transactionSelector(state),
+  transactionByOrg: transactionByOrgSelector(state),
+  transactionList: transactionListSelector(state)
 }), {
     getTransaction: transaction,
   })(Main);

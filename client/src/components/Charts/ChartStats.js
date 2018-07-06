@@ -13,21 +13,24 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
-import {
-  getBlockperHour,
-  getBlockPerMin,
-  getTransactionPerHour,
-  getTransactionPerMin,
-  getCurrentChannel
-} from '../../store/selectors/selectors';
+import { chartSelectors } from '../../state/redux/charts/'
 import classnames from 'classnames';
-import chartsOperations from '../../state/redux/charts/operations'
+import { chartOperations } from '../../state/redux/charts/'
+
 const {
   blockPerHour,
   blockPerMin,
   transactionPerHour,
   transactionPerMin,
-} = chartsOperations
+} = chartOperations
+
+const {
+  blockPerHourSelector,
+  blockPerMinSelector,
+  currentChannelSelector,
+  transactionPerHourSelector,
+  transactionPerMinSelector,
+} = chartSelectors
 
 export class ChartStats extends Component {
   constructor(props) {
@@ -169,11 +172,11 @@ export class ChartStats extends Component {
 
 export default connect(
   state => ({
-  blockPerHour: getBlockperHour(state),
-  blockPerMin: getBlockPerMin(state),
-  transactionPerHour: getTransactionPerHour(state),
-  transactionPerMin: getTransactionPerMin(state),
-  currentChannel: getCurrentChannel(state)
+  blockPerHour: blockPerHourSelector(state),
+  blockPerMin: blockPerMinSelector(state),
+  transactionPerHour: transactionPerHourSelector(state),
+  transactionPerMin: transactionPerMinSelector(state),
+  currentChannel: currentChannelSelector(state)
   }),
   {
     getBlocksPerHour: blockPerHour,
