@@ -20,21 +20,22 @@ class CRUDService {
     }
 
     getTransactionByID(channelName, txhash) {
-        let sqlTxById = ` select txhash,validation_code,payload_proposal_hash,creator_msp_id,endorser_msp_id,chaincodename,type,createdt,read_set,write_set from TRANSACTION where txhash = '${txhash}' `;
+        let sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,t.write_set,channel.name as channelname from TRANSACTION as t inner join channel on t.genesis_block_hash=channel.genesis_block_hash where t.txhash = '${txhash}' `;
         return sql.getRowByPkOne(sqlTxById);
     }
 
     getTxList(channelName, blockNum, txid) {
-        let sqlTxList = ` select creator_msp_id,channelname,txhash,type,chaincodename,createdt from transaction where  blockid >= ${blockNum} and id >= ${txid} and
-        genesis_block_hash = '${channelName}'  order by  transaction.id desc`;
+        let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelname from transaction as t  inner join channel on t.genesis_block_hash=channel.genesis_block_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and
+        t.genesis_block_hash = '${channelName}'  order by  t.id desc`;
         return sql.getRowsBySQlQuery(sqlTxList);
 
     }
 
     getBlockAndTxList(channelName, blockNum) {
 
-        let sqlBlockTxList = ` select blocks.blocknum,blocks.channelname ,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,(
-        SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transaction.blockid )  from blocks where
+        let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,(
+        SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transaction.blockid ),
+        channel.name as channelname  from blocks inner join channel on blocks.genesis_block_hash =channel.genesis_block_hash  where
          blocks.genesis_block_hash ='${channelName}' and blocknum >= ${blockNum}
          order by blocks.blocknum desc`;
         return sql.getRowsBySQlQuery(sqlBlockTxList);
@@ -76,11 +77,11 @@ class CRUDService {
 
     async saveBlock(block) {
 
-        let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${block.blockNum}' and txcount='${block.txCount}' and genesis_block_hash='${block.genesis_block_hash}' and prehash='${block.preHash}' and datahash='${block.dataHash}' and channelname='${block.channelName}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${block.blockNum}' and txcount='${block.txCount}'
+        and genesis_block_hash='${block.genesis_block_hash}' and prehash='${block.preHash}' and datahash='${block.dataHash}' `)
         if (c.c == 0) {
             await sql.saveRow('blocks', {
                 'blocknum': block.blockNum,
-                'channelname': block.channelName,
                 'prehash': block.preHash,
                 'datahash': block.dataHash,
                 'blockhash': block.blockhash,
@@ -97,7 +98,7 @@ class CRUDService {
 
     async saveTransaction(transaction) {
         await sql.saveRow('transaction', transaction);
-        await sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${transaction.chaincodename}' and genesis_block_hash='${transaction.genesis_block_hash}' and channelname='${transaction.channelname}' `);
+        await sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${transaction.chaincodename}' and genesis_block_hash='${transaction.genesis_block_hash}'`);
     }
 
 
@@ -123,7 +124,7 @@ class CRUDService {
 
     // ====================chaincodes=====================================
     async saveChaincode(chaincode) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and genesis_block_hash='${chaincode.genesis_block_hash}' and version='${chaincode.version}' and path='${chaincode.path}' and channelname='${chaincode.channelname}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and genesis_block_hash='${chaincode.genesis_block_hash}' and version='${chaincode.version}' and path='${chaincode.path}'`)
         if (c.c == 0) {
             await sql.saveRow('chaincodes', chaincode)
         }
@@ -147,7 +148,7 @@ class CRUDService {
     }
 
     async savePeer(peer) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from peer where name='${peer.name}'and genesis_block_hash='${peer.genesis_block_hash}' and requests='${peer.requests}' `)
+        let c = await sql.getRowByPkOne(`select count(1) as c from peer where genesis_block_hash='${peer.genesis_block_hash}' and requests='${peer.requests}' `)
         if (c.c == 0) {
             await sql.saveRow('peer', peer)
         }

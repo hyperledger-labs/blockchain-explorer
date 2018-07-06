@@ -93,7 +93,7 @@ export class HeaderView extends Component {
   };
 
   handleData(notification) {
-    this.props.getNotification(notification);
+    // this.props.getNotification(notification);
     let notifyArr = this.state.notifications;
     notifyArr.unshift(JSON.parse(notification));
     this.setState({ notifications: notifyArr });

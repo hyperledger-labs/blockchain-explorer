@@ -76,11 +76,12 @@ On another terminal.
 	example: "/home/user1/workspace/fabric-samples" for the following keys: "tls_cacerts", "key", "cert".
 	- Final path for key "tls_cacerts" will be:  "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt".
 - Modify "syncStartDate" to filter data by block timestamp
+- Default channel is "mychannel" - you can modify one of your default channel
 
-- Modify config.json to update one of the channel
-	- pg host, username, password details.
+- `cd blockchain-explorer/app/persistence/postgreSQL/db`
+- Modify pgconfig.json to update postgresql properties
+	- pg host, port,database,username, password details.
 ```json
- "channel": "mychannel",
  "pg": {
 		"host": "127.0.0.1",
 		"port": "5432",

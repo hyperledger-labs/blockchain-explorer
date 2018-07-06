@@ -25,22 +25,29 @@ ALTER TABLE channel ADD COLUMN channel_tx  bytea DEFAULT NULL;
 ALTER TABLE channel ADD COLUMN channel_version character varying(128) DEFAULT NULL;
 
 ALTER TABLE chaincodes ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
+ALTER TABLE chaincodes DROP COLUMN channelname ;
+
+ALTER TABLE peer DROP COLUMN name;
 ALTER TABLE peer ADD COLUMN genesis_block_hash character varying(256) DEFAULT NULL;
 ALTER TABLE Transaction ADD COLUMN validation_code character varying(50) DEFAULT NULL,
-ADD COLUMN envelope_signature character varying(800) DEFAULT NULL,
-ADD COLUMN payload_extension character varying(800) DEFAULT NULL,
-ADD COLUMN creator_id_bytes character varying(1000) DEFAULT NULL,
-ADD COLUMN creator_nonce character varying(800) DEFAULT NULL,
-ADD COLUMN chaincode_proposal_input character varying(800) DEFAULT NULL,
-ADD COLUMN payload_proposal_hash character varying(800) DEFAULT NULL,
-ADD COLUMN endorser_id_bytes character varying(1000) DEFAULT NULL,
-ADD COLUMN endorser_signature character varying(800) DEFAULT NULL;
+ADD COLUMN envelope_signature character varying DEFAULT NULL,
+ADD COLUMN payload_extension character varying DEFAULT NULL,
+ADD COLUMN creator_id_bytes character varying DEFAULT NULL,
+ADD COLUMN creator_nonce character varying DEFAULT NULL,
+ADD COLUMN chaincode_proposal_input character varying DEFAULT NULL,
+ADD COLUMN payload_proposal_hash character varying DEFAULT NULL,
+ADD COLUMN endorser_id_bytes character varying DEFAULT NULL,
+ADD COLUMN endorser_signature character varying DEFAULT NULL;
+
+ALTER TABLE transaction DROP COLUMN channelname;
+ALTER TABLE blocks DROP COLUMN channelname;
+
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;
 CREATE INDEX ON Blocks (blocknum);
 
-DROP INDEX IF EXISTS blocks_channelname_idx;
-CREATE INDEX ON Blocks (channelname);
+DROP INDEX IF EXISTS blocks_genesis_block_hash_idx;
+CREATE INDEX ON Blocks (genesis_block_hash);
 
 DROP INDEX IF EXISTS blocks_createdt_idx;
 CREATE INDEX ON Blocks (createdt);
@@ -48,8 +55,8 @@ CREATE INDEX ON Blocks (createdt);
 DROP INDEX IF EXISTS transaction_txhash_idx;
 CREATE INDEX ON Transaction (txhash);
 
-DROP INDEX IF EXISTS transaction_channelname_idx;
-CREATE INDEX ON Transaction (channelname);
+DROP INDEX IF EXISTS transaction_genesis_block_hash_idx;
+CREATE INDEX ON Transaction (genesis_block_hash);
 
 DROP INDEX IF EXISTS transaction_createdt_idx;
 CREATE INDEX ON Transaction (createdt);
