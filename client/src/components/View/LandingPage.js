@@ -6,21 +6,20 @@ import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
 import Logo from '../../static/images/Explorer_Logo.svg';
-import { getDashStats, getChannel, getChannelList } from '../../store/selectors/selectors';
+import { getCurrentChannel } from '../../store/selectors/selectors';
 import chartsOperations from '../../state/redux/charts/operations'
 import tablesOperations from '../../state/redux/tables/operations'
+
 const {
   blockPerHour,
   blockPerMin,
-  transactionPerHour,
-  transactionPerMin,
-  transactionByOrg,
-  notification,
-  dashStats,
   channel,
   channelList,
-  changeChannel,
-  peerStatus
+  dashStats,
+  peerStatus,
+  transactionByOrg,
+  transactionPerHour,
+  transactionPerMin
 } = chartsOperations
 
 const {
@@ -28,11 +27,8 @@ const {
   chaincodeList,
   channels,
   peerList,
-  transactionInfo,
   transactionList
 } = tablesOperations
-
-
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -57,10 +53,8 @@ export class LandingPage extends Component {
   }
 
   async componentDidMount() {
-    console.log("###load data start:");
     await this.props.getChannel();
-    console.log(this.props.channel);
-    var currentChannel = this.props.channel.currentChannel;
+    const currentChannel = this.props.currentChannel;
     await Promise.all([
       this.props.getBlockList(currentChannel),
       this.props.getBlocksPerHour(currentChannel),
@@ -75,15 +69,8 @@ export class LandingPage extends Component {
       this.props.getTransactionList(currentChannel),
       this.props.getTransactionPerHour(currentChannel),
       this.props.getTransactionPerMin(currentChannel)
-
     ])
     this.props.updateLoadStatus();
-    // this.setState({loading: false});
-
-  }
-
-  componentWillReceiveProps(nextProps) {
-
   }
 
   render() {
@@ -103,9 +90,7 @@ export class LandingPage extends Component {
 }
 
 export default connect((state) => ({
-  channel: getChannel(state),
-  channelList: getChannelList(state),
-  dashStats: getDashStats(state)
+  currentChannel: getCurrentChannel(state),
 }), {
     getBlockList: blockList,
     getBlocksPerHour: blockPerHour,

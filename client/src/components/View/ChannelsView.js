@@ -42,16 +42,12 @@ export class ChannelsView extends Component {
     super(props);
   }
 
-  componentWillMount() {
-    this.props.getChannels()
-  }
-
   render() {
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
           <Card className="table-card">
-            <Channels channels={this.props.channels} getChannels={this.props.getChannels} />
+            <Channels channels={this.props.channels} />
           </Card>
         </div>
       </div>

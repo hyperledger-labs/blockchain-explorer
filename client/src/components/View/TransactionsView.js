@@ -50,9 +50,8 @@ export class TransactionsView extends Component {
         <div className="view-display">
           <Card className="table-card">
             <Transactions
-              channel={this.props.channel}
+              currentChannel={this.props.currentChannel}
               transactionList={this.props.transactionList.rows}
-              getTransactionList={this.props.getTransactionList}
               transaction={this.props.transaction}
               getTransaction={this.props.getTransaction} />
           </Card>

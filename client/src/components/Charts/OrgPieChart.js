@@ -20,6 +20,7 @@ class OrgPieChart extends Component {
   }
 
   orgDataSetup = (orgData) => {
+    console.log('orgDataetup', orgData)
     let temp = [];
     let index = 0;
     orgData.forEach(element => {

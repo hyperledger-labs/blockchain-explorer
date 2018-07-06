@@ -50,7 +50,7 @@ export class BlocksView extends Component {
         <Card className="table-card">
           <Blocks
             blockList={this.props.blockList}
-            channel={this.props.channel}
+            currentChannel={this.props.currentChannel}
             transaction={this.props.transaction}
             getTransaction={this.props.getTransaction} />
        </Card>

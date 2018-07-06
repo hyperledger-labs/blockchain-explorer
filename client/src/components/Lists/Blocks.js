@@ -24,14 +24,11 @@ class Blocks extends Component {
   }
 
   handleDialogOpen = async (tid) => {
-    console.log('b4')
-    await this.props.getTransaction(this.props.channel.currentChannel, tid)
-    console.log('after')
+    await this.props.getTransaction(this.props.currentChannel, tid)
     this.setState({ dialogOpen: true });
   };
 
   handleDialogClose = () => {
-    // this.props.removeTransactionInfo();
     this.setState({ dialogOpen: false });
   };
 

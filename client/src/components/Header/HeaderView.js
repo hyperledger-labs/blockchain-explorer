@@ -25,9 +25,7 @@ import NotificationsPanel from '../Panels/NotificationsPanel';
 import Websocket from 'react-websocket';
 import Badge from 'material-ui/Badge';
 import {
-  getChannelList,
-  getChannel,
-  getNotification,
+  getCurrentChannel,
   getChannels
 } from '../../store/selectors/selectors'
 import chartsOperations from '../../state/redux/charts/operations';
@@ -38,10 +36,7 @@ const {
   transactionPerHour,
   transactionPerMin,
   transactionByOrg,
-  notification,
   dashStats,
-  channel,
-  channelList,
   changeChannel,
   peerStatus
 } = chartsOperations
@@ -49,9 +44,7 @@ const {
 const {
   blockList,
   chaincodeList,
-  channels,
   peerList,
-  transactionInfo,
   transactionList
 } = tablesOperations
 
@@ -81,7 +74,7 @@ export class HeaderView extends Component {
       notifications: [],
       isLoading: true,
       modalOpen: false,
-      selectedOption: "",
+      selectedChannel: "",
       isLight: true,
       dashboard:"dashButtons activeTab",
       network:"dashButtons",
@@ -108,37 +101,34 @@ export class HeaderView extends Component {
 
   componentDidMount() {
     let arr = [];
-    console.log(this.props.channels);
     this.props.channels.forEach(element => {
       arr.push({
         value: element.genesis_block_hash,
         label: element.channelname
       })
     });
-    console.log(arr);
 
     this.setState({ channels: arr });
-    this.setState({ selectedOption: this.props.channel.currentChannel })
+    this.setState({ selectedChannel: this.props.currentChannel })
     this.setState({isLoading: false});
-    console.log(this.props.channel.currentChannel);
     setInterval(
-      () => this.syncData(this.props.channel.currentChannel),
+      () => this.syncData(this.props.currentChannel),
       30000
     );
   }
 
   syncData(currentChannel) {
-    this.props.getPeerList(currentChannel);
-    this.props.getDashStats(currentChannel);
-    this.props.getPeerStatus(currentChannel);
-    this.props.getTxPerHour(currentChannel);
-    this.props.getTxPerMin(currentChannel);
-    this.props.getBlocksPerHour(currentChannel);
-    this.props.getBlocksPerMin(currentChannel);
-    this.props.getTransactionList(currentChannel, 0);
     this.props.getBlockList(currentChannel, 0);
-    this.props.getTxByOrg(currentChannel);
-    this.props.getChaincodes(currentChannel);
+    // this.props.getBlocksPerHour(currentChannel);
+    // this.props.getBlocksPerMin(currentChannel);
+    this.props.getChaincodeList(currentChannel);
+    this.props.getDashStats(currentChannel);
+    this.props.getPeerList(currentChannel);
+    this.props.getPeerStatus(currentChannel);
+    this.props.getTransactionByOrg(currentChannel);
+    this.props.getTransactionList(currentChannel, 0);
+    // this.props.getTransactionPerHour(currentChannel);
+    // this.props.getTransactionPerMin(currentChannel);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -151,8 +141,8 @@ export class HeaderView extends Component {
           label: element.channelname
         });
         if (
-          nextProps.channel.currentChannel == null ||
-          nextProps.channel.currentChannel == undefined
+          nextProps.currentChannel == null ||
+          nextProps.currentChannel == undefined
         ) {
           if (element.genesis_block_hash != null) {
             selectedValue = {
@@ -161,7 +151,7 @@ export class HeaderView extends Component {
             };
           }
         } else if (
-          element.genesis_block_hash === nextProps.channel.currentChannel
+          element.genesis_block_hash === nextProps.currentChannel
         ) {
           selectedValue = {
             value: element.genesis_block_hash,
@@ -172,8 +162,8 @@ export class HeaderView extends Component {
     }
 
     if (
-      nextProps.channel.currentChannel == null ||
-      nextProps.channel.currentChannel == undefined
+      nextProps.currentChannel == null ||
+      nextProps.currentChannel == undefined
     ) {
       this.props.getChangeChannel(selectedValue.value);
     }
@@ -181,19 +171,20 @@ export class HeaderView extends Component {
     this.setState({
       channels: options,
       isLoading: false,
-      selectedOption: selectedValue
+      selectedChannel: selectedValue
     });
     if (
-      nextProps.channel.currentChannel !== this.props.channel.currentChannel
+      nextProps.currentChannel !== this.props.currentChannel
     ) {
-      this.syncData(nextProps.channel.currentChannel);
+      this.syncData(nextProps.currentChannel);
     }
   }
 
-  handleChange = selectedOption => {
-    this.setState({ selectedOption });
-    this.props.getChangeChannel(selectedOption.value);
+  handleChange = selectedChannel => {
+    this.setState({ selectedChannel });
+    this.props.getChangeChannel(selectedChannel.value);
   };
+
   enableTab = val => {
     const active = "dashButtons activeTab";
     const inactive = "dashButtons";
@@ -259,6 +250,7 @@ export class HeaderView extends Component {
       }
     }
   };
+
   handleThemeChange = () => {
     const theme =
       sessionStorage.getItem("toggleTheme") === "true" ? false : true;
@@ -319,7 +311,7 @@ export class HeaderView extends Component {
                   required={true}
                   name="form-field-name"
                   isLoading={this.state.isLoading}
-                  value={this.state.selectedOption}
+                  value={this.state.selectedChannel}
                   onChange={this.handleChange}
                   options={this.state.channels}
                 />
@@ -380,25 +372,19 @@ export class HeaderView extends Component {
 }
 
 export default compose(withStyles(styles), connect((state) => ({
-  channel: getChannel(state),
-  channelList: getChannelList(state),
-  notification: getNotification(state),
-  channels: getChannels(state)
+  currentChannel: getCurrentChannel(state),
+  channels: getChannels(state),
 }), {
-    getNotification: notification,
-    getChangeChannel: changeChannel,
-    getChannelList: channelList,
-    getChannels: channels,
-    getDashStats: dashStats,
-    getTxPerHour: transactionPerHour,
-    getTxPerMin: transactionPerMin,
+    getBlockList: blockList,
     getBlocksPerHour: blockPerHour,
     getBlocksPerMin: blockPerMin,
-    getTransactionList: transactionList,
-    getBlockList: blockList,
+    getChaincodeList: chaincodeList,
+    getChangeChannel: changeChannel, //not in syncdata
+    getDashStats: dashStats,
     getPeerList: peerList,
     getPeerStatus: peerStatus,
-    getChaincodes: chaincodeList,
-    getTxByOrg: transactionByOrg,
-
+    getTransactionByOrg: transactionByOrg,
+    getTransactionList: transactionList,
+    getTransactionPerHour: transactionPerHour,
+    getTransactionPerMin: transactionPerMin,
   }))(HeaderView)

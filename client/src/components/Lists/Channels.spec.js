@@ -20,7 +20,6 @@ const setup = () => {
         transactions: 5
       }
     ],
-    getChannels: jest.fn()
   }
 
   const wrapper = mount(<Channels {...props} />);
@@ -36,12 +35,6 @@ describe('Channels', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
   });
-
-  test('componentWillReceiveProps gets a channel', () => {
-    const { wrapper, props } = setup();
-    jest.runOnlyPendingTimers();
-    expect(props.getChannels).toHaveBeenCalled();
-  })
 
   test('Simulate ID filterMethod should have one result when given a value of 3', () => {
     const { wrapper } = setup();

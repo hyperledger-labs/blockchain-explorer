@@ -11,25 +11,23 @@ import {
   TabPane,
   Nav,
   NavItem,
-  NavLink,
-  Card,
-  CardHeader,
-  CardBody
+  NavLink
 } from 'reactstrap';
-import {
-  blocksPerHour,
-  blocksPerMin,
-  txPerHour,
-  txPerMin
-} from '../../store/actions/charts/action-creators';
 import {
   getBlockperHour,
   getBlockPerMin,
-  getTxPerHour,
-  getTxPerMin,
-  getChannel
+  getTransactionPerHour,
+  getTransactionPerMin,
+  getCurrentChannel
 } from '../../store/selectors/selectors';
 import classnames from 'classnames';
+import chartsOperations from '../../state/redux/charts/operations'
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+} = chartsOperations
 
 export class ChartStats extends Component {
   constructor(props) {
@@ -41,22 +39,22 @@ export class ChartStats extends Component {
     }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.channel.currentChannel !== this.props.channel.currentChannel) {
-      this.syncData(nextProps.channel.currentChannel);
+    if (nextProps.currentChannel !== this.props.currentChannel) {
+      this.syncData(nextProps.currentChannel);
     }
   }
 
   componentDidMount() {
     setInterval(() => {
-      this.syncData(this.props.channel.currentChannel);
-    }, 6000);
+      this.syncData(this.props.currentChannel);
+    }, 60000);
   }
 
   syncData = currentChannel => {
     this.props.getBlocksPerMin(currentChannel);
     this.props.getBlocksPerHour(currentChannel);
-    this.props.getTxPerMin(currentChannel);
-    this.props.getTxPerHour(currentChannel);
+    this.props.getTransactionPerMin(currentChannel);
+    this.props.getTransactionPerHour(currentChannel);
   };
 
    timeDataSetup = (chartData = []) => {
@@ -155,12 +153,12 @@ export class ChartStats extends Component {
               </TabPane>
               <TabPane tabId="3">
                 <TimeChart
-                  chartData={this.timeDataSetup(this.props.txPerHour.rows)}
+                  chartData={this.timeDataSetup(this.props.transactionPerHour.rows)}
                 />
               </TabPane>
               <TabPane tabId="4">
                 <TimeChart
-                  chartData={this.timeDataSetup(this.props.txPerMin.rows)}
+                  chartData={this.timeDataSetup(this.props.transactionPerMin.rows)}
                 />
               </TabPane>
             </TabContent>
@@ -173,14 +171,14 @@ export default connect(
   state => ({
   blockPerHour: getBlockperHour(state),
   blockPerMin: getBlockPerMin(state),
-  txPerHour: getTxPerHour(state),
-  txPerMin: getTxPerMin(state),
-  channel: getChannel(state)
+  transactionPerHour: getTransactionPerHour(state),
+  transactionPerMin: getTransactionPerMin(state),
+  currentChannel: getCurrentChannel(state)
   }),
   {
-    getBlocksPerHour: blocksPerHour,
-    getBlocksPerMin: blocksPerMin,
-    getTxPerHour: txPerHour,
-    getTxPerMin: txPerMin
+    getBlocksPerHour: blockPerHour,
+    getBlocksPerMin: blockPerMin,
+    getTransactionPerHour: transactionPerHour,
+    getTransactionPerMin: transactionPerMin
   }
 )(ChartStats);

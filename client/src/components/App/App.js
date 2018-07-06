@@ -14,8 +14,6 @@ import FooterView from "../Header/footerView";
 import LandingPage from "../View/LandingPage";
 import "../../static/css/main.css";
 import "../../static/css/main-dark.css";
-import { connect } from 'react-redux';
-import { getDashStats, getChannel, getChannelList, getNotification } from '../../store/selectors/selectors';
 import chartsOperations from '../../state/redux/charts/operations'
 import tablesOperations from '../../state/redux/tables/operations'
 const {
@@ -62,7 +60,7 @@ class App extends Component {
     };
   }
 
-  async componentWillMount() {
+  componentWillMount() {
     //Check if sessionStorage is true, then theme is true, else false.
     const theme = sessionStorage.getItem("toggleTheme") === "true";
     this.setState({ toggleClass: theme });
@@ -72,16 +70,8 @@ class App extends Component {
     theme
       ? (document.body.style.backgroundColor = "#242036")
       : (document.body.style.backgroundColor = "#F0F5F9");
-
-    // setTimeout(() => this.setState({ loading: false }), 10000);
-    console.log("in WillMount")
-    // console.log('Did mount')
-    // await this.props.getChannel();
-    // console.log("willMount Channel", this.props.channel);
   }
-  async componentDidMount() {
 
-  }
   updateLoadStatus = () => {
     this.setState({ loading: false })
   }

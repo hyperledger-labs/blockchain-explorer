@@ -11,6 +11,8 @@ const setup = () => {
     getBlocksPerHour: jest.fn(),
     getBlocksPerMin: jest.fn(),
     getChaincodeList: jest.fn(),
+    getChannel: jest.fn(),
+    getChannelList: jest.fn(),
     getChannels: jest.fn(),
     getDashStats: jest.fn(),
     getPeerList: jest.fn(),
@@ -19,6 +21,7 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
+    updateLoadStatus: jest.fn()
   }
 
   const wrapper = shallow(<LandingPage {...props} />);

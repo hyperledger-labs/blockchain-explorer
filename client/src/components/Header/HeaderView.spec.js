@@ -8,7 +8,6 @@ jest.useFakeTimers();
 
 const setup = () => {
   const props = {
-    getChangeChannel: jest.fn(),
     channel: { currentChannel: 'mychannel' },
     channelList: ['mychannel'],
     channels:[  {
@@ -25,20 +24,17 @@ const setup = () => {
       padding: "Connect-HeaderView--padding-2"
     },
     notification: {},
-    getNotification: jest.fn(),
+    getBlockList: jest.fn(),
+    getChaincodeList: jest.fn(),
+    getChangeChannel: jest.fn(),
     getChannelList: jest.fn(),
     getChannels: jest.fn(),
     getDashStats: jest.fn(),
-    getTxPerHour: jest.fn(),
-    getTxPerMin: jest.fn(),
-    getBlocksPerHour: jest.fn(),
-    getBlocksPerMin: jest.fn(),
-    getTransactionList: jest.fn(),
-    getBlockList: jest.fn(),
+    getNotification: jest.fn(),
     getPeerList: jest.fn(),
     getPeerStatus: jest.fn(),
-    getChaincodes: jest.fn(),
-    getTxByOrg: jest.fn(),
+    getTransactionByOrg: jest.fn(),
+    getTransactionList: jest.fn(),
     refresh: jest.fn()
   };
 
@@ -75,11 +71,11 @@ describe("HeaderView", () => {
     expect(wrapper.state("notifyCount")).toBe(1);
   });
 
-  test("handleChange sets selectedOption and calls changeChannel", () => {
+  test("handleChange sets selectedChannel and calls changeChannel", () => {
     const { wrapper, props } = setup();
-    const selectedOption = { value: "newChannel" };
-    wrapper.instance().handleChange(selectedOption);
-    expect(wrapper.state("selectedOption").value).toBe("newChannel");
+    const selectedChannel = { value: "newChannel" };
+    wrapper.instance().handleChange(selectedChannel);
+    expect(wrapper.state("selectedChannel").value).toBe("newChannel");
     expect(props.getChangeChannel).toHaveBeenCalled();
   });
 
@@ -177,8 +173,8 @@ describe("HeaderView", () => {
     const { wrapper } = setup();
     const instance = wrapper.instance();
     const spy = jest.spyOn(instance, "syncData");
-    const newChannel = { currentChannel: "newChannel" };
-    wrapper.setProps({ channel: newChannel });
+    const newChannel = "newChannel";
+    wrapper.setProps({ currentChannel: newChannel });
     expect(spy).toHaveBeenCalled();
   });
 

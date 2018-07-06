@@ -25,7 +25,6 @@ const blockListReducer = (state = initialState, action) => {
 const chaincodeListReducer = (state = initialState, action) => {
   switch(action.type) {
     case types.CHAINCODE_LIST: {
-      console.log(action.payload)
       return ({
         rows: action.payload.chaincode,
         loaded: true,

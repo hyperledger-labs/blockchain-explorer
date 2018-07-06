@@ -122,7 +122,6 @@ export class DashboardView extends Component {
               <Card className="dash-section">
                 <PeersHealth
                   peerStatus={this.props.peerStatus}
-                  channel={this.props.channel.currentChannel}
                 />
               </Card>
               <Card className="dash-section">
