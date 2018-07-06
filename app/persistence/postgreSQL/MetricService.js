@@ -32,7 +32,7 @@ class MetricService {
 
     async getPeerData(channelName) {
       let peerArray = []
-      var c1 = await sql.getRowsBySQlNoCondtion(`select c.name as name,c.requests as requests,c.genesis_block_hash as genesis_block_hash ,c.server_hostname as server_hostname from peer c where c.genesis_block_hash='${channelName}'`);
+      var c1 = await sql.getRowsBySQlNoCondtion(`select channel.name as channelname,c.requests as requests,c.genesis_block_hash as genesis_block_hash ,c.server_hostname as server_hostname from peer as c inner join  channel on c.genesis_block_hash=channel.genesis_block_hash where c.genesis_block_hash='${channelName}'`);
       for (var i = 0, len = c1.length; i < len; i++) {
         var item = c1[i];
         peerArray.push({ 'name': item.channelname, 'requests': item.requests, 'server_hostname': item.server_hostname ,"genesis_block_hash":item.genesis_block_hash})
@@ -52,7 +52,7 @@ class MetricService {
 //BE -303
     async getTxPerChaincodeGenerate(channelName) {
       let txArray = []
-      var c = await sql.getRowsBySQlNoCondtion(`select c.channelname as channelname,c.name as chaincodename,c.version as version,c.genesis_block_hash as genesis_block_hash,c.path as path ,txcount  as c from chaincodes c where  c.genesis_block_hash='${channelName}' `);
+      var c = await sql.getRowsBySQlNoCondtion(`select  c.name as chaincodename,channel.name as channelname ,c.version as version,c.genesis_block_hash as genesis_block_hash,c.path as path ,txcount  as c from chaincodes as c inner join channel on c.genesis_block_hash=channel.genesis_block_hash where  c.genesis_block_hash='${channelName}' `);
       //console.log("chaincode---" + c)
       if (c) {
         c.forEach((item, index) => {

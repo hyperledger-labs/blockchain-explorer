@@ -154,7 +154,6 @@ const dbroutes = (app, persist) => {
   app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
-
     if (channelName && !isNaN(blockNum)) {
       crudService.getBlockAndTxList(channelName, blockNum).then(rows => {
         if (rows) {

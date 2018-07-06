@@ -55,9 +55,10 @@ class BlockScanner {
             for (let channelName of channels) {
                 let maxBlockNum;
                 let curBlockNum;
+                let genesisBlockHash = await this.proxy.getGenesisBlockHash();
                 [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
-                    this.crudService.getCurBlockNum(channelName)
+                    this.crudService.getCurBlockNum(genesisBlockHash)
                 ]);
 
                 if (syncStartDate) {
@@ -101,7 +102,6 @@ class BlockScanner {
             'txCount': block.data.data.length,
             'preHash': block.header.previous_hash,
             'dataHash': block.header.data_hash,
-            'channelName': header.channel_header.channel_id,
             'firstTxTimestamp': header.channel_header.timestamp,
             'blockhash': blockhash,
             'genesis_block_hash': genesisBlockHash
@@ -187,7 +187,6 @@ class BlockScanner {
             let temp = BlockDecoder.decodeBlock(genesisBlock);
             let genesisBlockHash = await fileUtil.generateBlockHash(temp.header);
             var transaction = {
-                'channelname': channelName,
                 'blockid': block.header.number.toString(),
                 'txhash': txObj.payload.header.channel_header.tx_id,
                 'createdt': new Date(txObj.payload.header.channel_header.timestamp),
@@ -317,7 +316,6 @@ class BlockScanner {
         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < len; i++) {
             let chaincode = chaincodes[i]
-            chaincode.channelname = channelName;
             chaincode.genesis_block_hash = genesisBlockHash
             this.crudService.saveChaincode(chaincode);
         }
@@ -373,7 +371,6 @@ class BlockScanner {
         for (let i = 0; i < peerlen; i++) {
             var peers = {};
             let peerlist = peerlists[i]
-            peers.name = channelName;
             peers.requests = peerlist._url;
             peers.genesis_block_hash = genesisBlockHash;
             peers.server_hostname = peerlist._options["grpc.default_authority"];

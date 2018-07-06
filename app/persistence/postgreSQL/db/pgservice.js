@@ -415,6 +415,7 @@ function getRowsBySQlQuery(sql) {
 /**
  * search table by sql and it's not condtion
  *
+ *
  * @param datatype sqlchareter   the table name
  * @param datatype ondtion       the search condition,it is sotre by array. exp condition = array("id"=>"1");
  * @param datatype limit         the pagedtion.
@@ -422,9 +423,16 @@ function getRowsBySQlQuery(sql) {
  */
 function getRowsBySQlNoCondtion(sqlcharacter, limit) {
   return new Promise(function(resolve, reject) {
-    var sql = `${sqlcharacter} ${limit}`;
-
-    client.query(sqlcharacter, (err, res) => {
+  var sql;
+  if (limit && sqlcharacter){
+     sql = `${sqlcharacter} ${limit}`
+  }
+  else if (sqlcharacter) {
+    sql = sqlcharacter
+  } else {
+    reject (null)
+  }
+    client.query(sql, (err, res) => {
       if (err) {
         reject(err);
       }
