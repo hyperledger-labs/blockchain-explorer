@@ -94,6 +94,7 @@ class BlockView extends Component {
                       <td>
                         {blockHash.blockhash}
                         <button className="copyBtn">
+                        <div className="copyMessage">Copy</div>
                           <CopyToClipboard text={blockHash.blockhash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -105,6 +106,7 @@ class BlockView extends Component {
                       <td>
                         {blockHash.datahash}
                         <button className="copyBtn">
+                        <div className="copyMessage">Copy</div>
                           <CopyToClipboard text={blockHash.datahash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -116,6 +118,7 @@ class BlockView extends Component {
                       <td>
                         {blockHash.prehash}
                         <button className="copyBtn">
+                        <div className="copyMessage">Copy</div>
                           <CopyToClipboard text={blockHash.prehash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>

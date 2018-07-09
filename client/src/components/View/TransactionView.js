@@ -2,11 +2,11 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import { withStyles } from "material-ui/styles";
-import PropTypes from "prop-types";
+import React, {Component} from "react";
+import {withStyles} from "material-ui/styles";
+
 import FontAwesome from "react-fontawesome";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import {CopyToClipboard} from "react-copy-to-clipboard";
 import Typography from "material-ui/Typography";
 
 import moment from "moment-timezone";
@@ -14,7 +14,7 @@ import {
   Table,
   Card,
   CardBody,
-  CardTitle } from "reactstrap";
+  CardTitle} from "reactstrap";
 
 const styles = theme => ({
   root: {
@@ -39,11 +39,11 @@ export class TransactionView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ loading: false });
+    this.setState({loading: false});
   }
   componentWillMount() {
     const theme = sessionStorage.getItem("toggleTheme") === "true";
-    this.setState({ toggleClass: theme });
+    this.setState({toggleClass: theme});
   }
 
   handleClose = () => {
@@ -93,6 +93,8 @@ export class TransactionView extends Component {
                       <td>
                         {this.props.transaction.txhash}
                         <button className="copyBtn">
+                          <div className="copyMessage">Copy</div>
+                          <div className="copiedMessage">Copied</div>
                           <CopyToClipboard text={this.props.transaction.txhash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -242,9 +244,5 @@ export class TransactionView extends Component {
     );
   }
 }
-
-TransactionView.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(TransactionView);

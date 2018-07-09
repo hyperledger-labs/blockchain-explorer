@@ -2,8 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import Dialog, { DialogTitle } from "material-ui/Dialog";
+import React, {Component} from "react";
+import Dialog from "material-ui/Dialog";
 import TransactionView from "../View/TransactionView";
 import BlockView from "../View/BlockView";
 import ReactTable from "react-table";
@@ -23,13 +23,14 @@ class Blocks extends Component {
     };
   }
 
-  handleDialogOpen = async (tid) => {
-    await this.props.getTransaction(this.props.currentChannel, tid)
-    this.setState({ dialogOpen: true });
+  handleDialogOpen = async tid => {
+    await this.props.getTransaction(this.props.currentChannel, tid);
+    this.setState({dialogOpen: true});
   };
 
   handleDialogClose = () => {
-    this.setState({ dialogOpen: false });
+    //this.props.removeTransactionInfo();
+    this.setState({dialogOpen: false});
   };
 
   handleDialogOpenBlockHash = blockHash => {
@@ -44,12 +45,12 @@ class Blocks extends Component {
   };
 
   handleDialogCloseBlockHash = () => {
-    this.setState({ dialogOpenBlockHash: false });
+    this.setState({dialogOpenBlockHash: false});
   };
 
   handleEye = (row, val) => {
-    const data = Object.assign({}, this.state.selection, { [row.index]: !val });
-    this.setState({ selection: data });
+    const data = Object.assign({}, this.state.selection, {[row.index]: !val});
+    this.setState({selection: data});
   };
 
   componentDidMount() {
@@ -57,7 +58,7 @@ class Blocks extends Component {
     this.props.blockList.forEach(element => {
       selection[element.blocknum] = false;
     });
-    this.setState({ selection: selection });
+    this.setState({selection: selection});
   }
 
   reactTableSetup = () => {
@@ -69,21 +70,21 @@ class Blocks extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["blocknum"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["blocknum"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true,
         width: 150
       },
       {
-        Header: 'Channel Name',
-        accessor: 'channelname',
+        Header: "Channel Name",
+        accessor: "channelname",
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ['channelname'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["channelname"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true
       },
@@ -94,8 +95,8 @@ class Blocks extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["txcount"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["txcount"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true,
         width: 150
@@ -107,8 +108,8 @@ class Blocks extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["datahash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["datahash"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true
       },
@@ -118,26 +119,23 @@ class Blocks extends Component {
         Cell: row => (
           <span>
             <a
-              className="hash-hide"
+              className="partialHash"
               onClick={() => this.handleDialogOpenBlockHash(row.value)}
               href="#/blocks"
             >
-              {" "}
-              {this.state.selection && this.state.selection[row.index]
-                ? row.value
-                : row.value.slice(0, 6)}{" "}
-            </a>
-              <FontAwesome name="eye" className="eyeBtn" onClick={() =>
-                this.handleEye(row, this.state.selection[row.index])
-              } />{" "}
+              <div className="fullHash" id="showTransactionId">
+                {row.value}
+              </div>{" "}
+              {row.value.slice(0, 6)} {!row.value ? "" : "... "}
+            </a>{" "}
           </span>
         ),
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
             filter.value,
-            { keys: ["blockhash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["blockhash"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true
       },
@@ -148,8 +146,8 @@ class Blocks extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["prehash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["prehash"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true,
         width: 150
@@ -169,11 +167,14 @@ class Blocks extends Component {
                 }}
               >
                 <a
-                  className="hash-hide"
+                  className="partialHash"
                   onClick={() => this.handleDialogOpen(tid)}
                   href="#/blocks"
                 >
-                  {tid}
+                  <div className="fullHash" id="showTransactionId">
+                    {tid}
+                  </div>{" "}
+                  {tid.slice(0, 6)} {!tid ? "" : "... "}
                 </a>
               </li>
             ))}
@@ -183,8 +184,8 @@ class Blocks extends Component {
           matchSorter(
             rows,
             filter.value,
-            { keys: ["txhash"] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
+            {keys: ["txhash"]},
+            {threshold: matchSorter.rankings.SIMPLEMATCH}
           ),
         filterAll: true
       }
@@ -201,7 +202,7 @@ class Blocks extends Component {
           className="-striped -highlight"
           filterable
           minRows={0}
-          showPagination={ this.props.blockList.length < 5  ?  false : true }
+          showPagination={this.props.blockList.length < 5 ? false : true}
         />
 
         <Dialog
@@ -214,7 +215,6 @@ class Blocks extends Component {
             transaction={this.props.transaction}
             onClose={this.handleDialogClose}
           />
-
         </Dialog>
 
         <Dialog
