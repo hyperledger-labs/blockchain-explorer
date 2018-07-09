@@ -126,6 +126,8 @@ const setup = () => {
       ]
     },
     getBlockList: jest.fn(),
+ removeTransactionInfo: jest.fn(),
+    getTransactionInfo: jest.fn(),
     getTransaction: jest.fn().mockImplementationOnce(() => Promise.resolve())
   };
 
@@ -411,16 +413,18 @@ describe("Blocks", () => {
 
   test('click on block hash', () => {
     const { wrapper } = setup()
-    wrapper.find('.hash-hide').at(0).simulate('click')
+    wrapper.find('.partialHash').at(0).simulate('click')
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true)
     expect(wrapper.state('blockHash')).toMatchObject({ blockhash: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' })
   })
 
+  /*We are no more using this functionality to show/hide the hash
   test('click on eye', () => {
     const { wrapper } = setup()
     wrapper.find('.eyeBtn').at(0).simulate('click')
     expect(Object.values(wrapper.state('selection'))).toContain(true)
   })
+  */
 
   test('pagination when blockList is greater than 4', () => {
     const { wrapper, props } = setup()
