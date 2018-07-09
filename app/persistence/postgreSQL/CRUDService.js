@@ -33,7 +33,7 @@ class CRUDService {
 
     getBlockAndTxList(channelName, blockNum) {
 
-        let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,(
+        let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
         SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transaction.blockid ),
         channel.name as channelname  from blocks inner join channel on blocks.genesis_block_hash =channel.genesis_block_hash  where
          blocks.genesis_block_hash ='${channelName}' and blocknum >= ${blockNum}

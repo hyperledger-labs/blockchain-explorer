@@ -62,7 +62,7 @@ const transactionList = (channel) => (dispatch) => {
   return get(`/api/txList/${channel}/0/0/`)
     .then(resp => {
       resp.rows.forEach(element => {
-        element.createdt = moment(element.createdat)
+        element.createdt = moment(element.createdt)
           .tz(moment.tz.guess())
           .format("M-D-YYYY h:mm A zz");
       })
