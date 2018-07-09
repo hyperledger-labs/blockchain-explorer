@@ -10,6 +10,8 @@ var PersistenceFactory = require("../persistence/PersistenceFactory.js");
 var timer = require("./backend/timer.js");
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../../swagger.json');
+var compression = require('compression');
+
 
 class Explorer {
     constructor() {
@@ -17,6 +19,7 @@ class Explorer {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+        this.app.use(compression());
         this.persistence = {};
         this.platforms = explorerconfig["platforms"];
 

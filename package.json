@@ -19,6 +19,7 @@
     "body-parser": "^1.17.2",
     "child_process": "^1.0.2",
     "co": "^4.6.0",
+    "compression": "^1.7.2",
     "convert-hex": "^0.1.0",
     "ejs": "^2.5.6",
     "enum": "^2.5.0",
