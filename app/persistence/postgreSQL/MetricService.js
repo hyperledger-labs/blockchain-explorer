@@ -27,7 +27,7 @@ class MetricService {
     }
 
     getBlockCount(channelName) {
-      return sql.getRowsBySQlCase(`select max(blocknum) c from blocks where genesis_block_hash='${channelName}'`)
+      return sql.getRowsBySQlCase(`select count(1) c from blocks where genesis_block_hash='${channelName}'`)
     }
 
     async getPeerData(channelName) {
@@ -78,6 +78,7 @@ class MetricService {
       if (!chaincodeCount) chaincodeCount = 0
       var txCount = await this.getTxCount(channelName)
       if (!txCount) txCount = 0
+      txCount.c = txCount.c ? txCount.c : 0
       var blockCount = await this.getBlockCount(channelName)
       if (!blockCount) blockCount = 0
       blockCount.c = blockCount.c ? blockCount.c : 0
