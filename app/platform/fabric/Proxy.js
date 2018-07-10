@@ -91,9 +91,11 @@ class Proxy {
 		return {};
 
 	}
-	async getGenesisBlock() {
-
-		var channel = this.getChannel(this.getDefaultChannel());
+	async getGenesisBlock(channelname) {
+		if (channelname  == null || channelname == undefined) {
+			channelname = this.getDefaultChannel()
+		}	
+		var channel = this.channels[channelname].channel;
 		return channel.getGenesisBlock()
 	}
 
@@ -196,12 +198,9 @@ class Proxy {
 	async syncChannelEventHubBlock(callback) {
 
 		var fabChannels = this.getChannelObjects();
-
 		fabChannels.forEach(fabChannel => {
 			var channel_event_hub = fabChannel.channelEventHub;
-
 			channel_event_hub.connect(true);
-
 			channel_event_hub.registerBlockEvent(
 				function (block) {
 					console.log('Successfully received the block event' + block);
@@ -209,7 +208,7 @@ class Proxy {
 						//full block
 
 						try {
-							callback(block);
+							callback(block,fabChannel.channelName);
 						} catch (err) {
 							console.log(err.stack);
 							logger.error(err)
@@ -245,8 +244,8 @@ class Proxy {
 		}
 
 	}
-	async getGenesisBlockHash() {
-		let genesisBlock = await this.getGenesisBlock()
+	async getGenesisBlockHash(channelname) {
+		let genesisBlock = await this.getGenesisBlock(channelname)
 		let temp = BlockDecoder.decodeBlock(genesisBlock)
 		let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
 		return genesisBlockHash

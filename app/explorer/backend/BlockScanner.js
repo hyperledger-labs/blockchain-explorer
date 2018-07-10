@@ -55,7 +55,7 @@ class BlockScanner {
             for (let channelName of channels) {
                 let maxBlockNum;
                 let curBlockNum;
-                let genesisBlockHash = await this.proxy.getGenesisBlockHash();
+                let genesisBlockHash = await this.proxy.getGenesisBlockHash(channelName);
                 [maxBlockNum, curBlockNum] = await Promise.all([
                     this.getMaxBlockNum(channelName),
                     this.crudService.getCurBlockNum(genesisBlockHash)
@@ -85,7 +85,7 @@ class BlockScanner {
         }
         return blockTimestamp;
     };
-    async saveBlockRange(block) {
+    async saveBlockRange(block,channelName) {
 
         let first_tx = block.data.data[0]; //get the first Transaction
         let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
@@ -93,7 +93,7 @@ class BlockScanner {
         if (!firstTxTimestamp) {
             firstTxTimestamp = null
         }
-        let genesisBlock = await this.proxy.getGenesisBlock()
+        let genesisBlock = await this.proxy.getGenesisBlock(channelName)
         let temp = BlockDecoder.decodeBlock(genesisBlock)
         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let blockhash = await fileUtil.generateBlockHash(block.header);
@@ -123,12 +123,12 @@ class BlockScanner {
 
             this.broadcaster.broadcast(notify);
 
-            await this.saveTransactions(block);
+            await this.saveTransactions(block,channelName);
 
         }
     }
 
-    async saveTransactions(block) {
+    async saveTransactions(block,channelName) {
         //////////chaincode//////////////////
         //syncChaincodes();
         //////////tx/////////////////////////
@@ -183,7 +183,7 @@ class BlockScanner {
                 status = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.status;
                 mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(i => { return i.endorser.Mspid });
             }
-            let genesisBlock = await this.proxy.getGenesisBlock();
+            let genesisBlock = await this.proxy.getGenesisBlock(channelName);
             let temp = BlockDecoder.decodeBlock(genesisBlock);
             let genesisBlockHash = await fileUtil.generateBlockHash(temp.header);
             var transaction = {
@@ -244,7 +244,7 @@ class BlockScanner {
                 }
                 if (saveRecord) {
                     try {
-                        var savedNewBlock = await this.saveBlockRange(block)
+                        var savedNewBlock = await this.saveBlockRange(block,channelName)
                         if (savedNewBlock) {
                             this.broadcaster.broadcast();
                         }
@@ -265,7 +265,7 @@ class BlockScanner {
             let block = await this.proxy.getBlockByNumber(channelName, start)
 
             try {
-                var savedNewBlock = await this.saveBlockRange(block)
+                var savedNewBlock = await this.saveBlockRange(block,channelName)
                 if (savedNewBlock) {
                     this.broadcaster.broadcast();
                 }
@@ -311,7 +311,7 @@ class BlockScanner {
             logger.debug(chaincodes)
             return
         }
-        let genesisBlock = await this.proxy.getGenesisBlock()
+        let genesisBlock = await this.proxy.getGenesisBlock(channelName)
         let temp = BlockDecoder.decodeBlock(genesisBlock)
         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < len; i++) {
@@ -323,12 +323,12 @@ class BlockScanner {
     }
 
     async saveChannel() {
-        var channels = this.proxy.getChannels();
-        let genesisBlock = await this.proxy.getGenesisBlock()
-        let temp = BlockDecoder.decodeBlock(genesisBlock)
-        let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
+        var channels = this.proxy.getChannels()
         for (let i = 0; i < channels.length; i++) {
             let date = new Date()
+            let genesisBlock = await this.proxy.getGenesisBlock(channels[i])
+            let temp = BlockDecoder.decodeBlock(genesisBlock)
+            let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
             var channel = {
                 blocks: 0,
                 trans: 0,
@@ -362,9 +362,8 @@ class BlockScanner {
     }
 
     async savePeerlist(channelName) {
-
         var peerlists = await this.proxy.getConnectedPeers(channelName);
-        let genesisBlock = await this.proxy.getGenesisBlock()
+        let genesisBlock = await this.proxy.getGenesisBlock(channelName)
         let temp = BlockDecoder.decodeBlock(genesisBlock)
         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         let peerlen = peerlists.length
@@ -379,7 +378,6 @@ class BlockScanner {
     }
     // ====================Orderer BE-303=====================================
     async saveOrdererlist(channelName) {
-
         var ordererlists = await this.proxy.getConnectedOrderers(channelName);
         let ordererlen = ordererlists.length
         for (let i = 0; i < ordererlen; i++) {
@@ -433,8 +431,8 @@ class BlockScanner {
     // ====================Orderer BE-303=====================================
     syncChannelEventHubBlock() {
         var self = this;
-        this.proxy.syncChannelEventHubBlock(block => {
-            self.saveBlockRange(block);
+        this.proxy.syncChannelEventHubBlock((block,channelName) => {
+            self.saveBlockRange(block,channelName);
         });
     }
 }

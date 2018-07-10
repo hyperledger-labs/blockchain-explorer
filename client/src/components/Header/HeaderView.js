@@ -64,7 +64,7 @@ export class HeaderView extends Component {
       notifications: [],
       isLoading: true,
       modalOpen: false,
-      selectedChannel: "",
+      selectedChannel: {},
       isLight: true
     };
   }
@@ -85,16 +85,27 @@ export class HeaderView extends Component {
 
   componentDidMount() {
     let arr = [];
+    let selectedValue ={}
     this.props.channels.forEach(element => {
+      if (element.genesis_block_hash === this.props.currentChannel) {
+        selectedValue = {
+          value: element.genesis_block_hash,
+          label: element.channelname
+        };
+
+      }
       arr.push({
         value: element.genesis_block_hash,
         label: element.channelname
       });
     });
 
-    this.setState({channels: arr});
-    this.setState({selectedChannel: this.props.currentChannel});
-    this.setState({isLoading: false});
+    this.setState({
+      channels: arr,
+      isLoading: false,
+      selectedChannel: selectedValue
+    });
+
     setInterval(() => this.syncData(this.props.currentChannel), 60000);
   }
 
@@ -123,8 +134,8 @@ export class HeaderView extends Component {
         ) {
           if (element.genesis_block_hash != null) {
             selectedValue = {
-              value: element.genesis_block_hash,
-              label: element.channelname
+              "value": element.genesis_block_hash,
+              "label": element.channelname
             };
           }
         } else if (element.genesis_block_hash === nextProps.currentChannel) {
@@ -301,7 +312,7 @@ export class HeaderView extends Component {
                     required={true}
                     name="form-field-name"
                     isLoading={this.state.isLoading}
-                    value={this.state.selectedOption}
+                    value={this.state.selectedChannel}
                     onChange={this.handleChange}
                     options={this.state.channels}
                   />
