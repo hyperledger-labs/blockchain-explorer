@@ -15,9 +15,7 @@ const dbroutes = (app, persist) => {
         if (
           data &&
           (data.chaincodeCount &&
-            data.txCount &&
-            data.latestBlock &&
-            data.peerCount)
+            data.txCount &&  data.peerCount)
         ) {
           return res.send(data);
         } else {

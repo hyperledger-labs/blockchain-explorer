@@ -130,6 +130,10 @@ class CRUDService {
         }
     }
 
+    getChannelByGenesisBlockHash(channelName) {
+        return sql.getRowByPkOne(`select name from channel where genesis_block_hash='${channelName}'`);
+    }
+
 
     async saveChannel(channel) {
         let c = await sql.getRowByPkOne(`select count(1) as c from channel where name='${channel.name}' and genesis_block_hash='${channel.genesis_block_hash}'`)
