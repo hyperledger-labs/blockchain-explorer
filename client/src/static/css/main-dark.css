@@ -30,11 +30,13 @@
 .dark-theme  .Select-control{
     background-color:#6a628e!important;
     color:#ffffff!important;
+
 }
 .dark-theme .Select-menu-outer{
     background-color:#5a5379!important;
     color:#ffffff!important;
 }
+
 .dark-theme .Select-menu {
     max-height: 198px;
     overflow-y: auto;
@@ -46,10 +48,10 @@
   }
   .dark-theme  .Select-option.is-selected {
     background-color:#6a628e!important;
-    color: #333!important;
+    color: #ffffff!important;
   }
   .dark-theme .Select-option.is-focused {
-      color:#333!important;
+      color:#ffffff!important;
     background-color: #5d5291!important;
 
   }
