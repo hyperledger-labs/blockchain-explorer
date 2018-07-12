@@ -19,12 +19,19 @@ export class DashboardView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notifications: []
+      notifications: [],
+      hasDbError: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setNotifications(this.props.blockList);
+  }
+
+  componentWillMount() {
+    if (this.props.blockList == undefined || this.props.dashStats == undefined || this.props.peerStatus == undefined || this.props.transactionByOrg == undefined) {
+      this.setState({ hasDbError: true });
+    }
   }
 
   componentDidMount() {
@@ -55,6 +62,13 @@ export class DashboardView extends Component {
   };
 
   render() {
+    if (this.state.hasDbError) {
+      return (
+        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <h1>Error: One or more components failed to render.</h1>
+        </div>
+      );
+    }
     return (
       <div className="background-view">
         <div className="dash-view" >

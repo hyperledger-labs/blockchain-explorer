@@ -50,13 +50,19 @@ export class LandingPage extends Component {
       logoStyle: {
         width: '520px',
         height: '100px'
-      }
+      },
+      hasDbError: false
     }
   }
 
   async componentDidMount() {
     await this.props.getChannel();
     const currentChannel = this.props.currentChannel;
+
+    let promiseTimeout = setTimeout(() => {
+      this.setState({ hasDbError: true });
+    }, 60000);
+
     await Promise.all([
       this.props.getBlockList(currentChannel),
       this.props.getBlocksPerMin(currentChannel),
@@ -72,10 +78,18 @@ export class LandingPage extends Component {
       this.props.getTransactionPerHour(currentChannel),
       this.props.getTransactionPerMin(currentChannel)
     ])
+    clearTimeout(promiseTimeout);
     this.props.updateLoadStatus();
   }
 
   render() {
+    if (this.state.hasDbError) {
+      return (
+        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <h1>Error: One or more components failed to render.</h1>
+        </div>
+      );
+    }
     return (
       <div className="landingBackground">
         <div className="landing" >
