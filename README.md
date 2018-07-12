@@ -33,7 +33,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 	├── src          Front end source code
 		├── components		React framwork
 		├── services	  	Request library for API calls
-		├── state			Redux framwork
+		├── state		Redux framwork
 		├── static       	Custom and Assets
 ```
 <a name="Requirements"/>
