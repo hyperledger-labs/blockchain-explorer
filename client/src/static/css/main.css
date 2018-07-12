@@ -589,3 +589,12 @@ opacity:0.7
         background-color: transparent;
         margin-top:-30px;
      }
+/* Change Channel Loader */
+.channel-loader{
+    text-align: center;
+    padding: 20px;
+}
+.loader{
+    margin: 0 auto;
+    width: 100px;
+}

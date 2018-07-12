@@ -42,9 +42,9 @@ export class ChartStats extends Component {
     }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.currentChannel !== this.props.currentChannel) {
-      this.syncData(nextProps.currentChannel);
-    }
+    // if (nextProps.currentChannel !== this.props.currentChannel) {
+    //   this.syncData(nextProps.currentChannel);
+    // }
   }
 
   componentDidMount() {

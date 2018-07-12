@@ -25,6 +25,8 @@ const setup = () => {
     },
     notification: {},
     getBlockList: jest.fn(),
+    getBlocksPerHour: jest.fn(),
+    getBlocksPerMin: jest.fn(),
     getChaincodeList: jest.fn(),
     getChangeChannel: jest.fn(),
     getChannelList: jest.fn(),
@@ -35,6 +37,8 @@ const setup = () => {
     getPeerStatus: jest.fn(),
     getTransactionByOrg: jest.fn(),
     getTransactionList: jest.fn(),
+    getTransactionPerHour: jest.fn(),
+    getTransactionPerMin: jest.fn(),
     refresh: jest.fn()
   };
 
@@ -71,10 +75,10 @@ describe("HeaderView", () => {
     expect(wrapper.state("notifyCount")).toBe(1);
   });
 
-  test("handleChange sets selectedChannel and calls changeChannel", () => {
+  test("handleChange sets selectedChannel and calls changeChannel", async () => {
     const { wrapper, props } = setup();
     const selectedChannel = { value: "newChannel" };
-    wrapper.instance().handleChange(selectedChannel);
+    await wrapper.instance().handleChange(selectedChannel);
     expect(wrapper.state("selectedChannel").value).toBe("newChannel");
     expect(props.getChangeChannel).toHaveBeenCalled();
   });

@@ -19,6 +19,8 @@ import Button from "material-ui/Button";
 import NotificationsPanel from "../Panels/NotificationsPanel";
 import Websocket from "react-websocket";
 import Badge from "material-ui/Badge";
+import Dialog from "material-ui/Dialog";
+import Loader from 'react-loader-spinner';
 import {chartOperations, chartSelectors} from "../../state/redux/charts/";
 import {tableOperations, tableSelectors} from "../../state/redux/tables/";
 
@@ -109,14 +111,35 @@ export class HeaderView extends Component {
     setInterval(() => this.syncData(this.props.currentChannel), 60000);
   }
 
-  syncData(currentChannel) {
-    this.props.getBlockList(currentChannel, 0);
-    this.props.getChaincodeList(currentChannel);
-    this.props.getDashStats(currentChannel);
-    this.props.getPeerList(currentChannel);
-    this.props.getPeerStatus(currentChannel);
-    this.props.getTransactionByOrg(currentChannel);
-    this.props.getTransactionList(currentChannel, 0);
+  async syncData(currentChannel) {
+    // this.props.getBlockList(currentChannel, 0);
+    // this.props.getBlocksPerHour(currentChannel);
+    // this.props.getBlocksPerMin(currentChannel);
+    // this.props.getChaincodeList(currentChannel);
+    // this.props.getDashStats(currentChannel);
+    // this.props.getPeerList(currentChannel);
+    // this.props.getPeerStatus(currentChannel);
+    // this.props.getTransactionByOrg(currentChannel);
+    // this.props.getTransactionList(currentChannel, 0);
+    // this.props.getTransactionPerHour(currentChannel);
+    // this.props.getTransactionPerMin(currentChannel);
+
+    await Promise.all([
+      this.props.getBlockList(currentChannel),
+      this.props.getBlocksPerMin(currentChannel),
+      this.props.getBlocksPerHour(currentChannel),
+      this.props.getChaincodeList(currentChannel),
+      // this.props.getChannelList(currentChannel),
+      // this.props.getChannels(),
+      this.props.getDashStats(currentChannel),
+      this.props.getPeerList(currentChannel),
+      this.props.getPeerStatus(currentChannel),
+      this.props.getTransactionByOrg(currentChannel),
+      this.props.getTransactionList(currentChannel),
+      this.props.getTransactionPerHour(currentChannel),
+      this.props.getTransactionPerMin(currentChannel)
+    ]);
+    this.handleClose();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -164,13 +187,17 @@ export class HeaderView extends Component {
     }
   }
 
-  handleChange = selectedChannel => {
+  handleChange = async ( selectedChannel) => {
+   await this.handleOpen();
+    console.log(this.state.modalOpen);
     this.setState({selectedChannel});
     this.props.getChangeChannel(selectedChannel.value);
-    this.syncData(selectedChannel.value);
+   await this.syncData(selectedChannel.value);
+  //  this.handleClose();
   };
 
   handleOpen = () => {
+    console.log("opened model");
     this.setState({modalOpen: true});
   };
 
@@ -368,6 +395,21 @@ export class HeaderView extends Component {
                 <AdminPanel />
               </div>
             </Drawer>
+              <Dialog
+                open={this.state.modalOpen}
+                onClose={this.handleClose}
+                fullWidth={false}
+                maxWidth={"md"}
+              >
+                <div className="channel-loader">
+                  <h4 className="loader-message" >Loading Channel Details</h4>
+                  <Loader type="ThreeDots"
+                    color="#005069"
+                    height={70}
+                    width={70}
+                    className="loader" />
+                </div>
+           </Dialog>
           </div>
         </Router>
       </div>
