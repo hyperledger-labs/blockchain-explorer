@@ -23,7 +23,7 @@ class MetricService {
     }
 
     getTxCount(channelName) {
-      return sql.getRowsBySQlCase(`select count(1) c from transaction where genesis_block_hash='${channelName}'`)
+      return sql.getRowsBySQlCase(`select count(1) c from transactions where genesis_block_hash='${channelName}'`)
     }
 
     getBlockCount(channelName) {
@@ -133,7 +133,7 @@ class MetricService {
             minutes.datetime,
             count(createdt)
           from minutes
-          left join TRANSACTION on date_trunc('min', TRANSACTION.createdt) = minutes.datetime and genesis_block_hash ='${channelName}'
+          left join TRANSACTIONS on date_trunc('min', TRANSACTIONS.createdt) = minutes.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -152,7 +152,7 @@ class MetricService {
             hours.datetime,
             count(createdt)
           from hours
-          left join TRANSACTION on date_trunc('hour', TRANSACTION.createdt) = hours.datetime and genesis_block_hash ='${channelName}'
+          left join TRANSACTIONS on date_trunc('hour', TRANSACTIONS.createdt) = hours.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -171,7 +171,7 @@ class MetricService {
             days.datetime,
             count(createdt)
           from days
-          left join TRANSACTION on date_trunc('day', TRANSACTION.createdt) =days.datetime and genesis_block_hash ='${channelName}'
+          left join TRANSACTIONS on date_trunc('day', TRANSACTIONS.createdt) =days.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -190,7 +190,7 @@ class MetricService {
             weeks.datetime,
             count(createdt)
           from weeks
-          left join TRANSACTION on date_trunc('week', TRANSACTION.createdt) =weeks.datetime and genesis_block_hash ='${channelName}'
+          left join TRANSACTIONS on date_trunc('week', TRANSACTIONS.createdt) =weeks.datetime and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -210,7 +210,7 @@ class MetricService {
             months.datetime,
             count(createdt)
           from months
-          left join TRANSACTION on date_trunc('month', TRANSACTION.createdt) =months.datetime  and channelname ='${channelName}'
+          left join TRANSACTIONS on date_trunc('month', TRANSACTIONS.createdt) =months.datetime  and channelname ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -229,7 +229,7 @@ class MetricService {
             years.year,
             count(createdt)
           from years
-          left join TRANSACTION on date_trunc('year', TRANSACTION.createdt) =years.year and genesis_block_hash ='${channelName}'
+          left join TRANSACTIONS on date_trunc('year', TRANSACTIONS.createdt) =years.year and genesis_block_hash ='${channelName}'
           group by 1
           order by 1 `;
 
@@ -354,7 +354,7 @@ class MetricService {
 
     getTxByOrgs(channelName) {
       let sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
-      from transaction
+      from transactions
       where genesis_block_hash ='${channelName}'
       group by  creator_msp_id`;
 

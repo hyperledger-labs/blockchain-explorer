@@ -87,9 +87,9 @@ Run db status commands.
 
  Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
 
-<a name="Configure-Hyperledger-Explorer"/>
+<a name="Fabric-Configure-Hyperledger-Explorer"/>
 
-## Configure Hyperledger Explorer
+## Fabric Configure Hyperledger Explorer
 
 On another terminal.
 
@@ -98,6 +98,25 @@ On another terminal.
 	- Change "fabric-path" to your fabric network path,
 	example: "/home/user1/workspace/fabric-samples" for the following keys: "tls_cacerts", "key", "cert".
 	- Final path for key "tls_cacerts" will be:  "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt".
+- Modify "syncStartDate" to filter data by block timestamp
+- Modify "channel" to your default channel
+
+ **or**
+
+## Hyperledger Composer Setup
+
+ Setup your own network using Composer[Build your network](https://hyperledger.github.io/composer/latest/installing/development-tools) from Hyperledger Composer. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+
+<a name="Composer-Configure-Hyperledger-Explorer"/>
+
+## Composer Configure Hyperledger Explorer
+
+On another terminal.
+
+- `cd blockchain-explorer/app/platform/fabric`
+- Modify config.json to update network-config.
+	- Change "fabric-path" to your composer network path,
+	- Configure the Hyperledger composer based on this link [CONFIG-COMPOSER-HLEXPLORER.md](CONFIG-COMPOSER-HLEXPLORER.md)
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 

@@ -72,3 +72,5 @@ CREATE INDEX ON channel (genesis_block_hash);
 
 DROP INDEX IF EXISTS channel_channel_hash_idx;
 CREATE INDEX ON channel (channel_hash);
+
+ALTER TABLE IF EXISTS Transaction RENAME TO Transactions;

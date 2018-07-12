@@ -20,12 +20,12 @@ class CRUDService {
     }
 
     getTransactionByID(channelName, txhash) {
-        let sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,t.write_set,channel.name as channelname from TRANSACTION as t inner join channel on t.genesis_block_hash=channel.genesis_block_hash where t.txhash = '${txhash}' `;
+        let sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,t.write_set,channel.name as channelname from TRANSACTIONS as t inner join channel on t.genesis_block_hash=channel.genesis_block_hash where t.txhash = '${txhash}' `;
         return sql.getRowByPkOne(sqlTxById);
     }
 
     getTxList(channelName, blockNum, txid) {
-        let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelname from transaction as t  inner join channel on t.genesis_block_hash=channel.genesis_block_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and
+        let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelname from transactions as t  inner join channel on t.genesis_block_hash=channel.genesis_block_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and
         t.genesis_block_hash = '${channelName}'  order by  t.id desc`;
         return sql.getRowsBySQlQuery(sqlTxList);
 
@@ -34,7 +34,7 @@ class CRUDService {
     getBlockAndTxList(channelName, blockNum) {
 
         let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
-        SELECT  array_agg(txhash) as txhash FROM transaction where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transaction.blockid ),
+        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and genesis_block_hash = '${channelName}' group by transactions.blockid ),
         channel.name as channelname  from blocks inner join channel on blocks.genesis_block_hash =channel.genesis_block_hash  where
          blocks.genesis_block_hash ='${channelName}' and blocknum >= ${blockNum}
          order by blocks.blocknum desc`;
@@ -97,7 +97,7 @@ class CRUDService {
     }
 
     async saveTransaction(transaction) {
-        await sql.saveRow('transaction', transaction);
+        await sql.saveRow('transactions', transaction);
         await sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${transaction.chaincodename}' and genesis_block_hash='${transaction.genesis_block_hash}'`);
     }
 
