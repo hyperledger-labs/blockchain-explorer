@@ -215,9 +215,9 @@
 }
 
 /*Notification Panel*/
-.dark-theme .notificationPanel{
-background-color:#5e558e!important;
-color:white!important;
+.dark-theme .notificationPanel,.dark-theme .jss58, .dark-theme .jss76,.dark-theme .jss39, .dark-theme .jss41{
+    background-color:#5e558e!important;
+    color:white!important;
 }
 .dark-theme .notificationTime{
     color:#ffffff!important;

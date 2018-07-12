@@ -52,12 +52,19 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint"
   },
   "proxy": "http://localhost:8080/",
   "devDependencies": {
+    "babel-eslint": "^8.2.5",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-react": "^7.10.0",
     "jest-enzyme": "^4.2.0",
     "mock-local-storage": "^1.0.5",
     "react-addons-test-utils": "^15.6.2",

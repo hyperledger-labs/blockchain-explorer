@@ -41,5 +41,14 @@
     "ws": "^5.1.1"
   },
   "license": "Apache-2.0",
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
+    "eslint-plugin-react": "^7.10.0"
+  },
+  "scripts": {
+    "lint": "eslint"
+  }
 }
