@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import * as types from "./types";
+import types from "./types";
 
  const getBlockPerHour = (blockPerHour) => ({
     type: types.BLOCK_CHART_HOUR,
@@ -12,31 +12,6 @@ import * as types from "./types";
  const getBlockPerMin = (blockPerMin) => ({
     type: types.BLOCK_CHART_MIN,
     payload: {blockPerMin}
-});
-
- const getTransactionPerHour = (transactionPerHour) => ({
-    type: types.TRANSACTION_CHART_HOUR,
-    payload: {transactionPerHour}
-});
-
- const getTransactionPerMin = (transactionPerMin) => ({
-    type: types.TRANSACTION_CHART_MIN,
-    payload: {transactionPerMin}
-});
-
-const getTransactionByOrg = (transactionByOrg) => ({
-    type: types.TRANSACTION_CHART_ORG,
-    payload: transactionByOrg
-});
-
-const getNotification = (notification) => ({
-    type: types.NOTIFICATION_LOAD,
-    payload:{notification}
-});
-
-const getDashStats = (dashStats) => ({
-    type: types.DASHBOARD_STATS,
-    payload: dashStats
 });
 
 const getChannel = (channel) => ({
@@ -49,9 +24,14 @@ const getChannelList = (channelList) => ({
     payload: channelList
 });
 
-const updateChannel = (channel) => ({
-    type: types.CHANGE_CHANNEL,
-    payload:{channel}
+const getDashStats = (dashStats) => ({
+    type: types.DASHBOARD_STATS,
+    payload: dashStats
+});
+
+const getNotification = (notification) => ({
+    type: types.NOTIFICATION_LOAD,
+    payload:{notification}
 });
 
 const getPeerStatus = (peerStatus) => ({
@@ -59,16 +39,36 @@ const getPeerStatus = (peerStatus) => ({
     payload: peerStatus
 })
 
+const getTransactionByOrg = (transactionByOrg) => ({
+    type: types.TRANSACTION_CHART_ORG,
+    payload: transactionByOrg
+});
+
+ const getTransactionPerHour = (transactionPerHour) => ({
+    type: types.TRANSACTION_CHART_HOUR,
+    payload: {transactionPerHour}
+});
+
+ const getTransactionPerMin = (transactionPerMin) => ({
+    type: types.TRANSACTION_CHART_MIN,
+    payload: {transactionPerMin}
+});
+
+const updateChannel = (channel) => ({
+    type: types.CHANGE_CHANNEL,
+    payload:{channel}
+});
+
 export default {
     getBlockPerHour,
     getBlockPerMin,
-    getTransactionPerHour,
-    getTransactionPerMin,
-    getTransactionByOrg,
-    getNotification,
-    getDashStats,
     getChannel,
     getChannelList,
-    updateChannel,
-    getPeerStatus
+    getDashStats,
+    getNotification,
+    getPeerStatus,
+    getTransactionByOrg,
+    getTransactionPerHour,
+    getTransactionPerMin,
+    updateChannel
 };

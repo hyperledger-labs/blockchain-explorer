@@ -2,8 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { combineReducers } from "redux";
-import * as types from "./types";
+import { combineReducers } from 'redux';
+import types from './types';
 
 /* Reducers for Dashboard Charts */
 const initialState = {};
