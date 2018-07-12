@@ -7,7 +7,7 @@ const namespaces = 'tables'
 const BLOCK_LIST = `${namespaces}/BLOCK_LIST`;
 const CHAINCODE_LIST = `${namespaces}/CHAINCODE_LIST`;
 const CHANNELS = `${namespaces}/CHANNELS`;
-const PEER_LIST = `${namespaces}/tables/PEER_LIST`;
+const PEER_LIST = `${namespaces}/PEER_LIST`;
 const TRANSACTION = `${namespaces}/TRANSACTION`;
 const TRANSACTION_LIST = `${namespaces}/TRANSACTION_LIST`;
 

@@ -4,8 +4,8 @@
 
 export const blockPerHourSelector = (state) => (state.charts.blockPerHour);
 export const blockPerMinSelector = (state) => (state.charts.blockPerMin);
-export const currentChannelSelector = (state) => (state.charts.channel.currentChannel);
 export const channelListSelector = (state) => (state.charts.channelList.list);
+export const currentChannelSelector = (state) => (state.charts.channel.currentChannel);
 export const dashStatsSelector = (state) => (state.charts.dashStats);
 export const notificationSelector = (state) => (state.charts.notification);
 export const peerStatusSelector = (state) => (state.charts.peerStatus.list);
