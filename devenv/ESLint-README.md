@@ -48,10 +48,10 @@
 -   ["react/jsx-filename-extension": 0] allows jsx code to be implemented into a .js file
 
 ## ESLint documentation and configuations
--   [Configuring ESLint](#https://eslint.org/docs/user-guide/configuring)
+-   [Configuring ESLint](https://eslint.org/docs/user-guide/configuring)
 
--   [ESLint rules](#https://eslint.org/docs/rules)
+-   [ESLint rules](https://eslint.org/docs/rules)
 
--   [eslint-config-airbnb documentation](#https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb)
+-   [eslint-config-airbnb documentation](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb)
 
--   [eslint-plugin-react documentation](#https://github.com/yannickcr/eslint-plugin-react/tree/master/docs)
+-   [eslint-plugin-react documentation](https://github.com/yannickcr/eslint-plugin-react/tree/master/docs)

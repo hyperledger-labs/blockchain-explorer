@@ -5,18 +5,28 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Table of Contents
 
+- [Release Notes](#Release-Notes)
 - [Directory Structure](#Directory-Structure)
 - [Requirements](#Requirements)
 - [Clone Repository](#Clone-Repository)
 - [Database Setup](#Database-Setup)
 - [Fabric Network Setup](#Fabric-Network-Setup)
-- [Configure Hyperledger Explorer](#Configure-Hyperledger-Explorer)
+- [Fabric Configure Hyperledger Explorer](#Fabric-Configure-Hyperledger-Explorer)
+- [Composer Configure Hyperledger Explorer](#Composer-Configure-Hyperledger-Explorer)
 - [Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
 - [Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
 - [Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
 - [Logs](#Logs)
 - [Troubleshooting](#Troubleshooting)
 - [License](#License)
+
+
+<a name="Release-Notes"/>
+
+## Release Notes
+
+- [Release Notes](release_notes/v0.3.4.md)
+
 
 <a name="Directory-Structure"/>
 
@@ -29,11 +39,11 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 		├── fabric   Explorer API (Hyperledger Fabric)
 	├── test         Application backend test
 ├── client         	 Web UI
-	├── public       Public folder
+	├── public       Assets
 	├── src          Front end source code
-		├── components		React framwork
+		├── components		React framework
 		├── services	  	Request library for API calls
-		├── state		Redux framwork
+		├── state		Redux framework
 		├── static       	Custom and Assets
 ```
 <a name="Requirements"/>
@@ -60,6 +70,7 @@ Clone this repository to get the latest using the following command.
 <a name="Database-Setup"/>
 
 ## Database Setup
+**Important repeat after every git pull
 
 Connect to PostgreSQL database.
 
@@ -105,7 +116,7 @@ On another terminal.
 
 ## Hyperledger Composer Setup
 
- Setup your own network using Composer[Build your network](https://hyperledger.github.io/composer/latest/installing/development-tools) from Hyperledger Composer. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+ Setup your own network using Composer [Build your network](https://hyperledger.github.io/composer/latest/installing/development-tools) from Hyperledger Composer. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
 
 <a name="Composer-Configure-Hyperledger-Explorer"/>
 
@@ -139,6 +150,7 @@ protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the
 <a name="Build-Hyperledger-Explorer"/>
 
 ## Build Hyperledger Explorer
+**Important repeat after every git pull
 
 On another terminal.
 
