@@ -12,12 +12,12 @@ var logger = helper.getLogger("main");
 
 
 
-const platformroutes = async function (app, pltfrm, persistance) {
+const platformroutes = async function (app, pltfrm, persistence) {
 
   platform = await PlatformBuilder.build(pltfrm);
   proxy = platform.getDefaultProxy();
-  statusMetrics = persistance.getMetricService();
-  crudService = persistance.getCrudService();
+  statusMetrics = persistence.getMetricService();
+  crudService = persistence.getCrudService();
 
   /***
       Block by number
@@ -88,12 +88,14 @@ const platformroutes = async function (app, pltfrm, persistance) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/changeChannel/:channelName", function (req, res) {
+  app.get("/api/changeChannel/:channelName", async function (req, res) {
     let channelName = req.params.channelName;
-    proxy.changeChannel(channelName);
+    let channel = await this.crudService.getChannelByGenesisBlockHash(channelName)
+    proxy.changeChannel(channel.name);
     ledgerMgr.ledgerEvent.emit("changeLedger");
+   let  curChannel = await  this.proxy.getGenesisBlockHash(channel.name)
     res.send({
-      currentChannel: proxy.getDefaultChannel()
+      currentChannel:curChannel
     });
   });
 

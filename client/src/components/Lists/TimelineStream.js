@@ -56,6 +56,9 @@ class TimelineStream extends Component {
                   backgroundColor: "#6283D0",
                   fontSize: "13pt"
                 }}
+                contentStyle={{
+                  backgroundColor: "transparent"
+                }}
                 buttons={
                   <a
                     className="blockLink"
@@ -73,12 +76,18 @@ class TimelineStream extends Component {
                 }
               >
                 <Typography variant="body1">
-                  <b> Datahash:</b> {item.datahash} <br />
-                  <b> Number of Tx:</b> {item.txcount}
+                  <b className="timeLineText"> Datahash:</b> {item.datahash}{" "}
+                  <br />
+                  <b className="timeLineText"> Number of Tx:</b> {item.txcount}
                 </Typography>
-                <h5>
-                  <Badge>
-                    <Timeago date={item.time} live={false} minPeriod={60} />
+                <h5 className="timeLineText">
+                  <Badge className="timeLineText">
+                    <Timeago
+                      className="timeLineText"
+                      date={item.time}
+                      live={false}
+                      minPeriod={60}
+                    />
                   </Badge>
                 </h5>
               </TimelineEvent>

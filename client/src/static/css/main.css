@@ -17,14 +17,22 @@ font-weight: 300;
     color:#000000!important;
     font-size:1.05rem !important;
      font-weight:800!important;
-     height: 60px!important;
-     margin-top: 22px!important;
+     height: 50px!important;
+     margin: 10px;
  }
-.admin-buttons{
-    margin-left: 10px;
-    margin-right: 10px;
-    padding-right: 15px;
+ .ml-auto li{
+    height:50px;
+    line-height: 50px;
+    text-align:center;
 }
+ .channel-dropdown,.fa-bell{
+    margin:8px!important
+}
+.admin-buttons{
+    padding-top:0px;
+    margin-top:0px
+}
+
 .button{
     background-color:#afeeee;
     font-size: 16px;
@@ -41,7 +49,9 @@ font-weight: 300;
     background-color:#808080!important;
     height: 60px!important;
     margin-top: 20px;
+    padding:10px!important
 }
+
 /*Channel Drop-Down*/
 .Select-control{
     background-color:#E8E8E8!important;
@@ -173,7 +183,8 @@ word-wrap: break-word;
     min-width: 730px;
 }
 .container{
-    padding-left: 280px;
+    margin-left: 5% !important;
+    margin-right: 5% !important;
 }
 .peerList{
     margin-left: 300px;
@@ -193,8 +204,12 @@ word-wrap: break-word;
 }
 /* Landing page css */
 .landing{
+
     margin-top: 450px;
     margin-left: 550px;
+}
+.landingBackground{
+    background-color:#F0F5F9!important;
 }
 .landing > h1{
     font-size: 40pt;
@@ -323,6 +338,7 @@ svg.custom path.link {
     font-weight:400;
     letter-spacing:3px;
     padding-top:1%;
+    margin:0px
 }
 .dialog{
     border-style:solid;
@@ -378,8 +394,11 @@ background-color:transparent;
 cursor:pointer;
 text-shadow: 1px 1px 2px rgba(129, 129, 129, 0.753);
 }
+.copyBtn:hover{
+    color:#2153f8;
+}
 .copyBtn:focus{
-    outline:none
+    outline:none;
 }
 .cubeIcon{
     /* color:#B9D6E1; */
@@ -411,7 +430,8 @@ margin-top:-10px;
     margin-right: 5% !important;
 }
 .theme-switch{
-    padding-top: 25px;
+    padding-top:0px;
+    margin-left:30px!important
 }
 .stats-block{
     /* background-color: #FAE2F0 !important; */
@@ -528,3 +548,53 @@ margin-top:-10px;
     stroke:#5bc5c2!important;
  stroke-width:2!important;
  }
+ /*Hiding/Showing hash tooltip on hover*/
+ .partialHash{
+     text-align:center;
+ }
+
+.partialHash:hover  .fullHash{
+display:block;
+position:absolute!important;
+padding:4px 4px;
+background-color: #000000!important;
+margin-left:-250px;
+margin-top:-30px;
+border-radius:8px;
+color:#ffffff;
+opacity:0.7
+ }
+.fullHash{
+    display:none
+}
+/* Copy Tooltip*/
+.copyMessage{
+    display:none
+}
+.copiedMessage{
+    display:none
+}
+.copyBtn:hover  .copyMessage{
+    display:block;
+    position:absolute!important;
+    padding:0 ;
+    background-color: transparent;
+    font-size:10px;
+    margin-top:-10px;
+     }
+     .copyBtn:active copiedMessage{
+        display:block;
+        position:absolute!important;
+        padding:0 ;
+        background-color: transparent;
+        margin-top:-30px;
+     }
+/* Change Channel Loader */
+.channel-loader{
+    text-align: center;
+    padding: 20px;
+}
+.loader{
+    margin: 0 auto;
+    width: 100px;
+}

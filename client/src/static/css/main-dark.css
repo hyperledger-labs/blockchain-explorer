@@ -11,9 +11,11 @@
 
 }
 /* Landing page css */
-.dark-theme .landingText{
+.dark-theme .landing{
     margin-top: 450px;
     margin-left: 550px;
+}
+.dark-theme .landingBackground{
     background-color:#F0F5F9!important;
 }
 
@@ -28,7 +30,33 @@
 .dark-theme  .Select-control{
     background-color:#6a628e!important;
     color:#ffffff!important;
+
 }
+.dark-theme .Select-menu-outer{
+    background-color:#5a5379!important;
+    color:#ffffff!important;
+}
+
+.dark-theme .Select-menu {
+    max-height: 198px;
+    overflow-y: auto;
+  }
+  .dark-theme .Select-option {
+    box-sizing: border-box;
+    background-color: #453E68 !important;
+    color:#cfcdcd!important;
+  }
+  .dark-theme  .Select-option.is-selected {
+    background-color:#6a628e!important;
+    color: #ffffff!important;
+  }
+  .dark-theme .Select-option.is-focused {
+      color:#ffffff!important;
+    background-color: #5d5291!important;
+
+  }
+
+
 .dark-theme .Select-value-label{
     color:#000000!important
 }
@@ -141,14 +169,17 @@
 .dark-theme .dialogTitle{
 
     text-align: center;
-    background-color:red!important;
-    color:#fff !important;
+    background-color:#242036!important;
+    color:#ffffff!important;
     font: bold 30px;
     font-weight:400;
     letter-spacing:3px;
     padding-top:1%;
+    margin:0px
 }
 .dark-theme .dialog{
+    background-color:#453E68!important;
+    color:#fff !important;
     border-style:solid;
     /* border-color: #B9D6E1; */
     border-color :#D8D6D6;
@@ -156,13 +187,41 @@
     filter: drop-shadow(0 0 0.75rem #D8D6D6);
 
 }
+.dark-theme .dialog .card-body,.dark-theme .dialog .card, .dark-theme .card-body, .dark-theme .card{
+    background-color: #453E68!important;
+    color:#ffffff!important
+}
+.dark-theme .dialogCells{
+    color:#ffffff
+}
 
-.dark-theme .table-hover tbody tr:hover td, .table-hover tbody tr:hover th{
+/*Tables Styling*/
+.dark-theme .table-hover tbody tr:hover td,.dark-theme .table-hover tbody tr:hover th,.dark-theme .dialogCells:hover{
     transition:background-color 1s ease;
-    background-color:#53b4b1;
+    background-color:#5e558e!important;
     opacity:0.8
+}
+.dark-theme .rt-th input{
+    background:#7165ad !important;
+    color:#ffffff!important
+}
+.dark-theme .-pageJump input{
+    background:#7165ad !important;
+    color:#ffffff!important
+}
+.dark-theme .select-wrap select{
+    background:#7165ad !important;
+    color:#ffffff!important
+}
 
-
+/*Notification Panel*/
+.dark-theme .notificationPanel,.dark-theme .jss58, .dark-theme .jss76,.dark-theme .jss39, .dark-theme .jss41{
+    background-color:#5e558e!important;
+    color:white!important;
+}
+.dark-theme .notificationTime{
+    color:#ffffff!important;
+    background-color:#242036!important
 }
 .dark-theme  .table-card{
     background-color: #453E68!important;
@@ -190,10 +249,10 @@ filter: "drop-shadow(0 0 0.75rem #D8D6D6)"
 .dark-theme .copyBtn{
     float:right;
     border-color:transparent;
-    color:#4c69c7;
+    color:#8d7af5!important;
 background-color:transparent;
 cursor:pointer;
-text-shadow: 1px 1px 2px rgba(129, 129, 129, 0.753);
+
 }
 .dark-theme .copyBtn:focus{
     outline:none
@@ -231,11 +290,32 @@ margin-top:-10px;
    color:#242036;
    font-size:1.05rem !important;
     font-weight:800!important;
-    height: 60px!important;
-    margin-top: 20px;
+    height: 50px!important;
+    margin: 10px;
+}
+.dark-theme .ml-auto li{
+    height:50px;
+    line-height: 50px;
+    text-align:center;
+}
+.dark-theme .channel-dropdown,.dark-theme .fa-bell{
+    margin:8px!important
+}
+.dark-theme  .admin-buttons{
+    padding-top:0px;
+    margin-top:0px
 }
 .dark-theme .theme-switch{
-    padding-top: 25px;
+    padding-top:0px;
+    margin-left:30px!important
+}
+.dark-theme .activeTab{
+
+    color:#ffffff!important;
+    background-color:#453E68 !important;
+    height: 60px!important;
+    margin-top: 20px;
+    padding:10px!important
 }
 .dark-theme .sunIcon{
     color:rgb(247, 200, 92);
@@ -275,6 +355,13 @@ margin-top:-10px;
 .dark-theme .org-pie{
    padding-left:10%;
 }
+.dark-theme li  .active{
+    color:#ffffff!important;
+    background-color:#5e558e!important;
+        }
+        .dark-theme li  .active:hover{
+            color:#ffffff!important
+        }
 .dark-theme .dash-view{
    padding-top: 85px;
     padding-left: 0px!important;
@@ -346,6 +433,9 @@ margin-top:-10px;
    color:#ffffff;
    fill:#ffffff
 }
+.dark-theme .recharts-cartesian-axis-line{
+    stroke:#ffffff
+}
 /*Time Chart and Chart stats */
 .dark-theme .chartCard{
    background-color: #453E68;
@@ -366,15 +456,52 @@ stroke-width:2!important;
 }
 /* Timeline Stream Chart*/
 .dark-theme .timeline-event{
+background-color:#423b5f!important;
     word-wrap: break-word;
-    color:red;
-    background-color:orange
     }
+    .dark-theme .timeline-event > div{
+        color:red
+    }
+            .dark-theme .timeLineText , .dark-theme .timeline-event p{
+                color:#ffffff!important;
+            }
+            .dark-theme .timeLineText .badge-secondary{
+                background-color:#5e548f!important;
+            }
     /*Admin Panel & Notification Panel */
-    .dark-theme .admin-panel, .dark-theme  .notification-panel, .dark-theme  .MuiPaper-root-65{
+    .dark-theme .admin-panel, .dark-theme  .notification-panel, .dark-theme  .MuiPaper-root-39{
         color:#ffffff!important;
         background-color:#3c3558!important
     }
     .dark-theme .admin-panelCurrent{
         color:rgb(42, 173, 230)!important;
     }
+    .dark-theme .MuiDrawer-paper-39{
+        background-color:#5e558e!important;
+    }
+    .dark-theme .footer{
+        color:#ffffff!important;
+        background-color:#5e558e!important;
+    }
+    /*Hiding/Showing hash on hover*/
+    .dark-theme .partialHash{
+        text-align:center;
+    }
+
+    .dark-theme .partialHash:hover  .fullHash{
+   display:block;
+   position:absolute!important;
+   padding:0 6 0 6;
+   color:#ffffff;
+   background-color: #5e558e!important;
+   margin-left:-250px;
+   margin-top:-30px;
+   opacity:1
+    }
+    .dark-theme .fullHash{
+       display:none
+   }
+
+
+
+

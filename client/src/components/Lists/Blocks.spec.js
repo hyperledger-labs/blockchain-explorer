@@ -56,9 +56,7 @@ const setup = () => {
       peerCount: "4",
       txCount: "36"
     },
-    channel: {
-      currentChannel: "mychannel"
-    },
+    currentChannel: "mychannel",
     transaction: {
       id: 39,
       channelname: "mychannel",
@@ -128,8 +126,9 @@ const setup = () => {
       ]
     },
     getBlockList: jest.fn(),
-    removeTransactionInfo: jest.fn(),
-    getTransactionInfo: jest.fn()
+ removeTransactionInfo: jest.fn(),
+    getTransactionInfo: jest.fn(),
+    getTransaction: jest.fn().mockImplementationOnce(() => Promise.resolve())
   };
 
   const wrapper = mount(<Blocks {...props} />);
@@ -271,15 +270,15 @@ describe("Blocks", () => {
     expect(wrapper.find(TransactionView).exists()).toBe(false);
   });
 
-  test("handleDialogOpen should set dialogOpen to true", () => {
+  test("handleDialogOpen should set dialogOpen to true", async () => {
     const { wrapper } = setup();
-    wrapper
+    await wrapper
       .instance()
       .handleDialogOpen(
         "912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6"
       );
+    wrapper.update()
     expect(wrapper.state("dialogOpen")).toBe(true);
-    wrapper.update();
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
@@ -371,14 +370,15 @@ describe("Blocks", () => {
     expect(wrapper.find(ReactTable).find("TrGroupComponent").length).toBe(1);
   });
 
-  test("Simulate onClick when a tansaction is clicked the TransactionView modal should exist", () => {
-    const { wrapper } = setup();
-    expect(wrapper.find(TransactionView).exists()).toBe(false);
-    wrapper
+  test("Simulate onClick when a tansaction is clicked the TransactionView modal should exist", async () => {
+  const { wrapper } = setup();
+  expect(wrapper.find(TransactionView).exists()).toBe(false);
+    await wrapper
       .find("TdComponent")
       .find("a")
       .at(1)
       .simulate("click");
+    wrapper.update();
     expect(wrapper.find(TransactionView).exists()).toBe(true);
   });
 
@@ -413,16 +413,18 @@ describe("Blocks", () => {
 
   test('click on block hash', () => {
     const { wrapper } = setup()
-    wrapper.find('.hash-hide').at(0).simulate('click')
+    wrapper.find('.partialHash').at(0).simulate('click')
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true)
     expect(wrapper.state('blockHash')).toMatchObject({ blockhash: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f' })
   })
 
+  /*We are no more using this functionality to show/hide the hash
   test('click on eye', () => {
     const { wrapper } = setup()
     wrapper.find('.eyeBtn').at(0).simulate('click')
     expect(Object.values(wrapper.state('selection'))).toContain(true)
   })
+  */
 
   test('pagination when blockList is greater than 4', () => {
     const { wrapper, props } = setup()

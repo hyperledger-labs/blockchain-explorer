@@ -12,16 +12,6 @@ class Channels extends Component {
     super(props);
   }
 
-  componentWillMount() {
-    this.props.getChannels()
-  }
-
-  componentDidMount() {
-    setInterval(() => {
-      this.props.getChannels()
-    }, 600000);
-  }
-
   reactTableSetup = () => {
     return [
       {

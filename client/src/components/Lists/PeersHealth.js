@@ -35,7 +35,7 @@ class PeersHealth extends Component {
     return (
       <div>
         <ReactTable
-          data={this.state.peerStatus}
+          data={this.props.peerStatus}
           columns={columnHeaders}
           className="-striped -highlight peers-health"
           minRows={0}

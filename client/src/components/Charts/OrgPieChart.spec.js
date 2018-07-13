@@ -6,7 +6,7 @@ import OrgPieChart from './OrgPieChart';
 
 const setup = () => {
   const props = {
-    txByOrg: [
+    transactionByOrg: [
       {
         count: "3",
         creator_msp_id: "OrdererMSP"
@@ -39,7 +39,7 @@ describe('OrgPieChart', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance()
     const spy = jest.spyOn(instance, 'orgDataSetup');
-    const txByOrg = [
+    const transactionByOrg = [
         {
           count: "3",
           creator_msp_id: "OrdererMSP"
@@ -54,7 +54,7 @@ describe('OrgPieChart', () => {
         }
       ]
 
-    wrapper.setProps({ txByOrg });
+    wrapper.setProps({ transactionByOrg });
     expect(spy).toHaveBeenCalledTimes(1)
   })
 })

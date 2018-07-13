@@ -10,15 +10,34 @@ import indigo from "material-ui/colors/indigo";
 import lightBlue from "material-ui/colors/lightBlue";
 import red from "material-ui/colors/red";
 import HeaderView from "../Header/HeaderView";
-import FooterView from '../Header/footerView';
+import FooterView from "../Header/footerView";
 import LandingPage from "../View/LandingPage";
 import "../../static/css/main.css";
 import "../../static/css/main-dark.css";
+import chartsOperations from '../../state/redux/charts/operations'
+import tablesOperations from '../../state/redux/tables/operations'
+const {
+  blockPerHour,
+  blockPerMin,
+  transactionPerHour,
+  transactionPerMin,
+  transactionByOrg,
+  notification,
+  dashStats,
+  channel,
+  channelList,
+  changeChannel,
+  peerStatus
+} = chartsOperations
 
-sessionStorage.getItem("toggleTheme")
-  ? (document.body.style.backgroundColor = "#F0F5F9")
-  : (document.body.style.backgroundColor = "#F0F5F9");
-
+const {
+  blockList,
+  chaincodeList,
+  channels,
+  peerList,
+  transactionInfo,
+  transactionList
+} = tablesOperations
 const muiTheme = createMuiTheme({
   palette: {
     contrastThreshold: 3,
@@ -37,37 +56,45 @@ class App extends Component {
     super(props);
     this.refreshComponent = this.refreshComponent.bind(this);
     this.state = {
-      loading: true,
-      toggleClass: sessionStorage.getItem("toggleTheme")
+      loading: true
     };
   }
 
   componentWillMount() {
-    /* if (sessionStorage.getItem("toggleTheme") === "true") {
-      require("../../static/css/main.css");
-    } else {
-      require("../../static/css/main-dark.css");
-    } */
-    setTimeout(() => this.setState({ loading: false }), 6000);
+    //Check if sessionStorage is true, then theme is true, else false.
+    const theme = sessionStorage.getItem("toggleTheme") === "true";
+    this.setState({ toggleClass: theme });
+    theme
+      ? (document.body.className = "dark-theme")
+      : (document.body.className = "");
+    theme
+      ? (document.body.style.backgroundColor = "#242036")
+      : (document.body.style.backgroundColor = "#F0F5F9");
+  }
+
+  updateLoadStatus = () => {
+    this.setState({ loading: false })
   }
   refreshComponent = val => {
     this.setState({ toggleClass: val });
     this.state.toggleClass
       ? (document.body.style.backgroundColor = "#F0F5F9")
       : (document.body.style.backgroundColor = "#242036");
-
-    //this.forceUpdate();
-    // window.location.reload(true);
+    this.state.toggleClass
+      ? (document.body.className = "")
+      : (document.body.className = "dark-theme");
   };
 
   render() {
     if (this.state.loading) {
-      return <LandingPage />;
+      return <LandingPage
+        updateLoadStatus={this.updateLoadStatus}
+      />;
     }
 
     return (
       <MuiThemeProvider theme={muiTheme}>
-        <div className={this.state.toggleClass ? "dark-theme" : ""}>
+        <div>
           <HeaderView refresh={this.refreshComponent.bind(this)} />
           <Main />
           <div class="footerView">
@@ -78,5 +105,4 @@ class App extends Component {
     );
   }
 }
-
 export default App;

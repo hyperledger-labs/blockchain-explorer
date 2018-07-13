@@ -11,56 +11,52 @@ import TransactionsView from './View/TransactionsView';
 import ChaincodeView from './View/ChaincodeView';
 import DashboardView from './View/DashboardView';
 import ChannelsView from './View/ChannelsView';
-import {
-  getBlock,
-  getBlockList,
-  getChaincodes,
-  getChannelList,
-  getChannel,
-  getChannels,
-  getCountHeader,
-  getNotification,
-  getPeerList,
-  getTransaction,
-  getTransactionList,
-  getTxByOrg,
-  getPeerStatus
-} from "../store/selectors/selectors";
-import { blockList } from "../store/actions/block/action-creators";
-import { chaincodes } from "../store/actions/chaincodes/action-creators";
-import { countHeader } from "../store/actions/header/action-creators";
-import { channelsData } from "../store/actions/channels/action-creators";
-import { latestBlock } from "../store/actions/latestBlock/action-creators";
-import { transactionInfo } from "../store/actions/transaction/action-creators";
-import { transactionList } from "../store/actions/transactions/action-creators";
-import { txByOrg } from "../store/actions/charts/action-creators";
-import { removeTransactionInfo } from "../store/actions/removeTransactionInfo/action-creators";
+import { chartSelectors } from '../state/redux/charts/'
+import { tableOperations, tableSelectors } from '../state/redux/tables/'
+
+const {
+  currentChannelSelector,
+  channelListSelector,
+  dashStatsSelector,
+  peerStatusSelector,
+  transactionByOrgSelector,
+} = chartSelectors
+
+const {
+  blockListSelector,
+  chaincodeListSelector,
+  channelsSelector,
+  peerListSelector,
+  transactionSelector,
+  transactionListSelector,
+} = tableSelectors
+
+const {
+  transaction,
+} = tableOperations
+
 
 export const Main = (props) => {
   const blocksViewProps = {
     blockList: props.blockList,
-    channel: props.channel,
+    currentChannel: props.currentChannel,
+    getTransaction: props.getTransaction,
     transaction: props.transaction,
-    getTransactionInfo: props.getTransactionInfo,
-    removeTransactionInfo: props.removeTransactionInfo
-  };
+  }
 
   const chaincodeViewProps = {
-    channel: props.channel,
-    chaincodes: props.chaincodes
+    chaincodeList: props.chaincodeList
   }
 
   const channelsViewProps = {
     channels: props.channels,
-    getChannels: props.getChannels
   }
 
   const dashboardViewProps = {
-    countHeader: props.countHeader,
-    channel: props.channel,
-    txByOrg: props.txByOrg,
     blockList: props.blockList,
-    peerStatus : props.peerStatus
+    dashStats: props.dashStats,
+    peerStatus : props.peerStatus,
+    transactionByOrg: props.transactionByOrg,
   }
 
   const networkViewProps = {
@@ -68,12 +64,10 @@ export const Main = (props) => {
   }
 
   const transactionsViewProps = {
-    channel: props.channel,
+    currentChannel: props.currentChannel,
     transaction: props.transaction,
     transactionList: props.transactionList,
-    getTransactionInfo: props.getTransactionInfo,
-    removeTransactionInfo: props.removeTransactionInfo,
-    getTransactionList: props.getTransactionList
+    getTransaction: props.getTransaction
   }
 
   return (
@@ -92,32 +86,18 @@ export const Main = (props) => {
   );
 };
 
-export default connect(
-  state => ({
-    block: getBlock(state),
-    blockList: getBlockList(state),
-    chaincodes: getChaincodes(state),
-    channel: getChannel(state),
-    channelList: getChannelList(state),
-    countHeader: getCountHeader(state),
-    notification: getNotification(state),
-    peerList: getPeerList(state),
-    peerStatus: getPeerStatus(state),
-    transaction: getTransaction(state),
-    transactionList: getTransactionList(state),
-    channels: getChannels(state),
-    txByOrg: getTxByOrg(state),
-    removeTransactionInfo: removeTransactionInfo(state)
-  }),
-  {
-    getBlockList: blockList,
-    getChaincodes: chaincodes,
-    getCountHeader: countHeader,
-    getLatestBlock: latestBlock,
-    getTransactionInfo: transactionInfo,
-    getTransactionList: transactionList,
-    getChannels: channelsData,
-    removeTransactionInfo: removeTransactionInfo,
-    getTxByOrg: txByOrg
-  }
-)(Main);
+export default connect((state) => ({
+  blockList: blockListSelector(state),
+  chaincodeList: chaincodeListSelector(state),
+  channelList: channelListSelector(state),
+  channels: channelsSelector(state),
+  currentChannel: currentChannelSelector(state),
+  dashStats: dashStatsSelector(state),
+  peerList: peerListSelector(state),
+  peerStatus: peerStatusSelector(state),
+  transaction: transactionSelector(state),
+  transactionByOrg: transactionByOrgSelector(state),
+  transactionList: transactionListSelector(state)
+}), {
+    getTransaction: transaction,
+  })(Main);

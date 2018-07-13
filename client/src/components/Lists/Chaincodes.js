@@ -113,13 +113,13 @@ class Chaincodes extends Component {
           Add Chaincode
           </Button> */}
         <ReactTable
-          data={this.props.chaincodes}
+          data={this.props.chaincodeList}
           columns={this.reactTableSetup()}
           defaultPageSize={5}
           className="-striped -highlight"
           filterable
           minRows={0}
-          showPagination={ this.props.chaincodes.length < 5  ?  false : true }
+          showPagination={ this.props.chaincodeList.length < 5  ?  false : true }
         />
         <Dialog
           open={this.state.dialogOpen}

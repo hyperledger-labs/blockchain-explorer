@@ -23,9 +23,9 @@ var blockPerMinMeter = Metrics.blockMetrics
 var txnPerSecMeter = Metrics.txnPerSecMeter
 var txnPerMinMeter = Metrics.txMetrics
 
-async function start(platform, persistance, broadcaster) {
+async function start(platform, persistence, broadcaster) {
 
-        blockScanner = new BlockScanner(platform, persistance, broadcaster);
+        blockScanner = new BlockScanner(platform, persistence, broadcaster);
         blockListener = new BlockListener(blockScanner);
 
         setInterval(function () {

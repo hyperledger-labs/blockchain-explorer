@@ -17,7 +17,7 @@ var helper = require('./app/helper.js')
 var logger = helper.getLogger("main");
 var express = require("express");
 var path = require("path");
-var pgservice = require('./app/persistance/postgreSQL/db/pgservice.js');
+var pgservice = require('./app/persistence/postgreSQL/db/pgservice.js');
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;

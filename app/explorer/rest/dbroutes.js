@@ -15,9 +15,7 @@ const dbroutes = (app, persist) => {
         if (
           data &&
           (data.chaincodeCount &&
-            data.txCount &&
-            data.latestBlock &&
-            data.peerCount)
+            data.txCount &&  data.peerCount)
         ) {
           return res.send(data);
         } else {
@@ -154,7 +152,6 @@ const dbroutes = (app, persist) => {
   app.get("/api/blockAndTxList/:channel/:blocknum", function (req, res) {
     let channelName = req.params.channel;
     let blockNum = parseInt(req.params.blocknum);
-
     if (channelName && !isNaN(blockNum)) {
       crudService.getBlockAndTxList(channelName, blockNum).then(rows => {
         if (rows) {

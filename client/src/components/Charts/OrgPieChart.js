@@ -2,10 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import { Card, CardHeader, CardBody } from "reactstrap";
-import { PieChart, Pie, Tooltip, Legend } from "recharts";
-import txByOrg from "../../store/reducers/txByOrg";
+import React, { Component } from 'react';
+import { PieChart, Pie, Tooltip, Legend } from 'recharts';
 
 const colors = ["#0B091A", "#6283D0", "#0D3799", "#7C7C7C"];
 
@@ -24,7 +22,7 @@ class OrgPieChart extends Component {
   orgDataSetup = (orgData) => {
     let temp = [];
     let index = 0;
-    orgData.txByOrg.forEach(element => {
+    orgData.forEach(element => {
       temp.push({
         value: parseInt(element.count), name: element.creator_msp_id,
         fill: colors[index]
@@ -35,17 +33,19 @@ class OrgPieChart extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.orgDataSetup(nextProps)
+    if (nextProps.transactionByOrg !== this.props.transactionByOrg) {
+      this.orgDataSetup(nextProps.transactionByOrg)
+    }
   }
 
   componentDidMount() {
-    this.orgDataSetup(this.props)
+    this.orgDataSetup(this.props.transactionByOrg)
   }
 
   render() {
     return (
       <div className="org-pie">
-        <PieChart width={485}  height={290} className="pie-chart">
+        <PieChart width={485} height={290} className="pie-chart">
           <Legend align="right" height={10} />
           <Pie data={this.state.data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label fill="fill" />
           <Tooltip />

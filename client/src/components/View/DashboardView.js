@@ -19,12 +19,19 @@ export class DashboardView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notifications: []
+      notifications: [],
+      hasDbError: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setNotifications(this.props.blockList);
+  }
+
+  componentWillMount() {
+    if (this.props.blockList == undefined || this.props.dashStats == undefined || this.props.peerStatus == undefined || this.props.transactionByOrg == undefined) {
+      this.setState({ hasDbError: true });
+    }
   }
 
   componentDidMount() {
@@ -36,10 +43,10 @@ export class DashboardView extends Component {
     if (blockList !== undefined) {
       for (
         let i = 0;
-        i < 3 && this.props.blockList && this.props.blockList[i];
+        i < 3 && blockList && blockList[i];
         i++
       ) {
-        const block = this.props.blockList[i];
+        const block = blockList[i];
         const notify = {
           title: `Block ${block.blocknum} `,
           type: "block",
@@ -55,6 +62,13 @@ export class DashboardView extends Component {
   };
 
   render() {
+    if (this.state.hasDbError) {
+      return (
+        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <h1>Error: One or more components failed to render.</h1>
+        </div>
+      );
+    }
     return (
       <div className="background-view">
         <div className="dash-view" >
@@ -70,7 +84,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.latestBlock}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.latestBlock}</h1>
                     </Col>
                   </Row>
                   BLOCKS
@@ -83,7 +97,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.txCount}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.txCount}</h1>
                     </Col>
                   </Row>
                   TRANSACTIONS
@@ -96,7 +110,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.peerCount}</h1>
+                      <h1 className="stat-count">{this.props.dashStats.peerCount}</h1>
                     </Col>
                   </Row>
                   NODES
@@ -109,8 +123,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.countHeader.chaincodeCount}</h1>
-
+                      <h1 className="stat-count">{this.props.dashStats.chaincodeCount}</h1>
                     </Col>
                   </Row>
                   CHAINCODES
@@ -123,7 +136,6 @@ export class DashboardView extends Component {
               <Card className="dash-section">
                 <PeersHealth
                   peerStatus={this.props.peerStatus}
-                  channel={this.props.channel.currentChannel}
                 />
               </Card>
               <Card className="dash-section">
@@ -135,9 +147,9 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-                <h5 className="org-header">Transactions by Organization</h5>
+                <h5 className="org-header">Transactions by Organziation</h5>
                 <hr />
-                <OrgPieChart txByOrg={this.props.txByOrg} />
+                <OrgPieChart transactionByOrg={this.props.transactionByOrg} />
               </Card>
             </Col>
           </Row>

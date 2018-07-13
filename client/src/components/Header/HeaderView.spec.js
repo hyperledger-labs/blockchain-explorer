@@ -8,31 +8,37 @@ jest.useFakeTimers();
 
 const setup = () => {
   const props = {
-    getChangeChannel: jest.fn(),
-    channel: { currentChannel: "mychannel" },
-    channels: [],
-    channelList: {
-      channels: ["mychannel"],
-      status: 200
-    },
+    channel: { currentChannel: 'mychannel' },
+    channelList: ['mychannel'],
+    channels:[  {
+      "id": 3,
+      "channelname": "mychannel",
+      "blocks": 5,
+      "genesis_block_hash": null,
+      "transactions": 5,
+      "createdat": "2018-06-18T14:30:32.000Z",
+      "channel_hash": "3406510bd4d8105683f340451418df018b661fb8461deb4ec62e7dfd6a2a6cfc"
+    }],
     classes: {
       margin: "Connect-HeaderView--margin-1",
       padding: "Connect-HeaderView--padding-2"
     },
-    getNotification: jest.fn(),
     notification: {},
-    getPeerList: jest.fn(),
-    getCountHeader: jest.fn(),
-    getPeerStatus: jest.fn(),
-    getTxPerHour: jest.fn(),
-    getTxPerMin: jest.fn(),
+    getBlockList: jest.fn(),
     getBlocksPerHour: jest.fn(),
     getBlocksPerMin: jest.fn(),
+    getChaincodeList: jest.fn(),
+    getChangeChannel: jest.fn(),
+    getChannelList: jest.fn(),
+    getChannels: jest.fn(),
+    getDashStats: jest.fn(),
+    getNotification: jest.fn(),
+    getPeerList: jest.fn(),
+    getPeerStatus: jest.fn(),
+    getTransactionByOrg: jest.fn(),
     getTransactionList: jest.fn(),
-    getBlockList: jest.fn(),
-    getTxByOrg: jest.fn(),
-    getChaincodes: jest.fn(),
-    getChannelsInfo: jest.fn(),
+    getTransactionPerHour: jest.fn(),
+    getTransactionPerMin: jest.fn(),
     refresh: jest.fn()
   };
 
@@ -69,11 +75,11 @@ describe("HeaderView", () => {
     expect(wrapper.state("notifyCount")).toBe(1);
   });
 
-  test("handleChange sets selectedOption and calls changeChannel", () => {
+  test("handleChange sets selectedChannel and calls changeChannel", async () => {
     const { wrapper, props } = setup();
-    const selectedOption = { value: "newChannel" };
-    wrapper.instance().handleChange(selectedOption);
-    expect(wrapper.state("selectedOption").value).toBe("newChannel");
+    const selectedChannel = { value: "newChannel" };
+    await wrapper.instance().handleChange(selectedChannel);
+    expect(wrapper.state("selectedChannel").value).toBe("newChannel");
     expect(props.getChangeChannel).toHaveBeenCalled();
   });
 
@@ -171,8 +177,8 @@ describe("HeaderView", () => {
     const { wrapper } = setup();
     const instance = wrapper.instance();
     const spy = jest.spyOn(instance, "syncData");
-    const newChannel = { currentChannel: "newChannel" };
-    wrapper.setProps({ channel: newChannel });
+    const newChannel = "newChannel";
+    wrapper.setProps({ currentChannel: newChannel });
     expect(spy).toHaveBeenCalled();
   });
 
