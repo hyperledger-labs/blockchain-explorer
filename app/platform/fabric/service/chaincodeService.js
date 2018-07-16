@@ -4,7 +4,7 @@
 var child_process = require("child_process");
 var fs = require('fs');
 // var path = "/chaincode/chaincode_example02/go/";
-var path = "/home/maedwards/example_cc/";
+//var path = "/home/maedwards/example_cc/";
 // var path = "/doesntexist/nope";
 var regXjs = "[a-z,A-Z,0-9]*.js$"
 var regXgo = "[a-z,A-Z,0-9]*.go$"
@@ -35,16 +35,16 @@ async function loadChaincodeSrc(path) {
     }
     var ccSource;
     try {
-       ccSource = await child_process.execSync('cat ' + location);
+        ccSource = await child_process.execSync('cat ' + location);
 
     } catch (error) {
-        return  errors.erf;
+        return errors.erf;
     }
     ccSource = ccSource.toString();
     return ccSource;
 
 };
 
-loadChaincodeSrc(path);
+//loadChaincodeSrc(path);
 // getPath();
 exports.loadChaincodeSrc = loadChaincodeSrc

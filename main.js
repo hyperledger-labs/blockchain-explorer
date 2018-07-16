@@ -11,13 +11,11 @@
 var http = require("http");
 var url = require("url");
 var WebSocket = require("ws");
-var Explorer = require("./app/explorer/Explorer.js")
 var appconfig = require("./appconfig.json");
 var helper = require('./app/helper.js')
 var logger = helper.getLogger("main");
 var express = require("express");
 var path = require("path");
-var pgservice = require('./app/persistence/postgreSQL/db/pgservice.js');
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;
@@ -44,7 +42,13 @@ class Broadcaster extends WebSocket.Server {
 
 var server;
 async function startExplorer() {
-  var explorer = new Explorer();
+  var Explorer = {};
+  if (appconfig.version && appconfig.version === "1.2.0") {
+    Explorer = require("./app/explorer/Explorer_" + appconfig.version);
+  } else {
+    Explorer = require("./app/explorer/Explorer");
+  }
+  explorer = new Explorer();
   //============ web socket ==============//
   server = http.createServer(explorer.getApp());
   var broadcaster = new Broadcaster(server);
@@ -77,13 +81,13 @@ var shutDown = function () {
   console.log('Received kill signal, shutting down gracefully');
   server.close(() => {
     console.log('Closed out remaining connections');
-    pgservice.closeconnection();
+    explorer.close();
     process.exit(0);
   });
 
   setTimeout(() => {
     console.error('Could not close connections in time, forcefully shutting down');
-    pgservice.closeconnection();
+    explorer.close();
     process.exit(1);
   }, 10000);
 

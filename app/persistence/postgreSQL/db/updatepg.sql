@@ -42,6 +42,9 @@ ADD COLUMN endorser_signature character varying DEFAULT NULL;
 ALTER TABLE transaction DROP COLUMN channelname;
 ALTER TABLE blocks DROP COLUMN channelname;
 
+ALTER TABLE peer_ref_channel ALTER COLUMN peerid TYPE varchar(64), ALTER COLUMN channelid TYPE character varying(256);
+ALTER TABLE peer ADD COLUMN peer_type character varying(64) DEFAULT NULL;
+
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;
 CREATE INDEX ON Blocks (blocknum);

@@ -23,7 +23,7 @@ var grpc = require('grpc');
 var util = require('util');
 var appRoot = require('app-root-path');
 
-var _serviceProto = grpc.load(appRoot  + '/node_modules/fabric-client/lib/protos/peer/admin.proto').protos;
+var _serviceProto = grpc.load(appRoot + '/node_modules/fabric-client/lib/protos/peer/admin.proto').protos;
 
 var logger = utils.getLogger('Admin.js');
 
@@ -62,12 +62,12 @@ var Admin = class extends Remote {
     /**
      * Close the service connection.
      */
-     close() {
-         if(this._endorserClient) {
-             logger.info('close - closing peer connection ' + this._endpoint.addr);
-             this._endorserClient.close();
-         }
-     }
+    close() {
+        if (this._endorserClient) {
+            logger.info('close - closing peer connection ' + this._endpoint.addr);
+            this._endorserClient.close();
+        }
+    }
 
     /**
      * Set a role for this peer.
@@ -84,9 +84,9 @@ var Admin = class extends Remote {
      * The default will be true when this peer does not have the role defined.
      */
     isInRole(role) {
-        if(!role) {
+        if (!role) {
             return true;
-        } else if(typeof this._roles[role] === 'undefined') {
+        } else if (typeof this._roles[role] === 'undefined') {
             return true;
         } else {
             return this._roles[role];
@@ -106,7 +106,7 @@ var Admin = class extends Remote {
      *                              of the Peer instance and the global timeout in the config settings.
      * @returns {Promise} A Promise for a {@link ProposalResponse}
      */
-    GetStatus(timeout) {
+    GetStatus(envelope, timeout) {
         logger.debug('Admin.GetStatus - Start');
         let self = this;
         let rto = self._request_timeout;
@@ -118,66 +118,27 @@ var Admin = class extends Remote {
         // Send the transaction to the peer node via grpc
         // The rpc specification on the peer side is:
         //     rpc ProcessProposal(Proposal) returns (ProposalResponse) {}
-        return new Promise(function(resolve, reject) {
-            var send_timeout = setTimeout(function(){
+        return new Promise(function (resolve, reject) {
+            var send_timeout = setTimeout(function () {
                 logger.error('GetStatus - timed out after:%s', rto);
                 return reject(new Error('REQUEST_TIMEOUT'));
             }, rto);
 
-            self._endorserClient.GetStatus({}, function(err, serverStatus) {
+            self._endorserClient.GetStatus(envelope, function (err, serverStatus) {
                 clearTimeout(send_timeout);
                 if (err) {
-                    logger.debug('Error GetStatus response from: %s status: %s',self._url, err);
-                    if(err instanceof Error) {
-                            resolve({"status":"DOWN","server_hostname" : self._options["grpc.ssl_target_name_override"]});
-                        }
-                        else {
-                            resolve({"status":"DOWN","server_hostname" : self._options["grpc.ssl_target_name_override"]});
+                    logger.debug('Error GetStatus response from: %s status: %s', self._url, err);
+                    if (err instanceof Error) {
+                        resolve({ "status": "DOWN", "server_hostname": self._options["grpc.ssl_target_name_override"] });
+                    }
+                    else {
+                        resolve({ "status": "DOWN", "server_hostname": self._options["grpc.ssl_target_name_override"] });
                     }
                 } else {
                     logger.debug('Received GetStatus response from peer "%s": status - %s', self._url, JSON.stringify(serverStatus));
-                    resolve({"status":"RUNNING","server_hostname" : self._options["grpc.ssl_target_name_override"]});
+                    resolve({ "status": "RUNNING", "server_hostname": self._options["grpc.ssl_target_name_override"] });
                 }
             });
-        });
-    }
-
-    StartServer(timeout) {
-        logger.debug('Admin.StartServer - Start');
-        let self = this;
-        let rto = self._request_timeout;
-        if (typeof timeout === 'number')
-            rto = timeout;
-
-
-
-        // Send the transaction to the peer node via grpc
-        // The rpc specification on the peer side is:
-        //     rpc ProcessProposal(Proposal) returns (ProposalResponse) {}
-        return new Promise(function(resolve, reject) {
-            var send_timeout = setTimeout(function(){
-                logger.error('GetStatus - timed out after:%s', rto);
-                return reject(new Error('REQUEST_TIMEOUT'));
-            }, rto);
-
-                self._endorserClient.GetStatus({}, function(err, serverStatus) {
-                    clearTimeout(send_timeout);
-                    if (err) {
-                        logger.debug('Received StartServer response from: %s status: %s',self._url, err);
-                        if(err instanceof Error) {
-                            resolve({"status":"DOWN"});
-                        }
-                        else {
-                            resolve({"status":"DOWN"});
-                        }
-                    } else {
-                        logger.debug('Received StartServer response from peer "%s": status - %s', self._url, serverStatus);
-
-                        resolve(serverStatus);
-                    }
-                });
-
-
         });
     }
 
@@ -188,7 +149,7 @@ var Admin = class extends Remote {
     toString() {
         return ' Admin : {' +
             'url:' + this._url +
-        '}';
+            '}';
     }
 
 };
