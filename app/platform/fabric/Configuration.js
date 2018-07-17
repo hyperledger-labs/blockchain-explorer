@@ -26,12 +26,23 @@ class Configuration {
   getDefaultPeer() {
     if (defaultPeer == undefined) {
       var org = this.getDefaultOrg();
-      var orgObj = config["network-config"][org];
-      var orgKey = Object.keys(orgObj);
-      var index = orgKey.indexOf("peer1");
-      defaultPeer = orgKey[index];
+      var orgObj = this.networkConfig[org];
+      for (const key in orgObj) {
+        if (orgObj.hasOwnProperty(key)) {
+          const elem = orgObj[key];
+          if(
+            typeof elem === "object" &&
+            "requests" in elem &&
+            "events" in elem &&
+            "server-hostname" in elem &&
+            "tls_cacerts" in elem
+          ){
+            defaultPeer = key;
+            return defaultPeer;
+          }
+        }
+      }
     }
-
     return defaultPeer;
   }
 
@@ -44,7 +55,7 @@ class Configuration {
   }
 
   getOrgAdmin(org) {
-    this.networkConfig[org].admin;
+    return this.networkConfig[org].admin;
   }
 
   getKeyStoreForOrg(org) {
