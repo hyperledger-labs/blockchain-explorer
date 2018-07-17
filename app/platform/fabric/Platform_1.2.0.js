@@ -43,7 +43,7 @@ class Platform {
     await platformroutes(this.app, this.restServices);
 
     setInterval(function () {
-      _self.isEventHubConnected();
+      _self.isChannelEventHubConnected();
     }, this.synchBlocksTime);
 
   }
@@ -100,14 +100,15 @@ class Platform {
     return client;
   }
 
-  async isEventHubConnected() {
+  async isChannelEventHubConnected() {
     for (var [client_name, client] of this.clients.entries()) {
-
-      let status = client.isEventHubConnected();
-      if (status) {
-        this.fabricServices.synchBlocks(client_name);
-      } else {
-        client.connectEventHub();
+      for (var [channel_name, channel] of client.getChannels().entries()) {
+        let status = client.isChannelEventHubConnected(channel_name);
+        if (status) {
+          this.fabricServices.synchBlocks(client_name, channel_name);
+        } else {
+          client.connectChannelEventHub(channel_name);
+        }
       }
     }
   }
@@ -182,12 +183,9 @@ class Platform {
   }
 
   async distroy() {
-    for (var [channel_key, client] of this.clients.entries()) {
+    for (var [client_key, client] of this.clients.entries()) {
       if (client) {
-        let status = client.isEventHubConnected();
-        if (status) {
-          client.disconnectEventHub();
-        }
+        client.disconnectEventHubs();
       }
     }
   }

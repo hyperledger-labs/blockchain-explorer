@@ -50,6 +50,24 @@ class RestServices {
 
     }
 
+    async getChannelsInfo() {
+
+        let channels = await this.persistence.getCrudService().getChannelsInfo();
+        let client = this.platform.getDefaultClient();
+        let currentchannels = [];
+
+        for (var channel of channels) {
+
+            let channel_genesis_hash = client.getChannelGenHash(channel.channelname);
+            if (channel_genesis_hash && channel_genesis_hash === channel.genesis_block_hash) {
+                currentchannels.push(channel);
+            }
+
+        }
+        //console.log(JSON.stringify(currentchannels));
+        return currentchannels;
+    }
+
     getChannels() {
         return this.platform.getDefaultClient().getChannelNames();
     }

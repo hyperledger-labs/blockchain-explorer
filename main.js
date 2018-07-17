@@ -34,6 +34,7 @@ class Broadcaster extends WebSocket.Server {
   broadcast(data) {
     this.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
+        console.log('Broadcast >> ' + JSON.stringify(data));
         client.send(JSON.stringify(data));
       }
     });

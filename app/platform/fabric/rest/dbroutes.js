@@ -17,7 +17,7 @@ const dbroutes = (app, restServices) => {
         if (
           data &&
           (data.chaincodeCount &&
-            data.txCount &&  data.peerCount)
+            data.txCount && data.peerCount)
         ) {
           return res.send(data);
         } else {
@@ -44,15 +44,15 @@ const dbroutes = (app, restServices) => {
     let number = parseInt(req.params.number);
     let channelName = req.params.channel;
     if (!isNaN(number) && channelName) {
-        var row = await crudService.getTxCountByBlockNum(channelName,number);
-        if (row) {
-            return res.send({
-              status: 200,
-              number: row.blocknum,
-              txCount: row.txcount
-            });
-        }
-        return requtil.notFound(req, res);
+      var row = await crudService.getTxCountByBlockNum(channelName, number);
+      if (row) {
+        return res.send({
+          status: 200,
+          number: row.blocknum,
+          txCount: row.txcount
+        });
+      }
+      return requtil.notFound(req, res);
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -77,7 +77,7 @@ const dbroutes = (app, restServices) => {
     let txid = req.params.txid;
     let channelName = req.params.channel;
     if (txid && txid != "0" && channelName) {
-        crudService.getTransactionByID(channelName, txid).then(row => {
+      crudService.getTransactionByID(channelName, txid).then(row => {
         if (row) {
           return res.send({ status: 200, row });
         }
@@ -295,25 +295,25 @@ const dbroutes = (app, restServices) => {
     }
   });
 
- /**
-          Channels
-          GET /channels -> /api/channels/info
-          curl -i 'http://<host>:<port>/api/channels/<info>'
-          Response:
-          [
-            {
-              "channelName": "mychannel",
-              "channel_hash": "",
-              "craetedat": "1/1/2018"
-            }
-          ]
-        */
+  /**
+           Channels
+           GET /channels -> /api/channels/info
+           curl -i 'http://<host>:<port>/api/channels/<info>'
+           Response:
+           [
+             {
+               "channelName": "mychannel",
+               "channel_hash": "",
+               "craetedat": "1/1/2018"
+             }
+           ]
+         */
 
-       app.get("/api/channels/info", function (req, res) {
-        crudService.getChannelsInfo().then(data=>{
-          res.send({ status: 200, channels:data })
-        }).catch(err=>res.send({status:500}))
-    });
+  app.get("/api/channels/info", function (req, res) {
+    restServices.getChannelsInfo().then(data => {
+      res.send({ status: 200, channels: data })
+    }).catch(err => res.send({ status: 500 }))
+  });
 
 
 }
