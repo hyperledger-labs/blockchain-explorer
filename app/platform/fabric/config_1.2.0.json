@@ -31,11 +31,12 @@
             "organizations": {
                 "Org1MSP": {
                     "mspid": "Org1MSP",
+                    "fullpath":false,
                     "adminPrivateKey": {
                         "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
                     },
                     "signedCert": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
                     }
                 },
                 "Org2MSP": {
