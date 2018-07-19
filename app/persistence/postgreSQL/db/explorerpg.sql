@@ -18,9 +18,11 @@ CREATE TABLE blocks (
   blocknum integer DEFAULT NULL,
   datahash character varying(256) DEFAULT NULL,
   prehash character varying(256) DEFAULT NULL,
-  channelname character varying(128) DEFAULT NULL,
   txcount integer DEFAULT NULL,
-  createdt Timestamp DEFAULT NULL
+  createdt Timestamp DEFAULT NULL,
+  prev_blockhash character varying(256) DEFAULT NULL,
+  blockhash character varying(256) DEFAULT NULL,
+  genesis_block_hash character varying(256) DEFAULT NULL
 );
 
 ALTER table blocks owner to hppoc;
@@ -35,7 +37,7 @@ CREATE TABLE chaincodes (
   name character varying(255) DEFAULT NULL,
   version character varying(255) DEFAULT NULL,
   path character varying(255) DEFAULT NULL,
-  channelname character varying(255) DEFAULT NULL,
+  genesis_block_hash character varying(256) DEFAULT NULL,
   txcount integer DEFAULT 0,
   createdt Timestamp DEFAULT NULL
 );
@@ -70,7 +72,13 @@ CREATE TABLE channel (
   name varchar(64) DEFAULT NULL,
   blocks integer DEFAULT NULL,
   trans integer DEFAULT NULL,
-  createdt Timestamp DEFAULT NULL
+  createdt Timestamp DEFAULT NULL,
+  genesis_block_hash character varying(256) DEFAULT NULL,
+  channel_hash character varying(256) DEFAULT NULL,
+  channel_config  bytea default NULL,
+  channel_block  bytea DEFAULT NULL,
+  channel_tx  bytea DEFAULT NULL,
+  channel_version character varying(128) DEFAULT NULL
 );
 
 ALTER table channel owner to hppoc;
@@ -85,12 +93,13 @@ DROP TABLE IF EXISTS peer;
 CREATE TABLE peer (
   id SERIAL PRIMARY KEY,
   org integer DEFAULT NULL,
-  name varchar(64) DEFAULT NULL,
+  genesis_block_hash character varying(256) DEFAULT NULL,
   mspid varchar(64) DEFAULT NULL,
   requests varchar(64) DEFAULT NULL,
   events varchar(64) DEFAULT NULL,
   server_hostname varchar(64) DEFAULT NULL,
-  createdt timestamp DEFAULT NULL
+  createdt timestamp DEFAULT NULL,
+  peer_type character varying(64) DEFAULT NULL
 );
 ALTER table peer owner to hppoc;
 -- ---------------------------
@@ -100,9 +109,10 @@ DROP TABLE IF EXISTS peer_ref_channel;
 
 CREATE TABLE peer_ref_channel (
   id SERIAL PRIMARY KEY,
-  peerid integer DEFAULT NULL,
-  channelid integer DEFAULT NULL,
-  createdt Timestamp DEFAULT NULL
+  createdt Timestamp DEFAULT NULL,
+  peerid TYPE varchar(64),
+  channelid TYPE character varying(256),
+  peer_type character varying(64) DEFAULT NULL
 );
 ALTER table peer_ref_channel owner to hppoc;
 
@@ -124,19 +134,35 @@ ALTER table orderer owner to hppoc;
 
 --// ====================Orderer BE-303=====================================
 -- ----------------------------
---  Table structure for `transaction`
+--  Table structure for `transactions`
 -- ----------------------------
-DROP TABLE IF EXISTS transaction;
-CREATE TABLE transaction (
+DROP TABLE IF EXISTS transactions;
+CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  channelname varchar(64) DEFAULT NULL,
   blockid integer DEFAULT NULL,
   txhash character varying(256) DEFAULT NULL,
   createdt timestamp DEFAULT NULL,
-  chaincodename character varying(255) DEFAULT NULL
+  chaincodename character varying(255) DEFAULT NULL,
+  status  integer DEFAULT NULL,
+  creator_msp_id character varying(128) DEFAULT NULL,
+  endorser_msp_id character varying(800) DEFAULT NULL,
+  chaincode_id character varying(256) DEFAULT NULL,
+  type character varying(128) DEFAULT NULL,
+  read_set  json default NULL,
+  write_set  json default NULL,
+  genesis_block_hash character varying(256) DEFAULT NULL,
+  validation_code character varying(50) DEFAULT NULL,
+  envelope_signature character varying DEFAULT NULL,
+  payload_extension character varying DEFAULT NULL,
+  creator_id_bytes character varying DEFAULT NULL,
+  creator_nonce character varying DEFAULT NULL,
+  chaincode_proposal_input character varying DEFAULT NULL,
+  payload_proposal_hash character varying DEFAULT NULL,
+  endorser_id_bytes character varying DEFAULT NULL,
+  endorser_signature character varying DEFAULT NULL
   );
 
-ALTER table transaction owner to hppoc;
+ALTER table transactions owner to hppoc;
 Alter sequence transaction_id_seq restart with 6;
 
 DROP TABLE IF EXISTS write_lock;
@@ -146,6 +172,36 @@ CREATE TABLE write_lock (
 
 ALTER table write_lock owner to hppoc;
 Alter sequence write_lock_write_lock_seq restart with 2;
+
+DROP INDEX IF EXISTS blocks_blocknum_idx;
+CREATE INDEX ON Blocks (blocknum);
+
+DROP INDEX IF EXISTS blocks_genesis_block_hash_idx;
+CREATE INDEX ON Blocks (genesis_block_hash);
+
+DROP INDEX IF EXISTS blocks_createdt_idx;
+CREATE INDEX ON Blocks (createdt);
+
+DROP INDEX IF EXISTS transaction_txhash_idx;
+CREATE INDEX ON Transactions (txhash);
+
+DROP INDEX IF EXISTS transaction_genesis_block_hash_idx;
+CREATE INDEX ON Transactions (genesis_block_hash);
+
+DROP INDEX IF EXISTS transaction_createdt_idx;
+CREATE INDEX ON Transactions (createdt);
+
+DROP INDEX IF EXISTS transaction_blockid_idx;
+CREATE INDEX ON Transactions (blockid);
+
+DROP INDEX IF EXISTS transaction_chaincode_proposal_input_idx;
+CREATE INDEX ON Transactions (chaincode_proposal_input);
+
+DROP INDEX IF EXISTS channel_genesis_block_hash_idx;
+CREATE INDEX ON channel (genesis_block_hash);
+
+DROP INDEX IF EXISTS channel_channel_hash_idx;
+CREATE INDEX ON channel (channel_hash);
 
 GRANT SELECT, INSERT, UPDATE,DELETE ON ALL TABLES IN SCHEMA PUBLIC to hppoc;
 
