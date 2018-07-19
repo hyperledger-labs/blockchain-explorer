@@ -110,8 +110,8 @@ DROP TABLE IF EXISTS peer_ref_channel;
 CREATE TABLE peer_ref_channel (
   id SERIAL PRIMARY KEY,
   createdt Timestamp DEFAULT NULL,
-  peerid TYPE varchar(64),
-  channelid TYPE character varying(256),
+  peerid varchar(64),
+  channelid character varying(256),
   peer_type character varying(64) DEFAULT NULL
 );
 ALTER table peer_ref_channel owner to hppoc;
@@ -163,7 +163,7 @@ CREATE TABLE transactions (
   );
 
 ALTER table transactions owner to hppoc;
-Alter sequence transaction_id_seq restart with 6;
+Alter sequence transactions_id_seq restart with 6;
 
 DROP TABLE IF EXISTS write_lock;
 CREATE TABLE write_lock (

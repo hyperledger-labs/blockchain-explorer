@@ -56,7 +56,7 @@ async function handleDisconnect() {
     });
 
     await client.connect()
-  } catch(err) {
+  } catch (err) {
     if (err) {
       // We introduce a delay before attempting to reconnect,
       // to avoid a hot loop, and to allow our node script to
@@ -78,7 +78,7 @@ function closeconnection() {
 }
 
 function saveRow(tablename, columnValues) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var addSqlParams = [];
     var updatesqlcolumn = [];
     var updatesqlflag = [];
@@ -130,7 +130,7 @@ function saveRow(tablename, columnValues) {
  *
  */
 function updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var addSqlParams = [];
     var updateParms = [];
 
@@ -193,7 +193,7 @@ function updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
  *
  */
 function updateRow(tablename, columnAndValue, condition) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var addSqlParams = [];
     var updateParms = [];
 
@@ -246,7 +246,7 @@ function updateRow(tablename, columnAndValue, condition) {
  *  @param string  updateSql   the excute sql
  */
 function updateBySql(updateSql) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     logger.debug(`update sql is :  ${updateSql}`);
 
     client.query(updateSql, [], (err, res) => {
@@ -278,7 +278,7 @@ function updateBySql(updateSql) {
  *
  */
 function getRowByPk(tablename, column, pkColumn, value) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (column == "") column = "*";
 
     var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
@@ -290,8 +290,9 @@ function getRowByPk(tablename, column, pkColumn, value) {
 
       // console.log(  `The solution is: ${rows.length }  `  );
       logger.debug(" the getRowByPk ");
-      if (!res.rows || res.rows.length == 0) resolve(null);
-      else resolve(res.rows[0]);
+      if (res && res.rows && res.rows[0])
+        resolve(res.rows[0]);
+      else resolve(null);
     });
   });
 }
@@ -304,7 +305,7 @@ function getRowByPk(tablename, column, pkColumn, value) {
  * @return unknown
  */
 function getRowByPkOne(sql) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     //var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
     client.query(sql, (err, res) => {
@@ -316,8 +317,9 @@ function getRowByPkOne(sql) {
       logger.debug(` the getRowByPkOne sql ${sql}`);
       //(` the getRowByPkOne sql ${sql}`)
 
-      if (!res.rows || res.rows.length == 0) resolve(null);
-      else resolve(res.rows[0]);
+      if (res && res.rows && res.rows[0])
+        resolve(res.rows[0]);
+      else resolve(null);
     });
   });
 }
@@ -332,7 +334,7 @@ function getRowByPkOne(sql) {
  *
  */
 function getRowsByCondition(tablename, column, condtion, orderBy, limit) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     if (column == "") column = "*";
 
     var updatewhereparm = " (1=1)  ";
@@ -371,7 +373,7 @@ function getRowsByCondition(tablename, column, condtion, orderBy, limit) {
  *
  */
 function getRowsBySQl(sqlcharacter, condition, limit) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var updatewhereparm = " (1=1)  ";
     var addSqlParams = [];
 
@@ -399,15 +401,16 @@ function getRowsBySQl(sqlcharacter, condition, limit) {
   });
 }
 function getRowsBySQlQuery(sql) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     client.query(sql, (err, res) => {
       if (err) {
         reject(err);
       }
       logger.debug(` the getRowsBySQlQuery ${sql}`);
 
-      if (!res.rows || res.rows.length == 0) resolve(null);
-      else resolve(res.rows);
+      if (res && res.rows )
+        resolve(res.rows);
+      else resolve(null);
     });
   });
 }
@@ -422,16 +425,16 @@ function getRowsBySQlQuery(sql) {
  *
  */
 function getRowsBySQlNoCondtion(sqlcharacter, limit) {
-  return new Promise(function(resolve, reject) {
-  var sql;
-  if (limit && sqlcharacter){
-     sql = `${sqlcharacter} ${limit}`
-  }
-  else if (sqlcharacter) {
-    sql = sqlcharacter
-  } else {
-    reject (null)
-  }
+  return new Promise(function (resolve, reject) {
+    var sql;
+    if (limit && sqlcharacter) {
+      sql = `${sqlcharacter} ${limit}`
+    }
+    else if (sqlcharacter) {
+      sql = sqlcharacter
+    } else {
+      reject(null)
+    }
     client.query(sql, (err, res) => {
       if (err) {
         reject(err);
@@ -440,8 +443,9 @@ function getRowsBySQlNoCondtion(sqlcharacter, limit) {
       // console.log(  `The solution is: ${rows.length }  `  );
       logger.debug(` the getRowsBySQlNoCondtion ${sql}`);
 
-      if (!res.rows || res.rows.length == 0) resolve(null);
-      else resolve(res.rows);
+      if (res && res.rows )
+        resolve(res.rows);
+      else resolve(null);
     });
   });
 }
@@ -453,7 +457,7 @@ function getRowsBySQlNoCondtion(sqlcharacter, limit) {
  * @return unknown
  */
 function getRowsBySQlCase(sql) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     client.query(sql, (err, res) => {
       if (err) {
         reject(err);
@@ -461,8 +465,9 @@ function getRowsBySQlCase(sql) {
 
       // console.log(  `The solution is: ${rows.length }  `  );
       logger.debug(` the getRowsBySQlCase ${sql}`);
-      if (!res.rows || res.rows.length == 0) resolve(null);
-      else resolve(res.rows[0]);
+      if (res && res.rows && res.rows[0])
+        resolve(res.rows[0]);
+      else resolve(null);
     });
   });
 }
@@ -475,7 +480,7 @@ function getRowsBySQlCase(sql) {
  *
  */
 function getSQL2Map(sql, key) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     client.query(sql, (err, res) => {
       if (err) {
         reject(err);
@@ -503,7 +508,7 @@ function getSQL2Map(sql, key) {
  * @return unknown
  */
 function getSQL2Map4Arr(sql, key) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     client.query(sql, (err, rows) => {
       if (err) {
         reject(err);
