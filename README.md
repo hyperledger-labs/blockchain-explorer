@@ -179,6 +179,22 @@ From new terminal.
 
 <a name="Hyperledger-Explorer-Swagger"/>
 
+## Run Hyperledger Explorer using Docker
+
+There is also an automated deployment of the **Hyperledger Explorer** available via **docker** having next assumptions:
+
+* **BASH** installed
+* **Docker** is installed on deployment machine.
+* By default, deployment script uses **10.10.0.0/24** virtual network, and needs to be available with no overlapping IPs. In case of overlappings, edit the script and change target network and container targets IPs.
+* By default both services (fronted and database) will run on same machine, but script modifications is allowed to run on separate machines just changing target DB IP on frontend container.
+* Crypto material is correctly loaded under `examples/$network/crypto`
+* Fabric network configuration is correctly set under `examples/$network/config.json`
+
+From new terminal.
+
+- `cd blockchain-explorer/`
+- `./deploy_explorer.sh`  (it will automatically deploy both database and frontend apps)
+
 ## Hyperledger Explorer Swagger
 
 - Once the Hyperledger Explorer has been launched go to http://localhost:8080/api-docs to view the Rust API description

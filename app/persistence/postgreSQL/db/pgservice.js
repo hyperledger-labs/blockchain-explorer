@@ -20,7 +20,13 @@ var pgconfig = config.pg;
 var helper = require("../../../helper.js");
 var logger = helper.getLogger("pgservice");
 
-
+pgconfig = {
+  "host": process.env.DATABASE_HOST         || pgconfig.host,
+  "port": process.env.DATABASE_PORT         || pgconfig.port,
+  "database": process.env.DATABASE_DATABASE || pgconfig.database,
+  "username": process.env.DATABASE_USERNAME || pgconfig.username,
+  "passwd": process.env.DATABASE_PASSWD     || pgconfig.passwd
+}
 
 const connectionString =
   "postgres://" +

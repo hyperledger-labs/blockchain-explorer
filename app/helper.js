@@ -52,6 +52,7 @@ var getLogger = function(moduleName) {
     appList.push(moduleName);
     var logger = log4js.getLogger(moduleName);
   }
+
   var appLog = 'logs/app/app.log';
   var dbLog = 'logs/db/db.log';
   fs.ensureFileSync(appLog) ;
