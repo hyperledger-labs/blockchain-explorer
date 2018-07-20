@@ -23,6 +23,21 @@ const Peers = ({ peerList }) => {
             filterMethod: (filter, rows) =>
                 matchSorter(rows, filter.value, { keys: ["requests"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
             filterAll: true
+        },
+        {
+            Header: "Peer Type",
+            accessor: "peer_type",
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["peer_type"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
+        }
+        ,
+        {
+            Header: "MSPID",
+            accessor: "mspid",
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["mspid"] }, { threshold: matchSorter.rankings.SIMPLEMATCH }),
+            filterAll: true
         }
     ];
 
