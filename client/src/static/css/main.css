@@ -159,7 +159,18 @@ word-wrap: break-word;
 #root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table th> tbody td {
     border-color: #bdc3c7!important;
 }
+/*Source Code Modal Styling*/
 
+.sourceCodeDialog ::-webkit-scrollbar{
+    width: 1em;  /* remove scrollbar space */
+    background: white  /* optional: just make scrollbar invisible */
+}
+.sourceCodeDialog ::-webkit-scrollbar-track{
+background:rgb(238, 237, 237) !important
+}
+.sourceCodeDialog ::-webkit-scrollbar-thumb{
+background:rgb(192, 190, 190)!important
+}
 
 #blockList{
     border: 1px #bdc3c7 solid;
@@ -306,9 +317,9 @@ svg.custom path.link {
 
 .source-code{
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width : 800px;
+    margin-left: 1%;
+    margin-right: 1%;
+    width : 98%;
     height: 600px;
 }
 .view-fullwidth{

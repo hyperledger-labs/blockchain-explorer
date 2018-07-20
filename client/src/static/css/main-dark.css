@@ -141,11 +141,8 @@
 }
 
 .dark-theme .source-code{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width : 800px;
-    height: 600px;
+background-color:#443e68;
+    color:#ffffff
 }
 .dark-theme .view-fullwidth{
     width: 100%;
@@ -231,6 +228,14 @@
 .dark-theme .table th,.table td{
     padding:5px;
 }
+/*Source Code Modal Styling*/
+.dark-theme .sourceCodeDialog ::-webkit-scrollbar-track{
+background:#8375c4  !important
+}
+.dark-theme .sourceCodeDialog ::-webkit-scrollbar-thumb{
+background:#6a5e9e !important
+}
+
 .dark-theme .closeBtn{
     float:right;
     border-color:transparent;

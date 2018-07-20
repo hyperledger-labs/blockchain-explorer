@@ -37,7 +37,7 @@ export class ChaincodeModal extends Component {
     const {classes} = this.props;
 
     return (
-      <div className={this.state.toggleClass ? "dark-theme" : ""}>
+        <div className="sourceCodeDialog">
         <div className="dialog">
           <Card>
             <CardTitle className="dialogTitle">
@@ -45,9 +45,9 @@ export class ChaincodeModal extends Component {
               {srcHeader}
             </CardTitle>
             <CardBody>
-              <label className="source-code" readOnly>
+              <textarea className="source-code" readOnly>
                 {formattedSrc}
-              </label>
+              </textarea>
             </CardBody>
           </Card>
         </div>
