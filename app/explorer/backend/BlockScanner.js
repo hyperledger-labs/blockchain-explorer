@@ -85,7 +85,7 @@ class BlockScanner {
         }
         return blockTimestamp;
     };
-    async saveBlockRange(block,channelName) {
+    async saveBlockRange(block, channelName) {
 
         let first_tx = block.data.data[0]; //get the first Transaction
         let header = first_tx.payload.header; //the "header" object contains metadata of the transaction
@@ -123,12 +123,12 @@ class BlockScanner {
 
             this.broadcaster.broadcast(notify);
 
-            await this.saveTransactions(block,channelName);
+            await this.saveTransactions(block, channelName);
 
         }
     }
 
-    async saveTransactions(block,channelName) {
+    async saveTransactions(block, channelName) {
         //////////chaincode//////////////////
         //syncChaincodes();
         //////////tx/////////////////////////
@@ -156,15 +156,20 @@ class BlockScanner {
                 creator_nonce = convertHex.bytesToHex(creator_nonce)
             let creator_id_bytes = txObj.payload.header.signature_header.creator.IdBytes;
             if (txObj.payload.data.actions != undefined) {
-                chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input;
-                if (chaincode_proposal_input != undefined)
-                    chaincode_proposal_input = convertHex.bytesToHex(chaincode_proposal_input)
+                chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args;
+                if (chaincode_proposal_input != undefined) {
+                    let inputs = '';
+                    for (let input of chaincode_proposal_input) {
+                        inputs = (inputs === '' ? inputs : (inputs + ",")) + convertHex.bytesToHex(input);
+                    }
+                    chaincode_proposal_input = inputs;
+                }
                 endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
                 if (endorser_signature != undefined)
                     endorser_signature = convertHex.bytesToHex(endorser_signature)
                 payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash;
                 endorser_id_bytes = txObj.payload.data.actions[0].payload.action.endorsements[0].endorser.IdBytes;
-		chaincode = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name;
+                chaincode = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.chaincode_id.name;
                 rwset = txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset;
                 readSet = rwset.map(i => {
                     return {
@@ -244,7 +249,7 @@ class BlockScanner {
                 }
                 if (saveRecord) {
                     try {
-                        var savedNewBlock = await this.saveBlockRange(block,channelName)
+                        var savedNewBlock = await this.saveBlockRange(block, channelName)
                         if (savedNewBlock) {
                             this.broadcaster.broadcast();
                         }
@@ -265,7 +270,7 @@ class BlockScanner {
             let block = await this.proxy.getBlockByNumber(channelName, start)
 
             try {
-                var savedNewBlock = await this.saveBlockRange(block,channelName)
+                var savedNewBlock = await this.saveBlockRange(block, channelName)
                 if (savedNewBlock) {
                     this.broadcaster.broadcast();
                 }
@@ -372,7 +377,12 @@ class BlockScanner {
             let peerlist = peerlists[i]
             peers.requests = peerlist._url;
             peers.genesis_block_hash = genesisBlockHash;
-            peers.server_hostname = peerlist._options["grpc.default_authority"];
+            if (peerlist._options["grpc.default_authority"]) {
+                peers.server_hostname = peerlist._options["grpc.default_authority"];
+            }
+            else {
+                peers.server_hostname = peerlist._options["grpc.ssl_target_name_override"];
+            }
             this.crudService.savePeer(peers);
         }
     }
@@ -384,7 +394,12 @@ class BlockScanner {
             var orderers = {};
             let ordererlist = ordererlists[i]
             orderers.requests = ordererlist._url;
-            orderers.server_hostname = ordererlist._options["grpc.default_authority"];
+            if (ordererlist._options["grpc.default_authority"]) {
+                orderers.server_hostname = ordererlist._options["grpc.default_authority"];
+            }
+            else {
+                orderers.server_hostname = ordererlist._options["grpc.ssl_target_name_override"];
+            }
             this.crudService.saveOrderer(orderers);
         }
     }
@@ -431,8 +446,8 @@ class BlockScanner {
     // ====================Orderer BE-303=====================================
     syncChannelEventHubBlock() {
         var self = this;
-        this.proxy.syncChannelEventHubBlock((block,channelName) => {
-            self.saveBlockRange(block,channelName);
+        this.proxy.syncChannelEventHubBlock((block, channelName) => {
+            self.saveBlockRange(block, channelName);
         });
     }
 }
