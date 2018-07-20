@@ -13,18 +13,18 @@ const setup = () => {
         channelname: 'mychannel',
         createdat: '2018-05-30T20:56:47.795Z',
         id: 3,
-        transactions: 5
-      }
+        transactions: 5,
+      },
     ],
-    getChannels: jest.fn()
-  }
+    getChannels: jest.fn(),
+  };
 
   const wrapper = shallow(<ChannelsView {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('ChannelsView', () => {

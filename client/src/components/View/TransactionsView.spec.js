@@ -10,30 +10,28 @@ const setup = () => {
       card: 'TransactionsView-card-50',
       content: 'TransactionsView-content-52',
       root: 'TransactionsView-root-49',
-      title: 'TransactionsView-title-51'
+      title: 'TransactionsView-title-51',
     },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
       peerCount: '4',
-      txCount: '36'
+      txCount: '36',
     },
-    channel: {
-      currentChannel: 'mychannel'
-    },
+    currentChannel: 'mychannel',
     transaction: {
-      'id': 39,
-      'channelname': 'mychannel',
-      'blockid': 19,
-      'txhash': '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
-      'createdt': '2018-04-26T20:32:12.000Z',
-      'chaincodename': 'mycc',
-      'status': 200,
-      'creator_msp_id': 'Org1MSP',
-      'endorser_msp_id': '{\'Org1MSP\'}',
-      'chaincode_id': '',
-      'type': 'ENDORSER_TRANSACTION',
-      'read_set': [
+      id: 39,
+      channelname: 'mychannel',
+      blockid: 19,
+      txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+      createdt: '2018-04-26T20:32:12.000Z',
+      chaincodename: 'mycc',
+      status: 200,
+      creator_msp_id: 'Org1MSP',
+      endorser_msp_id: '{\'Org1MSP\'}',
+      chaincode_id: '',
+      type: 'ENDORSER_TRANSACTION',
+      read_set: [
         {
           chaincode: 'lscc',
           set: [
@@ -41,10 +39,10 @@ const setup = () => {
               key: 'mycc',
               version: {
                 blocknum: '3',
-                tx_num: '0'
-              }
-            }
-          ]
+                tx_num: '0',
+              },
+            },
+          ],
         },
         {
           chaincode: 'mycc',
@@ -53,22 +51,22 @@ const setup = () => {
               key: 'a',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
+                tx_num: '0',
+              },
             },
             {
               key: 'b',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
-            }
-          ]
+                tx_num: '0',
+              },
+            },
+          ],
         }],
-      'write_set': [
+      write_set: [
         {
           chaincode: 'lscc',
-          set: []
+          set: [],
         },
         {
           chaincode: 'lscc',
@@ -76,16 +74,16 @@ const setup = () => {
             {
               is_delete: false,
               key: 'a',
-              value: '-60'
+              value: '-60',
             },
             {
               is_delete: false,
               key: 'b',
-              value: '360'
-            }
-          ]
-        }
-      ]
+              value: '360',
+            },
+          ],
+        },
+      ],
     },
     transactionList: [
       {
@@ -101,7 +99,7 @@ const setup = () => {
         status: 200,
         txhash: '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 20,
@@ -116,7 +114,7 @@ const setup = () => {
         status: 200,
         txhash: '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 19,
@@ -131,21 +129,22 @@ const setup = () => {
         status: 200,
         txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
-      }
+        write_set: [],
+      },
     ],
     getTransactionList: jest.fn(),
     getTransactionInfo: jest.fn(),
     getCountHeader: jest.fn(),
-    getLatestBlock: jest.fn()
+    getLatestBlock: jest.fn(),
+    getTransaction: jest.fn(),
   };
 
   const wrapper = shallow(<TransactionsView {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('TransactionsView', () => {
@@ -154,7 +153,7 @@ describe('TransactionsView', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  /*test('componentWillReceiveProps calls syncData()', () => {
+  /* test('componentWillReceiveProps calls syncData()', () => {
     const { wrapper, props } = setup();
     const instance = wrapper.instance()
     const spy = jest.spyOn(instance, 'syncData');
@@ -170,5 +169,5 @@ describe('TransactionsView', () => {
     const channel = { currentChannel: 'mychannel' }
     wrapper.setProps({ channel });
     expect(spy).not.toHaveBeenCalled();
-  })*/
+  }) */
 });

@@ -10,17 +10,17 @@ const setup = () => {
       card: 'NetworkView-card-57',
       content: 'NetworkView-content-59',
       root: 'NetworkView-root-56',
-      title: 'NetworkView-title-58'
+      title: 'NetworkView-title-58',
     },
-    peerList: []
-  }
+    peerList: [],
+  };
 
   const wrapper = shallow(<NetworkView {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('NetworkView', () => {

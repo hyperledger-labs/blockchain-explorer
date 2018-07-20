@@ -2,13 +2,12 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import Channels from './Channels';
 import ReactTable from 'react-table';
+import Channels from './Channels';
 
 jest.useFakeTimers();
 
 const setup = () => {
-
   const props = {
     channels: [
       {
@@ -17,17 +16,17 @@ const setup = () => {
         channelname: 'mychannel',
         createdat: '2018-05-30T20:56:47.795Z',
         id: 3,
-        transactions: 5
-      }
+        transactions: 5,
+      },
     ],
-  }
+  };
 
   const wrapper = mount(<Channels {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('Channels', () => {
@@ -73,11 +72,12 @@ describe('Channels', () => {
   });
 
   test('pagination when channels is greater than 4', () => {
-    const { wrapper, props } = setup()
-    const channel = props.channels[0]
-    const channels = [channel, channel, channel, channel, channel, channel]
-    expect(wrapper.find('.pagination-bottom').exists()).toBe(false)
-    wrapper.setProps({ channels: channels })
-    expect(wrapper.find('.pagination-bottom').exists()).toBe(true)
-  })
+    const { wrapper, props } = setup();
+    const { channels } = props;
+    const channel = channels[0];
+    const lotsOfChannels = [channel, channel, channel, channel, channel, channel];
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
+    wrapper.setProps({ channels: lotsOfChannels });
+    expect(wrapper.find('.pagination-bottom').exists()).toBe(true);
+  });
 });

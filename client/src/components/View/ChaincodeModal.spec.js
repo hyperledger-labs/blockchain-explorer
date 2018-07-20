@@ -16,16 +16,16 @@ const setup = () => {
     },
     classes: {
       container: 'ChaincodeModal-container-89',
-      container1: 'ChaincodeModal-container1-90'
-    }
-  }
+      container1: 'ChaincodeModal-container1-90',
+    },
+  };
 
   const wrapper = shallow(<ChaincodeModal {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('ChaincodeModal', () => {

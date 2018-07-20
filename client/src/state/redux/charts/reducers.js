@@ -10,15 +10,15 @@ const initialState = {};
 
 const blockPerHourReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.BLOCK_CHART_HOUR:{
-            return {
+    case types.BLOCK_CHART_HOUR: {
+      return {
         rows: action.payload.blockPerHour.rows,
         loaded: true,
-        errors: action.errors
-      }
+        errors: action.errors,
+      };
     }
-    default:{
-            return state;
+    default: {
+      return state;
     }
   }
 };
@@ -29,7 +29,7 @@ const blockPerMinReducer = (state = initialState, action) => {
       return {
         rows: action.payload.blockPerMin.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -44,7 +44,7 @@ const channelListReducer = (state = initialState, action) => {
       return {
         list: action.payload.channels,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -55,7 +55,7 @@ const channelListReducer = (state = initialState, action) => {
 
 const channelReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.CHANNEL:{
+    case types.CHANNEL: {
       return action.payload.channel;
     }
     case types.CHANGE_CHANNEL: {
@@ -95,7 +95,7 @@ const peerStatusReducer = (state = initialState, action) => {
       return {
         list: action.payload.peers,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -110,7 +110,7 @@ const transactionByOrgReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -125,7 +125,7 @@ const transactionPerHourReducer = (state = initialState, action) => {
       return {
         rows: action.payload.transactionPerHour.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -137,10 +137,10 @@ const transactionPerHourReducer = (state = initialState, action) => {
 const transactionPerMinReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.TRANSACTION_CHART_MIN: {
-            return {
+      return {
         rows: action.payload.transactionPerMin.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {

@@ -2,8 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import App from "./App";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import App from './App';
 
 jest.useFakeTimers();
 
@@ -11,18 +11,18 @@ const setup = () => {
   const wrapper = shallow(<App />);
 
   return {
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('App', () => {
- /*  test('setTimeout called', () => {
+  /*  test('setTimeout called', () => {
     const { wrapper } = setup();
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 6000);
   }); */
 
-  test("App component should render", () => {
+  test('App component should render', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
   });

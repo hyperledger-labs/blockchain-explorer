@@ -3,57 +3,77 @@
  */
 
 import React, { Component } from 'react';
+import {
+  Row,
+  Col,
+} from 'reactstrap';
+import FontAwesome from 'react-fontawesome';
+import Card from 'material-ui/Card';
+import Avatar from 'material-ui/Avatar';
 import ChartStats from '../Charts/ChartStats';
 import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import {
-  Row,
-  Col
-} from 'reactstrap';
-import FontAwesome from 'react-fontawesome';
-import Card from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+  blockListType,
+  dashStatsType,
+  peerStatusType,
+  transactionByOrgType,
+} from '../types';
 
 export class DashboardView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       notifications: [],
-      hasDbError: false
+      hasDbError: false,
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setNotifications(this.props.blockList);
-  }
-
   componentWillMount() {
-    if (this.props.blockList == undefined || this.props.dashStats == undefined || this.props.peerStatus == undefined || this.props.transactionByOrg == undefined) {
+    const {
+      blockList,
+      dashStats,
+      peerStatus,
+      transactionByOrg,
+    } = this.props;
+    if (
+      blockList === undefined
+      || dashStats === undefined
+      || peerStatus === undefined
+      || transactionByOrg === undefined
+    ) {
       this.setState({ hasDbError: true });
     }
   }
 
   componentDidMount() {
-    this.setNotifications(this.props.blockList);
+    const { blockList } = this.props;
+    this.setNotifications(blockList);
   }
 
-  setNotifications = blockList => {
-    let notificationsArr = [];
+  componentWillReceiveProps() {
+    const { blockList } = this.props;
+    this.setNotifications(blockList);
+  }
+
+
+  setNotifications = (blockList) => {
+    const notificationsArr = [];
     if (blockList !== undefined) {
       for (
         let i = 0;
         i < 3 && blockList && blockList[i];
-        i++
+        i += 1
       ) {
         const block = blockList[i];
         const notify = {
           title: `Block ${block.blocknum} `,
-          type: "block",
+          type: 'block',
           time: block.createdt,
           txcount: block.txcount,
           datahash: block.datahash,
-          blockhash: block.blockhash
+          blockhash: block.blockhash,
         };
         notificationsArr.push(notify);
       }
@@ -62,16 +82,28 @@ export class DashboardView extends Component {
   };
 
   render() {
-    if (this.state.hasDbError) {
+    const {
+      dashStats,
+      peerStatus,
+      blockList,
+      transactionByOrg,
+    } = this.props;
+    const { hasDbError, notifications } = this.state;
+    if (hasDbError) {
       return (
-        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <h1>Error: One or more components failed to render.</h1>
+        <div style={{
+          height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',
+        }}
+        >
+          <h1>
+            Error: One or more components failed to render.
+          </h1>
         </div>
       );
     }
     return (
       <div className="background-view">
-        <div className="dash-view" >
+        <div className="dash-view">
           <Row>
             <Col sm="12">
               <Card className="stats-block ">
@@ -79,67 +111,75 @@ export class DashboardView extends Component {
                 <div className="statistic vdivide">
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-block" >
+                      <Avatar className="stat-avatar avatar-block">
                         <FontAwesome name="cube" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.dashStats.latestBlock}</h1>
+                      <h1 className="stat-count">
+                        {dashStats.latestBlock}
+                      </h1>
                     </Col>
                   </Row>
                   BLOCKS
-                    </div>
+                </div>
                 <div className="statistic vdivide">
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-tx" >
+                      <Avatar className="stat-avatar avatar-tx">
                         <FontAwesome name="list-alt" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.dashStats.txCount}</h1>
+                      <h1 className="stat-count">
+                        {dashStats.txCount}
+                      </h1>
                     </Col>
                   </Row>
                   TRANSACTIONS
-                   </div>
+                </div>
                 <div className="statistic vdivide">
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-node" >
+                      <Avatar className="stat-avatar avatar-node">
                         <FontAwesome name="users" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.dashStats.peerCount}</h1>
+                      <h1 className="stat-count">
+                        {dashStats.peerCount}
+                      </h1>
                     </Col>
                   </Row>
                   NODES
-                  </div>
+                </div>
                 <div className="statistic">
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-chaincode" >
+                      <Avatar className="stat-avatar avatar-chaincode">
                         <FontAwesome name="handshake-o" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{this.props.dashStats.chaincodeCount}</h1>
+                      <h1 className="stat-count">
+                        {dashStats.chaincodeCount}
+                      </h1>
                     </Col>
                   </Row>
                   CHAINCODES
-                  </div>
+                </div>
               </Card>
             </Col>
           </Row>
           <Row>
-            <Col sm="6" >
+            <Col sm="6">
               <Card className="dash-section">
                 <PeersHealth
-                  peerStatus={this.props.peerStatus}
+                  peerStatus={peerStatus}
                 />
               </Card>
               <Card className="dash-section">
-                <TimelineStream notifications={this.state.notifications} blockList={this.props.blockList} />
+                <TimelineStream notifications={notifications} blockList={blockList} />
               </Card>
             </Col>
             <Col sm="6">
@@ -147,9 +187,11 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-                <h5 className="org-header">Transactions by Organziation</h5>
+                <h5 className="org-header">
+                  Transactions by Organziation
+                </h5>
                 <hr />
-                <OrgPieChart transactionByOrg={this.props.transactionByOrg} />
+                <OrgPieChart transactionByOrg={transactionByOrg} />
               </Card>
             </Col>
           </Row>
@@ -158,5 +200,12 @@ export class DashboardView extends Component {
     );
   }
 }
+
+DashboardView.propTypes = {
+  blockList: blockListType.isRequired,
+  dashStats: dashStatsType.isRequired,
+  peerStatus: peerStatusType.isRequired,
+  transactionByOrg: transactionByOrgType.isRequired,
+};
 
 export default DashboardView;

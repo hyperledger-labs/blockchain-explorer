@@ -11,8 +11,21 @@ import TransactionsView from './View/TransactionsView';
 import ChaincodeView from './View/ChaincodeView';
 import DashboardView from './View/DashboardView';
 import ChannelsView from './View/ChannelsView';
-import { chartSelectors } from '../state/redux/charts/'
-import { tableOperations, tableSelectors } from '../state/redux/tables/'
+import { chartSelectors } from '../state/redux/charts';
+import { tableOperations, tableSelectors } from '../state/redux/tables';
+import {
+  blockListType,
+  chaincodeListType,
+  channelsType,
+  currentChannelType,
+  dashStatsType,
+  getTransactionType,
+  peerListType,
+  peerStatusType,
+  transactionType,
+  transactionByOrgType,
+  transactionListType,
+} from './types';
 
 const {
   currentChannelSelector,
@@ -20,7 +33,7 @@ const {
   dashStatsSelector,
   peerStatusSelector,
   transactionByOrgSelector,
-} = chartSelectors
+} = chartSelectors;
 
 const {
   blockListSelector,
@@ -29,46 +42,55 @@ const {
   peerListSelector,
   transactionSelector,
   transactionListSelector,
-} = tableSelectors
-
-const {
-  transaction,
-} = tableOperations
-
+} = tableSelectors;
 
 export const Main = (props) => {
+  const {
+    blockList,
+    chaincodeList,
+    channels,
+    currentChannel,
+    dashStats,
+    getTransaction,
+    peerList,
+    peerStatus,
+    transaction,
+    transactionByOrg,
+    transactionList,
+  } = props;
+
   const blocksViewProps = {
-    blockList: props.blockList,
-    currentChannel: props.currentChannel,
-    getTransaction: props.getTransaction,
-    transaction: props.transaction,
-  }
+    blockList,
+    currentChannel,
+    getTransaction,
+    transaction,
+  };
 
   const chaincodeViewProps = {
-    chaincodeList: props.chaincodeList
-  }
+    chaincodeList,
+  };
 
   const channelsViewProps = {
-    channels: props.channels,
-  }
+    channels,
+  };
 
   const dashboardViewProps = {
-    blockList: props.blockList,
-    dashStats: props.dashStats,
-    peerStatus : props.peerStatus,
-    transactionByOrg: props.transactionByOrg,
-  }
+    blockList,
+    dashStats,
+    peerStatus,
+    transactionByOrg,
+  };
 
   const networkViewProps = {
-    peerList: props.peerList
-  }
+    peerList,
+  };
 
   const transactionsViewProps = {
-    currentChannel: props.currentChannel,
-    transaction: props.transaction,
-    transactionList: props.transactionList,
-    getTransaction: props.getTransaction
-  }
+    currentChannel,
+    transaction,
+    transactionList,
+    getTransaction,
+  };
 
   return (
     <Router>
@@ -78,7 +100,7 @@ export const Main = (props) => {
           <Route path="/blocks" render={() => <BlocksView {...blocksViewProps} />} />
           <Route path="/chaincodes" render={() => <ChaincodeView {...chaincodeViewProps} />} />
           <Route path="/channels" render={() => <ChannelsView {...channelsViewProps} />} />
-          <Route path="/network" render={() => <NetworkView  {...networkViewProps} />} />
+          <Route path="/network" render={() => <NetworkView {...networkViewProps} />} />
           <Route path="/transactions" render={() => <TransactionsView {...transactionsViewProps} />} />
         </Switch>
       </div>
@@ -86,7 +108,21 @@ export const Main = (props) => {
   );
 };
 
-export default connect((state) => ({
+Main.propTypes = {
+  blockList: blockListType.isRequired,
+  chaincodeList: chaincodeListType.isRequired,
+  channels: channelsType.isRequired,
+  currentChannel: currentChannelType.isRequired,
+  dashStats: dashStatsType.isRequired,
+  getTransaction: getTransactionType.isRequired,
+  peerList: peerListType.isRequired,
+  peerStatus: peerStatusType.isRequired,
+  transaction: transactionType.isRequired,
+  transactionByOrg: transactionByOrgType.isRequired,
+  transactionList: transactionListType.isRequired,
+};
+
+export default connect(state => ({
   blockList: blockListSelector(state),
   chaincodeList: chaincodeListSelector(state),
   channelList: channelListSelector(state),
@@ -97,7 +133,7 @@ export default connect((state) => ({
   peerStatus: peerStatusSelector(state),
   transaction: transactionSelector(state),
   transactionByOrg: transactionByOrgSelector(state),
-  transactionList: transactionListSelector(state)
+  transactionList: transactionListSelector(state),
 }), {
-    getTransaction: transaction,
-  })(Main);
+  getTransaction: tableOperations.transaction,
+})(Main);
