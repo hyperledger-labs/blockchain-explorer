@@ -1,4 +1,4 @@
-	{
+{
 	"network-config": {
 		"org1": {
 			"name": "peerOrg1",
@@ -58,4 +58,3 @@
 	"license": "Apache-2.0",
 	"version": "1.1"
 	}
-

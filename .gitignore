@@ -14,4 +14,5 @@ fabric-docker-compose-svt/crypto-config
 first-network/channel-artifacts/*
 .vscode
 log.log
-
+logs/*
+tmp/*

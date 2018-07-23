@@ -22,7 +22,7 @@ CREATE TABLE blocks (
   createdt Timestamp DEFAULT NULL,
   prev_blockhash character varying(256) DEFAULT NULL,
   blockhash character varying(256) DEFAULT NULL,
-  genesis_block_hash character varying(256) DEFAULT NULL
+  channel_genesis_hash character varying(256) DEFAULT NULL
 );
 
 ALTER table blocks owner to hppoc;
@@ -37,7 +37,7 @@ CREATE TABLE chaincodes (
   name character varying(255) DEFAULT NULL,
   version character varying(255) DEFAULT NULL,
   path character varying(255) DEFAULT NULL,
-  genesis_block_hash character varying(256) DEFAULT NULL,
+  channel_genesis_hash character varying(256) DEFAULT NULL,
   txcount integer DEFAULT 0,
   createdt Timestamp DEFAULT NULL
 );
@@ -93,7 +93,7 @@ DROP TABLE IF EXISTS peer;
 CREATE TABLE peer (
   id SERIAL PRIMARY KEY,
   org integer DEFAULT NULL,
-  genesis_block_hash character varying(256) DEFAULT NULL,
+  channel_genesis_hash character varying(256) DEFAULT NULL,
   mspid varchar(64) DEFAULT NULL,
   requests varchar(64) DEFAULT NULL,
   events varchar(64) DEFAULT NULL,
@@ -150,13 +150,14 @@ CREATE TABLE transactions (
   type character varying(128) DEFAULT NULL,
   read_set  json default NULL,
   write_set  json default NULL,
-  genesis_block_hash character varying(256) DEFAULT NULL,
+  channel_genesis_hash character varying(256) DEFAULT NULL,
   validation_code character varying(50) DEFAULT NULL,
   envelope_signature character varying DEFAULT NULL,
   payload_extension character varying DEFAULT NULL,
   creator_id_bytes character varying DEFAULT NULL,
   creator_nonce character varying DEFAULT NULL,
   chaincode_proposal_input character varying DEFAULT NULL,
+  tx_response character varying DEFAULT NULL,
   payload_proposal_hash character varying DEFAULT NULL,
   endorser_id_bytes character varying DEFAULT NULL,
   endorser_signature character varying DEFAULT NULL
@@ -176,8 +177,8 @@ Alter sequence write_lock_write_lock_seq restart with 2;
 DROP INDEX IF EXISTS blocks_blocknum_idx;
 CREATE INDEX ON Blocks (blocknum);
 
-DROP INDEX IF EXISTS blocks_genesis_block_hash_idx;
-CREATE INDEX ON Blocks (genesis_block_hash);
+DROP INDEX IF EXISTS blocks_channel_genesis_hash_idx;
+CREATE INDEX ON Blocks (channel_genesis_hash);
 
 DROP INDEX IF EXISTS blocks_createdt_idx;
 CREATE INDEX ON Blocks (createdt);
@@ -185,8 +186,8 @@ CREATE INDEX ON Blocks (createdt);
 DROP INDEX IF EXISTS transaction_txhash_idx;
 CREATE INDEX ON Transactions (txhash);
 
-DROP INDEX IF EXISTS transaction_genesis_block_hash_idx;
-CREATE INDEX ON Transactions (genesis_block_hash);
+DROP INDEX IF EXISTS transaction_channel_genesis_hash_idx;
+CREATE INDEX ON Transactions (channel_genesis_hash);
 
 DROP INDEX IF EXISTS transaction_createdt_idx;
 CREATE INDEX ON Transactions (createdt);

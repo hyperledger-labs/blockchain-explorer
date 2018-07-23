@@ -7,7 +7,8 @@ var logger = helper.getLogger('blockscanner');
 var fileUtil = require('../rest/logical/utils/fileUtils.js');
 var dateUtils = require("../rest/logical/utils/dateUtils.js");
 var BlockDecoder = require('fabric-client/lib/BlockDecoder.js')
-var convertHex = require('convert-hex');
+var convertHex = require('convert-hex')
+var bytes = require('utf8-bytes')
 var Enum = require('enum');
 
 var myEnum = new Enum({
@@ -104,7 +105,7 @@ class BlockScanner {
             'dataHash': block.header.data_hash,
             'firstTxTimestamp': header.channel_header.timestamp,
             'blockhash': blockhash,
-            'genesis_block_hash': genesisBlockHash
+            'channel_genesis_hash': genesisBlockHash
         };
 
         var blockSaved = await this.crudService.saveBlock(blockRecord);
@@ -122,7 +123,6 @@ class BlockScanner {
             };
 
             this.broadcaster.broadcast(notify);
-
             await this.saveTransactions(block, channelName);
 
         }
@@ -135,7 +135,7 @@ class BlockScanner {
         let txLen = block.data.data.length
         for (let i = 0; i < txLen; i++) {
             let txObj = block.data.data[i]
-            let txid = txObj.payload.header.channel_header.tx_id;
+            let txid = txObj.payload.header.channel_header.tx_id;let response={}
             let validation_code = ''; let endorser_signature = ''; let payload_proposal_hash = '';
             let endorser_id_bytes = ''; let chaincode_proposal_input = ''; let chaincode = '';
             let rwset; let readSet; let writeSet; let chaincodeID; let status; let mspId = [];
@@ -156,12 +156,17 @@ class BlockScanner {
                 creator_nonce = convertHex.bytesToHex(creator_nonce)
             let creator_id_bytes = txObj.payload.header.signature_header.creator.IdBytes;
             if (txObj.payload.data.actions != undefined) {
-                chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args;
+                chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.args;
+                response = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec
                 if (chaincode_proposal_input != undefined) {
                     let inputs = '';
+                    let dec = new StringDecoder('utf-8')
+                    let args =[]
                     for (let input of chaincode_proposal_input) {
                         inputs = (inputs === '' ? inputs : (inputs + ",")) + convertHex.bytesToHex(input);
+                        args.push(dec.write(input))
                     }
+                    response.input.args =args
                     chaincode_proposal_input = inputs;
                 }
                 endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
@@ -200,10 +205,11 @@ class BlockScanner {
                 'status': status,
                 'creator_msp_id': txObj.payload.header.signature_header.creator.Mspid,
                 'endorser_msp_id': mspId,
+                'tx_response':JSON.stringify(response),
                 'type': txObj.payload.header.channel_header.typeString,
                 'read_set': JSON.stringify(readSet, null, 2),
                 'write_set': JSON.stringify(writeSet, null, 2),
-                'genesis_block_hash': genesisBlockHash,
+                'channel_genesis_hash': genesisBlockHash,
                 'validation_code': validation_code,
                 'envelope_signature': envelope_signature,
                 'payload_extension': payload_extension,
@@ -321,7 +327,7 @@ class BlockScanner {
         let genesisBlockHash = await fileUtil.generateBlockHash(temp.header)
         for (let i = 0; i < len; i++) {
             let chaincode = chaincodes[i]
-            chaincode.genesis_block_hash = genesisBlockHash
+            chaincode.channel_genesis_hash = genesisBlockHash
             this.crudService.saveChaincode(chaincode);
         }
 

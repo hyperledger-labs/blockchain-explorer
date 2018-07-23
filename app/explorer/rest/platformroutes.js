@@ -88,9 +88,9 @@ const platformroutes = async function (app, pltfrm, persistence) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/changeChannel/:channelName", async function (req, res) {
-    let channelName = req.params.channelName;
-    let channel = await this.crudService.getChannelByGenesisBlockHash(channelName)
+  app.get("/api/changeChannel/:channel_genesis_hash", async function (req, res) {
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+    let channel = await this.crudService.getChannelByGenesisBlockHash(channel_genesis_hash)
     proxy.changeChannel(channel.name);
     ledgerMgr.ledgerEvent.emit("changeLedger");
    let  curChannel = await  this.proxy.getGenesisBlockHash(channel.name)

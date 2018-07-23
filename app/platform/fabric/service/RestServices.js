@@ -70,6 +70,11 @@ class RestServices {
         return currentchannels;
     }
 
+	async getGenesisBlockHash(channelname) {
+        let client = this.platform.getDefaultClient();
+        let channel_genesis_hash = client.getChannelGenHash(channelname);
+		return channel_genesis_hash
+	}
     getChannels() {
         let respose = this.platform.getDefaultClient().getChannelNames();
         logger.debug('getChannels >> %j', respose);

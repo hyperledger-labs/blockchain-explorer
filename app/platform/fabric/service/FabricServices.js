@@ -8,7 +8,7 @@ var fileUtil = require('../../../explorer/rest/logical/utils/fileUtils.js');
 var dateUtils = require('../../../explorer/rest/logical/utils/dateUtils.js');
 var helper = require("../../../helper.js");
 var logger = helper.getLogger("FabricServices");
-
+var {StringDecoder} = require('string_decoder')
 var _transProto = grpc.load(__dirname + '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto').protos;
 
 const BLOCK_TYPE_CONFIG = 'CONFIG';
@@ -112,7 +112,7 @@ class FabricServices {
             "requests": requesturl,
             "events": eventurl,
             "server_hostname": host_port[0],
-            "genesis_block_hash": channel_genesis_hash,
+            "channel_genesis_hash": channel_genesis_hash,
             "peer_type": "PEER"
         }
         await this.persistence.getCrudService().savePeer(peer_row);
@@ -132,7 +132,7 @@ class FabricServices {
             "mspid": orderer.org_name,
             "requests": requesturl,
             "server_hostname": orderer.host,
-            "genesis_block_hash": channel_genesis_hash,
+            "channel_genesis_hash": channel_genesis_hash,
             "peer_type": "ORDERER"
         }
         await this.persistence.getCrudService().savePeer(orderer_row);
@@ -153,7 +153,7 @@ class FabricServices {
                 "path": chaincode.path,
                 "txcount": 0,
                 "createdt": new Date(),
-                "genesis_block_hash": channel_genesis_hash
+                "channel_genesis_hash": channel_genesis_hash
             }
             await this.persistence.getCrudService().saveChaincode(chaincode_row);
             if (discoveryResults && discoveryResults.peers_by_org) {
@@ -249,7 +249,7 @@ class FabricServices {
                 "createdt": createdt,
                 "prev_blockhash": '',
                 "blockhash": blockhash,
-                "genesis_block_hash": channel_genesis_hash
+                "channel_genesis_hash": channel_genesis_hash
             }
             let txLen = block.data.data.length
             for (let i = 0; i < txLen; i++) {
@@ -266,6 +266,7 @@ class FabricServices {
                 let writeSet;
                 let chaincodeID;
                 let status;
+                let response={}
                 let mspId = [];
                 if (txid != undefined && txid != "") {
                     let validation_codes = block.metadata.metadata[block.metadata.metadata.length - 1];
@@ -301,11 +302,16 @@ class FabricServices {
                         }
                     });
                     chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args;
+                    response = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec
                     if (chaincode_proposal_input != undefined) {
                         let inputs = '';
+                        let dec = new StringDecoder('utf-8')
+                        let args =[]
                         for (let input of chaincode_proposal_input) {
                             inputs = (inputs === '' ? inputs : (inputs + ",")) + convertHex.bytesToHex(input);
+                            args.push(dec.write(input))
                         }
+                        response.input.args =args
                         chaincode_proposal_input = inputs;
                     }
                     endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
@@ -336,11 +342,12 @@ class FabricServices {
                     'type': txObj.payload.header.channel_header.typeString,
                     'read_set': read_set,
                     'write_set': write_set,
-                    'genesis_block_hash': channel_genesis_hash,
+                    'channel_genesis_hash': channel_genesis_hash,
                     'validation_code': validation_code,
                     'envelope_signature': envelope_signature,
                     'payload_extension': payload_extension,
                     'creator_nonce': creator_nonce,
+                    'tx_response':JSON.stringify(response),
                     'chaincode_proposal_input': chaincode_proposal_input,
                     'endorser_signature': endorser_signature,
                     'creator_id_bytes': creator_id_bytes,
