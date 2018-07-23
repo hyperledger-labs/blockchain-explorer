@@ -2,48 +2,48 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import nock from "nock";
-import configureMockStore from "redux-mock-store";
-import thunk from "redux-thunk";
-import actions from "./actions";
-import operations from "./operations";
-import reducers from "./reducers";
-import * as selectors from "./selectors";
-import types from "./types";
+import nock from 'nock';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import actions from './actions';
+import operations from './operations';
+import reducers from './reducers';
+import * as selectors from './selectors';
+import types from './types';
 
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 const initialState = {};
 
-describe("Charts", () => {
-  describe("Operations", () => {
+describe('Charts', () => {
+  describe('Operations', () => {
     afterEach(() => {
       nock.cleanAll();
     });
 
-    const channel = "mychannel";
+    const channel = 'mychannel';
 
-    test("blockPerHour", async done => {
+    test('blockPerHour', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/blocksByHour/${channel}/1`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.BLOCK_CHART_HOUR }];
       const store = mockStore(initialState, expectedActions);
 
-      await store.dispatch(operations.blockPerHour("mychannel"));
+      await store.dispatch(operations.blockPerHour('mychannel'));
       const actions = store.getActions();
       expect(actions[0].type).toBe(types.BLOCK_CHART_HOUR);
       done();
     });
 
-    test("blockPerHour catch error", async done => {
-      spyOn(console, "error");
+    test('blockPerHour catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/blocksByHour/${channel}/1`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.BLOCK_CHART_HOUR }];
       const store = mockStore(initialState, expectedActions);
@@ -54,11 +54,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("blockPerMin", async done => {
+    test('blockPerMin', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/blocksByMinute/${channel}/1`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.BLOCK_CHART_MIN }];
@@ -70,11 +70,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("blockPerMin catch error", async done => {
-      spyOn(console, "error");
+    test('blockPerMin catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/blocksByMinute/${channel}/1`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.BLOCK_CHART_MIN }];
       const store = mockStore(initialState, expectedActions);
@@ -85,11 +85,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("changeChannel", async done => {
+    test('changeChannel', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/changeChannel/${channel}`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.CHANGE_CHANNEL }];
@@ -101,11 +101,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("changeChannel catch error", async done => {
-      spyOn(console, "error");
+    test('changeChannel catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/changeChannel/${channel}`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.CHANGE_CHANNEL }];
       const store = mockStore(initialState, expectedActions);
@@ -116,11 +116,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("channel", async done => {
+    test('channel', async (done) => {
       nock(/\w*(\W)/g)
-        .get(`/api/curChannel`)
+        .get('/api/curChannel')
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.CHANNEL }];
@@ -132,11 +132,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("channel catch error", async done => {
-      spyOn(console, "error");
+    test('channel catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
-        .get(`/api/curChannel`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .get('/api/curChannel')
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.CHANGE_CHANNEL }];
       const store = mockStore(initialState, expectedActions);
@@ -147,11 +147,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("channelList", async done => {
+    test('channelList', async (done) => {
       nock(/\w*(\W)/g)
-        .get(`/api/channels`)
+        .get('/api/channels')
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.CHANNEL_LIST }];
@@ -163,11 +163,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("channelList catch error", async done => {
-      spyOn(console, "error");
+    test('channelList catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
-        .get(`/api/channels`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .get('/api/channels')
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.CHANNEL_LIST }];
       const store = mockStore(initialState, expectedActions);
@@ -178,11 +178,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("dashStats", async done => {
+    test('dashStats', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/status/${channel}`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.DASHBOARD_STATS }];
@@ -194,11 +194,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("dashStats catch error", async done => {
-      spyOn(console, "error");
+    test('dashStats catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/status/${channel}`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.DASHBOARD_STATS }];
       const store = mockStore(initialState, expectedActions);
@@ -209,20 +209,20 @@ describe("Charts", () => {
       done();
     });
 
-    test("notification", () => {
+    test('notification', () => {
       const expectedActions = [{ type: types.NOTIFICATION_LOAD }];
       const store = mockStore(initialState, expectedActions);
 
-      store.dispatch(operations.notification(`{"test": true}`));
+      store.dispatch(operations.notification('{"test": true}'));
       const actions = store.getActions();
       expect(actions[0].type).toBe(types.NOTIFICATION_LOAD);
     });
 
-    test("peerStatus", async done => {
+    test('peerStatus', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/peersStatus/${channel}`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.PEER_STATUS }];
@@ -234,11 +234,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("peerStatus catch error", async done => {
-      spyOn(console, "error");
+    test('peerStatus catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/peersStatus/${channel}`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.peerStatus }];
       const store = mockStore(initialState, expectedActions);
@@ -249,11 +249,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionByOrg", async done => {
+    test('transactionByOrg', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/txByOrg/${channel}`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_ORG }];
@@ -265,11 +265,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionByOrg catch error", async done => {
-      spyOn(console, "error");
+    test('transactionByOrg catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByOrg/${channel}`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_ORG }];
       const store = mockStore(initialState, expectedActions);
@@ -280,11 +280,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionPerHour", async done => {
+    test('transactionPerHour', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/txByHour/${channel}/1`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_HOUR }];
@@ -296,11 +296,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionPerHour catch error", async done => {
-      spyOn(console, "error");
+    test('transactionPerHour catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByHour/${channel}/1`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_HOUR }];
       const store = mockStore(initialState, expectedActions);
@@ -311,11 +311,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionPerMin", async done => {
+    test('transactionPerMin', async (done) => {
       nock(/\w*(\W)/g)
         .get(`/api/txByMinute/${channel}/1`)
         .reply(200, {
-          rows: [{ test: "rows" }]
+          rows: [{ test: 'rows' }],
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_MIN }];
@@ -327,11 +327,11 @@ describe("Charts", () => {
       done();
     });
 
-    test("transactionPerMin catch error", async done => {
-      spyOn(console, "error");
+    test('transactionPerMin catch error', async (done) => {
+      spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByMinute/${channel}/1`)
-        .replyWithError({ code: "ECONNREFUSED" });
+        .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_MIN }];
       const store = mockStore(initialState, expectedActions);
@@ -343,157 +343,157 @@ describe("Charts", () => {
     });
   });
 
-  describe("Reducers", () => {
-    test("blockPerHourReducer", () => {
-      const payload = { rows: "test" };
+  describe('Reducers', () => {
+    test('blockPerHourReducer', () => {
+      const payload = { rows: 'test' };
       const action = actions.getBlockPerHour(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.blockPerHour.rows).toBe("test");
+      expect(newState.blockPerHour.rows).toBe('test');
     });
 
-    test("blockPerMinReducer", () => {
-      const payload = { rows: "test" };
+    test('blockPerMinReducer', () => {
+      const payload = { rows: 'test' };
       const action = actions.getBlockPerMin(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.blockPerMin.rows).toBe("test");
+      expect(newState.blockPerMin.rows).toBe('test');
     });
 
-    test("channelListReducer", () => {
-      const payload = { channels: "test" };
+    test('channelListReducer', () => {
+      const payload = { channels: 'test' };
       const action = actions.getChannelList(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.channelList.list).toBe("test");
+      expect(newState.channelList.list).toBe('test');
     });
 
-    describe("channelReducer", () => {
-      test("getChannel action", () => {
-        const payload = "test";
+    describe('channelReducer', () => {
+      test('getChannel action', () => {
+        const payload = 'test';
         const action = actions.getChannel(payload);
 
         const newState = reducers(initialState, action);
-        expect(newState.channel).toBe("test");
+        expect(newState.channel).toBe('test');
       });
 
-      test("updateChannel action", () => {
-        const payload = "test";
+      test('updateChannel action', () => {
+        const payload = 'test';
         const action = actions.updateChannel(payload);
 
         const newState = reducers(initialState, action);
-        expect(newState.channel).toBe("test");
+        expect(newState.channel).toBe('test');
       });
     });
 
-    test("dashStatsReducer", () => {
-      const payload = "test";
+    test('dashStatsReducer', () => {
+      const payload = 'test';
       const action = actions.getDashStats(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.dashStats).toBe("test");
+      expect(newState.dashStats).toBe('test');
     });
 
-    test("notificationReducer", () => {
-      const payload = "test";
+    test('notificationReducer', () => {
+      const payload = 'test';
       const action = actions.getNotification(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.notification).toBe("test");
+      expect(newState.notification).toBe('test');
     });
 
-    test("peerStatusReducer", () => {
-      const payload = { peers: "test" };
+    test('peerStatusReducer', () => {
+      const payload = { peers: 'test' };
       const action = actions.getPeerStatus(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.peerStatus.list).toBe("test");
+      expect(newState.peerStatus.list).toBe('test');
     });
 
-    test("transactionByOrgReducer", () => {
-      const payload = { rows: "test" };
+    test('transactionByOrgReducer', () => {
+      const payload = { rows: 'test' };
       const action = actions.getTransactionByOrg(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.transactionByOrg.rows).toBe("test");
+      expect(newState.transactionByOrg.rows).toBe('test');
     });
 
-    test("transactionPerHourReducer", () => {
-      const payload = { rows: "test" };
+    test('transactionPerHourReducer', () => {
+      const payload = { rows: 'test' };
       const action = actions.getTransactionPerHour(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.transactionPerHour.rows).toBe("test");
+      expect(newState.transactionPerHour.rows).toBe('test');
     });
 
-    test("transactionPerMinReducer", () => {
-      const payload = { rows: "test" };
+    test('transactionPerMinReducer', () => {
+      const payload = { rows: 'test' };
       const action = actions.getTransactionPerMin(payload);
 
       const newState = reducers(initialState, action);
-      expect(newState.transactionPerMin.rows).toBe("test");
+      expect(newState.transactionPerMin.rows).toBe('test');
     });
   });
 
-  describe("selector", () => {
-    test("blockPerHourSelector", () => {
-      const state = { charts: { blockPerHour: "test" } };
+  describe('selector', () => {
+    test('blockPerHourSelector', () => {
+      const state = { charts: { blockPerHour: { rows: 'test' } } };
       const blockPerHour = selectors.blockPerHourSelector(state);
-      expect(blockPerHour).toBe("test");
+      expect(blockPerHour).toBe('test');
     });
 
-    test("blockPerMinSelector", () => {
-      const state = { charts: { blockPerMin: "test" } };
+    test('blockPerMinSelector', () => {
+      const state = { charts: { blockPerMin: { rows: 'test' } } };
       const blockPerMin = selectors.blockPerMinSelector(state);
-      expect(blockPerMin).toBe("test");
+      expect(blockPerMin).toBe('test');
     });
 
-    test("channelListSelector", () => {
-      const state = { charts: { channelList: { list: "test" } } };
+    test('channelListSelector', () => {
+      const state = { charts: { channelList: { list: 'test' } } };
       const channelList = selectors.channelListSelector(state);
-      expect(channelList).toBe("test");
+      expect(channelList).toBe('test');
     });
 
-    test("currentChannelSelector", () => {
-      const state = { charts: { channel: { currentChannel: "test" } } };
+    test('currentChannelSelector', () => {
+      const state = { charts: { channel: { currentChannel: 'test' } } };
       const currentChannel = selectors.currentChannelSelector(state);
-      expect(currentChannel).toBe("test");
+      expect(currentChannel).toBe('test');
     });
   });
 
-  test("dashStatsSelector", () => {
-    const state = { charts: { dashStats: "test" } };
+  test('dashStatsSelector', () => {
+    const state = { charts: { dashStats: 'test' } };
     const dashStats = selectors.dashStatsSelector(state);
-    expect(dashStats).toBe("test");
+    expect(dashStats).toBe('test');
   });
 
-  test("notificationSelector", () => {
-    const state = { charts: { notification: "test" } };
+  test('notificationSelector', () => {
+    const state = { charts: { notification: 'test' } };
     const notification = selectors.notificationSelector(state);
-    expect(notification).toBe("test");
+    expect(notification).toBe('test');
   });
 
-  test("peerStatusSelector", () => {
-    const state = { charts: { peerStatus: { list: "test" } } };
+  test('peerStatusSelector', () => {
+    const state = { charts: { peerStatus: { list: 'test' } } };
     const peerStatus = selectors.peerStatusSelector(state);
-    expect(peerStatus).toBe("test");
+    expect(peerStatus).toBe('test');
   });
 
-  test("transactionByOrgSelector", () => {
-    const state = { charts: { transactionByOrg: { rows: "test" } } };
+  test('transactionByOrgSelector', () => {
+    const state = { charts: { transactionByOrg: { rows: 'test' } } };
     const transactionByOrg = selectors.transactionByOrgSelector(state);
-    expect(transactionByOrg).toBe("test");
+    expect(transactionByOrg).toBe('test');
   });
 
-  test("transactionPerHourSelector", () => {
-    const state = { charts: { transactionPerHour: "test" } };
+  test('transactionPerHourSelector', () => {
+    const state = { charts: { transactionPerHour: { rows: 'test' } } };
     const transactionPerHour = selectors.transactionPerHourSelector(state);
-    expect(transactionPerHour).toBe("test");
+    expect(transactionPerHour).toBe('test');
   });
 
-  test("transactionPerMinSelector", () => {
-    const state = { charts: { transactionPerMin: "test" } };
+  test('transactionPerMinSelector', () => {
+    const state = { charts: { transactionPerMin: { rows: 'test' } } };
     const transactionPerMin = selectors.transactionPerMinSelector(state);
-    expect(transactionPerMin).toBe("test");
+    expect(transactionPerMin).toBe('test');
   });
 });

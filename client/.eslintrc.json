@@ -1,12 +1,18 @@
 {
-    "parser": "babel-eslint",
-    "extends": "airbnb",
-    "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
-    ],
-    "rules": {
-        "react/jsx-filename-extension": 0
-    }
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "plugins": ["react", "jsx-a11y", "import"],
+  "rules": {
+    "react/jsx-filename-extension": 0,
+    "import/no-named-as-default": 0
+  },
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "globals": {
+    "mount": true,
+    "shallow": true,
+    "React": true
+  }
 }

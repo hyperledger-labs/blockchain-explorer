@@ -6,7 +6,7 @@ import { LandingPage } from './LandingPage';
 
 const setup = () => {
   const props = {
-    channel: { currentChannel: 'mychannel' },
+    currentChannel: 'mychannel',
     getBlockList: jest.fn(),
     getBlocksPerHour: jest.fn(),
     getBlocksPerMin: jest.fn(),
@@ -21,15 +21,15 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
-    updateLoadStatus: jest.fn()
-  }
+    updateLoadStatus: jest.fn(),
+  };
 
   const wrapper = shallow(<LandingPage {...props} />);
 
   return {
     props,
-    wrapper
-  }
+    wrapper,
+  };
 };
 
 describe('LandingPage', () => {

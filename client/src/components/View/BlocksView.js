@@ -2,12 +2,18 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
-import PropTypes from 'prop-types';
-import Blocks from '../Lists/Blocks';
 import Card from 'material-ui/Card';
+import Blocks from '../Lists/Blocks';
+import {
+  blockListType,
+  currentChannelType,
+  getTransactionType,
+  transactionType,
+} from '../types';
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -26,44 +32,49 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 60
+    top: 60,
   },
   content: {
     fontSize: 12,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 70
-  }
+    top: 70,
+  },
 });
 
-export class BlocksView extends Component {
-  constructor(props) {
-    super(props);
-  }
+export const BlocksView = ({
+  blockList,
+  currentChannel,
+  getTransaction,
+  transaction,
+}) => (
+  <div className="view-fullwidth">
+    <div className="view-display">
+      <Card className="table-card">
+        <Blocks
+          blockList={blockList}
+          currentChannel={currentChannel}
+          transaction={transaction}
+          getTransaction={getTransaction}
+        />
+      </Card>
+    </div>
+  </div>
+);
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <div className="view-fullwidth" >
-        <div className="view-display">
-        <Card className="table-card">
-          <Blocks
-            blockList={this.props.blockList}
-            currentChannel={this.props.currentChannel}
-            transaction={this.props.transaction}
-            getTransaction={this.props.getTransaction} />
-       </Card>
-        </div>
-      </div>
-    );
-  }
-}
 
 BlocksView.propTypes = {
-  classes: PropTypes.object.isRequired,
+  blockList: blockListType.isRequired,
+  currentChannel: currentChannelType.isRequired,
+  getTransaction: getTransactionType.isRequired,
+  transaction: transactionType,
+};
+
+BlocksView.defaultProps = {
+  transaction: null,
 };
 
 export default compose(
-  withStyles(styles)
+  withStyles(styles),
 )(BlocksView);

@@ -2,73 +2,80 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, {Component} from "react";
-import Dialog from "material-ui/Dialog";
-import TransactionView from "../View/TransactionView";
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-import matchSorter from "match-sorter";
+import React, { Component } from 'react';
+import Dialog from 'material-ui/Dialog';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
+import TransactionView from '../View/TransactionView';
+import {
+  currentChannelType,
+  getTransactionType,
+  transactionListType,
+  transactionType,
+} from '../types';
 
 class Transactions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      dialogOpen: false
+      dialogOpen: false,
     };
   }
 
-  handleDialogOpen = async tid => {
-    await this.props.getTransaction(this.props.currentChannel, tid);
-    this.setState({dialogOpen: true});
+  componentDidMount() {
+    const { transactionList } = this.props;
+    const selection = {};
+    transactionList.forEach((element) => {
+      selection[element.blocknum] = false;
+    });
+    this.setState({ selection });
+  }
+
+  handleDialogOpen = async (tid) => {
+    const { currentChannel, getTransaction } = this.props;
+    await getTransaction(currentChannel, tid);
+    this.setState({ dialogOpen: true });
   };
 
   handleDialogClose = () => {
-    //this.props.removeTransactionInfo();
-    this.setState({dialogOpen: false});
+    this.setState({ dialogOpen: false });
   };
 
   handleEye = (row, val) => {
-    const data = Object.assign({}, this.state.selection, {[row.index]: !val});
-    this.setState({selection: data});
+    const { selection } = this.state;
+    const data = Object.assign({}, selection, { [row.index]: !val });
+    this.setState({ selection: data });
   };
-  componentDidMount() {
-    const selection = {};
-    this.props.transactionList.forEach(element => {
-      selection[element.blocknum] = false;
-    });
-    this.setState({selection: selection});
-  }
+
 
   render() {
     const columnHeaders = [
       {
-        Header: "Creator",
-        accessor: "creator_msp_id",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["creator_msp_id"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
+        Header: 'Creator',
+        accessor: 'creator_msp_id',
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['creator_msp_id'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
-        Header: "Channel Name",
-        accessor: "channelname",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["channelname"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
+        Header: 'Channel Name',
+        accessor: 'channelname',
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['channelname'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
-        Header: "Tx Id",
-        accessor: "txhash",
+        Header: 'Tx Id',
+        accessor: 'txhash',
         Cell: row => (
           <span>
             <a
@@ -78,79 +85,79 @@ class Transactions extends Component {
             >
               <div className="fullHash" id="showTransactionId">
                 {row.value}
-              </div>{" "}
+              </div>
+              {' '}
               {row.value.slice(0, 6)}
-              {!row.value ? "" : "... "}
+              {!row.value ? '' : '... '}
             </a>
           </span>
         ),
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["txhash"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['txhash'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
-        Header: "Type",
-        accessor: "type",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["type"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
+        Header: 'Type',
+        accessor: 'type',
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['type'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
-        Header: "Chaincode",
-        accessor: "chaincodename",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["chaincodename"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
+        Header: 'Chaincode',
+        accessor: 'chaincodename',
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['chaincodename'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
-        Header: "Timestamp",
-        accessor: "createdt",
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            {keys: ["createdt"]},
-            {threshold: matchSorter.rankings.SIMPLEMATCH}
-          ),
-        filterAll: true
-      }
+        Header: 'Timestamp',
+        accessor: 'createdt',
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['createdt'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
+      },
     ];
+
+    const { transactionList, transaction } = this.props;
+    const { dialogOpen } = this.state;
 
     return (
       <div>
         <ReactTable
-          data={this.props.transactionList}
+          data={transactionList}
           columns={columnHeaders}
           defaultPageSize={10}
           className="-striped -highlight"
           filterable
           minRows={0}
-          showPagination={this.props.transactionList.length < 5 ? false : true}
+          showPagination={!(transactionList.length < 5)}
         />
 
         <Dialog
-          open={this.state.dialogOpen}
+          open={dialogOpen}
           onClose={this.handleDialogClose}
-          fullWidth={true}
-          maxWidth={"md"}
+          fullWidth
+          maxWidth="md"
         >
           <TransactionView
-            transaction={this.props.transaction}
+            transaction={transaction}
             onClose={this.handleDialogClose}
           />
         </Dialog>
@@ -158,5 +165,16 @@ class Transactions extends Component {
     );
   }
 }
+
+Transactions.propTypes = {
+  currentChannel: currentChannelType.isRequired,
+  getTransaction: getTransactionType.isRequired,
+  transaction: transactionType,
+  transactionList: transactionListType.isRequired,
+};
+
+Transactions.defaultProps = {
+  transaction: null,
+};
 
 export default Transactions;

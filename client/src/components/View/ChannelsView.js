@@ -2,11 +2,12 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import compose from 'recompose/compose';
 import { withStyles } from 'material-ui/styles';
-import Channels from '../Lists/Channels';
 import Card from 'material-ui/Card';
+import Channels from '../Lists/Channels';
+import { channelsType } from '../types';
 
 const styles = theme => ({
   root: {
@@ -26,35 +27,32 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 60
+    top: 60,
   },
   content: {
     fontSize: 12,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 70
-  }
+    top: 70,
+  },
 });
 
-export class ChannelsView extends Component {
-  constructor(props) {
-    super(props);
-  }
+export const ChannelsView = ({ channels }) => (
+  <div className="view-fullwidth">
+    <div className="view-display">
+      <Card className="table-card">
+        <Channels channels={channels} />
+      </Card>
+    </div>
+  </div>
+);
 
-  render() {
-    return (
-      <div className="view-fullwidth" >
-        <div className="view-display">
-          <Card className="table-card">
-            <Channels channels={this.props.channels} />
-          </Card>
-        </div>
-      </div>
-    );
-  }
-}
+ChannelsView.propTypes = {
+  channels: channelsType.isRequired,
+};
+
 
 export default compose(
-  withStyles(styles)
+  withStyles(styles),
 )(ChannelsView);

@@ -2,73 +2,73 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import types from "./types";
+import types from './types';
 
- const getBlockPerHour = (blockPerHour) => ({
-    type: types.BLOCK_CHART_HOUR,
-    payload: {blockPerHour}
+const getBlockPerHour = blockPerHour => ({
+  type: types.BLOCK_CHART_HOUR,
+  payload: { blockPerHour },
 });
 
- const getBlockPerMin = (blockPerMin) => ({
-    type: types.BLOCK_CHART_MIN,
-    payload: {blockPerMin}
+const getBlockPerMin = blockPerMin => ({
+  type: types.BLOCK_CHART_MIN,
+  payload: { blockPerMin },
 });
 
-const getChannel = (channel) => ({
-    type: types.CHANNEL,
-    payload:{channel}
+const getChannel = channel => ({
+  type: types.CHANNEL,
+  payload: { channel },
 });
 
-const getChannelList = (channelList) => ({
-    type: types.CHANNEL_LIST,
-    payload: channelList
+const getChannelList = channelList => ({
+  type: types.CHANNEL_LIST,
+  payload: channelList,
 });
 
-const getDashStats = (dashStats) => ({
-    type: types.DASHBOARD_STATS,
-    payload: dashStats
+const getDashStats = dashStats => ({
+  type: types.DASHBOARD_STATS,
+  payload: dashStats,
 });
 
-const getNotification = (notification) => ({
-    type: types.NOTIFICATION_LOAD,
-    payload:{notification}
+const getNotification = notification => ({
+  type: types.NOTIFICATION_LOAD,
+  payload: { notification },
 });
 
-const getPeerStatus = (peerStatus) => ({
-    type: types.PEER_STATUS,
-    payload: peerStatus
-})
-
-const getTransactionByOrg = (transactionByOrg) => ({
-    type: types.TRANSACTION_CHART_ORG,
-    payload: transactionByOrg
+const getPeerStatus = peerStatus => ({
+  type: types.PEER_STATUS,
+  payload: peerStatus,
 });
 
- const getTransactionPerHour = (transactionPerHour) => ({
-    type: types.TRANSACTION_CHART_HOUR,
-    payload: {transactionPerHour}
+const getTransactionByOrg = transactionByOrg => ({
+  type: types.TRANSACTION_CHART_ORG,
+  payload: transactionByOrg,
 });
 
- const getTransactionPerMin = (transactionPerMin) => ({
-    type: types.TRANSACTION_CHART_MIN,
-    payload: {transactionPerMin}
+const getTransactionPerHour = transactionPerHour => ({
+  type: types.TRANSACTION_CHART_HOUR,
+  payload: { transactionPerHour },
 });
 
-const updateChannel = (channel) => ({
-    type: types.CHANGE_CHANNEL,
-    payload:{channel}
+const getTransactionPerMin = transactionPerMin => ({
+  type: types.TRANSACTION_CHART_MIN,
+  payload: { transactionPerMin },
+});
+
+const updateChannel = channel => ({
+  type: types.CHANGE_CHANNEL,
+  payload: { channel },
 });
 
 export default {
-    getBlockPerHour,
-    getBlockPerMin,
-    getChannel,
-    getChannelList,
-    getDashStats,
-    getNotification,
-    getPeerStatus,
-    getTransactionByOrg,
-    getTransactionPerHour,
-    getTransactionPerMin,
-    updateChannel
+  getBlockPerHour,
+  getBlockPerMin,
+  getChannel,
+  getChannelList,
+  getDashStats,
+  getNotification,
+  getPeerStatus,
+  getTransactionByOrg,
+  getTransactionPerHour,
+  getTransactionPerMin,
+  updateChannel,
 };
