@@ -209,7 +209,6 @@ export class HeaderView extends Component {
     switch (drawer) {
       case "notifyDrawer": {
         this.setState({notifyDrawer: true});
-        this.setState({notifyCount: 0});
         break;
       }
       case "adminDrawer": {
@@ -226,6 +225,7 @@ export class HeaderView extends Component {
     switch (drawer) {
       case "notifyDrawer": {
         this.setState({notifyDrawer: false});
+        this.setState({notifyCount: 0});
         break;
       }
       case "adminDrawer": {
