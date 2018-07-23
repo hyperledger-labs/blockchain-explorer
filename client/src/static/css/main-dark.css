@@ -163,6 +163,20 @@ background-color:#443e68;
     height: 60px;
 } */
 /* Dialog & Model Styling */
+
+/*Scroll Bar Styling*/
+.dark-theme .sourceCodeDialog ::-webkit-scrollbar-track{
+    background:#8375c4  !important
+    }
+    .dark-theme .sourceCodeDialog ::-webkit-scrollbar-thumb{
+    background:#6a5e9e !important
+    }
+    .dark-theme .listTable ::-webkit-scrollbar-track,.dark-theme .sourceCodeDialog ::-webkit-scrollbar-corner,.dark-theme .listTable ::-webkit-scrollbar-corner{
+        background:#443e68!important
+    }
+    .dark-theme .listTable ::-webkit-scrollbar-thumb{
+        background:#6a5e9e !important
+    }
 .dark-theme .dialogTitle{
 
     text-align: center;
@@ -228,13 +242,7 @@ background-color:#443e68;
 .dark-theme .table th,.table td{
     padding:5px;
 }
-/*Source Code Modal Styling*/
-.dark-theme .sourceCodeDialog ::-webkit-scrollbar-track{
-background:#8375c4  !important
-}
-.dark-theme .sourceCodeDialog ::-webkit-scrollbar-thumb{
-background:#6a5e9e !important
-}
+
 
 .dark-theme .closeBtn{
     float:right;

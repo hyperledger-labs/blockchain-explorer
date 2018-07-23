@@ -45,9 +45,12 @@ export class ChartStats extends Component {
 
   componentDidMount() {
     const { currentChannel } = this.props;
-    setInterval(() => {
+   this.interValId=setInterval(() => {
       this.syncData(currentChannel);
     }, 60000);
+  }
+  componentWillUnmount(){
+    clearInterval(this.interValId);
   }
 
   syncData = (currentChannel) => {

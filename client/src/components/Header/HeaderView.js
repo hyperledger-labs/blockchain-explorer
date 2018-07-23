@@ -114,7 +114,10 @@ export class HeaderView extends Component {
       selectedChannel: selectedValue,
     });
 
-    setInterval(() => this.syncData(currentChannel), 60000);
+   this.interVal=setInterval(() => this.syncData(currentChannel), 60000);
+  }
+ componentWillUnmount(){
+    clearInterval(this.interVal);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -171,12 +174,14 @@ export class HeaderView extends Component {
   };
 
   handleChange = async (selectedChannel) => {
+ if (this.state.channels.length > 1) {
     const { getChangeChannel } = this.props;
     await this.handleOpen();
     this.setState({ selectedChannel });
     getChangeChannel(selectedChannel.value);
     await this.syncData(selectedChannel.value);
-  //  this.handleClose();
+}
+//  this.handleClose();
   };
 
   handleOpen = () => {

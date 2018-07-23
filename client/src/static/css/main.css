@@ -138,9 +138,25 @@ word-wrap: break-word;
     height: 300px;
     overflow-y: scroll;
 }
+/*Scroll Bar Styling*/
 ::-webkit-scrollbar {
     width: 0px;  /* remove scrollbar space */
     background: transparent;  /* optional: just make scrollbar invisible */
+}
+.sourceCodeDialog ::-webkit-scrollbar-track{
+ background:rgb(238, 237, 237) !important
+}
+.sourceCodeDialog ::-webkit-scrollbar-thumb{
+background:rgb(192, 190, 190)!important
+}
+.listTable ::-webkit-scrollbar, .sourceCodeDialog ::-webkit-scrollbar{
+    width: 1em;  /* remove scrollbar space */
+}
+.listTable ::-webkit-scrollbar-track,.sourceCodeDialog ::-webkit-scrollbar-track,.sourceCodeDialog ::-webkit-scrollbar-corner,.listTable ::-webkit-scrollbar-corner{
+background:rgb(238, 237, 237) !important
+}
+.listTable ::-webkit-scrollbar-thumb, .sourceCodeDialog ::-webkit-scrollbar-thumb{
+background:rgb(192, 190, 190)!important
 }
 .card-header{
     background-color: #24272a;
@@ -159,17 +175,14 @@ word-wrap: break-word;
 #root > div > div.App > div > div:nth-child(1) > div > div:nth-child(2) > div > table th> tbody td {
     border-color: #bdc3c7!important;
 }
-/*Source Code Modal Styling*/
-
-.sourceCodeDialog ::-webkit-scrollbar{
-    width: 1em;  /* remove scrollbar space */
-    background: white  /* optional: just make scrollbar invisible */
+.rt-tbody{
+    overflow:scroll!important;
 }
-.sourceCodeDialog ::-webkit-scrollbar-track{
-background:rgb(238, 237, 237) !important
+.rt-tr-group .rt-tr{
+    padding-top:30px
 }
-.sourceCodeDialog ::-webkit-scrollbar-thumb{
-background:rgb(192, 190, 190)!important
+.rt-td{
+    text-align:center
 }
 
 #blockList{
@@ -560,20 +573,27 @@ margin-top:-10px;
  stroke-width:2!important;
  }
  /*Hiding/Showing hash tooltip on hover*/
+ .hashCell,.hashCell li{
+    overflow:visible!important
+ }
  .partialHash{
      text-align:center;
+     position:relative!important
  }
 
-.partialHash:hover  .fullHash{
-display:block;
+ .partialHash:hover .fullHash{
+     display:block;
 position:absolute!important;
 padding:4px 4px;
 background-color: #000000!important;
-margin-left:-250px;
 margin-top:-30px;
+margin-left:-215px;
 border-radius:8px;
 color:#ffffff;
 opacity:0.7
+ }
+ .partialHash:hover .lastFullHash{
+    margin-left:-425px!important;
  }
 .fullHash{
     display:none

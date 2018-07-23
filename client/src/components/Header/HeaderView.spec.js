@@ -18,7 +18,16 @@ const setup = () => {
       genesis_block_hash: '5e02f3535193eafeb084ea68e61b6ab73b6b9123e317499be2b428c37c24c46e',
       id: 3,
       transactions: 5,
-    }],
+    },
+  {
+    blocks: 5,
+    channel_hash: '3406510bd4d8105683f340451418df018b661fb8461deb4ec62e7dfd6a2a6cfc',
+    channelname: 'mychannels',
+    createdat: '2018-06-18T14:30:32.000Z',
+    genesis_block_hash: '5e02f3535193eafeb084ea68e61b6ab73b6b9123e317499be2b428c37c24c46e',
+    id: 3,
+    transactions: 5,
+  }],
     classes: {
       margin: 'Connect-HeaderView--margin-1',
       padding: 'Connect-HeaderView--padding-2',
@@ -80,7 +89,7 @@ describe('HeaderView', () => {
     const selectedChannel = { value: 'newChannel' };
     const { getChangeChannel } = props;
     await wrapper.instance().handleChange(selectedChannel);
-    expect(wrapper.state('selectedChannel').value).toBe('newChannel');
+   expect(wrapper.state('selectedChannel').value).toBe('newChannel');
     expect(getChangeChannel).toHaveBeenCalled();
   });
 

@@ -76,6 +76,7 @@ class Transactions extends Component {
       {
         Header: 'Tx Id',
         accessor: 'txhash',
+	className:"hashCell",
         Cell: row => (
           <span>
             <a
@@ -144,9 +145,10 @@ class Transactions extends Component {
           data={transactionList}
           columns={columnHeaders}
           defaultPageSize={10}
-          className="-striped -highlight"
+          className="-striped -highlight listTable"
           filterable
           minRows={0}
+	  style={{height:"750px"}}
           showPagination={!(transactionList.length < 5)}
         />
 

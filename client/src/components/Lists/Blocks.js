@@ -116,6 +116,7 @@ class Blocks extends Component {
     {
       Header: 'Block Hash',
       accessor: 'blockhash',
+      className:"hashCell",
       Cell: row => (
         <span>
           <a
@@ -157,6 +158,7 @@ class Blocks extends Component {
     {
       Header: 'Transactions',
       accessor: 'txhash',
+      className:"hashCell",
       Cell: row => (
         <ul>
           {row.value.map(tid => (
@@ -173,7 +175,7 @@ class Blocks extends Component {
                 onClick={() => this.handleDialogOpen(tid)}
                 href="#/blocks"
               >
-                <div className="fullHash" id="showTransactionId">
+                <div className="fullHash lastFullHash" id="showTransactionId">
                   {tid}
                 </div>
                 {' '}
@@ -204,9 +206,10 @@ class Blocks extends Component {
           data={blockList}
           columns={this.reactTableSetup()}
           defaultPageSize={10}
-          className="-striped -highlight"
+          className="-striped -highlight listTable"
           filterable
           minRows={0}
+	  style={{height:"750px"}}
           showPagination={!(blockList.length < 5)}
         />
 
