@@ -16,32 +16,41 @@ class Configuration {
   }
 
   getDefaultOrg() {
-    if (defaultOrg == undefined) {
-      defaultOrg = Object.keys(this.networkConfig)[0];
+    if (typeof defaultOrg === 'undefined') {
+      const keys = Object.keys(this.networkConfig);
+      keys.forEach((key) => {
+        const org = this.networkConfig[key];
+        if ('name' in org
+          && 'mspid' in org
+          && 'admin' in org
+        ) {
+          if (typeof defaultOrg === 'undefined') {
+            defaultOrg = key;
+          }
+        }
+      });
     }
-
     return defaultOrg;
   }
 
   getDefaultPeer() {
-    if (defaultPeer == undefined) {
-      var org = this.getDefaultOrg();
-      var orgObj = this.networkConfig[org];
-      for (const key in orgObj) {
-        if (orgObj.hasOwnProperty(key)) {
-          const elem = orgObj[key];
-          if(
-            typeof elem === "object" &&
-            "requests" in elem &&
-            "events" in elem &&
-            "server-hostname" in elem &&
-            "tls_cacerts" in elem
-          ){
+    if (typeof defaultPeer === 'undefined') {
+      const org = this.getDefaultOrg();
+      const orgObj = this.networkConfig[org];
+      const orgkeys = Object.keys(orgObj);
+      orgkeys.forEach((key) => {
+        const elem = orgObj[key];
+        if (typeof elem === 'object'
+          && 'requests' in elem
+          && 'tls_cacerts' in elem
+          && 'events' in elem
+          && 'server-hostname' in elem
+        ) {
+          if (typeof defaultPeer === 'undefined') {
             defaultPeer = key;
-            return defaultPeer;
           }
         }
-      }
+      });
     }
     return defaultPeer;
   }
