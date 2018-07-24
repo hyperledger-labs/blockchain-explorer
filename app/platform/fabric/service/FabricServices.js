@@ -3,14 +3,17 @@
 var fs = require('fs-extra');
 var grpc = require('grpc');
 var convertHex = require('convert-hex');
+const BlockDecoder = require('fabric-client/lib/BlockDecoder');
+var fileUtil = require('../../../explorer/rest/logical/utils/fileUtils.js');
 var dateUtils = require('../../../explorer/rest/logical/utils/dateUtils.js');
 var helper = require("../../../helper.js");
 var logger = helper.getLogger("FabricServices");
-const FabricUtils = require('./../FabricUtils.js');
-
-const explorer_const = require('./../FabricUtils.js').explorer.const;
-
+var {StringDecoder} = require('string_decoder')
 var _transProto = grpc.load(__dirname + '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto').protos;
+
+const BLOCK_TYPE_CONFIG = 'CONFIG';
+const BLOCK_TYPE_ENDORSER_TRANSACTION = 'ENDORSER_TRANSACTION';
+const CHAINCODE_LSCC = 'lscc';
 
 const blocksInProcess = [];
 
@@ -24,9 +27,10 @@ for (let i = 0; i < keys.length; i++) {
 
 class FabricServices {
 
-    constructor(platform, persistence) {
+    constructor(platform, persistence, broadcaster) {
         this.platform = platform;
         this.persistence = persistence;
+        this.broadcaster = broadcaster;
         this.blocks = [];
         this.synchInProcess = [];
     }
@@ -35,20 +39,25 @@ class FabricServices {
 
     }
 
-    async synchNetworkConfigToDB(client) {
-        let channels = client.getChannels();
-        for (var [channel_name, channel] of channels.entries()) {
-            let block = await client.getGenesisBlock(channel);
-            let channel_genesis_hash = await FabricUtils.generateBlockHash(block.header);
-            await this.insertNewChannel(client, channel, block, channel_genesis_hash);
-            await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
+    async synchNetworkConfigToDB() {
+        let _self = this;
+        let clients = this.platform.getClients();
+        // insert all channel details to DB
+        for (var [client_name, client] of clients.entries()) {
+            let channels = client.getChannels();
+            for (var [channel_name, channel] of channels.entries()) {
+                let block = await this.getGenesisBlock(client, channel);
+                let channel_genesis_hash = await this.generateBlockHash(block.header);
+                await this.insertNewChannel(client, channel, block, channel_genesis_hash);
+                await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
+            }
         }
     }
     // insert new channel to DB
     async insertNewChannel(client, channel, block, channel_genesis_hash) {
         if (block.data && block.data.data.length > 0 && block.data.data[0]) {
             let channel_name = channel.getName();
-            let createdt = await FabricUtils.getBlockTimeStamp(block.data.data[0].payload.header.channel_header.timestamp);
+            let createdt = await this.getBlockTimeStamp(block.data.data[0].payload.header.channel_header.timestamp);
             let channel_row = {
                 "name": channel_name,
                 "createdt": createdt,
@@ -56,7 +65,7 @@ class FabricServices {
                 "trans": 0,
                 "channel_hash": "",
                 "channel_version": block.data.data[0].payload.header.channel_header.version,
-                "channel_genesis_hash": channel_genesis_hash
+                "genesis_block_hash": channel_genesis_hash
             }
             await this.persistence.getCrudService().saveChannel(channel_row);
         }
@@ -174,11 +183,7 @@ class FabricServices {
         await this.persistence.getCrudService().saveChaincodPeerRef(chaincode_peer_row);
     }
 
-    async synchBlocks(client, channel) {
-
-        let client_name = client.getClientName();
-        let channel_name = channel.getName();
-
+    async synchBlocks(client_name, channel_name) {
         let synch_key = client_name + "_" + channel_name;
         if (this.synchInProcess.includes(synch_key)) {
             logger.info('Block synch in process for >> ' + client_name + "_" + channel_name);
@@ -186,6 +191,7 @@ class FabricServices {
         } else {
             this.synchInProcess.push(synch_key);
         }
+        let client = this.platform.getClient(client_name);
         // get channel information from ledger
         let channelInfo = await client.getHFC_Client().getChannel(channel_name).queryInfo(client.getDefaultPeer(), true);
         let channel_genesis_hash = client.getChannelGenHash(channel_name);
@@ -207,7 +213,6 @@ class FabricServices {
     }
 
     async processBlockEvent(client, block) {
-        let _self = this;
         // get the first transaction
         var first_tx = block.data.data[0];
         // the "header" object contains metadata of the transaction
@@ -225,45 +230,16 @@ class FabricServices {
         // checking block is channel CONFIG block
         if (!channel_genesis_hash) {
             // get discovery and insert channel details to db and create new channel object in client context
-            setTimeout(async function (client, channel_name, block) {
-                await client.initializeNewChannel(channel_name);
-                channel_genesis_hash = client.getChannelGenHash(channel_name);
-                // inserting new channel details to DB
-                let channel = client.hfc_client.getChannel(channel_name);
-                await _self.insertNewChannel(client, channel, block, channel_genesis_hash);
-                await _self.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
-
-                var notify = {
-                    'notify_type': explorer_const.NOTITY_TYPE_NEWCHANNEL,
-                    'network_name': _self.platform.network_name,
-                    'client_name': client.client_name,
-                    'channel_name': channel_name
-                };
-
-                process.send(notify);
-            }, 10000, client, channel_name, block);
-
-        } else if (header.channel_header.typeString === explorer_const.BLOCK_TYPE_CONFIG) {
-
-            setTimeout(async function (client, channel_name, channel_genesis_hash) {
-                // get discovery and insert new peer, orders details to db
-                let channel = client.hfc_client.getChannel(channel_name);
-                await client.initializeChannelFromDiscover(channel_name);
-                await _self.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
-                var notify = {
-                    'notify_type': explorer_const.NOTITY_TYPE_UPDATECHANNEL,
-                    'network_name': _self.platform.network_name,
-                    'client_name': client.client_name,
-                    'channel_name': channel_name
-                };
-
-                process.send(notify);
-
-            }, 10000, client, channel_name, channel_genesis_hash);
-
+            await client.initializeNewChannel(channel_name);
+            channel_genesis_hash = client.getChannelGenHash(channel_name);
+        } else if (header.channel_header.typeString === BLOCK_TYPE_CONFIG) {
+            // get discovery and insert new peer, orders details to db
+            let channel = client.hfc_client.getChannel(channel_name);
+            await client.initializeChannelFromDiscover(channel_name);
+            await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
         }
-        let createdt = await FabricUtils.getBlockTimeStamp(header.channel_header.timestamp);
-        let blockhash = await FabricUtils.generateBlockHash(block.header);
+        let createdt = await this.getBlockTimeStamp(header.channel_header.timestamp);
+        let blockhash = await this.generateBlockHash(block.header);
         if (channel_genesis_hash) {
             let block_row = {
                 "blocknum": block.header.number,
@@ -290,6 +266,7 @@ class FabricServices {
                 let writeSet;
                 let chaincodeID;
                 let status;
+                let response={}
                 let mspId = [];
                 if (txid != undefined && txid != "") {
                     let validation_codes = block.metadata.metadata[block.metadata.metadata.length - 1];
@@ -325,11 +302,16 @@ class FabricServices {
                         }
                     });
                     chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args;
+                    response = txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec
                     if (chaincode_proposal_input != undefined) {
                         let inputs = '';
+                        let dec = new StringDecoder('utf-8')
+                        let args =[]
                         for (let input of chaincode_proposal_input) {
                             inputs = (inputs === '' ? inputs : (inputs + ",")) + convertHex.bytesToHex(input);
+                            args.push(dec.write(input))
                         }
+                        response.input.args =args
                         chaincode_proposal_input = inputs;
                     }
                     endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
@@ -343,21 +325,10 @@ class FabricServices {
                 let write_set = JSON.stringify(writeSet, null, 2);
                 let chaincode_id = String.fromCharCode.apply(null, chaincodeID);
                 // checking new chaincode is deployed
-                if (header.channel_header.typeString === explorer_const.BLOCK_TYPE_ENDORSER_TRANSACTION && chaincode === explorer_const.CHAINCODE_LSCC) {
-                    setTimeout(async function (client, channel_name, channel_genesis_hash) {
-                        let channel = client.hfc_client.getChannel(channel_name);
-                        // get discovery and insert chaincode details to db
-                        await _self.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
-
-                        var notify = {
-                            'notify_type': explorer_const.NOTITY_TYPE_CHAINCODE,
-                            'network_name': _self.platform.network_name,
-                            'client_name': client.client_name,
-                            'channel_name': channel_name
-                        };
-
-                        process.send(notify);
-                    }, 10000, client, channel_name, channel_genesis_hash);
+                if (header.channel_header.typeString === BLOCK_TYPE_ENDORSER_TRANSACTION && chaincode === CHAINCODE_LSCC) {
+                    let channel = client.hfc_client.getChannel(channel_name);
+                    // get discovery and insert chaincode details to db
+                    await this.insertFromDiscoveryResults(client, channel, channel_genesis_hash);
                 }
                 var transaction_row = {
                     'blockid': block.header.number,
@@ -376,12 +347,13 @@ class FabricServices {
                     'envelope_signature': envelope_signature,
                     'payload_extension': payload_extension,
                     'creator_nonce': creator_nonce,
+                    'tx_response':JSON.stringify(response),
                     'chaincode_proposal_input': chaincode_proposal_input,
                     'endorser_signature': endorser_signature,
                     'creator_id_bytes': creator_id_bytes,
                     'payload_proposal_hash': payload_proposal_hash,
                     'endorser_id_bytes': endorser_id_bytes
-                }; explorer_const
+                };
                 // insert transaction
                 let res = await this.persistence.getCrudService().saveTransaction(transaction_row);
             }
@@ -390,10 +362,6 @@ class FabricServices {
             if (status) {
                 //push last block
                 var notify = {
-                    'notify_type': explorer_const.NOTITY_TYPE_BLOCK,
-                    'network_name': this.platform.network_name,
-                    'client_name': client.client_name,
-                    'channel_name': channel_name,
                     'title': 'Block ' + block.header.number + ' Added',
                     'type': 'block',
                     'message': 'Block ' + block.header.number + ' established with ' + block.data.data.length + ' tx',
@@ -401,9 +369,7 @@ class FabricServices {
                     'txcount': block.data.data.length,
                     'datahash': block.header.data_hash
                 };
-
-                process.send(notify);
-
+                this.broadcaster.broadcast(notify);
             }
         } else {
             logger.error('Failed to process the block %j', block);
@@ -412,9 +378,30 @@ class FabricServices {
         blocksInProcess.splice(index, 1);
     }
 
+    async getGenesisBlock(client, channel) {
+        let defaultOrderer = client.getDefaultOrderer();
+        let request = {
+            orderer: defaultOrderer,
+            txId: client.getHFC_Client().newTransactionID(true) //get an admin based transactionID
+        };
+        let genesisBlock = await channel.getGenesisBlock(request);
+        let block = BlockDecoder.decodeBlock(genesisBlock);
+        return block;
+    }
 
+    async generateBlockHash(block_header) {
+        let result = await fileUtil.generateBlockHash(block_header);
+        return result;
+    }
 
-
+    async getBlockTimeStamp(dateStr) {
+        try {
+            return new Date(dateStr);
+        } catch (err) {
+            console.log(err)
+        }
+        return new Date(dateStr);
+    };
 
     getCurrentChannel() {
         return
@@ -426,6 +413,10 @@ class FabricServices {
 
     getPersistence() {
         return this.persistence;
+    }
+
+    getBroadcaster() {
+        return this.broadcaster;
     }
 
 }

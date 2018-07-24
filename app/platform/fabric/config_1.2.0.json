@@ -2,15 +2,13 @@
     "network-configs": {
         "network-1": {
             "version": "1.0",
-            "clients": {
-                "client_1": {
-                    "organization": "Org1MSP",
-                    "channel": "mychannel",
-                    "credentialStore": {
-                        "path": "./tmp/credentialStore_Org1/credential",
-                        "cryptoStore": {
-                            "path": "./tmp/credentialStore_Org1/crypto"
-                        }
+            "client": {
+                "organization": "Org1MSP",
+                "channel": "mychannel",
+                "credentialStore": {
+                    "path": "./tmp/credentialStore_Org1/credential",
+                    "cryptoStore": {
+                        "path": "./tmp/credentialStore_Org1/crypto"
                     }
                 }
             },
@@ -33,7 +31,7 @@
             "organizations": {
                 "Org1MSP": {
                     "mspid": "Org1MSP",
-                    "fullpath": false,
+                    "fullpath":false,
                     "adminPrivateKey": {
                         "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
                     },

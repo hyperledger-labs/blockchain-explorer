@@ -6,23 +6,24 @@ var Fabric_Client = require('fabric-client');
 var helper = require("../../helper.js");
 var logger = helper.getLogger("FabricClient");
 var fs = require("fs-extra");
-const BlockDecoder = require('fabric-client/lib/BlockDecoder');
 var Admin = require("./Admin.js");
 var grpc = require('grpc');
 const User = require('fabric-client/lib/User.js');
 const client_utils = require('fabric-client/lib/client-utils.js');
-var FabricUtils = require('./FabricUtils.js');
 const _commonProto = grpc.load(__dirname + '/../../../node_modules/fabric-client/lib/protos/common/common.proto').common;
 
 class FabricClient {
 
-    constructor(client_name) {
+    constructor(client_name, fabricServices) {
         this.client_name = client_name;
         this.hfc_client = new Fabric_Client();
         this.defaultPeer = {};
         this.defaultChannel = {};
         this.defaultOrderer = null;
         this.channelsGenHash = new Map();
+        this.peerEventHub = {};
+        this.channelEventHubs = new Map();
+        this.fabricServices = fabricServices;
         this.client_config;
         this.adminpeers = new Map();
         this.adminusers = new Map();
@@ -36,6 +37,10 @@ class FabricClient {
         logger.debug("Loading client  [%s] from configuration ...", this.client_name);
         await this.LoadClientFromConfig(client_config);
         logger.debug("Successfully loaded client [%s] from configuration", this.client_name);
+
+        // creating peer level event hub to capture new channel
+        this.createPeerEventHub();
+        logger.debug("Successfully created peer event hub for client [%s]", this.client_name);
 
         // getting channels from queryChannels
         let channels = await this.hfc_client.queryChannels(this.defaultPeer.getName(), true);
@@ -123,13 +128,21 @@ class FabricClient {
         await this.initializeChannelFromDiscover(channel_name);
 
         // get genesis block for the channel
-        let block = await this.getGenesisBlock(channel);
+        let block = await this.fabricServices.getGenesisBlock(this, channel);
         logger.debug("Genesis Block for client [%s] >> %j", this.client_name, block);
-        let channel_genesis_hash = await FabricUtils.generateBlockHash(block.header);
+        let channel_genesis_hash = await this.fabricServices.generateBlockHash(block.header);
         // setting channel_genesis_hash to map
         this.setChannelGenHash(channel_name, channel_genesis_hash);
 
         logger.debug("Channel genesis hash for channel [%s] >> %s", channel_name, channel_genesis_hash);
+
+        // creating channel event hub
+        this.createChannelEventHub(channel);
+        logger.debug("Successfully created channel event hub for  [%s]", channel_name);
+
+        // inserting new channel details to DB
+        await this.fabricServices.insertNewChannel(this, channel, block, channel_genesis_hash);
+        await this.fabricServices.insertFromDiscoveryResults(this, channel, channel_genesis_hash);
 
     }
 
@@ -147,22 +160,6 @@ class FabricClient {
             if (discover_results.msps) {
                 for (let msp_name in discover_results.msps) {
                     const msp = discover_results.msps[msp_name];
-
-                    if (!channel._msp_manager.getMSP(msp.id)) {
-                        const config = {
-                            rootCerts: msp.rootCerts,
-                            intermediateCerts: msp.intermediateCerts,
-                            admins: msp.admins,
-                            cryptoSuite: channel._clientContext._crytoSuite,
-                            id: msp.id,
-                            orgs: msp.orgs,
-                            tls_root_certs: msp.tls_root_certs,
-                            tls_intermediate_certs: msp.tls_intermediate_certs
-                        };
-                        channel._msp_manager.addMSP(config);
-                    }
-
-
                     let username = this.client_name + "_" + msp.id + "Admin";
                     if (!this.adminusers.get(username)) {
                         let organization = await this.hfc_client._network_config.getOrganization(msp_name, true);
@@ -227,6 +224,152 @@ class FabricClient {
         return;
     }
 
+    createPeerEventHub() {
+        // Creating peer EventHubs
+        this.peerEventHub = this.hfc_client.getEventHub(this.defaultPeer.getName());
+        this.peerEventHub.registerBlockEvent(
+            (block) => {
+                // process only first block for creating new channel in client
+                if (block.header.number === "0" || block.header.number == 0) {
+                    this.fabricServices.processBlockEvent(this, block);
+                }
+            },
+            (err) => {
+                logger.error('Block Event %s', err);
+            }
+        );
+        this.connectPeerEventHub();
+    }
+
+    connectPeerEventHub() {
+        let _self = this;
+        if (this.peerEventHub) {
+            this.peerEventHub.connect();
+            // wait 5 sec to process blocks
+            setTimeout(function () {
+                _self.synchBlocks();
+            }, 5000);
+        } else {
+            // if peer event hub is not defined then create new peer event hub
+            this.createPeerEventHub();
+            return false;
+        }
+    }
+
+    isPeerEventHubConnected() {
+        if (this.peerEventHub) {
+            return this.peerEventHub.isconnected();
+        } else {
+            return false;
+        }
+    }
+
+    createChannelEventHub(channel) {
+        // create channel event hub
+        let eventHub = channel.newChannelEventHub(this.defaultPeer);
+        eventHub.registerBlockEvent(
+            (block) => {
+                // skip first block, it is process by peer event hub
+                if (!(block.header.number === "0" || block.header.number == 0)) {
+                    this.fabricServices.processBlockEvent(this, block);
+                }
+            },
+            (err) => {
+                logger.error('Block Event %s', err);
+            }
+        );
+        this.connectChannelEventHub(channel.getName(), eventHub);
+        // set channel event hub to map
+        this.channelEventHubs.set(channel.getName(), eventHub);
+    }
+
+    connectChannelEventHub(channel_name, eventHub) {
+        let _self = this;
+        if (eventHub) {
+            eventHub.connect(true);
+            setTimeout(function (channel_name) {
+                _self.synchChannelBlocks(channel_name);
+            }, 5000, channel_name);
+        } else {
+            // if channel event hub is not defined then create new channel event hub
+            let channel = this.hfc_client.getChannel(channel_name);
+            this.createChannelEventHub(channel);
+            return false;
+        }
+    }
+
+    isChannelEventHubConnected(channel_name) {
+        let eventHub = this.channelEventHubs.get(channel_name);
+        if (eventHub) {
+            return eventHub.isconnected();
+        } else {
+            return false;
+        }
+    }
+
+    disconnectChannelEventHub(channel_name) {
+        let eventHub = this.channelEventHubs.get(channel_name);
+        return eventHub.disconnec();
+    }
+
+    disconnectEventHubs() {
+        // disconnect all event hubs
+        for (var [channel_name, eventHub] of this.channelEventHubs.entries()) {
+            let status = this.isChannelEventHubConnected();
+            if (status) {
+                this.disconnectChannelEventHub(channel_name);
+            }
+        }
+        if (this.peerEventHub) {
+            this.peerEventHub.disconnec();
+        }
+    }
+    // channel event hub used to synch the blocks
+    async synchChannelBlocks(channel_name) {
+        if (this.isChannelEventHubConnected(channel_name)) {
+            this.fabricServices.synchBlocks(this.client_name, channel_name);
+        }
+    }
+    // Interval and peer event hub used to synch the blocks
+    async synchBlocks() {
+        if (!this.isPeerEventHubConnected()) {
+            this.connectPeerEventHub();
+        }
+        // getting all channels list from client ledger
+        let channels = await this.getHFC_Client().queryChannels(this.getDefaultPeer().getName(), true);
+
+        for (let channel of channels.channels) {
+            let channel_name = channel.channel_id;
+            if (!this.getChannels().get(channel_name)) {
+                // initialize channel, if it is not exists in the client context
+                await this.initializeNewChannel(channel_name);
+            }
+        }
+        for (let channel of channels.channels) {
+            let channel_name = channel.channel_id;
+            // check channel event is connected
+            if (this.isChannelEventHubConnected(channel_name)) {
+                // call synch blocks
+                this.fabricServices.synchBlocks(this.client_name, channel_name);
+            } else {
+                let eventHub = this.channelEventHubs.get(channel_name);
+                if (eventHub) {
+                    // connect channel event hub
+                    this.connectChannelEventHub(channel_name, eventHub)
+                } else {
+                    let channel = getChannels().get(channel_name);
+                    if (channel) {
+                        // create channel event hub
+                        this.createChannelEventHub(channel);
+                    } else {
+                        // initialize channel, if it is not exists in the client context
+                        await this.initializeNewChannel(this, channel_name);
+                    }
+                }
+            }
+        }
+    }
+
     newOrderer(channel_name, url, msp_id, host, msps) {
         let channel = this.hfc_client.getChannel(channel_name);
         let newOrderer = null;
@@ -288,17 +431,6 @@ class FabricClient {
         return status;
     }
 
-    async getGenesisBlock(channel) {
-        let defaultOrderer = this.getDefaultOrderer();
-        let request = {
-            orderer: defaultOrderer,
-            txId: this.getHFC_Client().newTransactionID(true) //get an admin based transactionID
-        };
-        let genesisBlock = await channel.getGenesisBlock(request);
-        let block = BlockDecoder.decodeBlock(genesisBlock);
-        return block;
-    }
-
     async createUser(opts) {
         logger.debug('opts = %j', opts);
         if (!opts) {
@@ -345,13 +477,6 @@ class FabricClient {
         return opts;
     }
 
-    async getOrganizations(channel_genesis_hash) {
-        channel._msp_manager
-        let client = this.platform.getClient();
-    }
-
-
-
     buildTlsRootCerts(msp) {
         let caroots = '';
         if (msp.tls_root_certs) {
@@ -387,10 +512,6 @@ class FabricClient {
         return this.defaultPeer;
     }
 
-    getClientName() {
-        return this.client_name;
-    }
-
     getDefaultChannel() {
         return this.defaultChannel;
     }
@@ -403,24 +524,7 @@ class FabricClient {
         this.defaultPeer = defaultPeer;
     }
 
-    getChannelByHash(channel_genesis_hash) {
-        for (var [channel_name, hash_name] of this.channelsGenHash.entries()) {
-            if (channel_genesis_hash === hash_name) {
-                return this.hfc_client.getChannel(channel_name);
-            }
-        }
-    }
-
-    getChannel(channel_name) {
-
-        return this.hfc_client.getChannel(channel_name);
-    }
-
-    setDefaultChannel(channel_name) {
-        this.defaultChannel = this.hfc_client.getChannel(channel_name);
-    }
-
-    setDefaultChannelByHash(new_channel_genesis_hash) {
+    setDefaultChannel(new_channel_genesis_hash) {
 
         for (var [channel_name, channel_genesis_hash] of this.channelsGenHash.entries()) {
 

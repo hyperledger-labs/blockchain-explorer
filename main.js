@@ -19,7 +19,6 @@ var path = require("path");
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;
-process.on('unhandledRejection', up => { throw up });
 
 class Broadcaster extends WebSocket.Server {
   constructor(server) {

@@ -7,7 +7,8 @@ var requtil = require("./requestutils");
 
 const platformroutes = async function (app, restServices) {
 
-
+  //let platform = platform;
+  //let proxy = platform.getDefaultProxy();
   let statusMetrics = restServices.getPersistence().getMetricService();
   let crudService = restServices.getPersistence().getCrudService();
 
@@ -84,16 +85,15 @@ const platformroutes = async function (app, restServices) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/changeChannel/:channel_genesis_hash", function (req, res) {
-
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    restServices.changeChannel(channel_genesis_hash).then((data) => {
-      res.send({
-        currentChannel: data
-      });
-    });
-
+ app.get("/api/changeChannel/:channel_genesis_hash", async function (req, res) {
+  let channel_genesis_hash = req.params.channel_genesis_hash;
+  let channel = await crudService.getChannelByGenesisBlockHash(channel_genesis_hash)
+  restServices.changeChannel(channel.name);
+ let  curChannel = await restServices.getGenesisBlockHash(channel.name)
+  res.send({
+    currentChannel:curChannel
   });
+});
 
 
   /***
