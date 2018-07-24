@@ -34,8 +34,14 @@ class Explorer {
         this.persistence = await PersistenceFactory.create(explorerconfig["persistence"]);
         dbroutes(this.app, this.persistence);
         for (let pltfrm of this.platforms) {
-          await platformroutes(this.app, pltfrm, this.persistence);
-          timer.start(platform, this.persistence, broadcaster);
+            await platformroutes(this.app, pltfrm, this.persistence);
+            timer.start(platform, this.persistence, broadcaster);
+        }
+    }
+
+    close() {
+        if (this.persistence) {
+            this.persistence.closeconnection();
         }
     }
 }

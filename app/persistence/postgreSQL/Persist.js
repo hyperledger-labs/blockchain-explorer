@@ -26,6 +26,10 @@ class Persist {
         return this.crudService;
     }
 
+    closeconnection() {
+        pgservice.closeconnection();
+    }
+
 }
 
 module.exports = Persist;
