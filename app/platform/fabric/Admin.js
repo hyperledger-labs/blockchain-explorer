@@ -126,17 +126,23 @@ var Admin = class extends Remote {
 
             self._endorserClient.GetStatus(envelope, function (err, serverStatus) {
                 clearTimeout(send_timeout);
+                let server_hostname;
+                if (self._options["grpc.default_authority"]) {
+                    server_hostname = self._options["grpc.default_authority"];
+                } else {
+                    server_hostname = self._options["grpc.ssl_target_name_override"];
+                }
                 if (err) {
                     logger.debug('Error GetStatus response from: %s status: %s', self._url, err);
                     if (err instanceof Error) {
-                        resolve({ "status": "DOWN", "server_hostname": self._options["grpc.ssl_target_name_override"] });
+                        resolve({ "status": "DOWN", "server_hostname": server_hostname });
                     }
                     else {
-                        resolve({ "status": "DOWN", "server_hostname": self._options["grpc.ssl_target_name_override"] });
+                        resolve({ "status": "DOWN", "server_hostname": server_hostname });
                     }
                 } else {
-                    logger.debug('Received GetStatus response from peer "%s": status - %s', self._url, JSON.stringify(serverStatus));
-                    resolve({ "status": "RUNNING", "server_hostname": self._options["grpc.ssl_target_name_override"] });
+                    logger.debug('Received GetStatus response from peer "%s": status - %j', self._url, serverStatus);
+                    resolve({ "status": "RUNNING", "server_hostname": server_hostname });
                 }
             });
         });
