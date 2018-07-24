@@ -7,14 +7,13 @@ var logger = helper.getLogger("RestServices");
 
 class RestServices {
 
-    constructor(platform, persistence, broadcaster, ) {
+    constructor(platform, persistence, ) {
         this.platform = platform;
         this.persistence = persistence;
-        this.broadcaster = broadcaster;
     }
 
     async getCurrentChannel() {
-        let client = this.platform.getDefaultClient();
+        let client = await this.platform.getClient();
         let channel = client.getDefaultChannel();
         let channel_genesis_hash = client.getChannelGenHash(channel.getName());
         let respose;
@@ -37,7 +36,7 @@ class RestServices {
     async getPeersStatus(channel_genesis_hash) {
         let nodes = await this.persistence.getMetricService().getPeerList(channel_genesis_hash);
         let peers = [];
-        let client = this.platform.getDefaultClient();
+        let client = this.platform.getClient();
         for (let node of nodes) {
             if (node.peer_type === "PEER") {
                 let res = await client.getPeerStatus(node);
@@ -50,15 +49,15 @@ class RestServices {
     }
 
     async changeChannel(channel_genesis_hash) {
-        let client = this.platform.getDefaultClient();
-        let respose = client.setDefaultChannel(channel_genesis_hash);
+        let client = this.platform.getClient();
+        let respose = client.setDefaultChannelByHash(channel_genesis_hash);
         logger.debug('changeChannel >> %s', respose);
         return respose;
     }
 
     async getChannelsInfo() {
         let channels = await this.persistence.getCrudService().getChannelsInfo();
-        let client = this.platform.getDefaultClient();
+        let client = this.platform.getClient();
         let currentchannels = [];
         for (var channel of channels) {
             let channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -70,13 +69,19 @@ class RestServices {
         return currentchannels;
     }
 
-	async getGenesisBlockHash(channelname) {
-        let client = this.platform.getDefaultClient();
-        let channel_genesis_hash = client.getChannelGenHash(channelname);
-		return channel_genesis_hash
-	}
+    async getOrganizations(channel_genesis_hash) {
+        let client = this.platform.getClient();
+        let channel = client.getChannelByHash(channel_genesis_hash);
+        let msps = channel._msp_manager.getMSPs();
+        let organizations = [];
+        for (let msp_id in msps) {
+            organizations.push(msp_id);
+        }
+        return organizations;
+    }
+
     getChannels() {
-        let respose = this.platform.getDefaultClient().getChannelNames();
+        let respose = this.platform.getClient().getChannelNames();
         logger.debug('getChannels >> %j', respose);
         return respose;
     }
@@ -89,9 +94,6 @@ class RestServices {
         return this.persistence;
     }
 
-    getBroadcaster() {
-        return this.broadcaster;
-    }
 }
 
 module.exports = RestServices;
