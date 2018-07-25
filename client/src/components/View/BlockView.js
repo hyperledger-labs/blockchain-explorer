@@ -51,7 +51,7 @@ class BlockView extends Component {
           <Card>
             <CardTitle className="dialogTitle">
               <FontAwesome name="cube" className="cubeIcon" />
-                lock Details
+                Block Details
               <button type="button" onClick={this.handleClose} className="closeBtn">
                 <FontAwesome name="close" />
               </button>

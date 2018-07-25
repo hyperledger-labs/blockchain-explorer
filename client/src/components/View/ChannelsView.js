@@ -4,8 +4,8 @@
 
 import React from 'react';
 import compose from 'recompose/compose';
-import { withStyles } from 'material-ui/styles';
-import Card from 'material-ui/Card';
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
 import Channels from '../Lists/Channels';
 import { channelsType } from '../types';
 

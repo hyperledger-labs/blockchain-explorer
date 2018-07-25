@@ -3,10 +3,10 @@
  */
 
 import React, { Component } from 'react';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import FontAwesome from 'react-fontawesome';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Typography from 'material-ui/Typography';
+import Typography from '@material-ui/core/Typography';
 import moment from 'moment-timezone';
 import {
   Table,

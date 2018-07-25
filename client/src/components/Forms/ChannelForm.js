@@ -3,9 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     container: {
@@ -31,9 +31,6 @@ const styles = theme => ({
 });
 
 class ChannelForm extends Component {
-    constructor(props, context) {
-        super(props, context)
-    }
     render() {
         const { classes } = this.props;
 

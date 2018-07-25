@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import beautify from 'js-beautify';
 import FontAwesome from 'react-fontawesome';
 import { Card, CardBody, CardTitle } from 'reactstrap';

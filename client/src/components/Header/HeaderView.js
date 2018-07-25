@@ -6,18 +6,18 @@ import 'react-select/dist/react-select.css';
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Select from 'react-select';
 import {
   Nav, Navbar, NavbarBrand, NavbarToggler,
 } from 'reactstrap';
 import { HashRouter as Router, NavLink } from 'react-router-dom';
-import Switch from 'material-ui/Switch';
+import Switch from '@material-ui/core/Switch';
 import FontAwesome from 'react-fontawesome';
-import Drawer from 'material-ui/Drawer';
+import Drawer from '@material-ui/core/Drawer';
 import Websocket from 'react-websocket';
-import Badge from 'material-ui/Badge';
-import Dialog from 'material-ui/Dialog';
+import Badge from '@material-ui/core/Badge';
+import Dialog from '@material-ui/core/Dialog';
 import Loader from 'react-loader-spinner';
 import NotificationsPanel from '../Panels/NotificationsPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
@@ -132,7 +132,7 @@ export class HeaderView extends Component {
         });
         if (
           nextProps.currentChannel == null
-          || nextProps.currentChannel == undefined
+          || nextProps.currentChannel === undefined
         ) {
           if (element.genesis_block_hash != null) {
             selectedValue = {
@@ -412,7 +412,7 @@ export class HeaderView extends Component {
               open={notifyDrawer}
               onClose={() => this.handleDrawClose('notifyDrawer')}
             >
-              <div tabIndex={0} role="button">
+                <div tabIndex={0} role="button">
                 <NotificationsPanel notifications={notifications} />
               </div>
             </Drawer>

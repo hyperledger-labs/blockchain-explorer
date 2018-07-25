@@ -3,10 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import Avatar from 'material-ui/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
 import FontAwesome from 'react-fontawesome';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
@@ -44,7 +46,7 @@ export class NotificationsPanel extends Component {
 
   render() {
     const { classes, notifications } = this.props;
-    if (notifications.length === 0) {
+     if (notifications.length===0) {
       return (
 
         <div className="notificationPanel">
@@ -66,7 +68,7 @@ export class NotificationsPanel extends Component {
       <div className="notificationPanel">
         <div className={classes.root}>
           <List component="nav" className="notificationPanel">
-            {notifications.map((notify, index) => (
+          {notifications.map((notify, index)  => (
               <ListItem key={index} button className="notificationPanel">
                 {this.avatarIcon(notify.type, classes)}
                 <ListItemText

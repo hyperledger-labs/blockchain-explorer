@@ -7,20 +7,16 @@ import { connect } from 'react-redux';
 import ExpansionPanel, {
     ExpansionPanelSummary,
     ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Typography from 'material-ui/Typography';
+} from '@material-ui/core/ExpansionPanel';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Typography from '@material-ui/core/Typography';
 import ChannelForm from '../Forms/ChannelForm';
 import FontAwesome from 'react-fontawesome';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import Select from 'material-ui/Select';
+import { MenuItem } from '@material-ui/core/Menu';
+import { FormControl, FormHelperText } from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 class AdminPanel extends Component {
-    constructor(props, context) {
-        super(props, context);
-    }
-
     handleChange = () => {}
 
   render() {
@@ -46,7 +42,7 @@ class AdminPanel extends Component {
                             Select Channel
                             </Typography> */}
             <form className="admin-panel">
-              <FormControl className="select-channel" className="admin-panel">
+              <FormControl className="select-channel admin-panel">
                 <Select
                   value={20}
                   onChange={this.handleChange}

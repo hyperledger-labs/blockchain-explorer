@@ -8,8 +8,8 @@ import {
   Col,
 } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
-import Card from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
+import Card from '@material-ui/core/Card';
+import Avatar from '@material-ui/core/Avatar';
 import ChartStats from '../Charts/ChartStats';
 import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
@@ -188,7 +188,7 @@ export class DashboardView extends Component {
               </Card>
               <Card className="dash-section center-column">
                 <h5 className="org-header">
-                  Transactions by Organziation
+                  Transactions by Organization
                 </h5>
                 <hr />
                 <OrgPieChart transactionByOrg={transactionByOrg} />

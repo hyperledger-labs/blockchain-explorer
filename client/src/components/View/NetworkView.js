@@ -4,8 +4,8 @@
 
 import React from 'react';
 import compose from 'recompose/compose';
-import { withStyles } from 'material-ui/styles';
-import Card from 'material-ui/Card';
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
 import Peers from '../Lists/Peers';
 import { peerListType } from '../types';
 

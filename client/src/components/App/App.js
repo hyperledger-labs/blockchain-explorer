@@ -3,11 +3,11 @@
  */
 
 import React, { Component } from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import { createMuiTheme } from 'material-ui/styles';
-import indigo from 'material-ui/colors/indigo';
-import lightBlue from 'material-ui/colors/lightBlue';
-import red from 'material-ui/colors/red';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { createMuiTheme } from '@material-ui/core/styles';
+import indigo from '@material-ui/core/colors/indigo';
+import lightBlue from '@material-ui/core/colors/lightBlue';
+import red from '@material-ui/core/colors/red';
 import Main from '../Main';
 import HeaderView from '../Header/HeaderView';
 import FooterView from '../Header/footerView';

@@ -12,7 +12,8 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import Card, { CardContent } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
+import  CardContent  from "@material-ui/core/CardContent"
 import { chartDataType } from '../types'
 
 const TimeChart = ({ chartData }) => (

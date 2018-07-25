@@ -4,9 +4,9 @@
 
 import React, { Component } from 'react';
 import { Timeline, TimelineEvent } from 'react-event-timeline';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import FontAwesome from 'react-fontawesome';
-import Typography from 'material-ui/Typography';
+import Typography from '@material-ui/core/Typography';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 import find from 'lodash/find';

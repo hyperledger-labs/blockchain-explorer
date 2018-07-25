@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
 import { chaincodeListType } from '../types';
