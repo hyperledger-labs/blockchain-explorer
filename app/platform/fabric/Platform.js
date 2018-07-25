@@ -200,6 +200,7 @@ class Platform {
   }
   //BE303
   async setupOrderers(client,channel) {
+    try {
     configuration.getOrderersByOrg().forEach(val => {
     //console.log("Line179-setupOrderers"+JSON.stringify(val));
       let orderer;
@@ -213,6 +214,10 @@ class Platform {
       }
     channel.addOrderer(orderer);
     });
+    }catch(err){
+     throw ("There is error in reading config.json for orderer parameters.Please check config.json parameters:" + err);
+     return null;
+   }
   }
 //BE303
 
