@@ -120,7 +120,18 @@ function deploy_run_database(){
 
 function deploy_load_database(){
 	echo "Preparing database for Explorer"
-	sleep 2s
+	echo "Waiting...6s"
+	sleep 1s
+	echo "Waiting...5s"
+	sleep 1s
+	echo "Waiting...4s"
+	sleep 1s
+	echo "Waiting...3s"
+	sleep 1s
+	echo "Waiting...2s"
+	sleep 1s
+	echo "Waiting...1s"
+	sleep 1s
 	docker exec $fabric_explorer_db_name psql -h localhost -U $explorer_db_user -a -f /opt/explorerpg.sql
 	docker exec $fabric_explorer_db_name psql -h localhost -U $explorer_db_user -a -f /opt/updatepg.sql
 }
