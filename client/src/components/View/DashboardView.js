@@ -81,7 +81,7 @@ export class DashboardView extends Component {
             alignItems: 'center'
           }}
         >
-          <h1>Error: One or more components failed to render.</h1>
+          <h1>Please verify your network configuration, database configuration and try again</h1>
         </div>
       );
     }
