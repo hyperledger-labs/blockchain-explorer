@@ -182,6 +182,6 @@ describe('TransactionView', () => {
       },
     };
     wrapper.setProps(newTransaction);
-    expect(wrapper.find('li').exists()).toBe(true);
+    expect(wrapper.find('JSONTree').exists()).toBe(true);
   });
 });

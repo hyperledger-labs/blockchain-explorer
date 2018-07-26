@@ -15,6 +15,44 @@ import {
   CardTitle,
 } from 'reactstrap';
 import { transactionType } from '../types';
+import JSONTree from 'react-json-tree';
+
+const readTheme = {
+  base00: '#f3f3f3',
+  base01: '#2e2f30',
+  base02: '#515253',
+  base03: '#737475',
+  base04: '#959697',
+  base05: '#b7b8b9',
+  base06: '#dadbdc',
+  base07: '#fcfdfe',
+  base08: '#e31a1c',
+  base09: '#e6550d',
+  base0A: '#dca060',
+  base0B: '#31a354',
+  base0C: '#80b1d3',
+  base0D: '#3182bd',
+  base0E: '#756bb1',
+  base0F: '#b15928'
+};
+const writeTheme = {
+  base00: '#ffffff',
+  base01: '#2e2f30',
+  base02: '#515253',
+  base03: '#737475',
+  base04: '#959697',
+  base05: '#b7b8b9',
+  base06: '#dadbdc',
+  base07: '#fcfdfe',
+  base08: '#e31a1c',
+  base09: '#e6550d',
+  base0A: '#dca060',
+  base0B: '#31a354',
+  base0C: '#80b1d3',
+  base0D: '#3182bd',
+  base0E: '#756bb1',
+  base0F: '#b15928'
+};
 
 const styles = () => ({
   root: {
@@ -165,49 +203,7 @@ export class TransactionView extends Component {
                         Reads:
                       </th>
                       <td>
-                        {' '}
-                        {transaction.read_set.map((
-                          item,
-                          index,
-                        ) => (item === null ? (
-                          ''
-                        ) : (
-                          <li key={index}>
-                            <Typography
-                              variant="subheading"
-                              className="dialogCells"
-                            >
-                              {' '}
-                              {item.chaincode}
-                            </Typography>
-                            <ul>
-                              {item.set.map((x, index) => {
-                                let blockNum = '';
-                                let txNum = '';
-                                if (x.version !== null) {
-                                  blockNum = x.version.block_num;
-                                  txNum = x.version.tx_num;
-                                }
-                                return x === null ? (
-                                  ''
-                                ) : (
-                                  <li key={index}>
-                                    key:
-                                    {x.key}
-                                    {' '}
-                                    ,version:( block:
-                                    {blockNum}
-                                    ,tx:
-                                    {txNum}
-                                    )
-                                    {' '}
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                            <br />
-                          </li>
-                        )))}
+                        <JSONTree data={transaction.read_set} theme={readTheme} invertTheme={false}/>
                       </td>
                     </tr>
                     <tr>
@@ -215,40 +211,7 @@ export class TransactionView extends Component {
                         Writes:
                       </th>
                       <td>
-                        {' '}
-                        {transaction.write_set.map((
-                          item,
-                          index,
-                        ) => (item === null ? (
-                          ''
-                        ) : (
-                          <li key={index}>
-                            <Typography
-                              variant="subheading"
-                              className="dialogCells"
-                            >
-                              {' '}
-                              {item.chaincode}
-                            </Typography>
-                            <ul>
-                              {item.set.map((x, index) => (x === null ? (
-                                ''
-                              ) : (
-                                <li key={index}>
-                                      key:
-                                  {x.key}
-                                  {' '}
-                                  ,is_delete:
-                                  {x.is_delete.toString()}
-                                  ,value:
-                                  {x.value}
-                                  {' '}
-                                </li>
-                              )))}
-                            </ul>
-                            <br />
-                          </li>
-                        )))}
+                      <JSONTree data={transaction.write_set} theme={writeTheme} invertTheme={false}/>
                       </td>
                     </tr>
                   </tbody>
