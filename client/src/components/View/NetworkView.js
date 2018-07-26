@@ -13,29 +13,29 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     paddingTop: 42,
-    position: 'relative',
+    position: 'relative'
   },
   card: {
     height: 250,
     minWidth: 1290,
     margin: 20,
     textAlign: 'left',
-    display: 'inline-block',
+    display: 'inline-block'
   },
   title: {
     fontSize: 16,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 60,
+    top: 60
   },
   content: {
     fontSize: 12,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 70,
-  },
+    top: 70
+  }
 });
 
 export const NetworkView = ({ peerList }) => (
@@ -49,9 +49,7 @@ export const NetworkView = ({ peerList }) => (
 );
 
 NetworkView.propTypes = {
-  peerList: peerListType.isRequired,
+  peerList: peerListType.isRequired
 };
 
-export default compose(
-  withStyles(styles),
-)(NetworkView);
+export default compose(withStyles(styles))(NetworkView);

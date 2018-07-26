@@ -10,11 +10,11 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip
 } from 'recharts';
 import Card from '@material-ui/core/Card';
-import  CardContent  from "@material-ui/core/CardContent"
-import { chartDataType } from '../types'
+import CardContent from '@material-ui/core/CardContent';
+import { chartDataType } from '../types';
 
 const TimeChart = ({ chartData }) => (
   <div>
@@ -39,7 +39,7 @@ const TimeChart = ({ chartData }) => (
 );
 
 TimeChart.propTypes = {
-  chartData: chartDataType.isRequired,
+  chartData: chartDataType.isRequired
 };
 
 export default TimeChart;

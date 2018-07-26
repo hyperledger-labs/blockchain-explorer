@@ -23,11 +23,11 @@ describe('Charts', () => {
 
     const channel = 'mychannel';
 
-    test('blockPerHour', async (done) => {
+    test('blockPerHour', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/blocksByHour/${channel}/1`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.BLOCK_CHART_HOUR }];
@@ -39,7 +39,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('blockPerHour catch error', async (done) => {
+    test('blockPerHour catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/blocksByHour/${channel}/1`)
@@ -54,11 +54,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('blockPerMin', async (done) => {
+    test('blockPerMin', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/blocksByMinute/${channel}/1`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.BLOCK_CHART_MIN }];
@@ -70,7 +70,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('blockPerMin catch error', async (done) => {
+    test('blockPerMin catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/blocksByMinute/${channel}/1`)
@@ -85,11 +85,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('changeChannel', async (done) => {
+    test('changeChannel', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/changeChannel/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.CHANGE_CHANNEL }];
@@ -101,7 +101,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('changeChannel catch error', async (done) => {
+    test('changeChannel catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/changeChannel/${channel}`)
@@ -116,11 +116,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('channel', async (done) => {
+    test('channel', async done => {
       nock(/\w*(\W)/g)
         .get('/api/curChannel')
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.CHANNEL }];
@@ -132,7 +132,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('channel catch error', async (done) => {
+    test('channel catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get('/api/curChannel')
@@ -147,11 +147,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('channelList', async (done) => {
+    test('channelList', async done => {
       nock(/\w*(\W)/g)
         .get('/api/channels')
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.CHANNEL_LIST }];
@@ -163,7 +163,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('channelList catch error', async (done) => {
+    test('channelList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get('/api/channels')
@@ -178,11 +178,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('dashStats', async (done) => {
+    test('dashStats', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/status/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.DASHBOARD_STATS }];
@@ -194,7 +194,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('dashStats catch error', async (done) => {
+    test('dashStats catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/status/${channel}`)
@@ -218,11 +218,11 @@ describe('Charts', () => {
       expect(actions[0].type).toBe(types.NOTIFICATION_LOAD);
     });
 
-    test('peerStatus', async (done) => {
+    test('peerStatus', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/peersStatus/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.PEER_STATUS }];
@@ -234,7 +234,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('peerStatus catch error', async (done) => {
+    test('peerStatus catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/peersStatus/${channel}`)
@@ -249,11 +249,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionByOrg', async (done) => {
+    test('transactionByOrg', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/txByOrg/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_ORG }];
@@ -265,7 +265,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionByOrg catch error', async (done) => {
+    test('transactionByOrg catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByOrg/${channel}`)
@@ -280,11 +280,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionPerHour', async (done) => {
+    test('transactionPerHour', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/txByHour/${channel}/1`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_HOUR }];
@@ -296,7 +296,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionPerHour catch error', async (done) => {
+    test('transactionPerHour catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByHour/${channel}/1`)
@@ -311,11 +311,11 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionPerMin', async (done) => {
+    test('transactionPerMin', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/txByMinute/${channel}/1`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.TRANSACTION_CHART_MIN }];
@@ -327,7 +327,7 @@ describe('Charts', () => {
       done();
     });
 
-    test('transactionPerMin catch error', async (done) => {
+    test('transactionPerMin catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txByMinute/${channel}/1`)

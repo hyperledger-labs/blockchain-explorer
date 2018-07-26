@@ -14,19 +14,15 @@ const PeersHealth = ({ peerStatus }) => {
       Header: 'Peer Name',
       accessor: 'server_hostname',
       filterAll: false,
-      className: 'center-column',
+      className: 'center-column'
     },
     {
       Header: 'Status',
       accessor: 'status',
       filterAll: false,
       className: 'center-column',
-      Cell: row => (
-        <Badge color="success">
-          {row.value}
-        </Badge>
-      ),
-    },
+      Cell: row => <Badge color="success">{row.value}</Badge>
+    }
   ];
 
   return (
@@ -43,7 +39,7 @@ const PeersHealth = ({ peerStatus }) => {
 };
 
 PeersHealth.propTypes = {
-  peerStatus: peerStatusType.isRequired,
+  peerStatus: peerStatusType.isRequired
 };
 
 export default PeersHealth;

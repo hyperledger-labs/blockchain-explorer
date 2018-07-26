@@ -17,11 +17,11 @@ const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   avatarBlue: {
-    backgroundColor: '#1C3860',
-  },
+    backgroundColor: '#1C3860'
+  }
 });
 
 export class NotificationsPanel extends Component {
@@ -30,15 +30,13 @@ export class NotificationsPanel extends Component {
       case 'block':
         return (
           <Avatar className={classes.avatarBlue}>
-            <FontAwesome name="cube" />
-            {' '}
+            <FontAwesome name="cube" />{' '}
           </Avatar>
         );
       default:
         return (
           <Avatar>
-            <FontAwesome name="exclamation" />
-            {' '}
+            <FontAwesome name="exclamation" />{' '}
           </Avatar>
         );
     }
@@ -46,21 +44,19 @@ export class NotificationsPanel extends Component {
 
   render() {
     const { classes, notifications } = this.props;
-     if (notifications.length===0) {
+    if (notifications.length === 0) {
       return (
-
         <div className="notificationPanel">
           <div className={classes.root}>
             <List component="nav" className="notificationPanel">
               <ListItem button>
                 <Typography variant="title" className="notificationPanel">
-                    NO NOTIFICATIONS
+                  NO NOTIFICATIONS
                 </Typography>
               </ListItem>
             </List>
           </div>
         </div>
-
       );
     }
 
@@ -68,7 +64,7 @@ export class NotificationsPanel extends Component {
       <div className="notificationPanel">
         <div className={classes.root}>
           <List component="nav" className="notificationPanel">
-          {notifications.map((notify, index)  => (
+            {notifications.map((notify, index) => (
               <ListItem key={index} button className="notificationPanel">
                 {this.avatarIcon(notify.type, classes)}
                 <ListItemText
@@ -77,14 +73,18 @@ export class NotificationsPanel extends Component {
                   secondary={notify.message}
                 />
                 <Badge className="notificationTime">
-                  <Timeago className="notificationTime" date={notify.time} live={false} minPeriod={60} />
+                  <Timeago
+                    className="notificationTime"
+                    date={notify.time}
+                    live={false}
+                    minPeriod={60}
+                  />
                 </Badge>
               </ListItem>
             ))}
           </List>
         </div>
       </div>
-
     );
   }
 }

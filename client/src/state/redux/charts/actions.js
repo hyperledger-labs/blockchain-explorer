@@ -6,57 +6,57 @@ import types from './types';
 
 const getBlockPerHour = blockPerHour => ({
   type: types.BLOCK_CHART_HOUR,
-  payload: { blockPerHour },
+  payload: { blockPerHour }
 });
 
 const getBlockPerMin = blockPerMin => ({
   type: types.BLOCK_CHART_MIN,
-  payload: { blockPerMin },
+  payload: { blockPerMin }
 });
 
 const getChannel = channel => ({
   type: types.CHANNEL,
-  payload: { channel },
+  payload: { channel }
 });
 
 const getChannelList = channelList => ({
   type: types.CHANNEL_LIST,
-  payload: channelList,
+  payload: channelList
 });
 
 const getDashStats = dashStats => ({
   type: types.DASHBOARD_STATS,
-  payload: dashStats,
+  payload: dashStats
 });
 
 const getNotification = notification => ({
   type: types.NOTIFICATION_LOAD,
-  payload: { notification },
+  payload: { notification }
 });
 
 const getPeerStatus = peerStatus => ({
   type: types.PEER_STATUS,
-  payload: peerStatus,
+  payload: peerStatus
 });
 
 const getTransactionByOrg = transactionByOrg => ({
   type: types.TRANSACTION_CHART_ORG,
-  payload: transactionByOrg,
+  payload: transactionByOrg
 });
 
 const getTransactionPerHour = transactionPerHour => ({
   type: types.TRANSACTION_CHART_HOUR,
-  payload: { transactionPerHour },
+  payload: { transactionPerHour }
 });
 
 const getTransactionPerMin = transactionPerMin => ({
   type: types.TRANSACTION_CHART_MIN,
-  payload: { transactionPerMin },
+  payload: { transactionPerMin }
 });
 
 const updateChannel = channel => ({
   type: types.CHANGE_CHANNEL,
-  payload: { channel },
+  payload: { channel }
 });
 
 export default {
@@ -70,5 +70,5 @@ export default {
   getTransactionByOrg,
   getTransactionPerHour,
   getTransactionPerMin,
-  updateChannel,
+  updateChannel
 };

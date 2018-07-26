@@ -14,7 +14,7 @@ const blockPerHourReducer = (state = initialState, action) => {
       return {
         rows: action.payload.blockPerHour.rows,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -29,7 +29,7 @@ const blockPerMinReducer = (state = initialState, action) => {
       return {
         rows: action.payload.blockPerMin.rows,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -44,7 +44,7 @@ const channelListReducer = (state = initialState, action) => {
       return {
         list: action.payload.channels,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -95,7 +95,7 @@ const peerStatusReducer = (state = initialState, action) => {
       return {
         list: action.payload.peers,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -110,7 +110,7 @@ const transactionByOrgReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -125,7 +125,7 @@ const transactionPerHourReducer = (state = initialState, action) => {
       return {
         rows: action.payload.transactionPerHour.rows,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -140,7 +140,7 @@ const transactionPerMinReducer = (state = initialState, action) => {
       return {
         rows: action.payload.transactionPerMin.rows,
         loaded: true,
-        errors: action.errors,
+        errors: action.errors
       };
     }
     default: {
@@ -159,7 +159,7 @@ const reducer = combineReducers({
   peerStatus: peerStatusReducer,
   transactionByOrg: transactionByOrgReducer,
   transactionPerHour: transactionPerHourReducer,
-  transactionPerMin: transactionPerMinReducer,
+  transactionPerMin: transactionPerMinReducer
 });
 
 export default reducer;

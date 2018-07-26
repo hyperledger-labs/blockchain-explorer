@@ -12,7 +12,7 @@ export class FooterView extends Component {
     const { isLight } = this.state;
     const theme = !isLight;
     this.setState({ isLight: theme });
-  }
+  };
 
   render() {
     return (
@@ -21,10 +21,7 @@ export class FooterView extends Component {
           {'Hyperledger Explorer Client Version: '}
           {clientJson.version}
           &emsp;
-          {'Fabric Compatibility: '}
-          {' '}
-          {Version.map(version => version)
-          }
+          {'Fabric Compatibility: '} {Version.map(version => version)}
         </div>
       </div>
     );

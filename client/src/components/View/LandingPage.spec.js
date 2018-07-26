@@ -21,14 +21,14 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
-    updateLoadStatus: jest.fn(),
+    updateLoadStatus: jest.fn()
   };
 
   const wrapper = shallow(<LandingPage {...props} />);
 
   return {
     props,
-    wrapper,
+    wrapper
   };
 };
 
@@ -38,7 +38,7 @@ describe('LandingPage', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-/*   test('component receives new channel', () => {
+  /*   test('component receives new channel', () => {
     const { wrapper, props } = setup();
     const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: newChannel })
@@ -56,7 +56,7 @@ describe('LandingPage', () => {
     expect(props.getTransactionPerMin).toHaveBeenCalled();
   }) */
 
-/*   test('component receives the same channel', () => {
+  /*   test('component receives the same channel', () => {
     const { wrapper, props } = setup();
     wrapper.setProps({ channel: props.channel })
     expect(props.getBlockList).not.toHaveBeenCalled();

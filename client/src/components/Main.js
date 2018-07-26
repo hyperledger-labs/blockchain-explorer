@@ -24,7 +24,7 @@ import {
   peerStatusType,
   transactionType,
   transactionByOrgType,
-  transactionListType,
+  transactionListType
 } from './types';
 
 const {
@@ -32,7 +32,7 @@ const {
   channelListSelector,
   dashStatsSelector,
   peerStatusSelector,
-  transactionByOrgSelector,
+  transactionByOrgSelector
 } = chartSelectors;
 
 const {
@@ -41,10 +41,10 @@ const {
   channelsSelector,
   peerListSelector,
   transactionSelector,
-  transactionListSelector,
+  transactionListSelector
 } = tableSelectors;
 
-export const Main = (props) => {
+export const Main = props => {
   const {
     blockList,
     chaincodeList,
@@ -56,52 +56,71 @@ export const Main = (props) => {
     peerStatus,
     transaction,
     transactionByOrg,
-    transactionList,
+    transactionList
   } = props;
 
   const blocksViewProps = {
     blockList,
     currentChannel,
     getTransaction,
-    transaction,
+    transaction
   };
 
   const chaincodeViewProps = {
-    chaincodeList,
+    chaincodeList
   };
 
   const channelsViewProps = {
-    channels,
+    channels
   };
 
   const dashboardViewProps = {
     blockList,
     dashStats,
     peerStatus,
-    transactionByOrg,
+    transactionByOrg
   };
 
   const networkViewProps = {
-    peerList,
+    peerList
   };
 
   const transactionsViewProps = {
     currentChannel,
     transaction,
     transactionList,
-    getTransaction,
+    getTransaction
   };
 
   return (
     <Router>
       <div className="App">
         <Switch>
-          <Route exact path="/" render={() => <DashboardView {...dashboardViewProps} />} />
-          <Route path="/blocks" render={() => <BlocksView {...blocksViewProps} />} />
-          <Route path="/chaincodes" render={() => <ChaincodeView {...chaincodeViewProps} />} />
-          <Route path="/channels" render={() => <ChannelsView {...channelsViewProps} />} />
-          <Route path="/network" render={() => <NetworkView {...networkViewProps} />} />
-          <Route path="/transactions" render={() => <TransactionsView {...transactionsViewProps} />} />
+          <Route
+            exact
+            path="/"
+            render={() => <DashboardView {...dashboardViewProps} />}
+          />
+          <Route
+            path="/blocks"
+            render={() => <BlocksView {...blocksViewProps} />}
+          />
+          <Route
+            path="/chaincodes"
+            render={() => <ChaincodeView {...chaincodeViewProps} />}
+          />
+          <Route
+            path="/channels"
+            render={() => <ChannelsView {...channelsViewProps} />}
+          />
+          <Route
+            path="/network"
+            render={() => <NetworkView {...networkViewProps} />}
+          />
+          <Route
+            path="/transactions"
+            render={() => <TransactionsView {...transactionsViewProps} />}
+          />
         </Switch>
       </div>
     </Router>
@@ -119,21 +138,24 @@ Main.propTypes = {
   peerStatus: peerStatusType.isRequired,
   transaction: transactionType.isRequired,
   transactionByOrg: transactionByOrgType.isRequired,
-  transactionList: transactionListType.isRequired,
+  transactionList: transactionListType.isRequired
 };
 
-export default connect(state => ({
-  blockList: blockListSelector(state),
-  chaincodeList: chaincodeListSelector(state),
-  channelList: channelListSelector(state),
-  channels: channelsSelector(state),
-  currentChannel: currentChannelSelector(state),
-  dashStats: dashStatsSelector(state),
-  peerList: peerListSelector(state),
-  peerStatus: peerStatusSelector(state),
-  transaction: transactionSelector(state),
-  transactionByOrg: transactionByOrgSelector(state),
-  transactionList: transactionListSelector(state),
-}), {
-  getTransaction: tableOperations.transaction,
-})(Main);
+export default connect(
+  state => ({
+    blockList: blockListSelector(state),
+    chaincodeList: chaincodeListSelector(state),
+    channelList: channelListSelector(state),
+    channels: channelsSelector(state),
+    currentChannel: currentChannelSelector(state),
+    dashStats: dashStatsSelector(state),
+    peerList: peerListSelector(state),
+    peerStatus: peerStatusSelector(state),
+    transaction: transactionSelector(state),
+    transactionByOrg: transactionByOrgSelector(state),
+    transactionList: transactionListSelector(state)
+  }),
+  {
+    getTransaction: tableOperations.transaction
+  }
+)(Main);

@@ -22,17 +22,17 @@ const muiTheme = createMuiTheme({
     primary: indigo,
     secondary: lightBlue,
     error: {
-      main: red[500],
+      main: red[500]
     },
-    toggleClass: true,
-  },
+    toggleClass: true
+  }
 });
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
+      loading: true
     };
   }
 
@@ -51,9 +51,9 @@ class App extends Component {
 
   updateLoadStatus = () => {
     this.setState({ loading: false });
-  }
+  };
 
-  refreshComponent = (val) => {
+  refreshComponent = val => {
     this.setState({ toggleClass: val }, () => {
       const { toggleClass } = this.state;
       toggleClass
@@ -68,11 +68,7 @@ class App extends Component {
   render() {
     const { loading } = this.state;
     if (loading) {
-      return (
-        <LandingPage
-          updateLoadStatus={this.updateLoadStatus}
-        />
-      );
+      return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
     }
 
     return (

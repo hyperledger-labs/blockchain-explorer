@@ -23,11 +23,11 @@ describe('Tables', () => {
 
     const channel = 'mychannel';
 
-    test('blockList', async (done) => {
+    test('blockList', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/blockAndTxList/${channel}/0`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.BLOCK_LIST }];
@@ -40,7 +40,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('blockList catch error', async (done) => {
+    test('blockList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/blockAndTxList/${channel}/0`)
@@ -56,11 +56,11 @@ describe('Tables', () => {
       done();
     });
 
-    test('chaincodeList', async (done) => {
+    test('chaincodeList', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/chaincode/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.CHAINCODE_LIST }];
@@ -73,7 +73,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('chaincodeList catch error', async (done) => {
+    test('chaincodeList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/chaincode/${channel}`)
@@ -89,11 +89,11 @@ describe('Tables', () => {
       done();
     });
 
-    test('channels', async (done) => {
+    test('channels', async done => {
       nock(/\w*(\W)/g)
         .get('/api/channels/info')
         .reply(200, {
-          channels: [{ test: 'rows' }],
+          channels: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.CHANNELS }];
@@ -106,7 +106,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('channels catch error', async (done) => {
+    test('channels catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get('/api/channels/info')
@@ -122,11 +122,11 @@ describe('Tables', () => {
       done();
     });
 
-    test('peerList', async (done) => {
+    test('peerList', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/peers/${channel}`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.PEER_LIST }];
@@ -139,7 +139,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('peerList catch error', async (done) => {
+    test('peerList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/peers/${channel}`)
@@ -155,11 +155,11 @@ describe('Tables', () => {
       done();
     });
 
-    test('transaction', async (done) => {
+    test('transaction', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/transaction/${channel}/1`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.TRANSACTION }];
@@ -172,7 +172,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('transaction catch error', async (done) => {
+    test('transaction catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/transaction/${channel}/1`)
@@ -188,11 +188,11 @@ describe('Tables', () => {
       done();
     });
 
-    test('transactionList', async (done) => {
+    test('transactionList', async done => {
       nock(/\w*(\W)/g)
         .get(`/api/txList/${channel}/0/0/`)
         .reply(200, {
-          rows: [{ test: 'rows' }],
+          rows: [{ test: 'rows' }]
         });
 
       const expectedActions = [{ type: types.TRANSACTION_LIST }];
@@ -205,7 +205,7 @@ describe('Tables', () => {
       done();
     });
 
-    test('transactionList catch error', async (done) => {
+    test('transactionList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
         .get(`/api/txList/${channel}/0/0/`)

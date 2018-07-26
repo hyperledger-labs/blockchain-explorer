@@ -19,16 +19,16 @@ class TimelineStream extends Component {
     super(props);
     this.state = {
       dialogOpenBlockHash: false,
-      blockHash: {},
+      blockHash: {}
     };
   }
 
-  handleDialogOpenBlockHash = (rowValue) => {
+  handleDialogOpenBlockHash = rowValue => {
     const { blockList } = this.props;
     const data = find(blockList, item => item.blockhash === rowValue);
     this.setState({
       dialogOpenBlockHash: true,
-      blockHash: data,
+      blockHash: data
     });
   };
 
@@ -55,39 +55,31 @@ class TimelineStream extends Component {
                 style={{ width: '65%' }}
                 cardHeaderStyle={{
                   backgroundColor: '#6283D0',
-                  fontSize: '13pt',
+                  fontSize: '13pt'
                 }}
                 contentStyle={{
-                  backgroundColor: 'transparent',
+                  backgroundColor: 'transparent'
                 }}
-                buttons={(
+                buttons={
                   <a
                     className="blockLink"
                     href="#/"
-                    onClick={() => this.handleDialogOpenBlockHash(item.blockhash)}
+                    onClick={() =>
+                      this.handleDialogOpenBlockHash(item.blockhash)
+                    }
                   >
                     <img
                       src={blockOpen}
                       alt="View Blocks"
                       className="blockOpen"
                     />
-                  </a>)}
+                  </a>
+                }
               >
                 <Typography variant="body1">
-                  <b className="timeLineText">
-                    {' '}
-                    Datahash:
-                  </b>
-                  {' '}
-                  {item.datahash}
-                  {' '}
+                  <b className="timeLineText"> Datahash:</b> {item.datahash}{' '}
                   <br />
-                  <b className="timeLineText">
-                    {' '}
-                    Number of Tx:
-                  </b>
-                  {' '}
-                  {item.txcount}
+                  <b className="timeLineText"> Number of Tx:</b> {item.txcount}
                 </Typography>
                 <h5 className="timeLineText">
                   <Badge className="timeLineText">
@@ -122,7 +114,7 @@ class TimelineStream extends Component {
 
 TimelineStream.propTypes = {
   blockList: blockListType.isRequired,
-  notifications: notificationsType.isRequired,
+  notifications: notificationsType.isRequired
 };
 
 export default TimelineStream;

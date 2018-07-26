@@ -8,12 +8,7 @@ import FontAwesome from 'react-fontawesome';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Typography from '@material-ui/core/Typography';
 import moment from 'moment-timezone';
-import {
-  Table,
-  Card,
-  CardBody,
-  CardTitle,
-} from 'reactstrap';
+import { Table, Card, CardBody, CardTitle } from 'reactstrap';
 import { transactionType } from '../types';
 import JSONTree from 'react-json-tree';
 
@@ -58,14 +53,14 @@ const styles = () => ({
   root: {
     flexGrow: 1,
     paddingTop: 42,
-    position: 'relative',
-  },
+    position: 'relative'
+  }
 });
 const reads = {
-  color: '#2AA233',
+  color: '#2AA233'
 };
 const writes = {
-  color: '#DD8016',
+  color: '#DD8016'
 };
 
 export class TransactionView extends Component {
@@ -88,9 +83,12 @@ export class TransactionView extends Component {
           <div>
             <CardTitle className="dialogTitle">
               <FontAwesome name="list-alt" className="listIcon" />
-              Transaction
-              Details
-              <button type="button" onClick={this.handleClose} className="closeBtn">
+              Transaction Details
+              <button
+                type="button"
+                onClick={this.handleClose}
+                className="closeBtn"
+              >
                 <FontAwesome name="close" />
               </button>
             </CardTitle>
@@ -105,16 +103,20 @@ export class TransactionView extends Component {
           </div>
         </div>
       );
-    } if (transaction) {
+    }
+    if (transaction) {
       return (
         <div className={toggleClass ? 'dark-theme' : ''}>
           <div className="dialog">
             <Card>
               <CardTitle className="dialogTitle">
                 <FontAwesome name="list-alt" className="listIcon" />
-                Transaction
-                Details
-                <button type="button" onClick={this.handleClose} className="closeBtn">
+                Transaction Details
+                <button
+                  type="button"
+                  onClick={this.handleClose}
+                  className="closeBtn"
+                >
                   <FontAwesome name="close" />
                 </button>
               </CardTitle>
@@ -122,18 +124,12 @@ export class TransactionView extends Component {
                 <Table striped hover responsive className="table-striped">
                   <tbody>
                     <tr>
-                      <th>
-                        Transaction ID:
-                      </th>
+                      <th>Transaction ID:</th>
                       <td>
                         {transaction.txhash}
                         <button type="button" className="copyBtn">
-                          <div className="copyMessage">
-                            Copy
-                          </div>
-                          <div className="copiedMessage">
-                            Copied
-                          </div>
+                          <div className="copyMessage">Copy</div>
+                          <div className="copiedMessage">Copied</div>
                           <CopyToClipboard text={transaction.txhash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -141,57 +137,31 @@ export class TransactionView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <th>
-                        Validation Code:
-                      </th>
-                      <td>
-                        {transaction.validation_code}
-                      </td>
+                      <th>Validation Code:</th>
+                      <td>{transaction.validation_code}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Payload Proposal Hash:
-                      </th>
-                      <td>
-                        {transaction.payload_proposal_hash}
-                      </td>
+                      <th>Payload Proposal Hash:</th>
+                      <td>{transaction.payload_proposal_hash}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Creator MSP:
-                      </th>
-                      <td>
-                        {transaction.creator_msp_id}
-                      </td>
+                      <th>Creator MSP:</th>
+                      <td>{transaction.creator_msp_id}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Endoser:
-                      </th>
-                      <td>
-                        {transaction.endorser_msp_id}
-                      </td>
+                      <th>Endoser:</th>
+                      <td>{transaction.endorser_msp_id}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Chaincode Name:
-                      </th>
-                      <td>
-                        {transaction.chaincodename}
-                      </td>
+                      <th>Chaincode Name:</th>
+                      <td>{transaction.chaincodename}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Type:
-                      </th>
-                      <td>
-                        {transaction.type}
-                      </td>
+                      <th>Type:</th>
+                      <td>{transaction.type}</td>
                     </tr>
                     <tr>
-                      <th>
-                        Time:
-                      </th>
+                      <th>Time:</th>
                       <td>
                         {moment(transaction.createdt)
                           .tz(moment.tz.guess())
@@ -199,19 +169,23 @@ export class TransactionView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <th style={reads}>
-                        Reads:
-                      </th>
+                      <th style={reads}>Reads:</th>
                       <td>
-                        <JSONTree data={transaction.read_set} theme={readTheme} invertTheme={false}/>
+                        <JSONTree
+                          data={transaction.read_set}
+                          theme={readTheme}
+                          invertTheme={false}
+                        />
                       </td>
                     </tr>
                     <tr>
-                      <th style={writes}>
-                        Writes:
-                      </th>
+                      <th style={writes}>Writes:</th>
                       <td>
-                      <JSONTree data={transaction.write_set} theme={writeTheme} invertTheme={false}/>
+                        <JSONTree
+                          data={transaction.write_set}
+                          theme={writeTheme}
+                          invertTheme={false}
+                        />
                       </td>
                     </tr>
                   </tbody>
@@ -226,8 +200,7 @@ export class TransactionView extends Component {
       <div className={toggleClass ? 'dark-theme' : ''}>
         <CardTitle className="dialogTitle">
           <FontAwesome name="list-alt" className="listIcon" />
-          Transaction
-          Details
+          Transaction Details
           <button type="button" onClick={this.handleClose} className="closeBtn">
             <FontAwesome name="close" />
           </button>
@@ -246,11 +219,11 @@ export class TransactionView extends Component {
 }
 
 TransactionView.propTypes = {
-  transaction: transactionType,
+  transaction: transactionType
 };
 
 TransactionView.defaultProps = {
-  transaction: null,
+  transaction: null
 };
 
 export default withStyles(styles)(TransactionView);

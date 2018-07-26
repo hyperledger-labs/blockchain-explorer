@@ -1,89 +1,94 @@
 {
-    "network-configs": {
-        "network-1": {
-            "version": "1.0",
-            "client": {
-                "organization": "Org1MSP",
-                "channel": "mychannel",
-                "credentialStore": {
-                    "path": "./tmp/credentialStore_Org1/credential",
-                    "cryptoStore": {
-                        "path": "./tmp/credentialStore_Org1/crypto"
-                    }
-                }
-            },
-            "channels": {
-                "mychannel": {
-                    "peers": {
-                        "peer0.org1.example.com:7051": {}
-                    },
-                    "connection": {
-                        "timeout": {
-                            "peer": {
-                                "endorser": "6000",
-                                "eventHub": "6000",
-                                "eventReg": "6000"
-                            }
-                        }
-                    }
-                }
-            },
-            "organizations": {
-                "Org1MSP": {
-                    "mspid": "Org1MSP",
-                    "fullpath":false,
-                    "adminPrivateKey": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
-                    },
-                    "signedCert": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
-                    }
-                },
-                "Org2MSP": {
-                    "mspid": "Org2MSP",
-                    "adminPrivateKey": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
-                    }
-                },
-                "OrdererMSP": {
-                    "mspid": "OrdererMSP",
-                    "adminPrivateKey": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
-                    }
-                }
-            },
-            "peers": {
-                "peer0.org1.example.com:7051": {
-                    "tlsCACerts": {
-                        "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
-                    },
-                    "url": "grpcs://localhost:7051",
-                    "eventUrl": "grpcs://localhost:7053",
-                    "grpcOptions": {
-                        "ssl-target-name-override": "peer0.org1.example.com"
-                    }
-                },
-                "peer1.org1.example.com:7051": {
-                    "url": "grpcs://localhost:8051"
-                },
-                "peer0.org2.example.com:7051": {
-                    "url": "grpcs://localhost:9051"
-                },
-                "peer1.org2.example.com:7051": {
-                    "url": "grpcs://localhost:10051"
-                }
-            },
-            "orderers": {
-                "orderer.example.com:7050": {
-                    "url": "grpcs://localhost:7050"
-                }
+  "network-configs": {
+    "network-1": {
+      "version": "1.0",
+      "client": {
+        "organization": "Org1MSP",
+        "channel": "mychannel",
+        "credentialStore": {
+          "path": "./tmp/credentialStore_Org1/credential",
+          "cryptoStore": {
+            "path": "./tmp/credentialStore_Org1/crypto"
+          }
+        }
+      },
+      "channels": {
+        "mychannel": {
+          "peers": {
+            "peer0.org1.example.com:7051": {}
+          },
+          "connection": {
+            "timeout": {
+              "peer": {
+                "endorser": "6000",
+                "eventHub": "6000",
+                "eventReg": "6000"
+              }
             }
+          }
+        }
+      },
+      "organizations": {
+        "Org1MSP": {
+          "mspid": "Org1MSP",
+          "fullpath": false,
+          "adminPrivateKey": {
+            "path":
+              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+          },
+          "signedCert": {
+            "path":
+              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+          }
         },
-        "network-2": {}
+        "Org2MSP": {
+          "mspid": "Org2MSP",
+          "adminPrivateKey": {
+            "path":
+              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+          }
+        },
+        "OrdererMSP": {
+          "mspid": "OrdererMSP",
+          "adminPrivateKey": {
+            "path":
+              "fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+          }
+        }
+      },
+      "peers": {
+        "peer0.org1.example.com:7051": {
+          "tlsCACerts": {
+            "path":
+              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+          },
+          "url": "grpcs://localhost:7051",
+          "eventUrl": "grpcs://localhost:7053",
+          "grpcOptions": {
+            "ssl-target-name-override": "peer0.org1.example.com"
+          }
+        },
+        "peer1.org1.example.com:7051": {
+          "url": "grpcs://localhost:8051"
+        },
+        "peer0.org2.example.com:7051": {
+          "url": "grpcs://localhost:9051"
+        },
+        "peer1.org2.example.com:7051": {
+          "url": "grpcs://localhost:10051"
+        }
+      },
+      "orderers": {
+        "orderer.example.com:7050": {
+          "url": "grpcs://localhost:7050"
+        }
+      }
     },
-    "keyValueStore": "/tmp/fabric-client-kvs",
-    "configtxgenToolPath": "fabric-path/fabric-samples/bin",
-    "eventWaitTime": "30000",
-    "synchBlocksTime": "3",
-    "license": "Apache-2.0"
+    "network-2": {}
+  },
+  "keyValueStore": "/tmp/fabric-client-kvs",
+  "configtxgenToolPath": "fabric-path/fabric-samples/bin",
+  "eventWaitTime": "30000",
+  "synchBlocksTime": "3",
+  "license": "Apache-2.0"
 }

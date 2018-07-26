@@ -23,9 +23,8 @@ import {
   getTransactionByOrgType,
   getTransactionListType,
   getTransactionPerHourType,
-  getTransactionPerMinType,
+  getTransactionPerMinType
 } from '../types';
-
 
 const {
   blockPerHour,
@@ -36,7 +35,7 @@ const {
   peerStatus,
   transactionByOrg,
   transactionPerHour,
-  transactionPerMin,
+  transactionPerMin
 } = chartOperations;
 
 const {
@@ -44,7 +43,7 @@ const {
   chaincodeList,
   channels,
   peerList,
-  transactionList,
+  transactionList
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
@@ -62,13 +61,13 @@ export class LandingPage extends Component {
         accessibility: false,
         speed: 500,
         slidesToShow: 1,
-        slidesToScroll: 1,
+        slidesToScroll: 1
       },
       logoStyle: {
         width: '520px',
-        height: '100px',
+        height: '100px'
       },
-      hasDbError: false,
+      hasDbError: false
     };
   }
 
@@ -88,7 +87,7 @@ export class LandingPage extends Component {
       getTransactionList,
       getTransactionPerHour,
       getTransactionPerMin,
-      updateLoadStatus,
+      updateLoadStatus
     } = this.props;
     await getChannel();
     const { currentChannel } = this.props;
@@ -110,7 +109,7 @@ export class LandingPage extends Component {
       getTransactionByOrg(currentChannel),
       getTransactionList(currentChannel),
       getTransactionPerHour(currentChannel),
-      getTransactionPerMin(currentChannel),
+      getTransactionPerMin(currentChannel)
     ]);
     clearTimeout(promiseTimeout);
     updateLoadStatus();
@@ -120,13 +119,15 @@ export class LandingPage extends Component {
     const { hasDbError, logoStyle, settings } = this.state;
     if (hasDbError) {
       return (
-        <div style={{
-          height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',
-        }}
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
         >
-          <h1>
-            Error: One or more components failed to render.
-          </h1>
+          <h1>Error: One or more components failed to render.</h1>
         </div>
       );
     }
@@ -136,19 +137,13 @@ export class LandingPage extends Component {
           <img src={Logo} style={logoStyle} alt="Hyperledger Logo" />
           <Slider {...settings}>
             <div>
-              <h3>
-                ACCESSING THE NETWORK
-              </h3>
+              <h3>ACCESSING THE NETWORK</h3>
             </div>
             <div>
-              <h3>
-                CONNECTING TO CHANNEL
-              </h3>
+              <h3>CONNECTING TO CHANNEL</h3>
             </div>
             <div>
-              <h3>
-                LOADING BLOCKS
-              </h3>
+              <h3>LOADING BLOCKS</h3>
             </div>
           </Slider>
         </div>
@@ -172,29 +167,31 @@ LandingPage.propTypes = {
   getTransactionByOrg: getTransactionByOrgType.isRequired,
   getTransactionList: getTransactionListType.isRequired,
   getTransactionPerHour: getTransactionPerHourType.isRequired,
-  getTransactionPerMin: getTransactionPerMinType.isRequired,
-
+  getTransactionPerMin: getTransactionPerMinType.isRequired
 };
 
 LandingPage.defaultProps = {
-  currentChannel: null,
+  currentChannel: null
 };
 
-export default connect(state => ({
-  currentChannel: currentChannelSelector(state),
-}), {
-  getBlockList: blockList,
-  getBlocksPerHour: blockPerHour,
-  getBlocksPerMin: blockPerMin,
-  getChaincodeList: chaincodeList,
-  getChannelList: channelList,
-  getChannel: channel,
-  getChannels: channels,
-  getDashStats: dashStats,
-  getPeerList: peerList,
-  getPeerStatus: peerStatus,
-  getTransactionByOrg: transactionByOrg,
-  getTransactionList: transactionList,
-  getTransactionPerHour: transactionPerHour,
-  getTransactionPerMin: transactionPerMin,
-})(LandingPage);
+export default connect(
+  state => ({
+    currentChannel: currentChannelSelector(state)
+  }),
+  {
+    getBlockList: blockList,
+    getBlocksPerHour: blockPerHour,
+    getBlocksPerMin: blockPerMin,
+    getChaincodeList: chaincodeList,
+    getChannelList: channelList,
+    getChannel: channel,
+    getChannels: channels,
+    getDashStats: dashStats,
+    getPeerList: peerList,
+    getPeerStatus: peerStatus,
+    getTransactionByOrg: transactionByOrg,
+    getTransactionList: transactionList,
+    getTransactionPerHour: transactionPerHour,
+    getTransactionPerMin: transactionPerMin
+  }
+)(LandingPage);

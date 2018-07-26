@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-const namespaces = 'tables'
+const namespaces = 'tables';
 
 const BLOCK_LIST = `${namespaces}/BLOCK_LIST`;
 const CHAINCODE_LIST = `${namespaces}/CHAINCODE_LIST`;
@@ -18,4 +18,4 @@ export default {
   PEER_LIST,
   TRANSACTION,
   TRANSACTION_LIST
-}
+};

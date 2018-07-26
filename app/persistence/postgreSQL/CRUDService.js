@@ -3,177 +3,205 @@
  */
 
 var sql = require('./db/pgservice.js');
-var helper = require('../../helper.js')
+var helper = require('../../helper.js');
 var fs = require('fs');
 var path = require('path');
 var logger = helper.getLogger('blockscanner');
 
 class CRUDService {
+  constructor() {}
 
-    constructor() {
+  getTxCountByBlockNum(channel_genesis_hash, blockNum) {
+    return sql.getRowByPkOne(
+      `select blocknum ,txcount from blocks where channel_genesis_hash='${channel_genesis_hash}' and blocknum=${blockNum} `
+    );
+  }
 
-    }
-
-
-    getTxCountByBlockNum(channel_genesis_hash, blockNum) {
-        return sql.getRowByPkOne(`select blocknum ,txcount from blocks where channel_genesis_hash='${channel_genesis_hash}' and blocknum=${blockNum} `);
-    }
-
-    getTransactionByID(channel_genesis_hash, txhash) {
-        let sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,
+  getTransactionByID(channel_genesis_hash, txhash) {
+    let sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,
         t.write_set,channel.name as channelName from TRANSACTIONS as t inner join channel on t.channel_genesis_hash=channel.genesis_block_hash where t.txhash = '${txhash}' `;
-        return sql.getRowByPkOne(sqlTxById);
-    }
+    return sql.getRowByPkOne(sqlTxById);
+  }
 
-    getTxList(channel_genesis_hash, blockNum, txid) {
-        let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
+  getTxList(channel_genesis_hash, blockNum, txid) {
+    let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
          inner join channel on t.channel_genesis_hash=channel.genesis_block_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and
         t.channel_genesis_hash = '${channel_genesis_hash}'  order by  t.id desc`;
-        return sql.getRowsBySQlQuery(sqlTxList);
+    return sql.getRowsBySQlQuery(sqlTxList);
+  }
 
-    }
-
-    getBlockAndTxList(channel_genesis_hash, blockNum) {
-
-        let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+  getBlockAndTxList(channel_genesis_hash, blockNum) {
+    let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
         SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and channel_genesis_hash = '${channel_genesis_hash}' group by transactions.blockid ),
         channel.name as channelName  from blocks inner join channel on blocks.channel_genesis_hash =channel.genesis_block_hash  where
          blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= ${blockNum}
          order by blocks.blocknum desc`;
-        return sql.getRowsBySQlQuery(sqlBlockTxList);
+    return sql.getRowsBySQlQuery(sqlBlockTxList);
+  }
+
+  async getChannelConfig(channel_genesis_hash) {
+    let channelConfig = await sql.getRowsBySQlCase(
+      ` select * from channel where genesis_block_hash ='${channel_genesis_hash}' `
+    );
+    return channelConfig;
+  }
+
+  async saveChannelRow(artifacts) {
+    var channelTxArtifacts = fs.readFileSync(artifacts.channelTxPath);
+    var channelConfig = fs.readFileSync(artifacts.channelConfigPath);
+    try {
+      let insert = await sql.saveRow('channel', {
+        name: artifacts.channelName,
+        channel_hash: artifacts.channelHash,
+        channel_config: channelConfig,
+        channel_tx: channelTxArtifacts,
+        createdt: new Date()
+      });
+
+      let resp = {
+        success: true,
+        message: 'Channel ' + artifacts.channelName + ' saved'
+      };
+
+      return resp;
+    } catch (err) {
+      let resp = {
+        success: false,
+        message:
+          'Faile to save channel ' + artifacts.channelName + ' in database '
+      };
+      return resp;
+    }
+  }
+
+  async saveBlock(block) {
+    let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${
+      block.blockNum
+    }' and txcount='${block.txCount}'
+        and channel_genesis_hash='${block.channel_genesis_hash}' and prehash='${
+      block.preHash
+    }' and datahash='${block.dataHash}' `);
+    if (c.c == 0) {
+      await sql.saveRow('blocks', {
+        blocknum: block.blockNum,
+        prehash: block.preHash,
+        datahash: block.dataHash,
+        blockhash: block.blockhash,
+        txcount: block.txCount,
+        channel_genesis_hash: block.channel_genesis_hash,
+        createdt: new Date(block.firstTxTimestamp)
+      });
+
+      return true;
     }
 
-    async getChannelConfig(channel_genesis_hash) {
-        let channelConfig = await sql.getRowsBySQlCase(` select * from channel where genesis_block_hash ='${channel_genesis_hash}' `);
-        return channelConfig;
+    return false;
+  }
+
+  async saveTransaction(transaction) {
+    await sql.saveRow('transactions', transaction);
+    await sql.updateBySql(
+      `update chaincodes set txcount =txcount+1 where name = '${
+        transaction.chaincodename
+      }' and channel_genesis_hash='${transaction.channel_genesis_hash}'`
+    );
+  }
+
+  async getCurBlockNum(channel_genesis_hash) {
+    try {
+      var row = await sql.getRowsBySQlCase(
+        `select max(blocknum) as blocknum from blocks  where channel_genesis_hash='${channel_genesis_hash}'`
+      );
+    } catch (err) {
+      logger.error(err);
+      return -1;
     }
 
-    async saveChannelRow(artifacts) {
-        var channelTxArtifacts = fs.readFileSync(artifacts.channelTxPath);
-        var channelConfig = fs.readFileSync(artifacts.channelConfigPath);
-        try {
+    let curBlockNum;
 
-            let insert = await sql.saveRow('channel', {
-                'name': artifacts.channelName,
-                'channel_hash': artifacts.channelHash,
-                'channel_config': channelConfig,
-                'channel_tx': channelTxArtifacts,
-                'createdt': new Date()
-            });
-
-            let resp = {
-                success: true,
-                message: 'Channel ' + artifacts.channelName + " saved"
-            };
-
-            return resp;
-        } catch (err) {
-            let resp = {
-                success: false,
-                message: 'Faile to save channel ' + artifacts.channelName + " in database "
-            };
-            return resp;
-        }
-
+    if (row == null || row.blocknum == null) {
+      curBlockNum = -1;
+    } else {
+      curBlockNum = parseInt(row.blocknum);
     }
 
-    async saveBlock(block) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from blocks where blocknum='${block.blockNum}' and txcount='${block.txCount}'
-        and channel_genesis_hash='${block.channel_genesis_hash}' and prehash='${block.preHash}' and datahash='${block.dataHash}' `)
-        if (c.c == 0) {
-            await sql.saveRow('blocks', {
-                'blocknum': block.blockNum,
-                'prehash': block.preHash,
-                'datahash': block.dataHash,
-                'blockhash': block.blockhash,
-                'txcount': block.txCount,
-                'channel_genesis_hash': block.channel_genesis_hash,
-                'createdt': new Date(block.firstTxTimestamp)
-            });
+    return curBlockNum;
+  }
 
-            return true;
-        }
-
-        return false;
+  // ====================chaincodes=====================================
+  async saveChaincode(chaincode) {
+    let c = await sql.getRowByPkOne(
+      `select count(1) as c from chaincodes where name='${
+        chaincode.name
+      }' and channel_genesis_hash='${
+        chaincode.channel_genesis_hash
+      }' and version='${chaincode.version}' and path='${chaincode.path}'`
+    );
+    if (c.c == 0) {
+      await sql.saveRow('chaincodes', chaincode);
     }
+  }
 
-    async saveTransaction(transaction) {
-        await sql.saveRow('transactions', transaction);
-        await sql.updateBySql(`update chaincodes set txcount =txcount+1 where name = '${transaction.chaincodename}' and channel_genesis_hash='${transaction.channel_genesis_hash}'`);
+  getChannelByGenesisBlockHash(channel_genesis_hash) {
+    return sql.getRowByPkOne(
+      `select name from channel where genesis_block_hash='${channel_genesis_hash}'`
+    );
+  }
+
+  async saveChannel(channel) {
+    let c = await sql.getRowByPkOne(
+      `select count(1) as c from channel where name='${
+        channel.name
+      }' and genesis_block_hash='${channel.genesis_block_hash}'`
+    );
+    if (c.c == 0) {
+      await sql.saveRow('channel', {
+        name: channel.name,
+        createdt: channel.createdt,
+        blocks: channel.blocks,
+        trans: channel.trans,
+        channel_hash: channel.channel_hash,
+        genesis_block_hash: channel.genesis_block_hash
+      });
+    } else {
+      await sql.updateBySql(
+        `update channel set blocks='${channel.blocks}',trans='${
+          channel.trans
+        }',channel_hash='${channel.channel_hash}' where name='${
+          channel.name
+        }'and genesis_block_hash='${channel.genesis_block_hash}'`
+      );
     }
+  }
 
-
-    async getCurBlockNum(channel_genesis_hash) {
-        try {
-            var row = await sql.getRowsBySQlCase(`select max(blocknum) as blocknum from blocks  where channel_genesis_hash='${channel_genesis_hash}'`);
-
-        } catch (err) {
-            logger.error(err)
-            return -1;
-        }
-
-        let curBlockNum
-
-        if (row == null || row.blocknum == null) {
-            curBlockNum = -1
-        } else {
-            curBlockNum = parseInt(row.blocknum)
-        }
-
-        return curBlockNum
+  async savePeer(peer) {
+    let c = await sql.getRowByPkOne(
+      `select count(1) as c from peer where channel_genesis_hash='${
+        peer.channel_genesis_hash
+      }' and requests='${peer.requests}' `
+    );
+    if (c.c == 0) {
+      await sql.saveRow('peer', peer);
     }
+  }
 
-    // ====================chaincodes=====================================
-    async saveChaincode(chaincode) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from chaincodes where name='${chaincode.name}' and channel_genesis_hash='${chaincode.channel_genesis_hash}' and version='${chaincode.version}' and path='${chaincode.path}'`)
-        if (c.c == 0) {
-            await sql.saveRow('chaincodes', chaincode)
-        }
-    }
-
-    getChannelByGenesisBlockHash(channel_genesis_hash) {
-        return sql.getRowByPkOne(`select name from channel where genesis_block_hash='${channel_genesis_hash}'`);
-    }
-
-
-    async saveChannel(channel) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from channel where name='${channel.name}' and genesis_block_hash='${channel.genesis_block_hash}'`)
-        if (c.c == 0) {
-            await sql.saveRow('channel', {
-                "name": channel.name,
-                "createdt": channel.createdt,
-                "blocks": channel.blocks,
-                "trans": channel.trans,
-                "channel_hash": channel.channel_hash,
-                "genesis_block_hash":channel.genesis_block_hash
-            })
-        } else {
-            await sql.updateBySql(`update channel set blocks='${channel.blocks}',trans='${channel.trans}',channel_hash='${channel.channel_hash}' where name='${channel.name}'and genesis_block_hash='${channel.genesis_block_hash}'`)
-        }
-    }
-
-    async savePeer(peer) {
-        let c = await sql.getRowByPkOne(`select count(1) as c from peer where channel_genesis_hash='${peer.channel_genesis_hash}' and requests='${peer.requests}' `)
-        if (c.c == 0) {
-            await sql.saveRow('peer', peer)
-        }
-    }
-
-    async getChannelsInfo() {
-        var channels = await sql.getRowsBySQlNoCondtion(` select c.id as id,c.name as channelName,c.blocks as blocks ,c.genesis_block_hash as genesis_block_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c
+  async getChannelsInfo() {
+    var channels = await sql.getRowsBySQlNoCondtion(` select c.id as id,c.name as channelName,c.blocks as blocks ,c.genesis_block_hash as genesis_block_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c
         group by c.id ,c.name ,c.blocks  ,c.trans ,c.createdt ,c.channel_hash,c.genesis_block_hash order by c.name `);
 
-        return channels
-      }
+    return channels;
+  }
 
-    // ====================Orderer BE-303=====================================
-    async saveOrderer(orderer) {
-            let c = await sql.getRowByPkOne(`select count(1) as c from orderer where requests='${orderer.requests}' `)
-            if (c.c == 0) {
-                await sql.saveRow('orderer', orderer)
-        }
+  // ====================Orderer BE-303=====================================
+  async saveOrderer(orderer) {
+    let c = await sql.getRowByPkOne(
+      `select count(1) as c from orderer where requests='${orderer.requests}' `
+    );
+    if (c.c == 0) {
+      await sql.saveRow('orderer', orderer);
     }
-    // ====================Orderer BE-303=====================================
-    }
+  }
+  // ====================Orderer BE-303=====================================
+}
 
 module.exports = CRUDService;

@@ -13,36 +13,36 @@ import {
   getTransactionInfoType,
   getTransactionListType,
   transactionType,
-  transactionListType,
+  transactionListType
 } from '../types';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     paddingTop: 42,
-    position: 'relative',
+    position: 'relative'
   },
   card: {
     height: 250,
     minWidth: 1290,
     margin: 20,
     textAlign: 'left',
-    display: 'inline-block',
+    display: 'inline-block'
   },
   title: {
     fontSize: 16,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 60,
+    top: 60
   },
   content: {
     fontSize: 12,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 70,
-  },
+    top: 70
+  }
 });
 
 export const TransactionsView = ({
@@ -51,7 +51,7 @@ export const TransactionsView = ({
   getTransactionInfo,
   getTransactionList,
   transaction,
-  transactionList,
+  transactionList
 }) => (
   <div className="view-fullwidth">
     <div className="view-display">
@@ -75,7 +75,7 @@ TransactionsView.propTypes = {
   getTransactionInfo: getTransactionInfoType.isRequired,
   getTransactionList: getTransactionListType.isRequired,
   transaction: transactionType.isRequired,
-  transactionList: transactionListType.isRequired,
+  transactionList: transactionListType.isRequired
 };
 
 export default compose(withStyles(styles))(TransactionsView);

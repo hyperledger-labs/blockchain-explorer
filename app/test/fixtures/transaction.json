@@ -1,70 +1,71 @@
 {
+  "status": 200,
+  "row": {
+    "id": 10,
+    "channelname": "mychannel",
+    "blockid": 4,
+    "txhash":
+      "1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840",
+    "createdt": "2018-05-15T02:04:25.000Z",
+    "chaincodename": "mycc",
     "status": 200,
-    "row": {
-        "id": 10,
-        "channelname": "mychannel",
-        "blockid": 4,
-        "txhash": "1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840",
-        "createdt": "2018-05-15T02:04:25.000Z",
-        "chaincodename": "mycc",
-        "status": 200,
-        "creator_msp_id": "Org1MSP",
-        "endorser_msp_id": "{\"Org1MSP\"}",
-        "chaincode_id": "",
-        "type": "ENDORSER_TRANSACTION",
-        "read_set": [
-            {
-                "chaincode": "lscc",
-                "set": [
-                    {
-                        "key": "mycc",
-                        "version": {
-                            "block_num": "3",
-                            "tx_num": "0"
-                        }
-                    }
-                ]
-            },
-            {
-                "chaincode": "mycc",
-                "set": [
-                    {
-                        "key": "a",
-                        "version": {
-                            "block_num": "3",
-                            "tx_num": "0"
-                        }
-                    },
-                    {
-                        "key": "b",
-                        "version": {
-                            "block_num": "3",
-                            "tx_num": "0"
-                        }
-                    }
-                ]
+    "creator_msp_id": "Org1MSP",
+    "endorser_msp_id": "{\"Org1MSP\"}",
+    "chaincode_id": "",
+    "type": "ENDORSER_TRANSACTION",
+    "read_set": [
+      {
+        "chaincode": "lscc",
+        "set": [
+          {
+            "key": "mycc",
+            "version": {
+              "block_num": "3",
+              "tx_num": "0"
             }
-        ],
-        "write_set": [
-            {
-                "chaincode": "lscc",
-                "set": []
-            },
-            {
-                "chaincode": "mycc",
-                "set": [
-                    {
-                        "key": "a",
-                        "is_delete": false,
-                        "value": "90"
-                    },
-                    {
-                        "key": "b",
-                        "is_delete": false,
-                        "value": "210"
-                    }
-                ]
-            }
+          }
         ]
-    }
+      },
+      {
+        "chaincode": "mycc",
+        "set": [
+          {
+            "key": "a",
+            "version": {
+              "block_num": "3",
+              "tx_num": "0"
+            }
+          },
+          {
+            "key": "b",
+            "version": {
+              "block_num": "3",
+              "tx_num": "0"
+            }
+          }
+        ]
+      }
+    ],
+    "write_set": [
+      {
+        "chaincode": "lscc",
+        "set": []
+      },
+      {
+        "chaincode": "mycc",
+        "set": [
+          {
+            "key": "a",
+            "is_delete": false,
+            "value": "90"
+          },
+          {
+            "key": "b",
+            "is_delete": false,
+            "value": "210"
+          }
+        ]
+      }
+    ]
+  }
 }

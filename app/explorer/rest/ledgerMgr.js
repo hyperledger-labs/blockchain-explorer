@@ -17,6 +17,4 @@
 var EventEmitter = require('events').EventEmitter;
 var ledgerEvent = new EventEmitter();
 
-
-
-exports.ledgerEvent=ledgerEvent
+exports.ledgerEvent = ledgerEvent;

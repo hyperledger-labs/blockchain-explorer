@@ -10,7 +10,7 @@ const setup = () => {
       card: 'TransactionView-card-114',
       content: 'TransactionView-content-116',
       root: 'TransactionView-root-113',
-      title: 'TransactionView-title-115',
+      title: 'TransactionView-title-115'
     },
     currentChannel: 'mychannel',
     getTransaction: jest.fn(),
@@ -18,7 +18,8 @@ const setup = () => {
       id: 39,
       channelname: 'mychannel',
       blockid: 19,
-      txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+      txhash:
+        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
       createdt: '2018-04-26T20:32:12.000Z',
       chaincodename: 'mycc',
       status: 200,
@@ -34,10 +35,10 @@ const setup = () => {
               key: 'mycc',
               version: {
                 blocknum: '3',
-                tx_num: '0',
-              },
-            },
-          ],
+                tx_num: '0'
+              }
+            }
+          ]
         },
         {
           chaincode: 'mycc',
@@ -46,22 +47,23 @@ const setup = () => {
               key: 'a',
               version: {
                 block_num: '18',
-                tx_num: '0',
-              },
+                tx_num: '0'
+              }
             },
             {
               key: 'b',
               version: {
                 block_num: '18',
-                tx_num: '0',
-              },
-            },
-          ],
-        }],
+                tx_num: '0'
+              }
+            }
+          ]
+        }
+      ],
       write_set: [
         {
           chaincode: 'lscc',
-          set: [],
+          set: []
         },
         {
           chaincode: 'lscc',
@@ -69,23 +71,23 @@ const setup = () => {
             {
               is_delete: false,
               key: 'a',
-              value: '-60',
+              value: '-60'
             },
             {
               is_delete: false,
               key: 'b',
-              value: '360',
-            },
-          ],
-        },
-      ],
-    },
+              value: '360'
+            }
+          ]
+        }
+      ]
+    }
   };
 
   const wrapper = shallow(<TransactionView {...props} />);
 
   return {
-    wrapper,
+    wrapper
   };
 };
 
@@ -115,7 +117,8 @@ describe('TransactionView', () => {
         id: 39,
         channelname: 'mychannel',
         blockid: 19,
-        txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+        txhash:
+          '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
         createdt: '2018-04-26T20:32:12.000Z',
         chaincodename: 'mycc',
         status: 200,
@@ -124,8 +127,8 @@ describe('TransactionView', () => {
         chaincode_id: '',
         type: 'ENDORSER_TRANSACTION',
         read_set: [null],
-        write_set: [null],
-      },
+        write_set: [null]
+      }
     };
     wrapper.setProps(newTransaction);
     expect(wrapper.find('li').exists()).toBe(false);
@@ -138,7 +141,8 @@ describe('TransactionView', () => {
         id: 39,
         channelname: 'mychannel',
         blockid: 19,
-        txhash: '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+        txhash:
+          '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
         createdt: '2018-04-26T20:32:12.000Z',
         chaincodename: 'mycc',
         status: 200,
@@ -153,14 +157,15 @@ describe('TransactionView', () => {
             set: [
               {
                 key: 'a',
-                version: null,
+                version: null
               },
               {
                 key: 'b',
-                version: null,
-              },
-            ],
-          }],
+                version: null
+              }
+            ]
+          }
+        ],
         write_set: [
           null,
           {
@@ -169,17 +174,17 @@ describe('TransactionView', () => {
               {
                 is_delete: false,
                 key: 'a',
-                value: '-60',
+                value: '-60'
               },
               {
                 is_delete: false,
                 key: 'b',
-                value: '360',
-              },
-            ],
-          },
-        ],
-      },
+                value: '360'
+              }
+            ]
+          }
+        ]
+      }
     };
     wrapper.setProps(newTransaction);
     expect(wrapper.find('JSONTree').exists()).toBe(true);

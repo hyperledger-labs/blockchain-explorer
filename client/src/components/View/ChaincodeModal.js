@@ -11,17 +11,17 @@ import { chaincodeType } from '../types';
 
 const styles = () => ({
   container: {
-    border: '3px solid #afeeee',
+    border: '3px solid #afeeee'
   },
   container1: {
     display: 'flex',
-    flexWrap: 'wrap',
-  },
+    flexWrap: 'wrap'
+  }
 });
 
 export const ChaincodeModal = ({ chaincode }) => {
   const formattedSrc = beautify(chaincode.source, {
-    indent_size: 4,
+    indent_size: 4
   });
   const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
 
@@ -42,13 +42,12 @@ export const ChaincodeModal = ({ chaincode }) => {
   );
 };
 
-
 ChaincodeModal.propTypes = {
-  chaincode: chaincodeType,
+  chaincode: chaincodeType
 };
 
 ChaincodeModal.defaultProps = {
-  chaincode: null,
+  chaincode: null
 };
 
 export default withStyles(styles)(ChaincodeModal);

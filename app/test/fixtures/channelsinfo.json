@@ -1,21 +1,23 @@
 {
-    "status": 200,
-    "channels": [
-        {
-            "id": 4,
-            "channelname": "test",
-            "blocks": 5,
-            "transactions": 5,
-            "createdat": "2018-05-29T01:09:21.000Z",
-            "channel_hash": "7c003fa4bd600688a14465eeb176150fa3bc1ef2f6fcbd0d88140ed9fbb231c5"
-        },
-        {
-            "id": 3,
-            "channelname": "mychannel",
-            "blocks": 5,
-            "transactions": 5,
-            "createdat": "2018-05-18T03:13:05.999Z",
-            "channel_hash": "9006c6bc6a0c99b52847d71b350885cb68d8dadad6e421fdb082aeae637279ff"
-        }
-    ]
+  "status": 200,
+  "channels": [
+    {
+      "id": 4,
+      "channelname": "test",
+      "blocks": 5,
+      "transactions": 5,
+      "createdat": "2018-05-29T01:09:21.000Z",
+      "channel_hash":
+        "7c003fa4bd600688a14465eeb176150fa3bc1ef2f6fcbd0d88140ed9fbb231c5"
+    },
+    {
+      "id": 3,
+      "channelname": "mychannel",
+      "blocks": 5,
+      "transactions": 5,
+      "createdat": "2018-05-18T03:13:05.999Z",
+      "channel_hash":
+        "9006c6bc6a0c99b52847d71b350885cb68d8dadad6e421fdb082aeae637279ff"
+    }
+  ]
 }

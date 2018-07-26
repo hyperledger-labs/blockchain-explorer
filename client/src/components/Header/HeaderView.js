@@ -8,9 +8,7 @@ import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Select from 'react-select';
-import {
-  Nav, Navbar, NavbarBrand, NavbarToggler,
-} from 'reactstrap';
+import { Nav, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
 import { HashRouter as Router, NavLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
 import FontAwesome from 'react-fontawesome';
@@ -38,9 +36,8 @@ import {
   getTransactionByOrgType,
   getTransactionPerHourType,
   getTransactionPerMinType,
-  refreshType,
+  refreshType
 } from '../types';
-
 
 const {
   blockPerHour,
@@ -50,28 +47,26 @@ const {
   transactionByOrg,
   dashStats,
   changeChannel,
-  peerStatus,
+  peerStatus
 } = chartOperations;
 
-const {
-  blockList, chaincodeList, peerList, transactionList,
-} = tableOperations;
+const { blockList, chaincodeList, peerList, transactionList } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
 const { channelsSelector } = tableSelectors;
 
 const styles = theme => ({
   margin: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
   },
   padding: {
-    padding: `0 ${theme.spacing.unit * 2}px`,
+    padding: `0 ${theme.spacing.unit * 2}px`
   },
   menuButtons: {
     margin: theme.spacing.unit,
     fontSize: '1.05rem !important',
-    fontWeight: '800',
-  },
+    fontWeight: '800'
+  }
 });
 
 export class HeaderView extends Component {
@@ -86,37 +81,38 @@ export class HeaderView extends Component {
       notifications: [],
       isLoading: true,
       modalOpen: false,
-      selectedChannel: {},
+      selectedChannel: {}
     };
   }
-
 
   componentDidMount() {
     const { channels, currentChannel } = this.props;
     const arr = [];
     let selectedValue = {};
-    channels.forEach((element) => {
+    channels.forEach(element => {
       if (element.genesis_block_hash === currentChannel) {
         selectedValue = {
           value: element.genesis_block_hash,
-          label: element.channelname,
+          label: element.channelname
         };
       }
       arr.push({
         value: element.genesis_block_hash,
-        label: element.channelname,
+        label: element.channelname
       });
     });
 
     this.setState({
       channels: arr,
       isLoading: false,
-      selectedChannel: selectedValue,
+      selectedChannel: selectedValue
     });
 
-   this.interVal=setInterval(() => {this.syncData(currentChannel)}, 60000);
+    this.interVal = setInterval(() => {
+      this.syncData(currentChannel);
+    }, 60000);
   }
- componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.interVal);
   }
 
@@ -125,33 +121,33 @@ export class HeaderView extends Component {
     const options = [];
     let selectedValue = {};
     if (nextProps.channels.length > 0) {
-      nextProps.channels.forEach((element) => {
+      nextProps.channels.forEach(element => {
         options.push({
           value: element.genesis_block_hash,
-          label: element.channelname,
+          label: element.channelname
         });
         if (
-          nextProps.currentChannel == null
-          || nextProps.currentChannel === undefined
+          nextProps.currentChannel == null ||
+          nextProps.currentChannel === undefined
         ) {
           if (element.genesis_block_hash != null) {
             selectedValue = {
               value: element.genesis_block_hash,
-              label: element.channelname,
+              label: element.channelname
             };
           }
         } else if (element.genesis_block_hash === nextProps.currentChannel) {
           selectedValue = {
             value: element.genesis_block_hash,
-            label: element.channelname,
+            label: element.channelname
           };
         }
       });
     }
 
     if (
-      nextProps.currentChannel === null
-      || nextProps.currentChannel === undefined
+      nextProps.currentChannel === null ||
+      nextProps.currentChannel === undefined
     ) {
       getChangeChannel(selectedValue.value);
     }
@@ -159,7 +155,7 @@ export class HeaderView extends Component {
     this.setState({
       channels: options,
       isLoading: false,
-      selectedChannel: selectedValue,
+      selectedChannel: selectedValue
     });
     if (nextProps.currentChannel !== currentChannel) {
       this.syncData(nextProps.currentChannel);
@@ -169,22 +165,23 @@ export class HeaderView extends Component {
   toggle = () => {
     const { isOpen } = this.state;
     this.setState({
-      isOpen: !isOpen,
+      isOpen: !isOpen
     });
   };
 
-  handleChange = async (selectedChannel) => {
- if (this.state.channels.length > 1) {
-    const {currentChannel ,getChangeChannel } = this.props;
-    clearInterval(this.interVal)
-    await this.handleOpen();
-    this.setState({ selectedChannel });
-    getChangeChannel(selectedChannel.value);
-    await this.syncData(selectedChannel.value);
-    this.interVal=setInterval(() => {this.syncData(selectedChannel.value)},60000);
-
-}
-//  this.handleClose();
+  handleChange = async selectedChannel => {
+    if (this.state.channels.length > 1) {
+      const { currentChannel, getChangeChannel } = this.props;
+      clearInterval(this.interVal);
+      await this.handleOpen();
+      this.setState({ selectedChannel });
+      getChangeChannel(selectedChannel.value);
+      await this.syncData(selectedChannel.value);
+      this.interVal = setInterval(() => {
+        this.syncData(selectedChannel.value);
+      }, 60000);
+    }
+    //  this.handleClose();
   };
 
   handleOpen = () => {
@@ -195,7 +192,7 @@ export class HeaderView extends Component {
     this.setState({ modalOpen: false });
   };
 
-  handleDrawOpen = (drawer) => {
+  handleDrawOpen = drawer => {
     switch (drawer) {
       case 'notifyDrawer': {
         this.setState({ notifyDrawer: true });
@@ -212,7 +209,7 @@ export class HeaderView extends Component {
     }
   };
 
-  handleDrawClose = (drawer) => {
+  handleDrawClose = drawer => {
     switch (drawer) {
       case 'notifyDrawer': {
         this.setState({ notifyDrawer: false });
@@ -257,7 +254,7 @@ export class HeaderView extends Component {
       getTransactionByOrg,
       getTransactionList,
       getTransactionPerHour,
-      getTransactionPerMin,
+      getTransactionPerMin
     } = this.props;
 
     await Promise.all([
@@ -271,7 +268,7 @@ export class HeaderView extends Component {
       getTransactionByOrg(currentChannel),
       getTransactionList(currentChannel),
       getTransactionPerHour(currentChannel),
-      getTransactionPerMin(currentChannel),
+      getTransactionPerMin(currentChannel)
     ]);
     this.handleClose();
   }
@@ -288,7 +285,7 @@ export class HeaderView extends Component {
       notifyDrawer,
       adminDrawer,
       modalOpen,
-      notifications,
+      notifications
     } = this.state;
 
     return (
@@ -415,7 +412,7 @@ export class HeaderView extends Component {
               open={notifyDrawer}
               onClose={() => this.handleDrawClose('notifyDrawer')}
             >
-                <div tabIndex={0} role="button">
+              <div tabIndex={0} role="button">
                 <NotificationsPanel notifications={notifications} />
               </div>
             </Drawer>
@@ -435,9 +432,7 @@ export class HeaderView extends Component {
               maxWidth="md"
             >
               <div className="channel-loader">
-                <h4 className="loader-message">
-                  Loading Channel Details
-                </h4>
+                <h4 className="loader-message">Loading Channel Details</h4>
                 <Loader
                   type="ThreeDots"
                   color="#005069"
@@ -468,7 +463,7 @@ HeaderView.propTypes = {
   getTransactionByOrg: getTransactionByOrgType.isRequired,
   getTransactionPerHour: getTransactionPerHourType.isRequired,
   getTransactionPerMin: getTransactionPerMinType.isRequired,
-  refresh: refreshType.isRequired,
+  refresh: refreshType.isRequired
 };
 
 export default compose(
@@ -476,7 +471,7 @@ export default compose(
   connect(
     state => ({
       currentChannel: currentChannelSelector(state),
-      channels: channelsSelector(state),
+      channels: channelsSelector(state)
     }),
     {
       getBlockList: blockList,
@@ -490,7 +485,7 @@ export default compose(
       getTransactionByOrg: transactionByOrg,
       getTransactionList: transactionList,
       getTransactionPerHour: transactionPerHour,
-      getTransactionPerMin: transactionPerMin,
-    },
-  ),
+      getTransactionPerMin: transactionPerMin
+    }
+  )
 )(HeaderView);

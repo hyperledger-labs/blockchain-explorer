@@ -3,10 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import {
-  Row,
-  Col,
-} from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
 import Card from '@material-ui/core/Card';
 import Avatar from '@material-ui/core/Avatar';
@@ -18,7 +15,7 @@ import {
   blockListType,
   dashStatsType,
   peerStatusType,
-  transactionByOrgType,
+  transactionByOrgType
 } from '../types';
 
 export class DashboardView extends Component {
@@ -26,22 +23,17 @@ export class DashboardView extends Component {
     super(props);
     this.state = {
       notifications: [],
-      hasDbError: false,
+      hasDbError: false
     };
   }
 
   componentWillMount() {
-    const {
-      blockList,
-      dashStats,
-      peerStatus,
-      transactionByOrg,
-    } = this.props;
+    const { blockList, dashStats, peerStatus, transactionByOrg } = this.props;
     if (
-      blockList === undefined
-      || dashStats === undefined
-      || peerStatus === undefined
-      || transactionByOrg === undefined
+      blockList === undefined ||
+      dashStats === undefined ||
+      peerStatus === undefined ||
+      transactionByOrg === undefined
     ) {
       this.setState({ hasDbError: true });
     }
@@ -57,15 +49,10 @@ export class DashboardView extends Component {
     this.setNotifications(blockList);
   }
 
-
-  setNotifications = (blockList) => {
+  setNotifications = blockList => {
     const notificationsArr = [];
     if (blockList !== undefined) {
-      for (
-        let i = 0;
-        i < 3 && blockList && blockList[i];
-        i += 1
-      ) {
+      for (let i = 0; i < 3 && blockList && blockList[i]; i += 1) {
         const block = blockList[i];
         const notify = {
           title: `Block ${block.blocknum} `,
@@ -73,7 +60,7 @@ export class DashboardView extends Component {
           time: block.createdt,
           txcount: block.txcount,
           datahash: block.datahash,
-          blockhash: block.blockhash,
+          blockhash: block.blockhash
         };
         notificationsArr.push(notify);
       }
@@ -82,22 +69,19 @@ export class DashboardView extends Component {
   };
 
   render() {
-    const {
-      dashStats,
-      peerStatus,
-      blockList,
-      transactionByOrg,
-    } = this.props;
+    const { dashStats, peerStatus, blockList, transactionByOrg } = this.props;
     const { hasDbError, notifications } = this.state;
     if (hasDbError) {
       return (
-        <div style={{
-          height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center',
-        }}
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
         >
-          <h1>
-            Error: One or more components failed to render.
-          </h1>
+          <h1>Error: One or more components failed to render.</h1>
         </div>
       );
     }
@@ -107,7 +91,6 @@ export class DashboardView extends Component {
           <Row>
             <Col sm="12">
               <Card className="stats-block ">
-
                 <div className="statistic vdivide">
                   <Row>
                     <Col sm="4">
@@ -116,9 +99,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">
-                        {dashStats.latestBlock}
-                      </h1>
+                      <h1 className="stat-count">{dashStats.latestBlock}</h1>
                     </Col>
                   </Row>
                   BLOCKS
@@ -131,9 +112,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">
-                        {dashStats.txCount}
-                      </h1>
+                      <h1 className="stat-count">{dashStats.txCount}</h1>
                     </Col>
                   </Row>
                   TRANSACTIONS
@@ -146,9 +125,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">
-                        {dashStats.peerCount}
-                      </h1>
+                      <h1 className="stat-count">{dashStats.peerCount}</h1>
                     </Col>
                   </Row>
                   NODES
@@ -161,9 +138,7 @@ export class DashboardView extends Component {
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">
-                        {dashStats.chaincodeCount}
-                      </h1>
+                      <h1 className="stat-count">{dashStats.chaincodeCount}</h1>
                     </Col>
                   </Row>
                   CHAINCODES
@@ -174,12 +149,13 @@ export class DashboardView extends Component {
           <Row>
             <Col sm="6">
               <Card className="dash-section">
-                <PeersHealth
-                  peerStatus={peerStatus}
-                />
+                <PeersHealth peerStatus={peerStatus} />
               </Card>
               <Card className="dash-section">
-                <TimelineStream notifications={notifications} blockList={blockList} />
+                <TimelineStream
+                  notifications={notifications}
+                  blockList={blockList}
+                />
               </Card>
             </Col>
             <Col sm="6">
@@ -187,9 +163,7 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-                <h5 className="org-header">
-                  Transactions by Organization
-                </h5>
+                <h5 className="org-header">Transactions by Organization</h5>
                 <hr />
                 <OrgPieChart transactionByOrg={transactionByOrg} />
               </Card>
@@ -205,7 +179,7 @@ DashboardView.propTypes = {
   blockList: blockListType.isRequired,
   dashStats: dashStatsType.isRequired,
   peerStatus: peerStatusType.isRequired,
-  transactionByOrg: transactionByOrgType.isRequired,
+  transactionByOrg: transactionByOrgType.isRequired
 };
 
 export default DashboardView;

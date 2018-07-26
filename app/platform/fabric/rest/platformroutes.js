@@ -2,11 +2,9 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
+var requtil = require('./requestutils');
 
-var requtil = require("./requestutils");
-
-const platformroutes = async function (app, restServices) {
-
+const platformroutes = async function(app, restServices) {
   //let platform = platform;
   //let proxy = platform.getDefaultProxy();
   let statusMetrics = restServices.getPersistence().getMetricService();
@@ -18,7 +16,7 @@ const platformroutes = async function (app, restServices) {
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get("/api/block/:channel/:number", function (req, res) {
+  app.get('/api/block/:channel/:number', function(req, res) {
     let number = parseInt(req.params.number);
     let channelName = req.params.channel;
     /*if (!isNaN(number) && channelName) {
@@ -33,7 +31,7 @@ const platformroutes = async function (app, restServices) {
       });
     } else {*/
 
-    console.log("/api/block/:channel/:number");
+    console.log('/api/block/:channel/:number');
     return requtil.invalidRequest(req, res);
     //}
   });
@@ -52,20 +50,16 @@ const platformroutes = async function (app, restServices) {
       }
       */
 
-  app.get("/api/channels", function (req, res) {
-
-
+  app.get('/api/channels', function(req, res) {
     let channels = restServices.getChannels();
 
     let response = {
       status: 200
     };
-    response["channels"] = channels;
-    console.log("this.channelGenHash response >>> " + JSON.stringify(response));
+    response['channels'] = channels;
+    console.log('this.channelGenHash response >>> ' + JSON.stringify(response));
 
     res.send(response);
-
-
   });
 
   /**
@@ -73,11 +67,10 @@ const platformroutes = async function (app, restServices) {
   GET /api/curChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/curChannel", function (req, res) {
-    restServices.getCurrentChannel().then((data) => {
+  app.get('/api/curChannel', function(req, res) {
+    restServices.getCurrentChannel().then(data => {
       res.send(data);
     });
-
   });
 
   /**
@@ -85,16 +78,17 @@ const platformroutes = async function (app, restServices) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
- app.get("/api/changeChannel/:channel_genesis_hash", async function (req, res) {
-  let channel_genesis_hash = req.params.channel_genesis_hash;
-  let channel = await crudService.getChannelByGenesisBlockHash(channel_genesis_hash)
-  restServices.changeChannel(channel.name);
- let  curChannel = await restServices.getGenesisBlockHash(channel.name)
-  res.send({
-    currentChannel:curChannel
+  app.get('/api/changeChannel/:channel_genesis_hash', async function(req, res) {
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+    let channel = await crudService.getChannelByGenesisBlockHash(
+      channel_genesis_hash
+    );
+    restServices.changeChannel(channel.name);
+    let curChannel = await restServices.getGenesisBlockHash(channel.name);
+    res.send({
+      currentChannel: curChannel
+    });
   });
-});
-
 
   /***
      Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
@@ -119,7 +113,7 @@ const platformroutes = async function (app, restServices) {
   Response: {  success: true, message: "Successfully created channel "   }
   */
 
-  app.post('/api/channel', async function (req, res) {
+  app.post('/api/channel', async function(req, res) {
     /*try {
       // upload channel config, and org config
       let artifacts = await requtil.aSyncUpload(req, res);
@@ -152,7 +146,7 @@ const platformroutes = async function (app, restServices) {
   Response: {  success: true, message: "Successfully joined peer to the channel "   }
   */
 
-  app.post("/api/joinChannel", function (req, res) {
+  app.post('/api/joinChannel', function(req, res) {
     /*var channelName = req.body.channelName;
     var peers = req.body.peers;
     var orgName = req.body.orgName;
@@ -161,7 +155,7 @@ const platformroutes = async function (app, restServices) {
         return res.send(resp);
       });
     } else {*/
-    console.log("/api/joinChannel");
+    console.log('/api/joinChannel');
     return requtil.invalidRequest(req, res);
     //}
   });
@@ -182,10 +176,10 @@ const platformroutes = async function (app, restServices) {
       ]
     */
 
-  app.get("/api/chaincode/:channel", function (req, res) {
+  app.get('/api/chaincode/:channel', function(req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function (data) {
+      statusMetrics.getTxPerChaincode(channelName, async function(data) {
         for (let chaincode of data) {
           let temp = await restServices.loadChaincodeSrc(chaincode.path);
           chaincode.source = temp;
@@ -212,18 +206,16 @@ const platformroutes = async function (app, restServices) {
   ]
   */
 
-  app.get("/api/peersStatus/:channel", function (req, res) {
+  app.get('/api/peersStatus/:channel', function(req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-
-      restServices.getPeersStatus(channelName).then((data) => {
+      restServices.getPeersStatus(channelName).then(data => {
         res.send({ status: 200, peers: data });
-      })
-
+      });
     } else {
       return requtil.invalidRequest(req, res);
     }
   });
-}
+};
 
 module.exports = platformroutes;

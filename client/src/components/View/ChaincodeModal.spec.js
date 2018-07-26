@@ -12,19 +12,19 @@ const setup = () => {
       path: 'github.com/chaincode/chaincode_example02/go/',
       source: 'Location not found',
       txCount: 32,
-      version: '1.0',
+      version: '1.0'
     },
     classes: {
       container: 'ChaincodeModal-container-89',
-      container1: 'ChaincodeModal-container1-90',
-    },
+      container1: 'ChaincodeModal-container1-90'
+    }
   };
 
   const wrapper = shallow(<ChaincodeModal {...props} />);
 
   return {
     props,
-    wrapper,
+    wrapper
   };
 };
 

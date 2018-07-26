@@ -5,8 +5,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ExpansionPanel, {
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
 } from '@material-ui/core/ExpansionPanel';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Typography from '@material-ui/core/Typography';
@@ -17,13 +17,13 @@ import { FormControl, FormHelperText } from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 class AdminPanel extends Component {
-    handleChange = () => {}
+  handleChange = () => {};
 
   render() {
     return (
       <div className="admin-panel">
         <Typography variant="headline" className="admin-panel">
-          <FontAwesome name="cogs" className="admin-panel"/> ADMIN PANEL
+          <FontAwesome name="cogs" className="admin-panel" /> ADMIN PANEL
         </Typography>
         <ExpansionPanel className="admin-panel">
           <ExpansionPanelSummary
@@ -31,7 +31,7 @@ class AdminPanel extends Component {
             className="admin-panel"
           >
             <Typography variant="subheading" className="admin-panel">
-              MANAGE CHANNEL{" "}
+              MANAGE CHANNEL{' '}
             </Typography>
             <Typography variant="caption" className="admin-panelCurrent">
               {this.props.channel.currentChannel} <br />
@@ -48,8 +48,8 @@ class AdminPanel extends Component {
                   onChange={this.handleChange}
                   helperText="select channel"
                   inputProps={{
-                    name: "age",
-                    id: "age-simple"
+                    name: 'age',
+                    id: 'age-simple'
                   }}
                 >
                   <MenuItem value="" className="admin-panel">
@@ -108,4 +108,4 @@ function mapStateToProps(state, ownProps) {
 // function mapDispatchToProps(dispatch){
 //   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}
 // }
-export default connect(mapStateToProps/*,mapDispatchToProps*/)(AdminPanel);
+export default connect(mapStateToProps /*,mapDispatchToProps*/)(AdminPanel);

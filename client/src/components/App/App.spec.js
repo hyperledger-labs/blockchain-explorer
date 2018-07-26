@@ -11,7 +11,7 @@ const setup = () => {
   const wrapper = shallow(<App />);
 
   return {
-    wrapper,
+    wrapper
   };
 };
 

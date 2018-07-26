@@ -12,27 +12,27 @@ import {
   currentChannelType,
   getTransactionType,
   transactionListType,
-  transactionType,
+  transactionType
 } from '../types';
 
 class Transactions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogOpen: false,
+      dialogOpen: false
     };
   }
 
   componentDidMount() {
     const { transactionList } = this.props;
     const selection = {};
-    transactionList.forEach((element) => {
+    transactionList.forEach(element => {
       selection[element.blocknum] = false;
     });
     this.setState({ selection });
   }
 
-  handleDialogOpen = async (tid) => {
+  handleDialogOpen = async tid => {
     const { currentChannel, getTransaction } = this.props;
     await getTransaction(currentChannel, tid);
     this.setState({ dialogOpen: true });
@@ -48,35 +48,36 @@ class Transactions extends Component {
     this.setState({ selection: data });
   };
 
-
   render() {
     const columnHeaders = [
       {
         Header: 'Creator',
         accessor: 'creator_msp_id',
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['creator_msp_id'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['creator_msp_id'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: 'Channel Name',
         accessor: 'channelname',
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['channelname'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['channelname'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: 'Tx Id',
         accessor: 'txhash',
-	className:"hashCell",
+        className: 'hashCell',
         Cell: row => (
           <span>
             <a
@@ -86,54 +87,57 @@ class Transactions extends Component {
             >
               <div className="fullHash" id="showTransactionId">
                 {row.value}
-              </div>
-              {' '}
+              </div>{' '}
               {row.value.slice(0, 6)}
               {!row.value ? '' : '... '}
             </a>
           </span>
         ),
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['txhash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['txhash'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: 'Type',
         accessor: 'type',
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['type'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['type'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: 'Chaincode',
         accessor: 'chaincodename',
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['chaincodename'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['chaincodename'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
       },
       {
         Header: 'Timestamp',
         accessor: 'createdt',
-        filterMethod: (filter, rows) => matchSorter(
-          rows,
-          filter.value,
-          { keys: ['createdt'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH },
-        ),
-        filterAll: true,
-      },
+        filterMethod: (filter, rows) =>
+          matchSorter(
+            rows,
+            filter.value,
+            { keys: ['createdt'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH }
+          ),
+        filterAll: true
+      }
     ];
 
     const { transactionList, transaction } = this.props;
@@ -148,7 +152,7 @@ class Transactions extends Component {
           className="-striped -highlight listTable"
           filterable
           minRows={0}
-	  style={{height:"750px"}}
+          style={{ height: '750px' }}
           showPagination={!(transactionList.length < 5)}
         />
 
@@ -172,11 +176,11 @@ Transactions.propTypes = {
   currentChannel: currentChannelType.isRequired,
   getTransaction: getTransactionType.isRequired,
   transaction: transactionType,
-  transactionList: transactionListType.isRequired,
+  transactionList: transactionListType.isRequired
 };
 
 Transactions.defaultProps = {
-  transaction: null,
+  transaction: null
 };
 
 export default Transactions;

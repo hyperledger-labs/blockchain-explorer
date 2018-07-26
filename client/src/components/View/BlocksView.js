@@ -11,43 +11,43 @@ import {
   blockListType,
   currentChannelType,
   getTransactionType,
-  transactionType,
+  transactionType
 } from '../types';
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
     paddingTop: 42,
-    position: 'relative',
+    position: 'relative'
   },
   card: {
     height: 250,
     minWidth: 1290,
     margin: 20,
     textAlign: 'left',
-    display: 'inline-block',
+    display: 'inline-block'
   },
   title: {
     fontSize: 16,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 60,
+    top: 60
   },
   content: {
     fontSize: 12,
     color: theme.palette.text.secondary,
     position: 'absolute',
     left: 40,
-    top: 70,
-  },
+    top: 70
+  }
 });
 
 export const BlocksView = ({
   blockList,
   currentChannel,
   getTransaction,
-  transaction,
+  transaction
 }) => (
   <div className="view-fullwidth">
     <div className="view-display">
@@ -63,18 +63,15 @@ export const BlocksView = ({
   </div>
 );
 
-
 BlocksView.propTypes = {
   blockList: blockListType.isRequired,
   currentChannel: currentChannelType.isRequired,
   getTransaction: getTransactionType.isRequired,
-  transaction: transactionType,
+  transaction: transactionType
 };
 
 BlocksView.defaultProps = {
-  transaction: null,
+  transaction: null
 };
 
-export default compose(
-  withStyles(styles),
-)(BlocksView);
+export default compose(withStyles(styles))(BlocksView);
