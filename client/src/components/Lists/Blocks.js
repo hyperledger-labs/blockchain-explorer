@@ -108,6 +108,17 @@ class Blocks extends Component {
     {
       Header: 'Data Hash',
       accessor: 'datahash',
+      className: 'hashCell',
+      Cell: row => (
+        <span>
+          <ul className="partialHashes" href="#/blocks">
+            <div className="fullHash" id="showTransactionId">
+              {row.value}
+            </div>{' '}
+            {row.value.slice(0, 6)} {!row.value ? '' : '... '}
+          </ul>{' '}
+        </span>
+      ),
       filterMethod: (filter, rows) =>
         matchSorter(
           rows,
@@ -147,6 +158,21 @@ class Blocks extends Component {
     {
       Header: 'Previous Hash',
       accessor: 'prehash',
+      className: 'hashCell',
+      Cell: row => (
+        <span>
+          <ul
+            className="partialHashes"
+            onClick={() => this.handleDialogOpenBlockHash(row.value)}
+            href="#/blocks"
+          >
+            <div className="fullHash" id="showTransactionId">
+              {row.value}
+            </div>{' '}
+            {row.value.slice(0, 6)} {!row.value ? '' : '... '}
+          </ul>{' '}
+        </span>
+      ),
       filterMethod: (filter, rows) =>
         matchSorter(
           rows,

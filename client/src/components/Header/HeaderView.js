@@ -8,7 +8,7 @@ import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Select from 'react-select';
-import { Nav, Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
+import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse } from 'reactstrap';
 import { HashRouter as Router, NavLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
 import FontAwesome from 'react-fontawesome';
@@ -164,10 +164,13 @@ export class HeaderView extends Component {
 
   toggle = () => {
     const { isOpen } = this.state;
-    this.setState({
-      isOpen: !isOpen
-    });
+    if (window.matchMedia('(max-width:992px)').matches) {
+      this.setState({
+        isOpen: !isOpen
+      });
+    }
   };
+  closeToggle = () => this.state.isOpen && this.toggle();
 
   handleChange = async selectedChannel => {
     if (this.state.channels.length > 1) {
@@ -299,96 +302,108 @@ export class HeaderView extends Component {
         />
         <Router>
           <div>
-            <Navbar className="navbar-header" expand="md" fixed="top">
+            <Navbar className="navbar-header" expand="lg" fixed="top">
               <NavbarBrand href="/">
                 {' '}
                 <img src={Logo} className="logo" alt="Hyperledger Logo" />
               </NavbarBrand>
-              <NavbarToggler onClick={this.toggle} />
-              <Nav className="ml-auto " navbar>
-                <li>
-                  <NavLink
-                    to="/"
-                    exact
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    DASHBOARD
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/network"
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    NETWORK
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/blocks"
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    BLOCKS
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/transactions"
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    TRANSACTIONS
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/chaincodes"
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    CHAINCODES
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to="/channels"
-                    className="dashButtons"
-                    activeClassName="activeTab"
-                  >
-                    CHANNELS
-                  </NavLink>
-                </li>
-
-                <div>
-                  <Select
-                    className="channel-dropdown"
-                    placeholder="Select Channel..."
-                    required
-                    name="form-field-name"
-                    isLoading={isLoading}
-                    value={selectedChannel}
-                    onChange={this.handleChange}
-                    options={channels}
-                  />
-                </div>
-                {
+              <NavbarToggler onClick={this.toggle}>
+                <FontAwesome name="bars" className="toggleIcon" />
+              </NavbarToggler>
+              <Collapse isOpen={this.state.isOpen} navbar>
+                <Nav
+                  className="ml-auto navbar-left"
+                  navbar
+                  onMouseLeave={this.closeToggle}
+                >
+                  <li>
+                    <NavLink
+                      to="/"
+                      exact
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      DASHBOARD
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/network"
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      NETWORK
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/blocks"
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      BLOCKS
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/transactions"
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      TRANSACTIONS
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/chaincodes"
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      CHAINCODES
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/channels"
+                      className="dashButtons"
+                      activeClassName="activeTab"
+                      onClick={this.toggle}
+                    >
+                      CHANNELS
+                    </NavLink>
+                  </li>
                   <div className="admin-buttons">
-                    <FontAwesome
-                      name="bell"
-                      className="bell"
-                      onClick={() => this.handleDrawOpen('notifyDrawer')}
-                    />
-                    <Badge
-                      className="navIcons"
-                      badgeContent={notifyCount}
-                      color="primary"
+                    <Select
+                      className="channel-dropdown "
+                      placeholder="Select Channel..."
+                      required
+                      name="form-field-name"
+                      isLoading={isLoading}
+                      value={selectedChannel}
+                      onChange={this.handleChange}
+                      options={channels}
                     />
                   </div>
-                }
-                {/*
+                  {
+                    <div className="admin-buttons">
+                      <FontAwesome
+                        name="bell"
+                        className="bell"
+                        onClick={() => this.handleDrawOpen('notifyDrawer')}
+                      />
+                      <Badge
+                        className="navIcons"
+                        badgeContent={notifyCount}
+                        color="primary"
+                      />
+                    </div>
+                  }
+                  {/*
               //Use when Admin functionality is required
               <div className="admin-buttons">
                 <FontAwesome
@@ -397,15 +412,16 @@ export class HeaderView extends Component {
                   onClick={() => this.handleDrawOpen("adminDrawer")}
                 />
               </div> */}
-                <div className="admin-buttons theme-switch">
-                  <FontAwesome name="sun-o" className="sunIcon" />
-                  <Switch
-                    onChange={() => this.handleThemeChange()}
-                    checked={themeIcon}
-                  />
-                  <FontAwesome name="moon-o" className="moonIcon" />
-                </div>
-              </Nav>
+                  <div className="admin-buttons theme-switch">
+                    <FontAwesome name="sun-o" className="sunIcon" />
+                    <Switch
+                      onChange={() => this.handleThemeChange()}
+                      checked={themeIcon}
+                    />
+                    <FontAwesome name="moon-o" className="moonIcon" />
+                  </div>
+                </Nav>
+              </Collapse>
             </Navbar>
             <Drawer
               anchor="right"

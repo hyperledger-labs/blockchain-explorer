@@ -14,7 +14,7 @@ import FooterView from '../Header/footerView';
 import LandingPage from '../View/LandingPage';
 import '../../static/css/main.css';
 import '../../static/css/main-dark.css';
-
+import '../../static/css/media-queries.css';
 const muiTheme = createMuiTheme({
   palette: {
     contrastThreshold: 3,
