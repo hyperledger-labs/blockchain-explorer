@@ -72,9 +72,9 @@ describe('HeaderView', () => {
     const { wrapper } = setup();
     expect(wrapper.exists()).toBe(true);
   });
-
   test('toggle changes the state of isOpen', () => {
     const { wrapper } = setup();
+    window.matchMedia = jest.fn(() => ({ matches: true }));
     expect(wrapper.state('isOpen')).toBe(false);
     wrapper.instance().toggle();
     expect(wrapper.state('isOpen')).toBe(true);

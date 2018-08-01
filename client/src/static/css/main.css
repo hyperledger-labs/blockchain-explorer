@@ -7,6 +7,7 @@
   /* margin-left: 670px; */
   font-weight: 300;
 }
+/*Navbar styling*/
 #root > div > div:nth-child(1) > nav {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -19,20 +20,32 @@
   height: 50px !important;
   margin: 10px;
 }
+.navbar-header {
+  background-color: #e8e8e8 !important;
+}
+.toggleIcon {
+  color: #58c5c2;
+  font-size: 1.75em;
+}
+.toggleIcon:focus {
+  outline: none;
+}
 .ml-auto li {
   height: 50px;
   line-height: 50px;
-  text-align: center;
 }
 .channel-dropdown,
 .fa-bell {
   margin: 8px !important;
+  float: none;
 }
 .admin-buttons {
   padding-top: 0px;
   margin-top: 0px;
 }
-
+button:focus {
+  outline: none !important;
+}
 .button {
   background-color: #afeeee;
   font-size: 16px;
@@ -45,7 +58,7 @@
 }
 .activeTab {
   color: #ffffff !important;
-  background-color: #808080 !important;
+  background-color: #58c5c2 !important;
   height: 60px !important;
   margin-top: 20px;
   padding: 10px !important;
@@ -367,7 +380,7 @@ svg.custom path.link {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 60%;
+  width: 80%;
   /* width: 30px; */
 }
 /* .app-header{
@@ -474,8 +487,12 @@ th {
   margin-right: 5% !important;
 }
 .theme-switch {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  margin-left: 20px;
+  width: 100px;
   padding-top: 0px;
-  margin-left: 30px !important;
 }
 .stats-block {
   /* background-color: #FAE2F0 !important; */
@@ -594,12 +611,14 @@ th {
 .hashCell li {
   overflow: visible !important;
 }
-.partialHash {
+.partialHash,
+.partialHashes {
   text-align: center;
   position: relative !important;
 }
 
-.partialHash:hover .fullHash {
+.partialHash:hover .fullHash,
+.partialHashes:hover .fullHash {
   display: block;
   position: absolute !important;
   padding: 4px 4px;
@@ -609,8 +628,12 @@ th {
   border-radius: 8px;
   color: #ffffff;
 }
+.MuiCard-root-62,
+.MuiCard-root-66 {
+  overflow: visible !important;
+}
 .partialHash:hover .lastFullHash {
-  margin-left: -425px !important;
+  margin-left: -400px !important;
 }
 .fullHash {
   display: none;
