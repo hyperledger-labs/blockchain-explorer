@@ -57,26 +57,46 @@ function existsImage(){
 # Configure settings of HYPERLEDGER EXPLORER
 function config(){
 	# BEGIN: GLOBAL VARIABLES OF THE SCRIPT
+	defaultFabricName="net1"
+	if [ -z "$1" ]; then
+		echo "No custom Hyperledger Network configuration supplied. Using default network name: $defaultFabricName"
+		fabricBlockchainNetworkName=$defaultFabricName
+	else
+		fabricBlockchainNetworkName=$1
+		echo "Using custom Hyperledger Network configuration. Network name: $fabricBlockchainNetworkName"
+	fi
 	docker_network_name="fabric-explorer-net"
-	explorer_db_user="postgres"
-	explorer_db_pwd="mysecretpassword"
+	# Default Hyperledger Explorer Database Credentials.
+	explorer_db_user="hppoc"
+	explorer_db_pwd="password"
 	#configure explorer to connect to specific Blockchain network using given configuration
-	network_config_file=$(pwd)/examples/net1/config.json
+	network_config_file=$(pwd)/examples/$fabricBlockchainNetworkName/config.json
 	#configure explorer to connect to specific Blockchain network using given crypto materials
-	network_crypto_base_path=$(pwd)/examples/net1/crypto
+	network_crypto_base_path=$(pwd)/examples/$fabricBlockchainNetworkName/crypto
 
 	# local vnet configuration
-	subnet=10.10.0.0/24
+
+	# Docker network configuration
+	# Address:   192.168.10.0         11000000.10101000.00001010. 00000000
+	# Netmask:   255.255.255.0 = 24   11111111.11111111.11111111. 00000000
+	# Wildcard:  0.0.0.255            00000000.00000000.00000000. 11111111
+	# =>
+	# Network:   192.168.10.0/24      11000000.10101000.00001010. 00000000
+	# HostMin:   192.168.10.1         11000000.10101000.00001010. 00000001
+	# HostMax:   192.168.10.254       11000000.10101000.00001010. 11111110
+	# Broadcast: 192.168.10.255       11000000.10101000.00001010. 11111111
+	# Hosts/Net: 254                   Class C, Private Internet
+	subnet=192.168.10.0/24
 
 	# database container configuration
 	fabric_explorer_db_tag="hyperledger-blockchain-explorer-db"
 	fabric_explorer_db_name="blockchain-explorer-db"
-	db_ip=10.10.0.11
+	db_ip=192.168.10.11
 
 	# fabric explorer configuratio
 	fabric_explorer_tag="hyperledger-blockchain-explorer"
 	fabric_explorer_name="blockchain-explorer"
-	explorer_ip=10.10.0.12
+	explorer_ip=192.168.10.12
 	# END: GLOBAL VARIABLES OF THE SCRIPT
 }
 
@@ -109,12 +129,16 @@ function stop_database(){
 function deploy_run_database(){
 	stop_database
 
+	# deploy database with given user/password configuration
+	# By default, since docker is used, there are no users created so default available user is
+	# postgres/password
 	echo "Deploying Database (POSTGRES) container at $db_ip"
 	docker run \
 		-d \
 		--name $fabric_explorer_db_name \
 		--net $docker_network_name --ip $db_ip \
 		-e POSTGRES_PASSWORD=$explorer_db_pwd \
+		-e PGPASSWORD=$explorer_db_pwd \
 		$fabric_explorer_db_tag
 }
 
@@ -132,8 +156,11 @@ function deploy_load_database(){
 	sleep 1s
 	echo "Waiting...1s"
 	sleep 1s
-	docker exec $fabric_explorer_db_name psql -h localhost -U $explorer_db_user -a -f /opt/explorerpg.sql
-	docker exec $fabric_explorer_db_name psql -h localhost -U $explorer_db_user -a -f /opt/updatepg.sql
+	echo "Creating Default user..."
+	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -c "CREATE USER $explorer_db_user WITH PASSWORD '$explorer_db_pwd'"
+	echo "Creating default database schemas..."
+	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -a -f /opt/explorerpg.sql
+	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -a -f /opt/updatepg.sql
 }
 
 function deploy_build_explorer(){
@@ -186,8 +213,10 @@ function deploy(){
 
 function main(){
 	banner
-	config
+	#Pass arguments to function exactly as-is
+	config "$@"
 	deploy
 }
 
-main
+#Pass arguments to function exactly as-is
+main "$@"

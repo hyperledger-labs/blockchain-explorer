@@ -5,7 +5,14 @@
 
 FROM postgres:10.4-alpine
 
-ENV USERNAME postgres
+# default username for HLF Explorer db connection
+ENV USERNAME 	hppoc
+
+# default password for HLF Explorer db connection
+ENV PGPASSWORD 	password
+
+# default password for postgres default user
+ENV POSTGRES_PASSWORD password
 
 WORKDIR /opt
 
