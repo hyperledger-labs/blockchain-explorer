@@ -28,12 +28,6 @@ const chaincodeList = channel => dispatch =>
 const channels = () => dispatch =>
   get('/api/channels/info')
     .then(resp => {
-      resp.channels.forEach(element => {
-        element.createdat = moment(element.createdat)
-          .tz(moment.tz.guess())
-          .format('M-D-YYYY h:mm A zz');
-      });
-
       dispatch(actions.getChannels(resp));
     })
     .catch(error => {
@@ -61,12 +55,6 @@ const transaction = (channel, transactionId) => dispatch =>
 const transactionList = channel => dispatch =>
   get(`/api/txList/${channel}/0/0/`)
     .then(resp => {
-      resp.rows.forEach(element => {
-        element.createdt = moment(element.createdt)
-          .tz(moment.tz.guess())
-          .format('M-D-YYYY h:mm A zz');
-      });
-
       dispatch(actions.getTransactionList(resp));
     })
     .catch(error => {

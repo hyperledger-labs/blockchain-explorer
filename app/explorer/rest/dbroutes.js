@@ -76,6 +76,7 @@ const dbroutes = (app, persist) => {
     if (txid && txid != '0' && channel_genesis_hash) {
       crudService.getTransactionByID(channel_genesis_hash, txid).then(row => {
         if (row) {
+          row.createdt = new Date(row.createdt).toISOString();
           return res.send({ status: 200, row });
         }
       });
@@ -107,6 +108,9 @@ const dbroutes = (app, persist) => {
     if (channel_genesis_hash) {
       crudService.getTxList(channel_genesis_hash, blockNum, txid).then(rows => {
         if (rows) {
+          rows.forEach(element => {
+            element.createdt = new Date(element.createdt).toISOString();
+          });
           return res.send({ status: 200, rows });
         }
       });
@@ -159,6 +163,9 @@ const dbroutes = (app, persist) => {
         .getBlockAndTxList(channel_genesis_hash, blockNum)
         .then(rows => {
           if (rows) {
+            rows.forEach(element => {
+              element.createdt = new Date(element.createdt).toISOString();
+            });
             return res.send({ status: 200, rows });
           }
           return requtil.notFound(req, res);
@@ -319,6 +326,9 @@ const dbroutes = (app, persist) => {
     crudService
       .getChannelsInfo()
       .then(data => {
+        data.forEach(element => {
+          element.createdat = new Date(element.createdat).toISOString();
+        });
         res.send({ status: 200, channels: data });
       })
       .catch(err => res.send({ status: 500 }));

@@ -162,11 +162,7 @@ export class TransactionView extends Component {
                     </tr>
                     <tr>
                       <th>Time:</th>
-                      <td>
-                        {moment(transaction.createdt)
-                          .tz(moment.tz.guess())
-                          .format('M-D-YYYY h:mm A zz')}
-                      </td>
+                      <td>{transaction.createdt}</td>
                     </tr>
                     <tr>
                       <th style={reads}>Reads:</th>
