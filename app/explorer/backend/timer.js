@@ -13,38 +13,37 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-var Metrics = require('./metrics')
-var BlockListener = require('./BlockListener')
-var BlockScanner = require('./BlockScanner')
+const Metrics = require('./metrics');
+const BlockListener = require('./BlockListener');
+const BlockScanner = require('./BlockScanner');
+const PlatformBuilder = require("../../platform/PlatformBuilder.js");
 
 
-
-var blockPerMinMeter = Metrics.blockMetrics
-var txnPerSecMeter = Metrics.txnPerSecMeter
-var txnPerMinMeter = Metrics.txMetrics
+const blockPerMinMeter = Metrics.blockMetrics;
+const txnPerSecMeter = Metrics.txnPerSecMeter;
+const txnPerMinMeter = Metrics.txMetrics;
 
 async function start(platform, persistence, broadcaster) {
+  const pf = await PlatformBuilder.build(platform);
+  const blockScanner = new BlockScanner(pf, persistence, broadcaster);
+  const blockListener = new BlockListener(blockScanner);
 
-        blockScanner = new BlockScanner(platform, persistence, broadcaster);
-        blockListener = new BlockListener(blockScanner);
+  setInterval(function () {
+    blockPerMinMeter.push(0);
+    txnPerSecMeter.push(0);
+    txnPerMinMeter.push(0);
+  }, 500);
 
-        setInterval(function () {
-            blockPerMinMeter.push(0)
-            txnPerSecMeter.push(0)
-            txnPerMinMeter.push(0)
-        }, 500);
-
-        //Sync Block
-        blockListener.emit('syncChannels');
-        blockListener.emit('syncChaincodes');
-        blockListener.emit('syncPeerlist');
-		// ====================Orderer BE-303=====================================
-		blockListener.emit('syncOrdererlist');
-		// ====================Orderer BE-303=====================================
-        blockListener.emit('syncBlock');
-        blockListener.emit('syncChannelEventHubBlock');
+  //Sync Block
+  blockListener.emit('syncChannels');
+  blockListener.emit('syncChaincodes');
+  blockListener.emit('syncPeerlist');
+  // ====================Orderer BE-303=====================================
+  blockListener.emit('syncOrdererlist');
+  // ====================Orderer BE-303=====================================
+  blockListener.emit('syncBlock');
+  blockListener.emit('syncChannelEventHubBlock');
 }
 
 
-exports.start = start
-
+exports.start = start;

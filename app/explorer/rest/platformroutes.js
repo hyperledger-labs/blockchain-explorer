@@ -14,10 +14,12 @@ var logger = helper.getLogger("main");
 
 const platformroutes = async function (app, pltfrm, persistence) {
 
-  platform = await PlatformBuilder.build(pltfrm);
-  proxy = platform.getDefaultProxy();
-  statusMetrics = persistence.getMetricService();
-  crudService = persistence.getCrudService();
+  const platform = await PlatformBuilder.build(pltfrm);
+  const proxy = platform.getDefaultProxy();
+  const statusMetrics = persistence.getMetricService();
+  const crudService = persistence.getCrudService();
+
+
 
   /***
       Block by number
