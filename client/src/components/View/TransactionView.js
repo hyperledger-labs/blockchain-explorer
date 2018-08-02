@@ -64,11 +64,6 @@ const writes = {
 };
 
 export class TransactionView extends Component {
-  componentWillMount() {
-    const theme = sessionStorage.getItem('toggleTheme') === 'true';
-    this.setState({ toggleClass: theme });
-  }
-
   handleClose = () => {
     const { onClose } = this.props;
     onClose();
@@ -76,11 +71,35 @@ export class TransactionView extends Component {
 
   render() {
     const { transaction } = this.props;
-    const { toggleClass } = this.state;
     if (transaction && !transaction.read_set) {
       return (
-        <div className={toggleClass ? 'dark-theme' : ''}>
-          <div>
+        <div>
+          <CardTitle className="dialogTitle">
+            <FontAwesome name="list-alt" className="listIcon" />
+            Transaction Details
+            <button
+              type="button"
+              onClick={this.handleClose}
+              className="closeBtn"
+            >
+              <FontAwesome name="close" />
+            </button>
+          </CardTitle>
+          <div align="center">
+            <CardBody className="card-body">
+              <span className="loading-wheel">
+                {' '}
+                <FontAwesome name="circle-o-notch" size="3x" spin />
+              </span>
+            </CardBody>
+          </div>
+        </div>
+      );
+    }
+    if (transaction) {
+      return (
+        <div className="dialog">
+          <Card>
             <CardTitle className="dialogTitle">
               <FontAwesome name="list-alt" className="listIcon" />
               Transaction Details
@@ -92,108 +111,79 @@ export class TransactionView extends Component {
                 <FontAwesome name="close" />
               </button>
             </CardTitle>
-            <div align="center">
-              <CardBody className="card-body">
-                <span className="loading-wheel">
-                  {' '}
-                  <FontAwesome name="circle-o-notch" size="3x" spin />
-                </span>
-              </CardBody>
-            </div>
-          </div>
-        </div>
-      );
-    }
-    if (transaction) {
-      return (
-        <div className={toggleClass ? 'dark-theme' : ''}>
-          <div className="dialog">
-            <Card>
-              <CardTitle className="dialogTitle">
-                <FontAwesome name="list-alt" className="listIcon" />
-                Transaction Details
-                <button
-                  type="button"
-                  onClick={this.handleClose}
-                  className="closeBtn"
-                >
-                  <FontAwesome name="close" />
-                </button>
-              </CardTitle>
-              <CardBody>
-                <Table striped hover responsive className="table-striped">
-                  <tbody>
-                    <tr>
-                      <th>Transaction ID:</th>
-                      <td>
-                        {transaction.txhash}
-                        <button type="button" className="copyBtn">
-                          <div className="copyMessage">Copy</div>
-                          <div className="copiedMessage">Copied</div>
-                          <CopyToClipboard text={transaction.txhash}>
-                            <FontAwesome name="copy" />
-                          </CopyToClipboard>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Validation Code:</th>
-                      <td>{transaction.validation_code}</td>
-                    </tr>
-                    <tr>
-                      <th>Payload Proposal Hash:</th>
-                      <td>{transaction.payload_proposal_hash}</td>
-                    </tr>
-                    <tr>
-                      <th>Creator MSP:</th>
-                      <td>{transaction.creator_msp_id}</td>
-                    </tr>
-                    <tr>
-                      <th>Endoser:</th>
-                      <td>{transaction.endorser_msp_id}</td>
-                    </tr>
-                    <tr>
-                      <th>Chaincode Name:</th>
-                      <td>{transaction.chaincodename}</td>
-                    </tr>
-                    <tr>
-                      <th>Type:</th>
-                      <td>{transaction.type}</td>
-                    </tr>
-                    <tr>
-                      <th>Time:</th>
-                      <td>{transaction.createdt}</td>
-                    </tr>
-                    <tr>
-                      <th style={reads}>Reads:</th>
-                      <td>
-                        <JSONTree
-                          data={transaction.read_set}
-                          theme={readTheme}
-                          invertTheme={false}
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <th style={writes}>Writes:</th>
-                      <td>
-                        <JSONTree
-                          data={transaction.write_set}
-                          theme={writeTheme}
-                          invertTheme={false}
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-          </div>
+            <CardBody>
+              <Table striped hover responsive className="table-striped">
+                <tbody>
+                  <tr>
+                    <th>Transaction ID:</th>
+                    <td>
+                      {transaction.txhash}
+                      <button type="button" className="copyBtn">
+                        <div className="copyMessage">Copy</div>
+                        <div className="copiedMessage">Copied</div>
+                        <CopyToClipboard text={transaction.txhash}>
+                          <FontAwesome name="copy" />
+                        </CopyToClipboard>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Validation Code:</th>
+                    <td>{transaction.validation_code}</td>
+                  </tr>
+                  <tr>
+                    <th>Payload Proposal Hash:</th>
+                    <td>{transaction.payload_proposal_hash}</td>
+                  </tr>
+                  <tr>
+                    <th>Creator MSP:</th>
+                    <td>{transaction.creator_msp_id}</td>
+                  </tr>
+                  <tr>
+                    <th>Endoser:</th>
+                    <td>{transaction.endorser_msp_id}</td>
+                  </tr>
+                  <tr>
+                    <th>Chaincode Name:</th>
+                    <td>{transaction.chaincodename}</td>
+                  </tr>
+                  <tr>
+                    <th>Type:</th>
+                    <td>{transaction.type}</td>
+                  </tr>
+                  <tr>
+                    <th>Time:</th>
+                    <td>{transaction.createdt}</td>
+                  </tr>
+                  <tr>
+                    <th style={reads}>Reads:</th>
+                    <td>
+                      <JSONTree
+                        data={transaction.read_set}
+                        theme={readTheme}
+                        invertTheme={false}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th style={writes}>Writes:</th>
+                    <td>
+                      <JSONTree
+                        data={transaction.write_set}
+                        theme={writeTheme}
+                        invertTheme={false}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </CardBody>
+          </Card>
         </div>
       );
     }
     return (
-      <div className={toggleClass ? 'dark-theme' : ''}>
+      <div>
         <CardTitle className="dialogTitle">
           <FontAwesome name="list-alt" className="listIcon" />
           Transaction Details

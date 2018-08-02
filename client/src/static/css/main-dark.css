@@ -2,7 +2,9 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 /* Dark-Theme is switched by the class name */
-
+.dark-theme {
+  background-color: #242036 !important;
+}
 .dark-theme .landingBackground {
   background-color: #f0f5f9 !important;
 }
@@ -316,7 +318,6 @@
   color: rgb(121, 83, 109) !important;
   background-color: rgb(247, 205, 234) !important;
 }
-
 /*recharts style */
 .dark-theme .recharts-text {
   fill: #ffffff !important;
