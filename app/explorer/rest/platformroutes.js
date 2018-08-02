@@ -14,17 +14,19 @@ var logger = helper.getLogger("main");
 
 const platformroutes = async function (app, pltfrm, persistence) {
 
-  platform = await PlatformBuilder.build(pltfrm);
-  proxy = platform.getDefaultProxy();
-  statusMetrics = persistence.getMetricService();
-  crudService = persistence.getCrudService();
+  const platform = await PlatformBuilder.build(pltfrm);
+  const proxy = platform.getDefaultProxy();
+  const statusMetrics = persistence.getMetricService();
+  const crudService = persistence.getCrudService();
+
+
 
   /***
-      Block by number
-      GET /api/block/getinfo -> /api/block
-      curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
-      *
-      */
+   Block by number
+   GET /api/block/getinfo -> /api/block
+   curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
+   *
+   */
   app.get("/api/block/:channel/:number", function (req, res) {
     let number = parseInt(req.params.number);
     let channelName = req.params.channel;
@@ -44,18 +46,18 @@ const platformroutes = async function (app, pltfrm, persistence) {
   });
 
   /**
-      Return list of channels
-      GET /channellist -> /api/channels
-      curl -i http://<host>:<port>/api/channels
-      Response:
-      {
-      "channels": [
-          {
-          "channel_id": "mychannel"
-          }
-      ]
-      }
-      */
+   Return list of channels
+   GET /channellist -> /api/channels
+   curl -i http://<host>:<port>/api/channels
+   Response:
+   {
+   "channels": [
+       {
+       "channel_id": "mychannel"
+       }
+   ]
+   }
+   */
 
   app.get("/api/channels", function (req, res) {
     var channels = [],
@@ -70,30 +72,30 @@ const platformroutes = async function (app, pltfrm, persistence) {
   });
 
   /**
-  Return current channel
-  GET /api/curChannel
-  curl -i 'http://<host>:<port>/api/curChannel'
-  */
+   Return current channel
+   GET /api/curChannel
+   curl -i 'http://<host>:<port>/api/curChannel'
+   */
   app.get("/api/curChannel", function (req, res) {
- this.proxy.getGenesisBlockHash().then((data)=>{
-  res.send({
-    currentChannel: data
-  });
- })
+    this.proxy.getGenesisBlockHash().then((data)=>{
+      res.send({
+        currentChannel: data
+      });
+    })
 
   });
 
   /**
-  Return change channel
-  POST /api/changeChannel
-  curl -i 'http://<host>:<port>/api/curChannel'
-  */
+   Return change channel
+   POST /api/changeChannel
+   curl -i 'http://<host>:<port>/api/curChannel'
+   */
   app.get("/api/changeChannel/:channelName", async function (req, res) {
     let channelName = req.params.channelName;
     let channel = await this.crudService.getChannelByGenesisBlockHash(channelName)
     proxy.changeChannel(channel.name);
     ledgerMgr.ledgerEvent.emit("changeLedger");
-   let  curChannel = await  this.proxy.getGenesisBlockHash(channel.name)
+    let  curChannel = await  this.proxy.getGenesisBlockHash(channel.name)
     res.send({
       currentChannel:curChannel
     });
@@ -101,14 +103,14 @@ const platformroutes = async function (app, pltfrm, persistence) {
 
 
   /***
-     Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
+   Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
 
-      The values of the profile and genesisBlock are taken fron the configtx.yaml file that
-      is used by the configtxgen tool
-      Example values from the defualt first network:
-      profile = 'TwoOrgsChannel';
-      genesisBlock = 'TwoOrgsOrdererGenesis';
-  */
+   The values of the profile and genesisBlock are taken fron the configtx.yaml file that
+   is used by the configtxgen tool
+   Example values from the defualt first network:
+   profile = 'TwoOrgsChannel';
+   genesisBlock = 'TwoOrgsOrdererGenesis';
+   */
 
   /*
   Create new channel
@@ -145,13 +147,13 @@ const platformroutes = async function (app, pltfrm, persistence) {
   });
 
   /***
-      An API to join channel
-  POST /api/joinChannel
+   An API to join channel
+   POST /api/joinChannel
 
-  curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channelName":"newchannel"}' http://localhost:8080/api/joinChannel
+   curl -X POST -H "Content-Type: application/json" -d '{ "orgName":"Org1","channelName":"newchannel"}' http://localhost:8080/api/joinChannel
 
-  Response: {  success: true, message: "Successfully joined peer to the channel "   }
-  */
+   Response: {  success: true, message: "Successfully joined peer to the channel "   }
+   */
 
   app.post("/api/joinChannel", function (req, res) {
     var channelName = req.body.channelName;
@@ -167,20 +169,20 @@ const platformroutes = async function (app, pltfrm, persistence) {
   });
 
   /**
-      Chaincode list
-      GET /chaincodelist -> /api/chaincode
-      curl -i 'http://<host>:<port>/api/chaincode/<channel>'
-      Response:
-      [
-        {
-          "channelName": "mychannel",
-          "chaincodename": "mycc",
-          "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02",
-          "version": "1.0",
-          "txCount": 0
-        }
-      ]
-    */
+   Chaincode list
+   GET /chaincodelist -> /api/chaincode
+   curl -i 'http://<host>:<port>/api/chaincode/<channel>'
+   Response:
+   [
+   {
+     "channelName": "mychannel",
+     "chaincodename": "mycc",
+     "path": "github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02",
+     "version": "1.0",
+     "txCount": 0
+   }
+   ]
+   */
 
   app.get("/api/chaincode/:channel", function (req, res) {
     let channelName = req.params.channel;
@@ -201,21 +203,21 @@ const platformroutes = async function (app, pltfrm, persistence) {
   });
 
   /***Peer Status List
-  GET /peerlist -> /api/peersStatus
-  curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
-  Response:
-  [
-    {
-      "requests": "grpcs://127.0.0.1:7051",
-      "server_hostname": "peer0.org1.example.com"
-    }
-  ]
-  */
+   GET /peerlist -> /api/peersStatus
+   curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
+   Response:
+   [
+   {
+     "requests": "grpcs://127.0.0.1:7051",
+     "server_hostname": "peer0.org1.example.com"
+   }
+   ]
+   */
 
   app.get("/api/peersStatus/:channel", function (req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-       platform.getPeersStatus(channelName,function (data) {
+      platform.getPeersStatus(channelName,function (data) {
         res.send({ status: 200, peers: data });
       });
     } else {
