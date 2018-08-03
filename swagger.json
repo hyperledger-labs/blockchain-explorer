@@ -5,14 +5,17 @@
     "description": "Rest API for fabric .",
     "version": "1.0.0",
     "contact": {
-      "name": "Hyperledger Team",
-      "email": ""
+      "name": "Hyperledger Team"
     }
   },
   "host": "localhost:8080",
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "basePath": "/api",
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "tags": [
     {
       "name": "Channel",
@@ -34,7 +37,9 @@
   "paths": {
     "/channels": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Query to fetch channels",
         "description": "Query to fetch channels",
         "responses": {
@@ -55,7 +60,9 @@
     },
     "/status/{channel_genesis_hash}": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Query to get BlockCount on a channel",
         "description": "Query to get BlockCount on a channel",
         "parameters": [
@@ -87,19 +94,21 @@
                 }
               }
             }
-          }
-        },
-        "default": {
-          "description": "Unexpected error",
-          "schema": {
-            "$ref": "#/definitions/Error"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
     },
     "/curChannel": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "get Current channel",
         "description": "get Current channel",
         "responses": {
@@ -120,7 +129,9 @@
     },
     "/changeChannel/{channel_genesis_hash}": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Query to get Change Channel on a channel",
         "description": "Query to get Change Channel on a channel",
         "parameters": [
@@ -136,7 +147,12 @@
           "200": {
             "description": "Success",
             "schema": {
-              "$ref": "#/definitions/changeChannel"
+              "type": "object",
+              "properties": {
+                "currentChannel": {
+                  "type": "string"
+                }
+              }
             }
           },
           "default": {
@@ -150,7 +166,9 @@
     },
     "/chaincode/{channel_genesis_hash}": {
       "get": {
-        "tags": ["Chaincodes"],
+        "tags": [
+          "Chaincodes"
+        ],
         "summary": "Query to fetch all Installed/instantiated chaincodes",
         "description": "Query to fetch all Installed/instantiated chaincodes",
         "parameters": [
@@ -197,11 +215,17 @@
     },
     "/channel": {
       "post": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Create New channel on target peers  ",
         "description": "Create New channel on target peers",
-        "consumes": ["application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
             "name": "channelName",
@@ -231,7 +255,7 @@
             "required": true,
             "type": "array",
             "items": {
-              "type": "file"
+              "type": "string"
             }
           },
           {
@@ -268,19 +292,26 @@
     },
     "/joinChannel": {
       "post": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "join channel ",
         "description": "join  channel ",
-        "consumes": ["application/json", "application/x-www-form-urlencoded"],
-        "produces": ["application/json"],
+        "consumes": [
+          "application/json",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
         "parameters": [
           {
-            "in": "body",
             "name": "body",
+            "in": "body",
+            "required": true,
             "description": "payload",
             "schema": {
               "type": "object",
-              "required": true,
               "properties": {
                 "channelName": {
                   "type": "string"
@@ -324,7 +355,9 @@
     },
     "/block/{channel_genesis_hash}/{number}": {
       "get": {
-        "tags": ["Blocks"],
+        "tags": [
+          "Blocks"
+        ],
         "summary": "Query to Fetch Blocks",
         "description": "Query to Fetch Blocks",
         "parameters": [
@@ -403,7 +436,9 @@
     },
     "/block/transactions/{channel_genesis_hash}/{number}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Fetch Block Transactions",
         "description": "Query to Fetch Block Transactions",
         "parameters": [
@@ -451,12 +486,14 @@
     },
     "/transaction/{channel_genesis_hash}/{txid}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Get Transaction by Txid",
         "description": "Query to Get Transaction by Txid",
         "parameters": [
           {
-            "name": "channelName",
+            "name": "channel_genesis_hash",
             "in": "path",
             "description": "channel_genesis_hash",
             "required": true,
@@ -546,12 +583,14 @@
     },
     "/txList/{channel_genesis_hash}/{number}/{txid}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Get Trasaction List",
         "description": "Query to Get Trasaction List",
         "parameters": [
           {
-            "name": "channelName",
+            "name": "channel_genesis_hash",
             "in": "path",
             "description": "channel_gensis_hash",
             "required": true,
@@ -624,12 +663,14 @@
     },
     "/peers/{channel_genesis_hash}": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Peers",
         "description": "Peers",
         "parameters": [
           {
-            "name": "channelName",
+            "name": "channel_genesis_hash",
             "in": "path",
             "description": "channel_genesis_hash",
             "required": true,
@@ -676,7 +717,9 @@
     },
     "/peersStatus/{channelName}": {
       "get": {
-        "tags": ["Channel"],
+        "tags": [
+          "Channel"
+        ],
         "summary": "Query Get PeersStatus",
         "description": "Query Get PeersStatus",
         "parameters": [
@@ -725,12 +768,14 @@
     },
     "/blockAndTxList/{channel_genesis_hash}/{number}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Get Block And Transaction List",
         "description": "Query to Get Block And Transaction List",
         "parameters": [
           {
-            "name": "channelName",
+            "name": "channel_genesis_hash",
             "in": "path",
             "description": "channel_genesis_hash",
             "required": true,
@@ -811,7 +856,9 @@
     },
     "/txByMinute/{channel_genesis_hash}/{hours}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Get Trasaction BY Minute",
         "description": "Query to Get Trasaction By Minute",
         "parameters": [
@@ -859,7 +906,9 @@
     },
     "/txByHour/{channel_genesis_hash}/{days}": {
       "get": {
-        "tags": ["Transactions"],
+        "tags": [
+          "Transactions"
+        ],
         "summary": "Query to Get Trasaction By Hour",
         "description": "Queryto  Get Trasaction BY Hour",
         "parameters": [
@@ -907,7 +956,9 @@
     },
     "/blocksByMinute/{channel_genesis_hash}/{hours}": {
       "get": {
-        "tags": ["Blocks"],
+        "tags": [
+          "Blocks"
+        ],
         "summary": "Query to Get Blocks BY Minute",
         "description": "Query to Get Blocks By Minute",
         "parameters": [
@@ -955,7 +1006,9 @@
     },
     "/blocksByHour/{channel_genesis_hash}/{days}": {
       "get": {
-        "tags": ["Blocks"],
+        "tags": [
+          "Blocks"
+        ],
         "summary": "Query to Get Blocks By Hour",
         "description": "Query to Get Blocks By Hour",
         "parameters": [
@@ -1003,7 +1056,9 @@
     },
     "/txByOrg/{channel_genesis_hash}": {
       "get": {
-        "tags": ["Blocks"],
+        "tags": [
+          "Blocks"
+        ],
         "summary": "Query Get Trasaction By Org",
         "description": "Query Get Trasaction BY Org",
         "parameters": [
@@ -1052,7 +1107,9 @@
     },
     "/channels/info": {
       "get": {
-        "tags": ["Channels"],
+        "tags": [
+          "Channels"
+        ],
         "summary": "Query to Get Channels Inforamtion",
         "description": "Query to Get channel Information",
         "responses": {
@@ -1110,9 +1167,11 @@
         "status": {
           "type": "string"
         },
-        "type": "array",
-        "items": {
-          "type": "integer"
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
         }
       }
     },
@@ -1152,41 +1211,41 @@
                   "type": "string"
                 }
               }
-            }
-          },
-          "signature_header": {
-            "type": "object",
-            "properties": {
-              "creator": {
-                "type": "object",
-                "properties": {
-                  "Mspid": {
-                    "type": "string"
-                  },
-                  "Idbytes": {
-                    "type": "string"
-                  }
-                }
-              },
-              "nonce": {
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "number"
+            },
+            "signature_header": {
+              "type": "object",
+              "properties": {
+                "creator": {
+                  "type": "object",
+                  "properties": {
+                    "Mspid": {
+                      "type": "string"
+                    },
+                    "Idbytes": {
+                      "type": "string"
                     }
-                  },
-                  "type": {
-                    "type": "string"
+                  }
+                },
+                "nonce": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "type": {
+                      "type": "string"
+                    }
                   }
                 }
               }
+            },
+            "data": {
+              "type": "object"
             }
           }
-        },
-        "data": {
-          "type": "object"
         }
       }
     },
