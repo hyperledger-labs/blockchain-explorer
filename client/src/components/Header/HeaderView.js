@@ -30,6 +30,7 @@ import {
   getBlocksPerMinType,
   getChaincodeListType,
   getChangeChannelType,
+  getChannelsType,
   getDashStatsType,
   getPeerListType,
   getPeerStatusType,
@@ -50,7 +51,7 @@ const {
   peerStatus
 } = chartOperations;
 
-const { blockList, chaincodeList, peerList, transactionList } = tableOperations;
+const { blockList, chaincodeList, channels, peerList, transactionList } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
 const { channelsSelector } = tableSelectors;
@@ -245,6 +246,11 @@ export class HeaderView extends Component {
     this.setState({ notifyCount: notifyCount + 1 });
   }
 
+  async reloadChannels() {
+    const { getChannels } = this.props;
+    await getChannels();
+  }
+
   async syncData(currentChannel) {
     const {
       getBlockList,
@@ -386,6 +392,7 @@ export class HeaderView extends Component {
                       isLoading={isLoading}
                       value={selectedChannel}
                       onChange={this.handleChange}
+                      onFocus={this.reloadChannels.bind(this)}
                       options={channels}
                     />
                   </div>
@@ -473,6 +480,7 @@ HeaderView.propTypes = {
   getBlocksPerMin: getBlocksPerMinType.isRequired,
   getChangeChannel: getChangeChannelType.isRequired,
   getChaincodeList: getChaincodeListType.isRequired,
+  getChannels: getChannelsType.isRequired,
   getDashStats: getDashStatsType.isRequired,
   getPeerList: getPeerListType.isRequired,
   getPeerStatus: getPeerStatusType.isRequired,
@@ -495,6 +503,7 @@ export default compose(
       getBlocksPerMin: blockPerMin,
       getChaincodeList: chaincodeList,
       getChangeChannel: changeChannel, // not in syncdata
+      getChannels: channels,
       getDashStats: dashStats,
       getPeerList: peerList,
       getPeerStatus: peerStatus,
