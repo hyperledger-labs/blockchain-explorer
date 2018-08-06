@@ -196,7 +196,7 @@ DROP INDEX IF EXISTS transaction_blockid_idx;
 CREATE INDEX ON Transactions (blockid);
 
 DROP INDEX IF EXISTS transaction_chaincode_proposal_input_idx;
-CREATE INDEX ON Transactions (chaincode_proposal_input);
+CREATE INDEX ON Transactions ((md5(chaincode_proposal_input)));
 
 DROP INDEX IF EXISTS channel_genesis_block_hash_idx;
 CREATE INDEX ON channel (genesis_block_hash);

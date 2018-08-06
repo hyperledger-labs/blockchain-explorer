@@ -13,6 +13,7 @@ class BlockView extends Component {
     const { onClose } = this.props;
     onClose();
   };
+
   render() {
     const { blockHash } = this.props;
     if (!blockHash) {
@@ -51,10 +52,6 @@ class BlockView extends Component {
                 <tr>
                   <th>Channel name:</th>
                   <td>{blockHash.channelname}</td>
-                </tr>
-                <tr>
-                  <th>ID</th>
-                  <td>{blockHash.id}</td>
                 </tr>
                 <tr>
                   <th>Block Number</th>
