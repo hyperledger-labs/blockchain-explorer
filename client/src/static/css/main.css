@@ -431,6 +431,11 @@ th {
 .table td {
   padding: 5px;
 }
+/*Notification Panel*/
+.notificationBadge {
+  margin-left: 60% !important;
+}
+
 .closeBtn {
   float: right;
   border-color: transparent;

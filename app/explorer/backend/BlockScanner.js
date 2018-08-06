@@ -121,7 +121,8 @@ class BlockScanner {
     if (blockSaved) {
       //push last block
       var notify = {
-        title: 'Block ' + block.header.number + ' Added',
+        title: 'Block ' + block.header.number + ' added to: ' + channelName,
+        channelName: channelName,
         type: 'block',
         message:
           'Block ' +

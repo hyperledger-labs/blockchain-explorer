@@ -77,6 +77,8 @@ class TimelineStream extends Component {
                 }
               >
                 <Typography variant="body1">
+                  <b className="timeLineText"> Channel Name:</b>{' '}
+                  {item.channelName} <br />
                   <b className="timeLineText"> Datahash:</b> {item.datahash}{' '}
                   <br />
                   <b className="timeLineText"> Number of Tx:</b> {item.txcount}

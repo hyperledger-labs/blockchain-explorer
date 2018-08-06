@@ -179,7 +179,8 @@
   background-color: #5e558e !important;
   color: white !important;
 }
-.dark-theme .notificationTime {
+.dark-theme .notificationTime,
+.dark-theme .notificationBadge {
   color: #ffffff !important;
   background-color: #242036 !important;
 }

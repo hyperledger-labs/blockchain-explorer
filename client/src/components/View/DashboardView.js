@@ -60,7 +60,8 @@ export class DashboardView extends Component {
           time: block.createdt,
           txcount: block.txcount,
           datahash: block.datahash,
-          blockhash: block.blockhash
+          blockhash: block.blockhash,
+          channelName: block.channelname
         };
         notificationsArr.push(notify);
       }
@@ -81,7 +82,10 @@ export class DashboardView extends Component {
             alignItems: 'center'
           }}
         >
-          <h1>Please verify your network configuration, database configuration and try again</h1>
+          <h1>
+            Please verify your network configuration, database configuration and
+            try again
+          </h1>
         </div>
       );
     }

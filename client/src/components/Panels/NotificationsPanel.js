@@ -65,14 +65,16 @@ export class NotificationsPanel extends Component {
         <div className={classes.root}>
           <List component="nav" className="notificationPanel">
             {notifications.map((notify, index) => (
-              <ListItem key={index} button className="notificationPanel">
-                {this.avatarIcon(notify.type, classes)}
-                <ListItemText
-                  className="notificationPanel"
-                  primary={notify.title}
-                  secondary={notify.message}
-                />
-                <Badge className="notificationTime">
+              <div>
+                <ListItem key={index} button className="notificationPanel">
+                  {this.avatarIcon(notify.type, classes)}
+                  <ListItemText
+                    className="notificationPanel"
+                    primary={notify.title}
+                    secondary={notify.message}
+                  />
+                </ListItem>
+                <Badge className="notificationBadge">
                   <Timeago
                     className="notificationTime"
                     date={notify.time}
@@ -80,7 +82,7 @@ export class NotificationsPanel extends Component {
                     minPeriod={60}
                   />
                 </Badge>
-              </ListItem>
+              </div>
             ))}
           </List>
         </div>
