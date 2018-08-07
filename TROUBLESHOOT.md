@@ -183,3 +183,92 @@ No fabric network detected based on the explorer configuration
 	* Verify if fabric network is running
 Related Information:
 
+
+#### Problem Description:  Explorer fails to start
+
+##### Background Information
+    /Users/USER_ID/workspace/blockchain-explorer/app/persistence/postgreSQL/db/pgservice.js:319
+        if (!res.rows || res.rows.length == 0) resolve(null);
+                ^
+    TypeError: Cannot read property 'rows' of undefined
+        at Query.client.query [as callback] (/Users/USER_ID/workspace/blockchain-explorer/app/persistence/postgreSQL/db/pgservice.js:319:16)
+        at Query.handleError (/Users/USER_ID/workspace/blockchain-explorer/node_modules/pg/lib/query.js:143:17)
+        at Connection.connectedErrorHandler (/Users/USER_ID/workspace/blockchain-explorer/node_modules/pg/lib/client.js:132:26)
+        at emitOne (events.js:116:13)
+        at Connection.emit (events.js:211:7)
+        at Socket.<anonymous> (/Users/USER_ID/workspace/blockchain-explorer/node_modules/pg/lib/connection.js:117:12)
+        at emitOne (events.js:116:13)
+        at Socket.emit (events.js:211:7)
+        at addChunk (_stream_readable.js:263:12)
+        at readableAddChunk (_stream_readable.js:250:11)
+
+##### Possible cause:
+* No fabric network detected based on the explorer configuration
+
+##### Possible solution:
+* Run DB Setup, see README.md
+
+##### Related Information:
+
+#### Problem Description:  db error { error: Ident authentication failed for user "hppoc"
+
+##### Background Information
+
+    I started using (./start.sh) when I call console, I get in the log file the error: postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
+
+    db error { error: Ident authentication failed for user "hppoc"
+
+##### Possible cause:
+* You could be behind the proxy
+
+##### Possible solution:
+* Open firewall, add your IP address to firewall exceptions
+
+##### Related Information:
+
+
+#### Problem Description:  Cannot read property 'forEach'
+
+##### Background Information
+
+- postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
+- (node:22905) UnhandledPromiseRejectionWarning: TypeError: Cannot read property 'forEach' of undefined
+- at Platform.setChannels (/home/user/blockchain-explorer/app/platform/fabric/Platform.js:188:26)
+- at <anonymous>
+- at process._tickCallback (internal/process/next_tick.js:188:7)
+- (node:22905) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). (rejection id: 2)
+- (node:22905) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+- as per the troubleshooting guides it mentions this kind off error is when we are not able to identify Fabric network
+
+##### Possible cause:
+* Miss configuration in config.json
+
+##### Possible solution:
+* Please verify your connection configuration and we do not support Non-TLS, you should have  grpcs and NOT to grpc.
+
+##### Related Information:
+
+#### Problem Description:  Running Explorer on Windows with Docker?
+* I get following error when running `./deploy_explorer.sh dockerConfig` from git bash:
+
+##### Background Information
+
+    The command '/bin/sh -c cd $EXPLORER_APP_PATH && cd client && npm install && yarn build' returned a non-zero code: 1
+    Hyperledger Fabric network configuration file is located at /c/Git/website-request/hyperledger/blockchain-explorer/examples/docker_config/config.json
+    Hyperledger Fabric network crypto material at /c/Git/website-request/hyperledger/blockchain-explorer/examples/docker_config/crypto
+    Stopping previously deployed Hyperledger Fabric Explorer instance...
+    Error response from daemon: No such container: blockchain-explorer
+    Deploying Hyperledger Fabric Explorer container at 192.168.10.12
+    C:\Program Files\Docker\Docker\Resources\bin\docker.exe: Error response from daemon: Mount denied:
+    The source path "C:/Git/website-request/hyperledger/blockchain-explorer/examples/docker_config/config.json;C"
+    doesn't exist and is not known to Docker.
+
+##### Possible cause:
+* Path on windows OS.
+* This is because of Git Bash appending ";C" when converting Windows paths
+
+##### Possible solution:
+* Adding a leading "/" before `$network_config_file` and `$network_crypto_base_path` in the `deploy_explorer.sh` file did the trick
+
+##### Related Information:
+
