@@ -403,7 +403,7 @@ class BlockScanner {
         name: channels[i],
         createdt: date,
         channel_hash: '',
-        genesis_block_hash: genesisBlockHash
+        channel_genesis_hash: genesisBlockHash
       };
       channel.blocks = await this.proxy.getChannelHeight(channel.name);
       for (let j = 0; j < channel.blocks; j++) {
@@ -444,7 +444,7 @@ class BlockScanner {
       var peers = {};
       let peerlist = peerlists[i];
       peers.requests = peerlist._url;
-      peers.genesis_block_hash = genesisBlockHash;
+      peers.channel_genesis_hash = genesisBlockHash;
       if (peerlist._options['grpc.default_authority']) {
         peers.server_hostname = peerlist._options['grpc.default_authority'];
       } else {

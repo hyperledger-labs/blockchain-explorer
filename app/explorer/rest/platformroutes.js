@@ -22,11 +22,12 @@ const platformroutes = async function(app, pltfrm, persistence) {
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get('/api/block/:channel/:number', function(req, res) {
+  app.get('/api/block/:channel_genesis_hash/:number', function(req, res) {
     let number = parseInt(req.params.number);
-    let channelName = req.params.channel;
-    if (!isNaN(number) && channelName) {
-      proxy.getBlockByNumber(channelName, number).then(block => {
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+
+    if (!isNaN(number) && channel_genesis_hash) {
+      proxy.getBlockByNumber(channel_genesis_hash, number).then(block => {
         res.send({
           status: 200,
           number: block.header.number.toString(),

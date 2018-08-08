@@ -45,7 +45,7 @@ export const blockPerMinType = arrayOf(
 export const chaincodeType = shape({
   chaincodename: string,
   channelName: string,
-  genesis_block_hash: string,
+  channel_genesis_hash: string,
   path: string,
   source: string,
   txCount: number,
@@ -56,7 +56,7 @@ export const chaincodeListType = arrayOf(
   shape({
     chaincodename: string,
     channelName: string,
-    genesis_block_hash: string,
+    channel_genesis_hash: string,
     path: string,
     source: string,
     txCount: number,
@@ -70,7 +70,7 @@ export const channelsType = arrayOf(
     channel_hash: string,
     channelname: string,
     createdat: string,
-    genesis_block_hash: string,
+    channel_genesis_hash: string,
     id: number,
     transactions: number
   })
@@ -128,7 +128,7 @@ export const onCloseType = func;
 
 export const peerListType = arrayOf(
   shape({
-    genesis_block_hash: string,
+    channel_genesis_hash: string,
     name: string,
     requests: string.isRequired,
     server_hostname: string.isRequired

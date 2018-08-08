@@ -91,14 +91,14 @@ export class HeaderView extends Component {
     const arr = [];
     let selectedValue = {};
     channels.forEach(element => {
-      if (element.genesis_block_hash === currentChannel) {
+      if (element.channel_genesis_hash === currentChannel) {
         selectedValue = {
-          value: element.genesis_block_hash,
+          value: element.channel_genesis_hash,
           label: element.channelname
         };
       }
       arr.push({
-        value: element.genesis_block_hash,
+        value: element.channel_genesis_hash,
         label: element.channelname
       });
     });
@@ -124,22 +124,22 @@ export class HeaderView extends Component {
     if (nextProps.channels.length > 0) {
       nextProps.channels.forEach(element => {
         options.push({
-          value: element.genesis_block_hash,
+          value: element.channel_genesis_hash,
           label: element.channelname
         });
         if (
           nextProps.currentChannel == null ||
           nextProps.currentChannel === undefined
         ) {
-          if (element.genesis_block_hash != null) {
+          if (element.channel_genesis_hash != null) {
             selectedValue = {
-              value: element.genesis_block_hash,
+              value: element.channel_genesis_hash,
               label: element.channelname
             };
           }
-        } else if (element.genesis_block_hash === nextProps.currentChannel) {
+        } else if (element.channel_genesis_hash === nextProps.currentChannel) {
           selectedValue = {
-            value: element.genesis_block_hash,
+            value: element.channel_genesis_hash,
             label: element.channelname
           };
         }

@@ -57,7 +57,7 @@ const setup = () => {
     getTransaction: jest.fn(),
     peerList: [
       {
-        genesis_block_hash:
+        channel_genesis_hash:
           'f3ed9c95452b184a4d5d66e25ba47f866ad6907a31f28f8067ca5596f64d8e0f',
         name: 'mychannel',
         requests: 'grpcs://127.0.0.1:7051',

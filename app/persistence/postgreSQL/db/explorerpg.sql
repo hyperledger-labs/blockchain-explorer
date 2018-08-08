@@ -73,7 +73,7 @@ CREATE TABLE channel (
   blocks integer DEFAULT NULL,
   trans integer DEFAULT NULL,
   createdt Timestamp DEFAULT NULL,
-  genesis_block_hash character varying(256) DEFAULT NULL,
+  channel_genesis_hash character varying(256) DEFAULT NULL,
   channel_hash character varying(256) DEFAULT NULL,
   channel_config  bytea default NULL,
   channel_block  bytea DEFAULT NULL,
@@ -198,8 +198,8 @@ CREATE INDEX ON Transactions (blockid);
 DROP INDEX IF EXISTS transaction_chaincode_proposal_input_idx;
 CREATE INDEX ON Transactions ((md5(chaincode_proposal_input)));
 
-DROP INDEX IF EXISTS channel_genesis_block_hash_idx;
-CREATE INDEX ON channel (genesis_block_hash);
+DROP INDEX IF EXISTS channel_channel_genesis_hash_idx;
+CREATE INDEX ON channel (channel_genesis_hash);
 
 DROP INDEX IF EXISTS channel_channel_hash_idx;
 CREATE INDEX ON channel (channel_hash);
