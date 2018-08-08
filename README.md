@@ -53,6 +53,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 Following are the software dependencies required to install and run hyperledger explorer
 * nodejs 8.11.x (Note that v9.x is not yet supported)
 * PostgreSQL 9.5 or greater
+* Jq [https://stedolan.github.io/jq/]
 
 Hyperledger Explorer works with Hyperledger Fabric 1.1.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
@@ -72,20 +73,10 @@ Clone this repository to get the latest using the following command.
 ## Database Setup
 **Important repeat after every git pull
 
-Connect to PostgreSQL database.
-
-#### Ubuntu
-
-- `sudo -u postgres psql`
-
-#### macOS
-
- - `psql postgres`
-
 Run create database script.
 
-- `\i app/persistence/postgreSQL/db/explorerpg.sql`
-- `\i app/persistence/postgreSQL/db/updatepg.sql`
+- `cd blockchain-explorer/app/persistence/postgreSQL/db`
+- `./createdb.sh`
 
 Run db status commands.
 
