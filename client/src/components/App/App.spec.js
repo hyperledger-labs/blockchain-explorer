@@ -3,7 +3,7 @@
  */
 
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import App from './App';
+import { App } from './App';
 
 jest.useFakeTimers();
 

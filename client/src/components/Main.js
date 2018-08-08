@@ -26,6 +26,7 @@ import {
   transactionByOrgType,
   transactionListType
 } from './types';
+import PageNotFound from './View/PageNotFound';
 
 const {
   currentChannelSelector,
@@ -65,7 +66,6 @@ export const Main = props => {
     getTransaction,
     transaction
   };
-
   const chaincodeViewProps = {
     chaincodeList
   };
@@ -102,25 +102,31 @@ export const Main = props => {
             render={() => <DashboardView {...dashboardViewProps} />}
           />
           <Route
+            exact
             path="/blocks"
             render={() => <BlocksView {...blocksViewProps} />}
           />
           <Route
+            exact
             path="/chaincodes"
             render={() => <ChaincodeView {...chaincodeViewProps} />}
           />
           <Route
+            exact
             path="/channels"
             render={() => <ChannelsView {...channelsViewProps} />}
           />
           <Route
+            exact
             path="/network"
             render={() => <NetworkView {...networkViewProps} />}
           />
           <Route
+            exact
             path="/transactions"
             render={() => <TransactionsView {...transactionsViewProps} />}
           />
+          <Route exact render={() => <PageNotFound />} />
         </Switch>
       </div>
     </Router>

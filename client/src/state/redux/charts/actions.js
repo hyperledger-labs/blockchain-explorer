@@ -8,6 +8,10 @@ const getBlockPerHour = blockPerHour => ({
   type: types.BLOCK_CHART_HOUR,
   payload: { blockPerHour }
 });
+const getErroMessage = errorMessage => ({
+  type: types.ERROR_MESSAGE,
+  payload: errorMessage
+});
 
 const getBlockPerMin = blockPerMin => ({
   type: types.BLOCK_CHART_MIN,
@@ -70,5 +74,6 @@ export default {
   getTransactionByOrg,
   getTransactionPerHour,
   getTransactionPerMin,
-  updateChannel
+  updateChannel,
+  getErroMessage
 };

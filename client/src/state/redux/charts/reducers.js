@@ -22,6 +22,18 @@ const blockPerHourReducer = (state = initialState, action) => {
     }
   }
 };
+const errorMessageReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.ERROR_MESSAGE: {
+      return {
+        error: action.payload
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
 
 const blockPerMinReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -159,7 +171,8 @@ const reducer = combineReducers({
   peerStatus: peerStatusReducer,
   transactionByOrg: transactionByOrgReducer,
   transactionPerHour: transactionPerHourReducer,
-  transactionPerMin: transactionPerMinReducer
+  transactionPerMin: transactionPerMinReducer,
+  errorMessage: errorMessageReducer
 });
 
 export default reducer;

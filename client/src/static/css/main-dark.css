@@ -396,3 +396,8 @@
 .dark-theme .fullHash {
   display: none;
 }
+/*Error Handling*/
+.dark-theme .errorContent,
+.dark-theme .errorSubHeader {
+  color: #fff;
+}

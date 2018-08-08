@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { createMuiTheme } from '@material-ui/core/styles';
 import indigo from '@material-ui/core/colors/indigo';
@@ -15,6 +16,10 @@ import LandingPage from '../View/LandingPage';
 import '../../static/css/main.css';
 import '../../static/css/main-dark.css';
 import '../../static/css/media-queries.css';
+import ErrorMesageComponent from '../errorMesageComponent';
+import { chartSelectors } from '../../state/redux/charts';
+const { errorMessageSelector } = chartSelectors;
+
 const muiTheme = createMuiTheme({
   palette: {
     contrastThreshold: 3,
@@ -28,7 +33,7 @@ const muiTheme = createMuiTheme({
   }
 });
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,6 +73,9 @@ class App extends Component {
       <MuiThemeProvider theme={muiTheme}>
         <div>
           <HeaderView refresh={this.refreshComponent} />
+          {this.props.error && (
+            <ErrorMesageComponent message={this.props.error} />
+          )}
           <Main />
           <div className="footerView">
             <FooterView />
@@ -77,4 +85,6 @@ class App extends Component {
     );
   }
 }
-export default App;
+export default connect(state => ({
+  error: errorMessageSelector(state)
+}))(App);

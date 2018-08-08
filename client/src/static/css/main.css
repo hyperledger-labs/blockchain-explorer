@@ -677,3 +677,34 @@ th {
   margin: 0 auto;
   width: 100px;
 }
+.error {
+  margin-top: 50px;
+  margin-bottom: -95px;
+  padding-top: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+/*Error Handling*/
+.errorContainer {
+  margin-top: 10%;
+}
+.errorHeader {
+  color: #58c5c2 !important;
+  font-size: 12em;
+  text-align: center;
+  height: 220px;
+}
+.errorSubHeader {
+  font-size: 4em !important;
+  text-align: center;
+}
+.errorContent {
+  text-align: center;
+}
+.errorIcon {
+  size: 30px 30px;
+  text-align: center;
+  color: #f9be53;
+  font-size: 80%;
+}

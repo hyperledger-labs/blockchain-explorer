@@ -1,15 +1,22 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
-import moment from 'moment-timezone';
 import actions from './actions';
 import { get } from '../../../services/request';
-
 const blockList = channel => dispatch =>
   get(`/api/blockAndTxList/${channel}/0`)
     .then(resp => {
-      dispatch(actions.getBlockList(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getBlockList(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -18,7 +25,17 @@ const blockList = channel => dispatch =>
 const chaincodeList = channel => dispatch =>
   get(`/api/chaincode/${channel}`)
     .then(resp => {
-      dispatch(actions.getChaincodeList(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChaincodeList(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -28,7 +45,17 @@ const chaincodeList = channel => dispatch =>
 const channels = () => dispatch =>
   get('/api/channels/info')
     .then(resp => {
-      dispatch(actions.getChannels(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChannels(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -37,7 +64,17 @@ const channels = () => dispatch =>
 const peerList = channel => dispatch =>
   get(`/api/peers/${channel}`)
     .then(resp => {
-      dispatch(actions.getPeerList(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getPeerList(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -46,7 +83,17 @@ const peerList = channel => dispatch =>
 const transaction = (channel, transactionId) => dispatch =>
   get(`/api/transaction/${channel}/${transactionId}`)
     .then(resp => {
-      dispatch(actions.getTransaction(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransaction(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -55,7 +102,17 @@ const transaction = (channel, transactionId) => dispatch =>
 const transactionList = channel => dispatch =>
   get(`/api/txList/${channel}/0/0/`)
     .then(resp => {
-      dispatch(actions.getTransactionList(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransactionList(resp));
+      }
     })
     .catch(error => {
       console.error(error);

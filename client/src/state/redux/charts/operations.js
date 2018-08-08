@@ -8,7 +8,17 @@ import { get } from '../../../services/request';
 const blockPerHour = channel => dispatch =>
   get(`/api/blocksByHour/${channel}/1`)
     .then(resp => {
-      dispatch(actions.getBlockPerHour(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getBlockPerHour(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -17,7 +27,17 @@ const blockPerHour = channel => dispatch =>
 const blockPerMin = channel => dispatch =>
   get(`/api/blocksByMinute/${channel}/1`)
     .then(resp => {
-      dispatch(actions.getBlockPerMin(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getBlockPerMin(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -26,7 +46,17 @@ const blockPerMin = channel => dispatch =>
 const changeChannel = channel => dispatch =>
   get(`/api/changeChannel/${channel}`)
     .then(resp => {
-      dispatch(actions.updateChannel(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.updateChannel(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -35,7 +65,17 @@ const changeChannel = channel => dispatch =>
 const channel = () => dispatch =>
   get('/api/curChannel')
     .then(resp => {
-      dispatch(actions.getChannel(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChannel(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -44,7 +84,17 @@ const channel = () => dispatch =>
 const channelList = () => dispatch =>
   get('/api/channels')
     .then(resp => {
-      dispatch(actions.getChannelList(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChannelList(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -53,7 +103,17 @@ const channelList = () => dispatch =>
 const dashStats = channel => dispatch =>
   get(`/api/status/${channel}`)
     .then(resp => {
-      dispatch(actions.getDashStats(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getDashStats(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -67,7 +127,17 @@ const notification = notification => dispatch => {
 const peerStatus = channel => dispatch =>
   get(`/api/peersStatus/${channel}`)
     .then(resp => {
-      dispatch(actions.getPeerStatus(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getPeerStatus(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -76,7 +146,17 @@ const peerStatus = channel => dispatch =>
 const transactionByOrg = channel => dispatch =>
   get(`/api/txByOrg/${channel}`)
     .then(resp => {
-      dispatch(actions.getTransactionByOrg(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransactionByOrg(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -85,7 +165,17 @@ const transactionByOrg = channel => dispatch =>
 const transactionPerHour = channel => dispatch =>
   get(`/api/txByHour/${channel}/1`)
     .then(resp => {
-      dispatch(actions.getTransactionPerHour(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransactionPerHour(resp));
+      }
     })
     .catch(error => {
       console.error(error);
@@ -94,7 +184,17 @@ const transactionPerHour = channel => dispatch =>
 const transactionPerMin = channel => dispatch =>
   get(`/api/txByMinute/${channel}/1`)
     .then(resp => {
-      dispatch(actions.getTransactionPerMin(resp));
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransactionPerMin(resp));
+      }
     })
     .catch(error => {
       console.error(error);

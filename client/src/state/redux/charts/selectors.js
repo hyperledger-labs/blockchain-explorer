@@ -16,3 +16,4 @@ export const transactionPerHourSelector = state =>
   state.charts.transactionPerHour.rows;
 export const transactionPerMinSelector = state =>
   state.charts.transactionPerMin.rows;
+export const errorMessageSelector = state => state.charts.errorMessage.error;
