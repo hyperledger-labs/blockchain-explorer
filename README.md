@@ -71,14 +71,36 @@ Clone this repository to get the latest using the following command.
 <a name="Database-Setup"/>
 
 ## Database Setup
-**Important repeat after every git pull
 
+- `cd blockchain-explorer/app/persistence/postgreSQL/db`
+- Modify pgconfig.json to update postgresql properties
+	- pg host, port, database, username, password details.
+```json
+ "pg": {
+		"host": "127.0.0.1",
+		"port": "5432",
+		"database": "fabricexplorer",
+		"username": "hppoc",
+		"passwd": "password"
+	}
+```
+
+**Important repeat after every git pull
 Run create database script.
 
 - `cd blockchain-explorer/app/persistence/postgreSQL/db`
 - `./createdb.sh`
 
 Run db status commands.
+Connect to PostgreSQL database.
+
+#### Ubuntu
+
+- `sudo -u postgres psql`
+
+#### macOS
+
+ - `psql postgres`
 
 - `\l` view created fabricexplorer database
 - `\d` view created tables
@@ -121,19 +143,6 @@ On another terminal.
 	- Configure the Hyperledger composer based on this link [CONFIG-COMPOSER-HLEXPLORER.md](CONFIG-COMPOSER-HLEXPLORER.md)
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
-
-- `cd blockchain-explorer/app/persistence/postgreSQL/db`
-- Modify pgconfig.json to update postgresql properties
-	- pg host, port, database, username, password details.
-```json
- "pg": {
-		"host": "127.0.0.1",
-		"port": "5432",
-		"database": "fabricexplorer",
-		"username": "hppoc",
-		"passwd": "password"
-	}
-```
 
 If you are connecting to a non TLS fabric peer, please modify the
 protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
