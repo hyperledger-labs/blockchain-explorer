@@ -15,6 +15,5 @@ export const transactionListSearchSelector = state =>
 export const blockListSearchSelector = state =>
   state.tables.blockListSearch.rows;
 export const orgsSelector = state => {
-  console.log(state);
   return state.tables.orgs.rows;
 };

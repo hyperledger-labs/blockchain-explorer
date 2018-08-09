@@ -190,6 +190,69 @@ div.menuItems > nav {
   color: #f7f7f7;
   font: bold;
 }
+
+/* Filtering and Calender Styling */
+.channel-dropdown {
+  width: 200px;
+  float: right;
+  margin: 35px;
+}
+
+.Select-control .Select-clear-zone {
+  display: none;
+  width: 95% !important;
+  margin: auto;
+}
+
+.filter {
+  width: 100%;
+  text-align: center;
+  margin: 0px !important;
+}
+.label {
+  margin: 7px 10px 0px 10px;
+}
+.filterElement > div {
+  width: 100% !important;
+}
+.filterElement {
+  text-align: center;
+  display: flex;
+  padding: 0px !important;
+}
+.filterButton {
+  opacity: 0.8;
+  margin: auto;
+  width: 100% !important;
+}
+.col-md-1,
+.col-md-2 {
+  padding-right: 0px !important;
+}
+.react-datepicker__input-container,
+.react-datepicker-wrapper *,
+.react-datepicker-wrapper {
+  width: 100% !important;
+  text-align: center;
+}
+.react-datepicker__input-container * {
+  border-color: rgb(211, 210, 210);
+  border-radius: 5px;
+  height: 36px;
+}
+.searchButton {
+  color: #fff !important;
+  background: rgb(81, 81, 177) !important;
+  font-size: 1.2em !important;
+  padding: 0px !important;
+}
+.resetButton {
+  color: #fff !important;
+  background: rgb(204, 157, 71) !important;
+  font-size: 1.2em !important;
+  padding: 0px !important;
+}
+
 /* Table and List  */
 #root
   > div

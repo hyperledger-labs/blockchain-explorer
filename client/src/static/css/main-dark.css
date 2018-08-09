@@ -170,6 +170,26 @@
   color: #ffffff !important;
 }
 
+.dark-theme .react-datepicker__input-container > input {
+  color: #fff;
+  background: #7165ae;
+}
+.dark-theme .filter .Select-control,
+.dark-theme .filter .Select-menu-outer,
+.dark-theme .filter .Select-option,
+.dark-theme .filter .Select-option.is-selected,
+.dark-theme .filter .Select-option.is-focused {
+  color: #fff !important;
+  background-color: #7165ae !important;
+}
+/* Date Picker */
+.dark-theme .react-datepicker,
+.dark-theme .react-datepicker__time {
+  background-color: #7165ae !important;
+}
+.dark-theme .react-datepicker__header {
+  background-color: #564d81 !important;
+}
 /*Notification Panel*/
 .dark-theme .notificationPanel,
 .dark-theme .jss58,

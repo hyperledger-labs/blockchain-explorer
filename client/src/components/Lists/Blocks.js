@@ -4,6 +4,7 @@
 
 import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
+import { Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
@@ -61,7 +62,6 @@ class Blocks extends Component {
     this.setState({ dialogOpen: true });
   };
   handleMultiSelect = value => {
-    console.log(this.state.orgs);
     this.setState({ orgs: value });
   };
 
@@ -273,11 +273,10 @@ class Blocks extends Component {
     const { blockHash, dialogOpen, dialogOpenBlockHash } = this.state;
     return (
       <div>
-        <div className="filter">
-          <div className="filter">
-            <label htmlFor="from" className="label">
-              From
-            </label>
+        <div className="filter row">
+          <div className="col-md-2" />
+          <div className="filterElement col-md-3">
+            <label className="label">From</label>
             <DatePicker
               id="from"
               selected={this.state.from}
@@ -287,15 +286,12 @@ class Blocks extends Component {
               dateFormat="LLL"
               utcOffset={moment().utcOffset()}
               onChange={date => {
-                console.log(date);
                 this.setState({ from: date });
               }}
             />
           </div>
-          <div className="filter">
-            <label htmlFor="to" className="label">
-              To
-            </label>
+          <div className="filterElement col-md-3">
+            <label className="label">To</label>
             <DatePicker
               id="to"
               selected={this.state.to}
@@ -305,14 +301,13 @@ class Blocks extends Component {
               dateFormat="LLL"
               utcOffset={moment().utcOffset()}
               onChange={date => {
-                console.log(date);
                 this.setState({ to: date });
               }}
             />
           </div>
 
           <Select
-            className="orgs-dropdown"
+            className=" col-md-2"
             multi={true}
             value={this.state.orgs}
             options={this.state.options}
@@ -320,20 +315,29 @@ class Blocks extends Component {
               this.handleMultiSelect(value);
             }}
           />
-          <button
-            onClick={async () => {
-              await this.handleSearch();
-            }}
-          >
-            Search
-          </button>
-          <button
-            onClick={() => {
-              this.handleClearSearch();
-            }}
-          >
-            Reset
-          </button>
+          <div className=" col-md-1">
+            <Button
+              className="filterButton"
+              color="success"
+              onClick={async () => {
+                await this.handleSearch();
+              }}
+            >
+              Search
+            </Button>
+          </div>
+          <div className=" col-md-1">
+            <Button
+              className="filterButton"
+              color="primary"
+              onClick={() => {
+                this.handleClearSearch();
+              }}
+            >
+              Reset
+            </Button>
+          </div>
+          <div className="col-md-1" />
         </div>
         <ReactTable
           data={blockList}
