@@ -4,6 +4,11 @@
 body {
   background-color: #f0f5f9;
 }
+.selectDate {
+  width: 250px;
+  margin: 2%;
+}
+
 #root > div > div:nth-child(1) > nav > a {
   font-size: 30pt;
   /* margin-left: 670px; */

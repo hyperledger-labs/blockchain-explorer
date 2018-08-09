@@ -83,6 +83,7 @@ const setup = () => {
         }
       ]
     },
+    orgs: ['org1', 'org2'],
     transactionList: [
       {
         blockid: 20,
@@ -133,11 +134,63 @@ const setup = () => {
         write_set: []
       }
     ],
+    transactionListSearch: [
+      {
+        blockid: 20,
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: "{'Org1MSP'}",
+        id: 41,
+        read_set: [],
+        status: 200,
+        txhash:
+          '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+        type: 'ENDORSER_TRANSACTION',
+        write_set: []
+      },
+      {
+        blockid: 20,
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: "{'Org1MSP'}",
+        id: 40,
+        read_set: [],
+        status: 200,
+        txhash:
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        type: 'ENDORSER_TRANSACTION',
+        write_set: []
+      },
+      {
+        blockid: 19,
+        chaincode_id: '',
+        chaincodename: 'mycc',
+        channelname: 'mychannel',
+        createdt: '4-26-2018 4:32 PM EDT',
+        creator_msp_id: 'Org1MSP',
+        endorser_msp_id: "{'Org1MSP'}",
+        id: 39,
+        read_set: [],
+        status: 200,
+        txhash:
+          '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+        type: 'ENDORSER_TRANSACTION',
+        write_set: []
+      }
+    ],
     getTransactionList: jest.fn(),
+    getTransactionListSearch: jest.fn(),
     getTransaction: jest.fn(),
     getTransactionInfo: jest.fn(),
     handleDialogClose: jest.fn(),
-    removeTransactionInfo: jest.fn()
+    removeTransactionInfo: jest.fn(),
+    getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
   };
 
   const wrapper = mount(<Transactions {...props} />);
@@ -239,7 +292,7 @@ describe('Transactions', () => {
     expect(wrapper.state('dialogOpen')).toBe(false);
   });
 
-  test('Simulate Creator filterMethod should have no results when given a value of 2', () => {
+  test(' Creator filterMethod should have no results when given a value of 2', () => {
     const { wrapper } = setup();
     wrapper
       .find('ThComponent')

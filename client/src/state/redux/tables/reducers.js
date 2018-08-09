@@ -22,6 +22,21 @@ const blockListReducer = (state = initialState, action) => {
   }
 };
 
+const blockListSearchReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.BLOCK_LIST_SEARCH: {
+      return {
+        rows: action.payload.rows,
+        loaded: true,
+        errors: action.error
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
 const chaincodeListReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.CHAINCODE_LIST: {
@@ -97,13 +112,46 @@ const transactionListReducer = (state = initialState, action) => {
   }
 };
 
+const transactionListSearchReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.TRANSACTION_LIST_SEARCH: {
+      return {
+        rows: action.payload.rows,
+        loaded: true,
+        errors: action.error
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const orgsReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.ORGS: {
+      return {
+        rows: action.payload.row,
+        loaded: true,
+        errors: action.error
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
 const reducer = combineReducers({
   blockList: blockListReducer,
   chaincodeList: chaincodeListReducer,
   channels: channelsReducer,
   peerList: peerListReducer,
   transaction: transactionReducer,
-  transactionList: transactionListReducer
+  transactionList: transactionListReducer,
+  blockListSearch: blockListSearchReducer,
+  transactionListSearch: transactionListSearchReducer,
+  orgs: orgsReducer
 });
 
 export default reducer;

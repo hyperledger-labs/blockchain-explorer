@@ -47,7 +47,11 @@ export const BlocksView = ({
   blockList,
   currentChannel,
   getTransaction,
-  transaction
+  transaction,
+  blockListSearch,
+  orgs,
+  getOrgs,
+  getBlockListSearch
 }) => (
   <div className="view-fullwidth">
     <div className="view-display">
@@ -57,6 +61,10 @@ export const BlocksView = ({
           currentChannel={currentChannel}
           transaction={transaction}
           getTransaction={getTransaction}
+          orgs={orgs}
+          getOrgs={getOrgs}
+          blockListSearch={blockListSearch}
+          getBlockListSearch={getBlockListSearch}
         />
       </Card>
     </div>

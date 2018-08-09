@@ -21,3 +21,16 @@ body {
 .Select-control .Select-clear-zone {
   display: none;
 }
+
+.filter {
+  display: flex;
+}
+.label {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.orgs-dropdown {
+  width: 400px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

@@ -21,7 +21,22 @@ const blockList = channel => dispatch =>
     .catch(error => {
       console.error(error);
     });
-
+const blockListSearch = (channel, query) => dispatch =>
+  get(`/api/blockAndTxList/${channel}/0?${query}`)
+    .then(resp => {
+      dispatch(actions.getBlockListSearch(resp));
+    })
+    .catch(error => {
+      console.error(error);
+    });
+const orgs = channel => dispatch =>
+  get(`/api/orgs/${channel}`)
+    .then(resp => {
+      dispatch(actions.getOrgs(resp));
+    })
+    .catch(error => {
+      console.error(error);
+    });
 const chaincodeList = channel => dispatch =>
   get(`/api/chaincode/${channel}`)
     .then(resp => {
@@ -99,6 +114,15 @@ const transaction = (channel, transactionId) => dispatch =>
       console.error(error);
     });
 
+const transactionListSearch = (channel, query) => dispatch =>
+  get(`/api/txList/${channel}/0/0?${query}`)
+    .then(resp => {
+      dispatch(actions.getTransactionListSearch(resp));
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
 const transactionList = channel => dispatch =>
   get(`/api/txList/${channel}/0/0/`)
     .then(resp => {
@@ -117,12 +141,14 @@ const transactionList = channel => dispatch =>
     .catch(error => {
       console.error(error);
     });
-
 export default {
   blockList,
   chaincodeList,
   channels,
   peerList,
   transaction,
-  transactionList
+  transactionList,
+  transactionListSearch,
+  blockListSearch,
+  orgs
 };

@@ -89,6 +89,17 @@ class MetricService {
     return txArray;
   }
 
+  async getOrgsData(channel_genesis_hash) {
+    let orgs = [];
+    var rows = await sql.getRowsBySQlNoCondtion(
+      `select distinct on (mspid) mspid from peer  where channel_genesis_hash='${channel_genesis_hash}'`
+    );
+    for (var i = 0, len = rows.length; i < len; i++) {
+      orgs.push(rows[i].mspid);
+    }
+    return orgs;
+  }
+
   async getTxPerChaincode(channel_genesis_hash, cb) {
     try {
       var txArray = await this.getTxPerChaincodeGenerate(channel_genesis_hash);
