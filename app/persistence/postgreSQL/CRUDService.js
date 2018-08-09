@@ -40,13 +40,12 @@ class CRUDService {
     if (orgs && orgs != '') {
       orgsSql = `and t.creator_msp_id in (${orgs})`;
     }
-    let sqlBlockTxList = ` select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
-       SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${orgsSql} and
-        channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}' group by transactions.blockid ),
-        channel.name as channelName  from blocks inner join channel on blocks.channel_genesis_hash =channel.channel_genesis_hash inner join transactions as t
-       on   blocks.channel_genesis_hash =t.channel_genesis_hash and t.blockid = blocks.blocknum  where
-        blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= ${blockNum} and blocks.createdt between '${from}' and '${to}'
-       ${orgsSql} order by blocks.blocknum desc`;
+    let sqlBlockTxList = ` select (select c.name from channel c where c.channel_genesis_hash =
+      '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+     SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${orgsSql} and
+      channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}') from blocks where
+      blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0 and blocks.createdt between '${from}' and '${to}'
+     ${orgsSql} order by blocks.blocknum desc`;
     return sql.getRowsBySQlQuery(sqlBlockTxList);
   }
 
