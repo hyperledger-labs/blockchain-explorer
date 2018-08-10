@@ -210,10 +210,11 @@ div.menuItems > nav {
   margin: 0px !important;
 }
 .label {
-  margin: 7px 10px 0px 10px;
+  margin: 25px 10px 0px 10px;
 }
 .filterElement > div {
   width: 100% !important;
+  margin-top: 20px;
 }
 .filterElement {
   text-align: center;
@@ -227,7 +228,8 @@ div.menuItems > nav {
 }
 .col-md-1,
 .col-md-2 {
-  padding-right: 0px !important;
+  padding-right: 6px !important;
+  margin-top: 20px;
 }
 .react-datepicker__input-container,
 .react-datepicker-wrapper *,
