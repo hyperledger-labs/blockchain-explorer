@@ -15,6 +15,20 @@ const setup = () => {
       txCount: '36'
     },
     currentChannel: 'mychannel',
+    transactionByOrg: [
+      {
+        count: '3',
+        creator_msp_id: 'OrdererMSP'
+      },
+      {
+        count: '1',
+        creator_msp_id: 'Org2MSP'
+      },
+      {
+        count: '100',
+        creator_msp_id: 'Org1MSP'
+      }
+    ],
     transaction: {
       id: 39,
       channelname: 'mychannel',

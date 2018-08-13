@@ -112,6 +112,7 @@ function aSyncUpload(req, res) {
 }
 
 var orgsArrayToString = function(orgs) {
+  //  console.log('orgs asfasf', orgs)
   let temp = '';
   if (typeof orgs === 'array' || typeof orgs === 'object') {
     orgs.forEach((element, i) => {
@@ -126,7 +127,7 @@ var orgsArrayToString = function(orgs) {
   return temp;
 };
 var queryDatevalidator = function(from, to) {
-  let today = new Date();
+  let today = new Date().toISOString();
   if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
     from = new Date(from).toISOString();
     to = new Date(to).toISOString();

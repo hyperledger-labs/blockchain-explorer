@@ -29,14 +29,7 @@ const blockListSearch = (channel, query) => dispatch =>
     .catch(error => {
       console.error(error);
     });
-const orgs = channel => dispatch =>
-  get(`/api/orgs/${channel}`)
-    .then(resp => {
-      dispatch(actions.getOrgs(resp));
-    })
-    .catch(error => {
-      console.error(error);
-    });
+
 const chaincodeList = channel => dispatch =>
   get(`/api/chaincode/${channel}`)
     .then(resp => {
@@ -149,6 +142,5 @@ export default {
   transaction,
   transactionList,
   transactionListSearch,
-  blockListSearch,
-  orgs
+  blockListSearch
 };

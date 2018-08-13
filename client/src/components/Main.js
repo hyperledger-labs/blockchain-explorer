@@ -63,18 +63,15 @@ export const Main = props => {
     transactionList,
     blockListSearch,
     transactionListSearch,
-    orgs,
     getBlockListSearch,
-    getTransactionListSearch,
-    getOrgs
+    getTransactionListSearch
   } = props;
 
   const blocksViewProps = {
     blockList,
     blockListSearch,
     getBlockListSearch,
-    getOrgs,
-    orgs,
+    transactionByOrg,
     currentChannel,
     getTransaction,
     transaction
@@ -103,10 +100,9 @@ export const Main = props => {
     transaction,
     transactionList,
     getTransaction,
+    transactionByOrg,
     transactionListSearch,
-    getTransactionListSearch,
-    getOrgs,
-    orgs
+    getTransactionListSearch
   };
 
   return (
@@ -178,13 +174,11 @@ export default connect(
     transactionByOrg: transactionByOrgSelector(state),
     transactionList: transactionListSelector(state),
     blockListSearch: blockListSearchSelector(state),
-    transactionListSearch: transactionListSearchSelector(state),
-    orgs: orgsSelector(state)
+    transactionListSearch: transactionListSearchSelector(state)
   }),
   {
     getTransaction: tableOperations.transaction,
     getBlockListSearch: tableOperations.blockListSearch,
-    getOrgs: tableOperations.orgs,
     getTransactionListSearch: tableOperations.transactionListSearch
   }
 )(Main);

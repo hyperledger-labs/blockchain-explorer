@@ -8,15 +8,14 @@ import { Button } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
-
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
 import Select from 'react-select';
-
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
+import { isNull } from 'util';
 import {
   blockListType,
   currentChannelType,
@@ -31,12 +30,10 @@ class Blocks extends Component {
       dialogOpen: false,
       dialogOpenBlockHash: false,
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
       options: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days'),
+      from: moment().subtract(1, 'days'),
       blockHash: {}
     };
   }
@@ -47,13 +44,11 @@ class Blocks extends Component {
     blockList.forEach(element => {
       selection[element.blocknum] = false;
     });
-    this.props.getOrgs(this.props.currentChannel).then(() => {
-      let opts = [];
-      this.props.orgs.forEach(val => {
-        opts.push({ label: val, value: val });
-      });
-      this.setState({ selection, options: opts });
+    let opts = [];
+    this.props.transactionByOrg.forEach(val => {
+      opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
     });
+    this.setState({ selection, options: opts });
   }
 
   handleDialogOpen = async tid => {
@@ -69,9 +64,9 @@ class Blocks extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    let query = `from=${new Date(this.state.from).toISOString()}&&to=${new Date(
+    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
       this.state.to
-    ).toISOString()}`;
+    ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
       query += `&&orgs=${this.state.orgs[i].value}`;
     }
@@ -81,11 +76,9 @@ class Blocks extends Component {
   handleClearSearch = () => {
     this.setState({
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days')
+      from: moment().subtract(1, 'days')
     });
   };
   handleDialogOpenBlockHash = blockHash => {
@@ -231,27 +224,32 @@ class Blocks extends Component {
       className: 'hashCell',
       Cell: row => (
         <ul>
-          {row.value.map(tid => (
-            <li
-              key={tid}
-              style={{
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis'
-              }}
-            >
-              <a
-                className="partialHash"
-                onClick={() => this.handleDialogOpen(tid)}
-                href="#/blocks"
-              >
-                <div className="fullHash lastFullHash" id="showTransactionId">
-                  {tid}
-                </div>{' '}
-                {tid.slice(0, 6)} {!tid ? '' : '... '}
-              </a>
-            </li>
-          ))}
+          {!isNull(row.value)
+            ? row.value.map(tid => (
+                <li
+                  key={tid}
+                  style={{
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  <a
+                    className="partialHash"
+                    onClick={() => this.handleDialogOpen(tid)}
+                    href="#/blocks"
+                  >
+                    <div
+                      className="fullHash lastFullHash"
+                      id="showTransactionId"
+                    >
+                      {tid}
+                    </div>{' '}
+                    {tid.slice(0, 6)} {!tid ? '' : '... '}
+                  </a>
+                </li>
+              ))
+            : 'null'}
         </ul>
       ),
       filterMethod: (filter, rows) =>
@@ -284,7 +282,6 @@ class Blocks extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ from: date });
               }}
@@ -299,7 +296,6 @@ class Blocks extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ to: date });
               }}

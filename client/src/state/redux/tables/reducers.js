@@ -127,21 +127,6 @@ const transactionListSearchReducer = (state = initialState, action) => {
   }
 };
 
-const orgsReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case types.ORGS: {
-      return {
-        rows: action.payload.row,
-        loaded: true,
-        errors: action.error
-      };
-    }
-    default: {
-      return state;
-    }
-  }
-};
-
 const reducer = combineReducers({
   blockList: blockListReducer,
   chaincodeList: chaincodeListReducer,
@@ -150,8 +135,7 @@ const reducer = combineReducers({
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,
-  transactionListSearch: transactionListSearchReducer,
-  orgs: orgsReducer
+  transactionListSearch: transactionListSearchReducer
 });
 
 export default reducer;

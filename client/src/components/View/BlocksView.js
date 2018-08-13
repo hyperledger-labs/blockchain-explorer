@@ -49,9 +49,8 @@ export const BlocksView = ({
   getTransaction,
   transaction,
   blockListSearch,
-  orgs,
-  getOrgs,
-  getBlockListSearch
+  getBlockListSearch,
+  transactionByOrg
 }) => (
   <div className="view-fullwidth">
     <div className="view-display">
@@ -61,8 +60,7 @@ export const BlocksView = ({
           currentChannel={currentChannel}
           transaction={transaction}
           getTransaction={getTransaction}
-          orgs={orgs}
-          getOrgs={getOrgs}
+          transactionByOrg={transactionByOrg}
           blockListSearch={blockListSearch}
           getBlockListSearch={getBlockListSearch}
         />

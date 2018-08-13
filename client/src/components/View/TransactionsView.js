@@ -53,8 +53,7 @@ export const TransactionsView = ({
   transaction,
   transactionList,
   getTransactionListSearch,
-  getOrgs,
-  orgs,
+  transactionByOrg,
   transactionListSearch
 }) => (
   <div className="view-fullwidth">
@@ -65,11 +64,10 @@ export const TransactionsView = ({
           transactionList={transactionList}
           getTransactionList={getTransactionList}
           transaction={transaction}
+          transactionByOrg={transactionByOrg}
           getTransactionInfo={getTransactionInfo}
           getTransaction={getTransaction}
           getTransactionListSearch={getTransactionListSearch}
-          getOrgs={getOrgs}
-          orgs={orgs}
           transactionListSearch={transactionListSearch}
         />
       </Card>

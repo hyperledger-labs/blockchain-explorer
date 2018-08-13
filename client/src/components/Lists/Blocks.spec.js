@@ -163,7 +163,20 @@ const setup = () => {
         }
       ]
     },
-    orgs: ['org1', 'org2'],
+    transactionByOrg: [
+      {
+        count: '3',
+        creator_msp_id: 'OrdererMSP'
+      },
+      {
+        count: '1',
+        creator_msp_id: 'Org2MSP'
+      },
+      {
+        count: '100',
+        creator_msp_id: 'Org1MSP'
+      }
+    ],
     getBlockList: jest.fn(),
     removeTransactionInfo: jest.fn(),
     getTransactionInfo: jest.fn(),
@@ -428,6 +441,7 @@ describe('Blocks', () => {
     const instance = wrapper.instance();
     const row = { index: 19 };
     const val = false;
+    expect(wrapper.state('selection')[19]).toBe(false);
     instance.handleEye(row, val);
     expect(wrapper.state('selection')[19]).toBe(true);
   });

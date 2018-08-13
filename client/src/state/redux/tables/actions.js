@@ -41,10 +41,7 @@ const getTransactionListSearch = transactionList => ({
   type: types.TRANSACTION_LIST_SEARCH,
   payload: transactionList
 });
-const getOrgs = orgs => ({
-  type: types.ORGS,
-  payload: orgs
-});
+
 export default {
   getBlockList,
   getChaincodeList,
@@ -52,7 +49,6 @@ export default {
   getPeerList,
   getTransaction,
   getTransactionList,
-  getOrgs,
   getBlockListSearch,
   getTransactionListSearch
 };

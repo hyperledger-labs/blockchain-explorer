@@ -14,6 +14,3 @@ export const transactionListSearchSelector = state =>
   state.tables.transactionListSearch.rows;
 export const blockListSearchSelector = state =>
   state.tables.blockListSearch.rows;
-export const orgsSelector = state => {
-  return state.tables.orgs.rows;
-};
