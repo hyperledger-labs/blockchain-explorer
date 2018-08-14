@@ -3,6 +3,8 @@
  */
 
 import React from 'react';
+import compose from 'recompose/compose';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import BlocksView from './View/BlocksView';
@@ -48,8 +50,19 @@ const {
   transactionListSearchSelector
 } = tableSelectors;
 
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    main: {
+      color: dark ? '#ffffff' : undefined
+    }
+  };
+};
+
 export const Main = props => {
   const {
+    classes,
     blockList,
     blockActivity,
     chaincodeList,
@@ -106,9 +119,10 @@ export const Main = props => {
     transactionListSearch,
     getTransactionListSearch
   };
+
   return (
     <Router>
-      <div className="App">
+      <div className={classes.main}>
         <Switch>
           <Route
             exact
@@ -161,26 +175,29 @@ Main.propTypes = {
   transactionList: transactionListType.isRequired
 };
 
-export default connect(
-  state => ({
-    blockList: blockListSelector(state),
-    chaincodeList: chaincodeListSelector(state),
-    channelList: channelListSelector(state),
-    channels: channelsSelector(state),
-    currentChannel: currentChannelSelector(state),
-    dashStats: dashStatsSelector(state),
-    peerList: peerListSelector(state),
-    peerStatus: peerStatusSelector(state),
-    transaction: transactionSelector(state),
-    transactionByOrg: transactionByOrgSelector(state),
-    transactionList: transactionListSelector(state),
-    blockListSearch: blockListSearchSelector(state),
-    transactionListSearch: transactionListSearchSelector(state),
-    blockActivity: blockActivitySelector(state)
-  }),
-  {
-    getTransaction: tableOperations.transaction,
-    getBlockListSearch: tableOperations.blockListSearch,
-    getTransactionListSearch: tableOperations.transactionListSearch
-  }
+export default compose(
+  withStyles(styles),
+  connect(
+    state => ({
+      blockList: blockListSelector(state),
+      chaincodeList: chaincodeListSelector(state),
+      channelList: channelListSelector(state),
+      channels: channelsSelector(state),
+      currentChannel: currentChannelSelector(state),
+      dashStats: dashStatsSelector(state),
+      peerList: peerListSelector(state),
+      peerStatus: peerStatusSelector(state),
+      transaction: transactionSelector(state),
+      transactionByOrg: transactionByOrgSelector(state),
+      transactionList: transactionListSelector(state),
+      blockListSearch: blockListSearchSelector(state),
+      transactionListSearch: transactionListSearchSelector(state),
+      blockActivity: blockActivitySelector(state)
+    }),
+    {
+      getTransaction: tableOperations.transaction,
+      getBlockListSearch: tableOperations.blockListSearch,
+      getTransactionListSearch: tableOperations.transactionListSearch
+    }
+  )
 )(Main);

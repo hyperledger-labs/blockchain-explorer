@@ -7,10 +7,7 @@ import { TransactionView } from './TransactionView';
 const setup = () => {
   const props = {
     classes: {
-      card: 'TransactionView-card-114',
-      content: 'TransactionView-content-116',
-      root: 'TransactionView-root-113',
-      title: 'TransactionView-title-115'
+      listIcon: 'listIcon'
     },
     currentChannel: 'mychannel',
     getTransaction: jest.fn(),
@@ -84,7 +81,7 @@ const setup = () => {
     }
   };
 
-  const wrapper = shallow(<TransactionView {...props} />);
+  const wrapper = mount(<TransactionView {...props} />);
 
   return {
     wrapper
@@ -126,8 +123,8 @@ describe('TransactionView', () => {
         endorser_msp_id: '{"Org1MSP"}',
         chaincode_id: '',
         type: 'ENDORSER_TRANSACTION',
-        read_set: [null],
-        write_set: [null]
+        read_set: null,
+        write_set: null
       }
     };
     wrapper.setProps(newTransaction);

@@ -3,9 +3,8 @@
  */
 
 import React, { Component } from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
+import ReactTable from '../Styled/Table';
 import { channelsType } from '../types';
 
 class Channels extends Component {
@@ -90,12 +89,11 @@ class Channels extends Component {
   render() {
     const { channels } = this.props;
     return (
-      <div className="blockPage">
+      <div>
         <ReactTable
           data={channels}
           columns={this.reactTableSetup()}
           defaultPageSize={5}
-          className="-striped -highlight"
           filterable
           minRows={0}
           showPagination={!(channels.length < 5)}

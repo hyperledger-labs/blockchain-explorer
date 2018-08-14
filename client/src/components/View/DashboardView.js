@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Row, Col } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
 import Card from '@material-ui/core/Card';
@@ -17,6 +18,82 @@ import {
   peerStatusType,
   transactionByOrgType
 } from '../types';
+
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    background: {
+      backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9'
+    },
+    view: {
+      paddingTop: 85,
+      paddingLeft: 0,
+      width: '80%',
+      marginLeft: '10%',
+      marginRight: '10%'
+    },
+    blocks: {
+      height: 175,
+      marginBottom: 20,
+      backgroundColor: dark ? '#453e68' : '#ffffff',
+      boxShadow: dark ? '1px 2px 2px rgb(215, 247, 247)' : undefined
+    },
+    count: {
+      marginTop: '55%',
+      color: dark ? '#ffffff' : undefined
+    },
+    statistic: {
+      display: 'block',
+      float: 'left',
+      height: '100%',
+      width: '25%',
+      textAlign: 'center',
+      fontSize: '18pt',
+      color: dark ? '#ffffff' : '#000000'
+    },
+    vdivide: {
+      '&::after': {
+        borderRight: `2px ${dark ? 'rgb(40, 36, 61)' : '#dff1fe'} solid`,
+        display: 'block',
+        height: '45%',
+        bottom: '55%',
+        content: "' '",
+        position: 'relative'
+      }
+    },
+    avatar: {
+      justifyContent: 'center',
+      marginLeft: '60%',
+      marginTop: '65%'
+    },
+    node: {
+      color: dark ? '#183a37' : '#21295c',
+      backgroundColor: dark ? 'rgb(104, 247, 235)' : '#858aa6'
+    },
+    block: {
+      color: dark ? '#1f1a33' : '#004d6b',
+      backgroundColor: dark ? 'rgb(106, 156, 248)' : '#b9d6e1'
+    },
+    chaincode: {
+      color: dark ? 'rgb(121, 83, 109)' : '#407b20',
+      backgroundColor: dark ? 'rgb(247, 205, 234)' : '#d0ecda'
+    },
+    transaction: {
+      color: dark ? 'rgb(216, 142, 4)' : '#ffa686',
+      backgroundColor: dark ? 'rgb(252, 224, 174)' : '#ffeed8'
+    },
+    section: {
+      height: 335,
+      marginBottom: '2%',
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#3c3558' : undefined
+    },
+    center: {
+      textAlign: 'center'
+    }
+  };
+};
 
 export class DashboardView extends Component {
   constructor(props) {
@@ -39,6 +116,7 @@ export class DashboardView extends Component {
       blockList === undefined ||
       dashStats === undefined ||
       peerStatus === undefined ||
+      blockActivity === undefined ||
       transactionByOrg === undefined
     ) {
       this.setState({ hasDbError: true });
@@ -100,60 +178,67 @@ export class DashboardView extends Component {
         </div>
       );
     }
+    const { classes } = this.props;
     return (
-      <div className="background-view">
-        <div className="dash-view">
+      <div className={classes.background}>
+        <div className={classes.view}>
           <Row>
             <Col sm="12">
-              <Card className="stats-block ">
-                <div className="statistic vdivide">
+              <Card className={classes.blocks}>
+                <div className={`${classes.statistic} ${classes.vdivide}`}>
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-block">
+                      <Avatar className={`${classes.avatar} ${classes.block}`}>
                         <FontAwesome name="cube" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{dashStats.latestBlock}</h1>
+                      <h1 className={classes.count}>{dashStats.latestBlock}</h1>
                     </Col>
                   </Row>
                   BLOCKS
                 </div>
-                <div className="statistic vdivide">
+                <div className={`${classes.statistic} ${classes.vdivide}`}>
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-tx">
+                      <Avatar
+                        className={`${classes.avatar} ${classes.transaction}`}
+                      >
                         <FontAwesome name="list-alt" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{dashStats.txCount}</h1>
+                      <h1 className={classes.count}>{dashStats.txCount}</h1>
                     </Col>
                   </Row>
                   TRANSACTIONS
                 </div>
-                <div className="statistic vdivide">
+                <div className={`${classes.statistic} ${classes.vdivide}`}>
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-node">
+                      <Avatar className={`${classes.avatar} ${classes.node}`}>
                         <FontAwesome name="users" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{dashStats.peerCount}</h1>
+                      <h1 className={classes.count}>{dashStats.peerCount}</h1>
                     </Col>
                   </Row>
                   NODES
                 </div>
-                <div className="statistic">
+                <div className={classes.statistic}>
                   <Row>
                     <Col sm="4">
-                      <Avatar className="stat-avatar avatar-chaincode">
+                      <Avatar
+                        className={`${classes.avatar} ${classes.chaincode}`}
+                      >
                         <FontAwesome name="handshake-o" />
                       </Avatar>
                     </Col>
                     <Col sm="4">
-                      <h1 className="stat-count">{dashStats.chaincodeCount}</h1>
+                      <h1 className={classes.count}>
+                        {dashStats.chaincodeCount}
+                      </h1>
                     </Col>
                   </Row>
                   CHAINCODES
@@ -163,10 +248,10 @@ export class DashboardView extends Component {
           </Row>
           <Row>
             <Col sm="6">
-              <Card className="dash-section">
+              <Card className={classes.section}>
                 <PeersHealth peerStatus={peerStatus} />
               </Card>
-              <Card className="dash-section">
+              <Card className={classes.section}>
                 <TimelineStream
                   notifications={notifications}
                   blockList={blockActivity}
@@ -174,11 +259,11 @@ export class DashboardView extends Component {
               </Card>
             </Col>
             <Col sm="6">
-              <Card className="dash-section">
+              <Card className={classes.section}>
                 <ChartStats />
               </Card>
-              <Card className="dash-section center-column">
-                <h5 className="org-header">Transactions by Organization</h5>
+              <Card className={`${classes.section} ${classes.center}`}>
+                <h5>Transactions by Organization</h5>
                 <hr />
                 <OrgPieChart transactionByOrg={transactionByOrg} />
               </Card>
@@ -197,4 +282,4 @@ DashboardView.propTypes = {
   transactionByOrg: transactionByOrgType.isRequired
 };
 
-export default DashboardView;
+export default withStyles(styles)(DashboardView);

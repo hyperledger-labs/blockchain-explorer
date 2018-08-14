@@ -8,6 +8,7 @@ jest.useFakeTimers();
 
 const setup = () => {
   const props = {
+    mode: 'light',
     channel: { currentChannel: 'mychannel' },
     channelList: ['mychannel'],
     channels: [
@@ -147,7 +148,7 @@ describe('HeaderView', () => {
 
   test('click on bell should set state notifyDrawer to true', () => {
     const { wrapper } = setup();
-    wrapper.find('.bell').simulate('click');
+    wrapper.find('[data-command="bell"]').simulate('click');
     expect(wrapper.state('notifyDrawer')).toBe(true);
   });
 
@@ -211,7 +212,7 @@ describe('HeaderView', () => {
   });
 
   test('switch calls handleThemeChange', () => {
-    const { wrapper } = setup();
+    const { wrapper, props } = setup();
     const instance = wrapper.instance();
     const spy = jest.spyOn(instance, 'handleThemeChange');
     wrapper.setState({ adminDrawer: true });
@@ -219,7 +220,7 @@ describe('HeaderView', () => {
       .find('WithStyles(Switch)')
       .at(0)
       .simulate('change');
-    expect(wrapper.state('isLight')).toBe(false);
+    expect(props.refresh.mock.calls[0][0]).toBe('dark');
     expect(spy).toHaveBeenCalled();
   });
 });

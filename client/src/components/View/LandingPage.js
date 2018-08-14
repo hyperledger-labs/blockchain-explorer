@@ -4,7 +4,9 @@
 
 import React, { Component } from 'react';
 import Slider from 'react-slick';
+import compose from 'recompose/compose';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations } from '../../state/redux/tables';
@@ -48,6 +50,24 @@ const {
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
+
+const styles = theme => {
+  return {
+    background: {
+      backgroundColor: '#f0f5f9'
+    },
+    content: {
+      marginTop: 450,
+      marginLeft: 550,
+      '& > h1': {
+        fontSize: '40pt'
+      },
+      '& > div': {
+        marginLeft: 150
+      }
+    }
+  };
+};
 
 export class LandingPage extends Component {
   constructor(props) {
@@ -137,9 +157,10 @@ export class LandingPage extends Component {
         </div>
       );
     }
+    const { classes } = this.props;
     return (
-      <div className="landingBackground">
-        <div className="landing">
+      <div className={classes.background}>
+        <div className={classes.content}>
           <img src={Logo} style={logoStyle} alt="Hyperledger Logo" />
           <Slider {...settings}>
             <div>
@@ -180,25 +201,28 @@ LandingPage.defaultProps = {
   currentChannel: null
 };
 
-export default connect(
-  state => ({
-    currentChannel: currentChannelSelector(state)
-  }),
-  {
-    getBlockList: blockList,
-    getBlocksPerHour: blockPerHour,
-    getBlocksPerMin: blockPerMin,
-    getChaincodeList: chaincodeList,
-    getChannelList: channelList,
-    getChannel: channel,
-    getChannels: channels,
-    getDashStats: dashStats,
-    getPeerList: peerList,
-    getPeerStatus: peerStatus,
-    getBlockActivity: blockActivity,
-    getTransactionByOrg: transactionByOrg,
-    getTransactionList: transactionList,
-    getTransactionPerHour: transactionPerHour,
-    getTransactionPerMin: transactionPerMin
-  }
+export default compose(
+  withStyles(styles),
+  connect(
+    state => ({
+      currentChannel: currentChannelSelector(state)
+    }),
+    {
+      getBlockList: blockList,
+      getBlocksPerHour: blockPerHour,
+      getBlocksPerMin: blockPerMin,
+      getChaincodeList: chaincodeList,
+      getChannelList: channelList,
+      getChannel: channel,
+      getChannels: channels,
+      getDashStats: dashStats,
+      getPeerList: peerList,
+      getPeerStatus: peerStatus,
+      getBlockActivity: blockActivity,
+      getTransactionByOrg: transactionByOrg,
+      getTransactionList: transactionList,
+      getTransactionPerHour: transactionPerHour,
+      getTransactionPerMin: transactionPerMin
+    }
+  )
 )(LandingPage);

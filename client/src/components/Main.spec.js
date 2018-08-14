@@ -6,6 +6,7 @@ import { Main } from './Main';
 
 const setup = () => {
   const props = {
+    classes: { main: 'main' },
     blockList: [
       {
         blockhash:

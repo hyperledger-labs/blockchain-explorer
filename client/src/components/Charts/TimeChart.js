@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import {
   ResponsiveContainer,
   ScatterChart,
@@ -16,10 +17,33 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { chartDataType } from '../types';
 
-const TimeChart = ({ chartData }) => (
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    content: {
+      backgroundColor: dark ? '#3c3558' : undefined,
+      '& .recharts-layer': {
+        fill: dark ? 'rgb(42, 173, 230) !important' : '#5bc5c2 !important'
+      },
+      '& .recharts-scatter-line': {
+        stroke: dark ? '#ffc145 !important' : '#5bc5c2 !important',
+        strokeWidth: '2 !important'
+      },
+      '& .recharts-text': {
+        fill: dark ? '#ffffff !important' : undefined
+      },
+      '& .recharts-cartesian-axis-line': {
+        stroke: dark ? '#ffffff' : undefined
+      }
+    }
+  };
+};
+
+export const TimeChart = ({ chartData, classes }) => (
   <div>
     <Card>
-      <CardContent className="CardContent">
+      <CardContent className={classes.content}>
         <ResponsiveContainer width="100%" height={255}>
           <ScatterChart>
             <CartesianGrid strokeDasharray="3 3" />
@@ -42,4 +66,4 @@ TimeChart.propTypes = {
   chartData: chartDataType.isRequired
 };
 
-export default TimeChart;
+export default withStyles(styles)(TimeChart);

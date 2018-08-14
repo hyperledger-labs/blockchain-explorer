@@ -15,11 +15,7 @@ const setup = () => {
         txCount: 32,
         version: '1.0'
       }
-    ],
-    classes: {
-      container: 'ChaincodeView-container-113',
-      container1: 'ChaincodeView-container1-114'
-    }
+    ]
   };
 
   const wrapper = shallow(<ChaincodeView {...props} />);

@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import ReactTable from 'react-table';
+import ReactTable from '../Styled/Table';
 import Peers from './Peers';
 
 const setup = () => {

@@ -6,6 +6,21 @@ import { DashboardView } from './DashboardView';
 
 const setup = () => {
   const props = {
+    classes: {
+      background: 'background',
+      view: 'view',
+      blocks: 'blocks',
+      count: 'count',
+      statistic: 'statistic',
+      vdivide: 'vdivide',
+      avatar: 'avatar',
+      node: 'node',
+      block: 'block',
+      chaincode: 'chaincode',
+      transaction: 'transaction',
+      section: 'section',
+      center: 'center'
+    },
     blockActivity: [
       {
         blockhash:

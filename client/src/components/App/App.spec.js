@@ -2,13 +2,13 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { App } from './App';
+import Header from '../Header';
 
 jest.useFakeTimers();
 
 const setup = () => {
-  const wrapper = shallow(<App />);
+  const wrapper = shallow(<App classes={{ app: 'app' }} />);
 
   return {
     wrapper
@@ -27,10 +27,10 @@ describe('App', () => {
     expect(wrapper.exists()).toBe(true);
   });
 
-  test('if loading is false MultiThemeProvider should render', () => {
+  test('if loading is false Header should render', () => {
     const { wrapper } = setup();
     wrapper.setState({ loading: false });
     wrapper.update();
-    expect(wrapper.find(MuiThemeProvider).exists()).toBe(true);
+    expect(wrapper.find(Header).exists()).toBe(true);
   });
 });

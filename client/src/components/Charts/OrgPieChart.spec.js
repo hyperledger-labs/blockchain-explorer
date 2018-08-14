@@ -2,10 +2,14 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import OrgPieChart from './OrgPieChart';
+import { OrgPieChart } from './OrgPieChart';
 
 const setup = () => {
   const props = {
+    classes: {
+      chart: 'chart',
+      container: 'container'
+    },
     transactionByOrg: [
       {
         count: '3',

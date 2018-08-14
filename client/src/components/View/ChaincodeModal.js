@@ -8,37 +8,70 @@ import beautify from 'js-beautify';
 import FontAwesome from 'react-fontawesome';
 import { Card, CardBody, CardTitle } from 'reactstrap';
 import { chaincodeType } from '../types';
+import Modal from '../Styled/Modal';
 
-const styles = () => ({
-  container: {
-    border: '3px solid #afeeee'
-  },
-  container1: {
-    display: 'flex',
-    flexWrap: 'wrap'
-  }
-});
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    code: {
+      display: 'block',
+      marginLeft: '1%',
+      marginRight: '1%',
+      width: '98%',
+      height: 600,
+      backgroundColor: dark ? '#443e68' : undefined,
+      color: dark ? '#ffffff' : undefined
+    },
+    cubeIcon: {
+      color: '#ffffff',
+      marginRight: 20
+    },
+    source: {
+      '& ::-webkit-scrollbar': {
+        width: '1em'
+      },
+      '& ::-webkit-scrollbar-track': {
+        background: dark ? '#8375c4' : 'rgb(238, 237, 237)'
+      },
+      '& ::-webkit-scrollbar-thumb': {
+        background: dark ? '#6a5e9e' : 'rgb(192, 190, 190)'
+      },
+      '& ::-webkit-scrollbar-corner': {
+        background: dark ? '#443e68' : 'rgb(238, 237, 237)'
+      }
+    }
+  };
+};
 
-export const ChaincodeModal = ({ chaincode }) => {
+export const ChaincodeModal = ({ chaincode, classes }) => {
   const formattedSrc = beautify(chaincode.source, {
     indent_size: 4
   });
   const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
 
   return (
-    <div className="sourceCodeDialog">
-      <div className="dialog">
-        <Card>
-          <CardTitle className="dialogTitle">
-            <FontAwesome name="file-text" className="cubeIcon" />
-            {srcHeader}
-          </CardTitle>
-          <CardBody>
-            <textarea className="source-code" value={formattedSrc} readOnly />
-          </CardBody>
-        </Card>
-      </div>
-    </div>
+    <Modal>
+      {modalClasses => (
+        <div className={classes.source}>
+          <div className={modalClasses.dialog}>
+            <Card className={modalClasses.card}>
+              <CardTitle className={modalClasses.title}>
+                <FontAwesome name="file-text" className={classes.cubeIcon} />
+                {srcHeader}
+              </CardTitle>
+              <CardBody className={modalClasses.body}>
+                <textarea
+                  className={classes.code}
+                  value={formattedSrc}
+                  readOnly
+                />
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      )}
+    </Modal>
   );
 };
 

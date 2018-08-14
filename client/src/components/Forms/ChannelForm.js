@@ -12,7 +12,7 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap'
   },
-  container2: {
+  form: {
     width: 310
   },
   textField: {
@@ -52,7 +52,7 @@ class ChannelForm extends Component {
           />
         </form>
         <br />
-        <form className={classes.container2}>
+        <form className={classes.form}>
           <TextField
             type="file"
             id="org-path"

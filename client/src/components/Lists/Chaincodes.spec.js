@@ -4,13 +4,16 @@
 /* eslint-disable react-in-jsx-scope */
 
 import React from 'react';
-import ReactTable from 'react-table';
-import Chaincodes from './Chaincodes';
+import ReactTable from '../Styled/Table';
+import { Chaincodes } from './Chaincodes';
 
 jest.useFakeTimers();
 
 const setup = () => {
   const props = {
+    classes: {
+      hash: 'hash'
+    },
     chaincodeList: [
       {
         chaincodename: 'mycc',

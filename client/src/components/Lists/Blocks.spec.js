@@ -2,14 +2,20 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import ReactTable from 'react-table';
-import Blocks from './Blocks';
+import ReactTable from '../Styled/Table';
+import { Blocks } from './Blocks';
 import TransactionView from '../View/TransactionView';
 
 jest.useFakeTimers();
 
 const setup = () => {
   const props = {
+    classes: {
+      hash: 'hash',
+      partialHash: 'partialHash',
+      fullHash: 'fullHash',
+      lastFullHash: 'lastFullHash'
+    },
     blockList: [
       {
         blockhash:
@@ -471,7 +477,7 @@ describe('Blocks', () => {
   test('click on block hash', () => {
     const { wrapper } = setup();
     wrapper
-      .find('.partialHash')
+      .find('a[data-command="block-partial-hash"]')
       .at(0)
       .simulate('click');
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true);

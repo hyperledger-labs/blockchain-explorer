@@ -3,35 +3,32 @@
  */
 
 import React, { Component } from 'react';
+import compose from 'recompose/compose';
 import { connect } from 'react-redux';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { createMuiTheme } from '@material-ui/core/styles';
-import indigo from '@material-ui/core/colors/indigo';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import red from '@material-ui/core/colors/red';
+import { withStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
 import Main from '../Main';
-import HeaderView from '../Header/HeaderView';
-import FooterView from '../Header/footerView';
+import Header from '../Header';
+import Footer from '../Footer';
 import LandingPage from '../View/LandingPage';
-import '../../static/css/main.css';
-import '../../static/css/main-dark.css';
-import '../../static/css/media-queries.css';
-import ErrorMesageComponent from '../errorMesageComponent';
+import ErrorMesage from '../ErrorMesage';
 import { chartSelectors } from '../../state/redux/charts';
-const { errorMessageSelector } = chartSelectors;
+import { themeSelectors, themeActions } from '../../state/redux/theme';
 
-const muiTheme = createMuiTheme({
-  palette: {
-    contrastThreshold: 3,
-    tonalOffset: 0.2,
-    primary: indigo,
-    secondary: lightBlue,
-    error: {
-      main: red[500]
-    },
-    toggleClass: true
-  }
-});
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    app: {
+      backgroundColor: dark ? 'rgb(36, 32, 54)' : 'rgb(240, 245, 249)',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0
+    }
+  };
+};
 
 export class App extends Component {
   constructor(props) {
@@ -40,27 +37,13 @@ export class App extends Component {
       loading: true
     };
   }
-  componentWillMount() {
-    // Check if sessionStorage is true, then theme is true, else false.
-    const theme = sessionStorage.getItem('toggleTheme') === 'true';
-    this.setState({ toggleClass: theme }, () => {
-      theme
-        ? (document.body.className = 'dark-theme')
-        : (document.body.className = '');
-    });
-  }
 
   updateLoadStatus = () => {
     this.setState({ loading: false });
   };
 
-  refreshComponent = val => {
-    this.setState({ toggleClass: val }, () => {
-      const { toggleClass } = this.state;
-      toggleClass
-        ? (document.body.className = 'dark-theme')
-        : (document.body.className = '');
-    });
+  refreshComponent = mode => {
+    this.props.changeTheme(mode);
   };
 
   render() {
@@ -68,23 +51,30 @@ export class App extends Component {
     if (loading) {
       return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
     }
-
+    const { classes, mode, error } = this.props;
+    const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
     return (
-      <MuiThemeProvider theme={muiTheme}>
-        <div>
-          <HeaderView refresh={this.refreshComponent} />
-          {this.props.error && (
-            <ErrorMesageComponent message={this.props.error} />
-          )}
-          <Main />
-          <div className="footerView">
-            <FooterView />
-          </div>
-        </div>
-      </MuiThemeProvider>
+      <div className={className}>
+        <Header refresh={this.refreshComponent} />
+        {error && <ErrorMesage message={error} />}
+        <Main />
+        <Footer />
+      </div>
     );
   }
 }
-export default connect(state => ({
-  error: errorMessageSelector(state)
-}))(App);
+
+const { modeSelector } = themeSelectors;
+const { changeTheme } = themeActions;
+const { errorMessageSelector } = chartSelectors;
+
+export default compose(
+  withStyles(styles),
+  connect(
+    state => ({
+      error: errorMessageSelector(state),
+      mode: modeSelector(state)
+    }),
+    { changeTheme }
+  )
+)(App);

@@ -4,13 +4,6 @@
   .navbar-brand {
     width: 50%;
   }
-  .logo {
-    width: 200px;
-    height: 40px;
-  }
-  .channel-dropdown {
-    width: 9em;
-  }
   .navbar-expand-md .navbar-nav {
     width: 60%;
     float: left;
@@ -19,27 +12,11 @@
   .mx-auto {
     margin-left: 5px !important;
   }
-  .theme-switch {
-    display: flex;
-  }
-  .dashButtons {
-    font-size: 0.85rem !important;
-  }
-  .activeTab {
-    padding: 8% !important;
-  }
-  .sunIcon,
-  .moonIcon {
-    margin-top: 15px;
-  }
 }
 /*Toggle Navbar*/
 @media (max-width: 990px) {
   .navbar-nav {
     margin-top: 20px;
     padding-left: 30px;
-  }
-  .theme-switch {
-    margin-left: 0px;
   }
 }

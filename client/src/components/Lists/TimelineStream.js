@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Timeline, TimelineEvent } from 'react-event-timeline';
 import Dialog from '@material-ui/core/Dialog';
 import FontAwesome from 'react-fontawesome';
@@ -14,7 +15,40 @@ import BlockView from '../View/BlockView';
 import blockOpen from '../../static/images/blockOpen.png';
 import { blockListType, notificationsType } from '../types';
 
-class TimelineStream extends Component {
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    scrollable: {
+      height: 300,
+      overflowY: 'scroll'
+    },
+    text: {
+      color: dark ? '#ffffff' : undefined,
+      '& .badge-secondary': {
+        backgroundColor: '#5e548f'
+      }
+    },
+    event: {
+      wordWrap: 'break-word',
+      width: '90% !important',
+      backgroundColor: dark ? '#423b5f !important' : undefined,
+      '& p': {
+        color: dark ? '#ffffff' : undefined
+      },
+      '& > div': {
+        color: dark ? 'red' : undefined
+      }
+    },
+    open: {
+      height: 35,
+      marginTop: -10,
+      backgroundColor: 'transparent'
+    }
+  };
+};
+
+export class TimelineStream extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,11 +71,11 @@ class TimelineStream extends Component {
   };
 
   render() {
-    const { notifications } = this.props;
+    const { notifications, classes } = this.props;
     const { blockHash, dialogOpenBlockHash } = this.state;
     return (
       <div>
-        <div className="scrollable-card">
+        <div className={classes.scrollable}>
           <Timeline>
             {notifications.map(item => (
               <TimelineEvent
@@ -50,7 +84,7 @@ class TimelineStream extends Component {
                 icon={<FontAwesome name="cube" />}
                 iconColor="#0D3799"
                 container="card"
-                className="timeline-event"
+                className={classes.event}
                 titleStyle={{ fontWeight: 'bold' }}
                 style={{ width: '65%' }}
                 cardHeaderStyle={{
@@ -62,7 +96,7 @@ class TimelineStream extends Component {
                 }}
                 buttons={
                   <a
-                    className="blockLink"
+                    data-command="block-link"
                     href="#/"
                     onClick={() =>
                       this.handleDialogOpenBlockHash(item.blockhash)
@@ -71,22 +105,22 @@ class TimelineStream extends Component {
                     <img
                       src={blockOpen}
                       alt="View Blocks"
-                      className="blockOpen"
+                      className={classes.open}
                     />
                   </a>
                 }
               >
                 <Typography variant="body1">
-                  <b className="timeLineText"> Channel Name:</b>{' '}
+                  <b className={classes.text}> Channel Name:</b>{' '}
                   {item.channelName} <br />
-                  <b className="timeLineText"> Datahash:</b> {item.datahash}{' '}
+                  <b className={classes.text}> Datahash:</b> {item.datahash}{' '}
                   <br />
-                  <b className="timeLineText"> Number of Tx:</b> {item.txcount}
+                  <b className={classes.text}> Number of Tx:</b> {item.txcount}
                 </Typography>
-                <h5 className="timeLineText">
-                  <Badge className="timeLineText">
+                <h5 className={classes.text}>
+                  <Badge className={classes.text}>
                     <Timeago
-                      className="timeLineText"
+                      className={classes.text}
                       date={item.time}
                       live={false}
                       minPeriod={60}
@@ -119,4 +153,4 @@ TimelineStream.propTypes = {
   notifications: notificationsType.isRequired
 };
 
-export default TimelineStream;
+export default withStyles(styles)(TimelineStream);

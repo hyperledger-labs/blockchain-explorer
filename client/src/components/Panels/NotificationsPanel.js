@@ -13,16 +13,33 @@ import FontAwesome from 'react-fontawesome';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper
-  },
-  avatarBlue: {
-    backgroundColor: '#1C3860'
-  }
-});
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    root: {
+      width: '100%',
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper
+    },
+    avatarBlue: {
+      backgroundColor: '#1C3860'
+    },
+    panel: {
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#5e558e' : undefined
+    },
+    badge: {
+      marginLeft: '60% !important',
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#242036' : undefined
+    },
+    time: {
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#242036' : undefined
+    }
+  };
+};
 
 export class NotificationsPanel extends Component {
   avatarIcon = (type, classes) => {
@@ -46,11 +63,11 @@ export class NotificationsPanel extends Component {
     const { classes, notifications } = this.props;
     if (notifications.length === 0) {
       return (
-        <div className="notificationPanel">
+        <div className={classes.panel}>
           <div className={classes.root}>
-            <List component="nav" className="notificationPanel">
+            <List component="nav" className={classes.panel}>
               <ListItem button>
-                <Typography variant="title" className="notificationPanel">
+                <Typography variant="title" className={classes.panel}>
                   NO NOTIFICATIONS
                 </Typography>
               </ListItem>
@@ -61,22 +78,22 @@ export class NotificationsPanel extends Component {
     }
 
     return (
-      <div className="notificationPanel">
+      <div className={classes.panel}>
         <div className={classes.root}>
-          <List component="nav" className="notificationPanel">
+          <List component="nav" className={classes.panel}>
             {notifications.map((notify, index) => (
               <div>
-                <ListItem key={index} button className="notificationPanel">
+                <ListItem key={index} button className={classes.panel}>
                   {this.avatarIcon(notify.type, classes)}
                   <ListItemText
-                    className="notificationPanel"
+                    className={classes.panel}
                     primary={notify.title}
                     secondary={notify.message}
                   />
                 </ListItem>
-                <Badge className="notificationBadge">
+                <Badge className={classes.badge}>
                   <Timeago
-                    className="notificationTime"
+                    className={classes.time}
                     date={notify.time}
                     live={false}
                     minPeriod={60}

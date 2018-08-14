@@ -3,6 +3,8 @@
  */
 
 import React, { Component } from 'react';
+import compose from 'recompose/compose';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
@@ -29,6 +31,17 @@ const {
   transactionPerMinSelector
 } = chartSelectors;
 
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    chart: {
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#453e68' : undefined
+    }
+  };
+};
+
 export class ChartStats extends Component {
   constructor(props) {
     super(props);
@@ -43,6 +56,7 @@ export class ChartStats extends Component {
       this.syncData(currentChannel);
     }, 60000);
   }
+
   componentWillUnmount() {
     clearInterval(this.interValId);
   }
@@ -96,11 +110,12 @@ export class ChartStats extends Component {
       blockPerHour,
       blockPerMin,
       transactionPerHour,
-      transactionPerMin
+      transactionPerMin,
+      classes
     } = this.props;
 
     return (
-      <div className="chartCard">
+      <div className={classes.chart}>
         <Nav tabs>
           <NavItem>
             <NavLink
@@ -151,8 +166,8 @@ export class ChartStats extends Component {
             </NavLink>
           </NavItem>
         </Nav>
-        <TabContent activeTab={activeTab} className="activeChartTab">
-          <TabPane tabId="1" className="TabPane">
+        <TabContent activeTab={activeTab}>
+          <TabPane tabId="1">
             <TimeChart chartData={this.timeDataSetup(blockPerHour)} />
           </TabPane>
           <TabPane tabId="2">
@@ -182,18 +197,21 @@ ChartStats.propTypes = {
   transactionPerMin: transactionPerMinType.isRequired
 };
 
-export default connect(
-  state => ({
-    blockPerHour: blockPerHourSelector(state),
-    blockPerMin: blockPerMinSelector(state),
-    transactionPerHour: transactionPerHourSelector(state),
-    transactionPerMin: transactionPerMinSelector(state),
-    currentChannel: currentChannelSelector(state)
-  }),
-  {
-    getBlocksPerHour: chartOperations.blockPerHour,
-    getBlocksPerMin: chartOperations.blockPerMin,
-    getTransactionPerHour: chartOperations.transactionPerHour,
-    getTransactionPerMin: chartOperations.transactionPerMin
-  }
+export default compose(
+  withStyles(styles),
+  connect(
+    state => ({
+      blockPerHour: blockPerHourSelector(state),
+      blockPerMin: blockPerMinSelector(state),
+      transactionPerHour: transactionPerHourSelector(state),
+      transactionPerMin: transactionPerMinSelector(state),
+      currentChannel: currentChannelSelector(state)
+    }),
+    {
+      getBlocksPerHour: chartOperations.blockPerHour,
+      getBlocksPerMin: chartOperations.blockPerMin,
+      getTransactionPerHour: chartOperations.transactionPerHour,
+      getTransactionPerMin: chartOperations.transactionPerMin
+    }
+  )
 )(ChartStats);

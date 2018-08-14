@@ -2,11 +2,15 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import ReactTable from 'react-table';
+import ReactTable from '../Styled/Table';
 import PeersHealth from './PeersHealth';
 
 const setup = () => {
   const props = {
+    classes: {
+      table: 'table',
+      center: 'center'
+    },
     peerStatus: [
       {
         status: 'UP',

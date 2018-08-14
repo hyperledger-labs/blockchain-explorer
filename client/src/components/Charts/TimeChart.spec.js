@@ -2,10 +2,13 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import TimeChart from './TimeChart';
+import { TimeChart } from './TimeChart';
 
 const setup = () => {
   const props = {
+    classes: {
+      content: 'content'
+    },
     chartData: {
       dataMax: 10,
       displayData: [

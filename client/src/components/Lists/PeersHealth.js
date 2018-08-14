@@ -3,34 +3,45 @@
  */
 
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Badge } from 'reactstrap';
-import ReactTable from 'react-table';
+import ReactTable from '../Styled/Table';
 import { peerStatusType } from '../types';
-import 'react-table/react-table.css';
 
-const PeersHealth = ({ peerStatus }) => {
+const styles = theme => {
+  return {
+    table: {
+      height: 335,
+      overflowY: 'scroll'
+    },
+    center: {
+      textAlign: 'center'
+    }
+  };
+};
+
+const PeersHealth = ({ peerStatus, classes }) => {
   const columnHeaders = [
     {
       Header: 'Peer Name',
       accessor: 'server_hostname',
       filterAll: false,
-      className: 'center-column'
+      className: classes.center
     },
     {
       Header: 'Status',
       accessor: 'status',
       filterAll: false,
-      className: 'center-column',
+      className: classes.center,
       Cell: row => <Badge color="success">{row.value}</Badge>
     }
   ];
-
   return (
     <div>
       <ReactTable
         data={peerStatus}
         columns={columnHeaders}
-        className="-striped -highlight peers-health"
+        className={classes.table}
         minRows={0}
         showPagination={false}
       />
@@ -42,4 +53,4 @@ PeersHealth.propTypes = {
   peerStatus: peerStatusType.isRequired
 };
 
-export default PeersHealth;
+export default withStyles(styles)(PeersHealth);

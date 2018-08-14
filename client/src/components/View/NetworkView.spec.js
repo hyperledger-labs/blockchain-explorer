@@ -6,12 +6,6 @@ import { NetworkView } from './NetworkView';
 
 const setup = () => {
   const props = {
-    classes: {
-      card: 'NetworkView-card-57',
-      content: 'NetworkView-content-59',
-      root: 'NetworkView-root-56',
-      title: 'NetworkView-title-58'
-    },
     peerList: []
   };
 

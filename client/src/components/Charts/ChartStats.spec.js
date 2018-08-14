@@ -8,6 +8,9 @@ jest.useFakeTimers();
 
 const setup = () => {
   const props = {
+    classes: {
+      chart: 'chart'
+    },
     blockPerHour: [
       { datetime: '2018-05-13T17:00:00.000Z', count: '0' },
       { datetime: '2018-05-13T18:00:00.000Z', count: '0' },

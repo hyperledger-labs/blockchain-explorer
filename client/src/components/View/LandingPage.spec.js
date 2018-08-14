@@ -6,6 +6,10 @@ import { LandingPage } from './LandingPage';
 
 const setup = () => {
   const props = {
+    classes: {
+      background: 'background',
+      content: 'content'
+    },
     currentChannel: 'mychannel',
     getBlockList: jest.fn(),
     getBlocksPerHour: jest.fn(),

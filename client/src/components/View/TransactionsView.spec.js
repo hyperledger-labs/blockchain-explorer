@@ -6,12 +6,6 @@ import { TransactionsView } from './TransactionsView';
 
 const setup = () => {
   const props = {
-    classes: {
-      card: 'TransactionsView-card-50',
-      content: 'TransactionsView-content-52',
-      root: 'TransactionsView-root-49',
-      title: 'TransactionsView-title-51'
-    },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,

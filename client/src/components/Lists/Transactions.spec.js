@@ -2,12 +2,18 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import ReactTable from 'react-table';
-import Transactions from './Transactions';
+import ReactTable from '../Styled/Table';
+import { Transactions } from './Transactions';
 import TransactionView from '../View/TransactionView';
 
 const setup = () => {
   const props = {
+    classes: {
+      hash: 'hash',
+      partialHash: 'partialHash',
+      fullHash: 'fullHash',
+      lastFullHash: 'lastFullHash'
+    },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
@@ -371,7 +377,7 @@ describe('Transactions', () => {
   test('click on partialHash', async () => {
     const { wrapper } = setup();
     await wrapper
-      .find('.partialHash')
+      .find('a[data-command="transaction-partial-hash"]')
       .at(0)
       .simulate('click');
     expect(wrapper.state('dialogOpen')).toBe(true);

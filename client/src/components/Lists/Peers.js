@@ -3,8 +3,7 @@
  */
 
 import React from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
+import ReactTable from '../Styled/Table';
 import matchSorter from 'match-sorter';
 import { peerListType } from '../types';
 
@@ -66,7 +65,6 @@ const Peers = ({ peerList }) => {
         data={peerList}
         columns={columnHeaders}
         defaultPageSize={5}
-        className="-striped -highlight"
         filterable
         minRows={0}
         showPagination={!(peerList.length < 5)}

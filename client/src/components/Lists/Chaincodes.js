@@ -3,15 +3,27 @@
  */
 
 import React, { Component } from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
+import { withStyles } from '@material-ui/core/styles';
 import matchSorter from 'match-sorter';
 import Dialog from '@material-ui/core/Dialog';
+import ReactTable from '../Styled/Table';
 import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
 import { chaincodeListType } from '../types';
 
-class Chaincodes extends Component {
+const styles = theme => {
+  return {
+    hash: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: 60,
+      letterSpacing: '2px'
+    }
+  };
+};
+
+export class Chaincodes extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,13 +50,13 @@ class Chaincodes extends Component {
     this.setState({ sourceDialog: false });
   };
 
-  reactTableSetup = () => [
+  reactTableSetup = classes => [
     {
       Header: 'Chaincode Name',
       accessor: 'chaincodename',
       Cell: row => (
         <a
-          className="hash-hide"
+          className={classes.hash}
           onClick={() => this.sourceDialogOpen(row.original)}
           href="#/chaincodes"
         >
@@ -111,7 +123,7 @@ class Chaincodes extends Component {
   ];
 
   render() {
-    const { chaincodeList } = this.props;
+    const { chaincodeList, classes } = this.props;
     const { dialogOpen, sourceDialog, chaincode } = this.state;
     return (
       <div>
@@ -120,9 +132,8 @@ class Chaincodes extends Component {
           </Button> */}
         <ReactTable
           data={chaincodeList}
-          columns={this.reactTableSetup()}
+          columns={this.reactTableSetup(classes)}
           defaultPageSize={5}
-          className="-striped -highlight"
           filterable
           minRows={0}
           showPagination={!(chaincodeList.length < 5)}
@@ -152,4 +163,4 @@ Chaincodes.propTypes = {
   chaincodeList: chaincodeListType.isRequired
 };
 
-export default Chaincodes;
+export default withStyles(styles)(Chaincodes);

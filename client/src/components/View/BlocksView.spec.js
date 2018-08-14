@@ -6,12 +6,6 @@ import { BlocksView } from './BlocksView';
 
 const setup = () => {
   const props = {
-    classes: {
-      card: 'BlocksView-card-50',
-      content: 'BlocksView-content-52',
-      root: 'BlocksView-root-49',
-      title: 'BlocksView-title-51'
-    },
     blockList: [
       {
         blockhash:

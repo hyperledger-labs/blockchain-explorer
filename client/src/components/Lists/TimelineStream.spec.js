@@ -2,10 +2,16 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import TimelineStream from './TimelineStream';
+import { TimelineStream } from './TimelineStream';
 
 const setup = () => {
   const props = {
+    classes: {
+      scrollable: 'scrollable',
+      text: 'text',
+      event: 'event',
+      open: 'open'
+    },
     notifications: [
       {
         blockhash:
@@ -116,7 +122,7 @@ describe('TimelineStream', () => {
   test('onClick for blockLink', () => {
     const { wrapper } = setup();
     wrapper
-      .find('.blockLink')
+      .find('a[data-command="block-link"]')
       .at(0)
       .simulate('click');
     wrapper.update();
