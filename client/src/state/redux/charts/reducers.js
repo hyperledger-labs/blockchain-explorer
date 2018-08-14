@@ -89,7 +89,20 @@ const dashStatsReducer = (state = initialState, action) => {
     }
   }
 };
-
+const blockActivityReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.BLOCK_ACTIVITY: {
+      return {
+        rows: action.payload.row,
+        loaded: true,
+        errors: action.errors
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.NOTIFICATION_LOAD: {
@@ -172,7 +185,8 @@ const reducer = combineReducers({
   transactionByOrg: transactionByOrgReducer,
   transactionPerHour: transactionPerHourReducer,
   transactionPerMin: transactionPerMinReducer,
-  errorMessage: errorMessageReducer
+  errorMessage: errorMessageReducer,
+  blockActivity: blockActivityReducer
 });
 
 export default reducer;

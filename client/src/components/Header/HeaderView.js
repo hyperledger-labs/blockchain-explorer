@@ -48,10 +48,17 @@ const {
   transactionByOrg,
   dashStats,
   changeChannel,
+  blockActivity,
   peerStatus
 } = chartOperations;
 
-const { blockList, chaincodeList, channels, peerList, transactionList } = tableOperations;
+const {
+  blockList,
+  chaincodeList,
+  channels,
+  peerList,
+  transactionList
+} = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
 const { channelsSelector } = tableSelectors;
@@ -263,7 +270,8 @@ export class HeaderView extends Component {
       getTransactionByOrg,
       getTransactionList,
       getTransactionPerHour,
-      getTransactionPerMin
+      getTransactionPerMin,
+      getBlockActivity
     } = this.props;
 
     await Promise.all([
@@ -272,6 +280,7 @@ export class HeaderView extends Component {
       getBlocksPerMin(currentChannel),
       getChaincodeList(currentChannel),
       getDashStats(currentChannel),
+      getBlockActivity(currentChannel),
       getPeerList(currentChannel),
       getPeerStatus(currentChannel),
       getTransactionByOrg(currentChannel),
@@ -507,6 +516,7 @@ export default compose(
       getDashStats: dashStats,
       getPeerList: peerList,
       getPeerStatus: peerStatus,
+      getBlockActivity: blockActivity,
       getTransactionByOrg: transactionByOrg,
       getTransactionList: transactionList,
       getTransactionPerHour: transactionPerHour,

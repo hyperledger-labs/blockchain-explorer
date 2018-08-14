@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
+import { Button, timeoutsShape } from 'reactstrap';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import matchSorter from 'match-sorter';
@@ -50,7 +50,36 @@ class Blocks extends Component {
     });
     this.setState({ selection, options: opts });
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.state.search &&
+      nextProps.currentChannel != this.props.currentChannel
+    ) {
+      if (this.interval != undefined) {
+        clearInterval(this.interval);
+      }
+      this.interval = setInterval(() => {
+        this.searchBlockList(nextProps.currentChannel);
+      }, 60000);
+      this.searchBlockList(nextProps.currentChannel);
+    }
+  }
+  componentWillUnmount() {
+    clearInterval(this.interVal);
+  }
+  searchBlockList = async channel => {
+    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+      this.state.to
+    ).toString()}`;
+    for (let i = 0; i < this.state.orgs.length; i++) {
+      query += `&&orgs=${this.state.orgs[i].value}`;
+    }
+    let channelhash = this.props.currentChannel;
+    if (channel != undefined) {
+      channelhash = channel;
+    }
+    await this.props.getBlockListSearch(channelhash, query);
+  };
   handleDialogOpen = async tid => {
     const { getTransaction, currentChannel } = this.props;
     await getTransaction(currentChannel, tid);
@@ -64,16 +93,19 @@ class Blocks extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.state.to
-    ).toString()}`;
-    for (let i = 0; i < this.state.orgs.length; i++) {
-      query += `&&orgs=${this.state.orgs[i].value}`;
+    if (this.interval != undefined) {
+      clearInterval(this.interval);
     }
-    await this.props.getBlockListSearch(this.props.currentChannel, query);
+    this.interval = setInterval(() => {
+      this.searchBlockList();
+    }, 60000);
+    await this.searchBlockList();
     this.setState({ search: true });
   };
   handleClearSearch = () => {
+    if (this.interval != undefined) {
+      clearInterval(this.interval);
+    }
     this.setState({
       search: false,
       to: moment(),
@@ -82,9 +114,10 @@ class Blocks extends Component {
     });
   };
   handleDialogOpenBlockHash = blockHash => {
-    const { blockList } = this.props;
+    const blockList = this.state.search
+      ? this.props.blockListSearch
+      : this.props.blockList;
     const data = find(blockList, item => item.blockhash === blockHash);
-
     this.setState({
       dialogOpenBlockHash: true,
       blockHash: data

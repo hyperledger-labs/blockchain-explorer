@@ -42,7 +42,10 @@ const getPeerStatus = peerStatus => ({
   type: types.PEER_STATUS,
   payload: peerStatus
 });
-
+const getBlockActivity = blocks => ({
+  type: types.BLOCK_ACTIVITY,
+  payload: blocks
+});
 const getTransactionByOrg = transactionByOrg => ({
   type: types.TRANSACTION_CHART_ORG,
   payload: transactionByOrg
@@ -75,5 +78,6 @@ export default {
   getTransactionPerHour,
   getTransactionPerMin,
   updateChannel,
-  getErroMessage
+  getErroMessage,
+  getBlockActivity
 };

@@ -47,7 +47,32 @@ class Transactions extends Component {
     });
     this.setState({ selection, options: opts });
   }
-
+  componentWillReceiveProps(nextProps) {
+    if (
+      this.state.search &&
+      nextProps.currentChannel != this.props.currentChannel
+    ) {
+      if (this.interval != undefined) {
+        clearInterval(this.interval);
+      }
+      this.interval = setInterval(() => {
+        this.searchTransactionList();
+      }, 60000);
+      this.searchTransactionList();
+    }
+  }
+  componentWillUnmount() {
+    clearInterval(this.interVal);
+  }
+  searchTransactionList = async () => {
+    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+      this.state.to
+    ).toString()}`;
+    for (let i = 0; i < this.state.orgs.length; i++) {
+      query += `&&orgs=${this.state.orgs[i].value}`;
+    }
+    await this.props.getTransactionListSearch(this.props.currentChannel, query);
+  };
   handleDialogOpen = async tid => {
     const { currentChannel, getTransaction } = this.props;
     await getTransaction(currentChannel, tid);
@@ -61,13 +86,14 @@ class Transactions extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.state.to
-    ).toString()}`;
-    for (let i = 0; i < this.state.orgs.length; i++) {
-      query += `&&orgs=${this.state.orgs[i].value}`;
+    if (this.interval != undefined) {
+      clearInterval(this.interval);
     }
-    await this.props.getTransactionListSearch(this.props.currentChannel, query);
+    this.interval = setInterval(() => {
+      this.searchTransactionList();
+    }, 60000);
+    await this.searchTransactionList();
+    this.setState({ search: true });
     this.setState({ search: true });
   };
   handleClearSearch = () => {

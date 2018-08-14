@@ -52,6 +52,7 @@ const setup = () => {
     getNotification: jest.fn(),
     getPeerList: jest.fn(),
     getPeerStatus: jest.fn(),
+    getBlockActivity: jest.fn(),
     getTransactionByOrg: jest.fn(),
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),

@@ -30,6 +30,7 @@ import PageNotFound from './View/PageNotFound';
 
 const {
   currentChannelSelector,
+  blockActivitySelector,
   channelListSelector,
   dashStatsSelector,
   peerStatusSelector,
@@ -44,13 +45,13 @@ const {
   transactionSelector,
   transactionListSelector,
   blockListSearchSelector,
-  transactionListSearchSelector,
-  orgsSelector
+  transactionListSearchSelector
 } = tableSelectors;
 
 export const Main = props => {
   const {
     blockList,
+    blockActivity,
     chaincodeList,
     channels,
     currentChannel,
@@ -88,7 +89,8 @@ export const Main = props => {
     blockList,
     dashStats,
     peerStatus,
-    transactionByOrg
+    transactionByOrg,
+    blockActivity
   };
 
   const networkViewProps = {
@@ -104,7 +106,6 @@ export const Main = props => {
     transactionListSearch,
     getTransactionListSearch
   };
-
   return (
     <Router>
       <div className="App">
@@ -174,7 +175,8 @@ export default connect(
     transactionByOrg: transactionByOrgSelector(state),
     transactionList: transactionListSelector(state),
     blockListSearch: blockListSearchSelector(state),
-    transactionListSearch: transactionListSearchSelector(state)
+    transactionListSearch: transactionListSearchSelector(state),
+    blockActivity: blockActivitySelector(state)
   }),
   {
     getTransaction: tableOperations.transaction,

@@ -23,6 +23,25 @@ class CRUDService {
     return sql.getRowByPkOne(sqlTxById);
   }
 
+  getBlockAcitvityList(channel_genesis_hash) {
+    let sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+      SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
+       channel_genesis_hash = '${channel_genesis_hash}' group by transactions.blockid ),
+      channel.name as channelname  from blocks inner join channel on blocks.channel_genesis_hash = channel.channel_genesis_hash  where
+       blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0
+       order by blocks.blocknum desc limit 3`;
+    return sql.getRowsBySQlQuery(sqlBlockActivityList);
+  }
+
+  // getBlockDetails() {
+  //   let sqlBlockDetails =`select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, (select name as channelname from channel where
+  //     channel_genesis_hash ='${channel_genesis_hash}' ) from blocks
+  //     where
+  //     blocks.blockhash = '${channel_genesis_hash}'
+  //      and blocks.channel_genesis_hash ='${channel_genesis_hash}'`;
+  //      return sql.getBlockDetails(sqlBlockDetails);
+  // }
+
   getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs) {
     let orgsSql = '';
     if (orgs && orgs != '') {

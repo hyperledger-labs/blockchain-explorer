@@ -118,6 +118,24 @@ const dashStats = channel => dispatch =>
     .catch(error => {
       console.error(error);
     });
+const blockActivity = channel => dispatch =>
+  get(`/api/blockActivity/${channel}`)
+    .then(resp => {
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getBlockActivity(resp));
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
 
 const notification = notification => dispatch => {
   const notify = JSON.parse(notification);
@@ -211,5 +229,6 @@ export default {
   channel,
   channelList,
   changeChannel,
-  peerStatus
+  peerStatus,
+  blockActivity
 };

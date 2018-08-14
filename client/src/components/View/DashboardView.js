@@ -28,7 +28,13 @@ export class DashboardView extends Component {
   }
 
   componentWillMount() {
-    const { blockList, dashStats, peerStatus, transactionByOrg } = this.props;
+    const {
+      blockList,
+      dashStats,
+      peerStatus,
+      transactionByOrg,
+      blockActivity
+    } = this.props;
     if (
       blockList === undefined ||
       dashStats === undefined ||
@@ -40,13 +46,13 @@ export class DashboardView extends Component {
   }
 
   componentDidMount() {
-    const { blockList } = this.props;
-    this.setNotifications(blockList);
+    const { blockActivity } = this.props;
+    this.setNotifications(blockActivity);
   }
 
   componentWillReceiveProps() {
-    const { blockList } = this.props;
-    this.setNotifications(blockList);
+    const { blockActivity } = this.props;
+    this.setNotifications(blockActivity);
   }
 
   setNotifications = blockList => {
@@ -70,7 +76,12 @@ export class DashboardView extends Component {
   };
 
   render() {
-    const { dashStats, peerStatus, blockList, transactionByOrg } = this.props;
+    const {
+      dashStats,
+      peerStatus,
+      blockActivity,
+      transactionByOrg
+    } = this.props;
     const { hasDbError, notifications } = this.state;
     if (hasDbError) {
       return (
@@ -158,7 +169,7 @@ export class DashboardView extends Component {
               <Card className="dash-section">
                 <TimelineStream
                   notifications={notifications}
-                  blockList={blockList}
+                  blockList={blockActivity}
                 />
               </Card>
             </Col>

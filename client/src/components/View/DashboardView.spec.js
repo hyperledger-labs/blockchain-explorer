@@ -6,6 +6,62 @@ import { DashboardView } from './DashboardView';
 
 const setup = () => {
   const props = {
+    blockActivity: [
+      {
+        blockhash:
+          '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        blocknum: 20,
+        channelname: 'mychannel',
+        createdt: '2018-04-26T20:32:13.000Z',
+        datahash:
+          '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e',
+        id: 21,
+        prehash:
+          '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        prev_blockhash: null,
+        txcount: 2,
+        txhash: [
+          '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
+        ]
+      },
+      {
+        blockhash:
+          '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        blocknum: 20,
+        channelname: 'mychannel',
+        createdt: '2018-04-26T20:32:13.000Z',
+        datahash:
+          '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e',
+        id: 21,
+        prehash:
+          '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        prev_blockhash: null,
+        txcount: 2,
+        txhash: [
+          '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
+        ]
+      },
+      {
+        blockhash:
+          '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        blocknum: 20,
+        channelname: 'mychannel',
+        createdt: '2018-04-26T20:32:13.000Z',
+        datahash:
+          '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e',
+        id: 21,
+        prehash:
+          '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        prev_blockhash: null,
+        txcount: 2,
+        txhash: [
+          '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
+        ]
+      }
+    ],
     blockList: [
       {
         blockhash:

@@ -29,6 +29,7 @@ import {
 const {
   blockPerHour,
   blockPerMin,
+  blockActivity,
   channel,
   channelList,
   dashStats,
@@ -83,6 +84,7 @@ export class LandingPage extends Component {
       getDashStats,
       getPeerList,
       getPeerStatus,
+      getBlockActivity,
       getTransactionByOrg,
       getTransactionList,
       getTransactionPerHour,
@@ -106,6 +108,7 @@ export class LandingPage extends Component {
       getDashStats(currentChannel),
       getPeerList(currentChannel),
       getPeerStatus(currentChannel),
+      getBlockActivity(currentChannel),
       getTransactionByOrg(currentChannel),
       getTransactionList(currentChannel),
       getTransactionPerHour(currentChannel),
@@ -127,7 +130,10 @@ export class LandingPage extends Component {
             alignItems: 'center'
           }}
         >
-          <h1>Please verify your network configuration, database configuration and try again</h1>
+          <h1>
+            Please verify your network configuration, database configuration and
+            try again
+          </h1>
         </div>
       );
     }
@@ -189,6 +195,7 @@ export default connect(
     getDashStats: dashStats,
     getPeerList: peerList,
     getPeerStatus: peerStatus,
+    getBlockActivity: blockActivity,
     getTransactionByOrg: transactionByOrg,
     getTransactionList: transactionList,
     getTransactionPerHour: transactionPerHour,
