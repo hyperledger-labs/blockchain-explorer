@@ -82,12 +82,10 @@ export class Transactions extends Component {
     this.state = {
       dialogOpen: false,
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
       options: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days')
+      from: moment().subtract(1, 'days')
     };
   }
 
@@ -97,14 +95,11 @@ export class Transactions extends Component {
     transactionList.forEach(element => {
       selection[element.blocknum] = false;
     });
-    this.props.getOrgs(this.props.currentChannel).then(() => {
-      let opts = [];
-      this.props.orgs.forEach(val => {
-        opts.push({ label: val, value: val });
-      });
-      this.setState({ selection, options: opts });
+    let opts = [];
+    this.props.transactionByOrg.forEach(val => {
+      opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
     });
-    this.setState({ selection });
+    this.setState({ selection, options: opts });
   }
   componentWillReceiveProps(nextProps) {
     if (
@@ -115,24 +110,27 @@ export class Transactions extends Component {
         clearInterval(this.interval);
       }
       this.interval = setInterval(() => {
-        this.searchTransactionList();
+        this.searchTransactionList(nextProps.currentChannel);
       }, 60000);
-      this.searchTransactionList();
+      this.searchTransactionList(nextProps.currentChannel);
     }
   }
 
   componentWillUnmount() {
     clearInterval(this.interVal);
   }
-
-  searchTransactionList = async () => {
+  searchTransactionList = async channel => {
     let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
       this.statte.to
     ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
       query += `&&orgs=${this.state.orgs[i].value}`;
     }
-    await this.props.getTransactionListSearch(this.props.currentChannel, query);
+    let channelhash = this.props.currentChannel;
+    if (channel !== undefined) {
+      channelhash = channel;
+    }
+    await this.props.getTransactionListSearch(channelhash, query);
   };
 
   handleDialogOpen = async tid => {
@@ -148,24 +146,21 @@ export class Transactions extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    if (this.interval !== undefined) {
-      clearInterval(this.interval);
+    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+      this.state.to
+    ).toString()}`;
+    for (let i = 0; i < this.state.orgs.length; i++) {
+      query += `&&orgs=${this.state.orgs[i].value}`;
     }
-    this.interval = setInterval(() => {
-      this.searchTransactionList();
-    }, 60000);
-    await this.searchTransactionList();
-    this.setState({ search: true });
+    await this.props.getTransactionListSearch(this.props.currentChannel, query);
     this.setState({ search: true });
   };
   handleClearSearch = () => {
     this.setState({
       search: false,
-      to: moment().utc(),
+      to: moment(),
       orgs: [],
-      from: moment()
-        .utc()
-        .subtract(1, 'days')
+      from: moment().subtract(1, 'days')
     });
   };
 
@@ -287,7 +282,6 @@ export class Transactions extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ from: date });
               }}
@@ -302,7 +296,6 @@ export class Transactions extends Component {
               maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
-              utcOffset={moment().utcOffset()}
               onChange={date => {
                 this.setState({ to: date });
               }}
