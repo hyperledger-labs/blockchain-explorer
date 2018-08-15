@@ -85,6 +85,7 @@ export class Transactions extends Component {
       to: moment(),
       orgs: [],
       options: [],
+      err: false,
       from: moment().subtract(1, 'days')
     };
   }
@@ -121,7 +122,7 @@ export class Transactions extends Component {
   }
   searchTransactionList = async channel => {
     let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.statte.to
+      this.state.to
     ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
       query += `&&orgs=${this.state.orgs[i].value}`;
@@ -146,20 +147,22 @@ export class Transactions extends Component {
     this.setState({ dialogOpen: false });
   };
   handleSearch = async () => {
-    let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.state.to
-    ).toString()}`;
-    for (let i = 0; i < this.state.orgs.length; i++) {
-      query += `&&orgs=${this.state.orgs[i].value}`;
+    if (this.interval !== undefined) {
+      clearInterval(this.interval);
     }
-    await this.props.getTransactionListSearch(this.props.currentChannel, query);
+    this.interval = setInterval(() => {
+      this.searchTransactionList();
+    }, 60000);
+    await this.searchTransactionList();
     this.setState({ search: true });
   };
+
   handleClearSearch = () => {
     this.setState({
       search: false,
       to: moment(),
       orgs: [],
+      err: false,
       from: moment().subtract(1, 'days')
     });
   };
@@ -279,11 +282,14 @@ export class Transactions extends Component {
               id="from"
               selected={this.state.from}
               showTimeSelect
-              maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
               onChange={date => {
-                this.setState({ from: date });
+                if (date > this.state.to) {
+                  this.setState({ err: true, from: date });
+                } else {
+                  this.setState({ from: date, err: false });
+                }
               }}
             />
           </div>
@@ -293,15 +299,26 @@ export class Transactions extends Component {
               id="to"
               selected={this.state.to}
               showTimeSelect
-              maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
               onChange={date => {
-                this.setState({ to: date });
+                if (date > this.state.from) {
+                  this.setState({ to: date, err: false });
+                } else {
+                  this.setState({ err: true, to: date });
+                }
               }}
-            />
+            >
+              <div className="validator ">
+                {this.state.err && (
+                  <span className=" label border-red">
+                    {' '}
+                    From date should be less than To date
+                  </span>
+                )}
+              </div>
+            </DatePicker>
           </div>
-
           <Select
             className="col-md-2"
             multi={true}
@@ -316,6 +333,7 @@ export class Transactions extends Component {
             <Button
               className={classes.filterButton}
               color="success"
+              disabled={this.state.err}
               onClick={async () => {
                 await this.handleSearch();
               }}

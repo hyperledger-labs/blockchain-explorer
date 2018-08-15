@@ -88,7 +88,7 @@ const dbroutes = (app, persist) => {
   app.get('/api/blockActivity/:channel_genesis_hash', function(req, res) {
     let channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      crudService.getBlockAcitvityList(channel_genesis_hash).then(row => {
+      crudService.getBlockActivityList(channel_genesis_hash).then(row => {
         if (row) {
           return res.send({ status: 200, row });
         }

@@ -131,14 +131,6 @@ var queryDatevalidator = function(from, to) {
   if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
     from = new Date(from).toISOString();
     to = new Date(to).toISOString();
-    if (
-      Date.parse(from) > Date.parse(today) ||
-      Date.parse(to) > Date.parse(today) ||
-      Date.parse(from) > Date.parse(to)
-    ) {
-      from = new Date(Date.now() - 864e5).toISOString();
-      to = new Date().toISOString();
-    }
   } else {
     from = new Date(Date.now() - 864e5).toISOString();
     to = new Date().toISOString();

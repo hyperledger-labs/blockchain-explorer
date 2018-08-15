@@ -7,7 +7,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import { Button } from 'reactstrap';
 import matchSorter from 'match-sorter';
-
 import find from 'lodash/find';
 import ReactTable from '../Styled/Table';
 import BlockView from '../View/BlockView';
@@ -85,6 +84,7 @@ export class Blocks extends Component {
     this.state = {
       dialogOpen: false,
       dialogOpenBlockHash: false,
+      err: false,
       search: false,
       to: moment(),
       orgs: [],
@@ -172,6 +172,7 @@ export class Blocks extends Component {
       search: false,
       to: moment(),
       orgs: [],
+      err: false,
       from: moment().subtract(1, 'days')
     });
   };
@@ -377,11 +378,14 @@ export class Blocks extends Component {
               id="from"
               selected={this.state.from}
               showTimeSelect
-              maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
               onChange={date => {
-                this.setState({ from: date });
+                if (date > this.state.to) {
+                  this.setState({ err: true, from: date });
+                } else {
+                  this.setState({ from: date, err: false });
+                }
               }}
             />
           </div>
@@ -391,13 +395,25 @@ export class Blocks extends Component {
               id="to"
               selected={this.state.to}
               showTimeSelect
-              maxDate={moment()}
               timeIntervals={5}
               dateFormat="LLL"
               onChange={date => {
-                this.setState({ to: date });
+                if (date > this.state.from) {
+                  this.setState({ to: date, err: false });
+                } else {
+                  this.setState({ err: true, to: date });
+                }
               }}
-            />
+            >
+              <div className="validator ">
+                {this.state.err && (
+                  <span className=" label border-red">
+                    {' '}
+                    From date should be less than To date
+                  </span>
+                )}
+              </div>
+            </DatePicker>
           </div>
 
           <Select

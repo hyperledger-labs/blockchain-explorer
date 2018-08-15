@@ -142,3 +142,13 @@ th {
   padding-right: 6px !important;
   margin-top: 20px;
 }
+.selectDate {
+  width: 250px;
+  margin: 2%;
+}
+.border-red {
+  color: red;
+}
+.validator {
+  margin: 37px;
+}

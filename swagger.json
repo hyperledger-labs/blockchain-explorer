@@ -453,6 +453,59 @@
         }
       }
     },
+    "/blockActivity/{channel_genesis_hash}": {
+      "get": {
+        "tags": ["Blocks"],
+        "summary": "Query to Fetch Block Activity List",
+        "description": "Query to Fetch Block Acivity List",
+        "parameters": [
+          {
+            "name": "channel_genesis_hash",
+            "in": "path",
+            "description": "channel_genesis_hash",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number"
+                },
+                "txcount": {
+                  "type": "number"
+                },
+                "datahash": {
+                  "type": "string"
+                },
+                "blockhash": {
+                  "type": "string"
+                },
+                "prehash": {
+                  "type": "string"
+                },
+                "createdt": {
+                  "type": "string"
+                },
+                "txhash": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/transaction/{channel_genesis_hash}/{txid}": {
       "get": {
         "tags": ["Transactions"],
