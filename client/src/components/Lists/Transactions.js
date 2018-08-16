@@ -59,7 +59,15 @@ const styles = theme => {
     filterButton: {
       opacity: 0.8,
       margin: 'auto',
-      width: '100% !important'
+      width: '100% !important',
+      'margin-bottom': '4px'
+    },
+    searchButton: {
+      opacity: 0.8,
+      margin: 'auto',
+      width: '100% !important',
+      backgroundColor: '#086108',
+      'margin-bottom': '4px'
     },
     filterElement: {
       textAlign: 'center',
@@ -85,6 +93,8 @@ export class Transactions extends Component {
       to: moment(),
       orgs: [],
       options: [],
+      filtered: [],
+      sorted: [],
       err: false,
       from: moment().subtract(1, 'days')
     };
@@ -274,8 +284,7 @@ export class Transactions extends Component {
     const { dialogOpen } = this.state;
     return (
       <div>
-        <div className={`${classes.filter} row`}>
-          <div className="col-md-2" />
+        <div className={`${classes.filter} row searchRow`}>
           <div className={`${classes.filterElement} col-md-3`}>
             <label className="label">From</label>
             <DatePicker
@@ -329,9 +338,9 @@ export class Transactions extends Component {
               this.handleMultiSelect(value);
             }}
           />
-          <div className="col-md-1">
+          <div className="col-md-2">
             <Button
-              className={classes.filterButton}
+              className={classes.searchButton}
               color="success"
               disabled={this.state.err}
               onClick={async () => {
@@ -352,6 +361,15 @@ export class Transactions extends Component {
               Reset
             </Button>
           </div>
+          <div className="col-md-1">
+            <Button
+              className={classes.filterButton}
+              color="secondary"
+              onClick={() => this.setState({ filtered: [], sorted: [] })}
+            >
+              Clear Filter
+            </Button>
+          </div>
         </div>
         <ReactTable
           data={transactionList}
@@ -359,6 +377,14 @@ export class Transactions extends Component {
           defaultPageSize={10}
           list
           filterable
+          sorted={this.state.sorted}
+          onSortedChange={sorted => {
+            this.setState({ sorted });
+          }}
+          filtered={this.state.filtered}
+          onFilteredChange={filtered => {
+            this.setState({ filtered });
+          }}
           minRows={0}
           style={{ height: '750px' }}
           showPagination={!(transactionList.length < 5)}

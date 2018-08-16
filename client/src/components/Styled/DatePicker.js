@@ -20,6 +20,9 @@ const styles = theme => {
         width: '100% !important',
         textAlign: 'center'
       },
+      '& .react-datepicker__time-list': {
+        paddingLeft: '0px'
+      },
       '& .react-datepicker__input-container *': {
         borderColor: 'rgb(211, 210, 210)',
         borderRadius: 5,

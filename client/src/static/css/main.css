@@ -137,8 +137,8 @@ th {
   margin: 2%;
 }
 
-.col-md-1,
-.col-md-2 {
+.searchRow .col-md-1,
+.searchRow .col-md-2 {
   padding-right: 6px !important;
   margin-top: 20px;
 }
