@@ -20,6 +20,9 @@ const styles = theme => {
         width: '100% !important',
         textAlign: 'center'
       },
+      '& .react-datepicker-popper': {
+        minWidth: 320
+      },
       '& .react-datepicker__time-list': {
         paddingLeft: '0px'
       },
