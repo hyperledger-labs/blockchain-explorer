@@ -27,16 +27,13 @@ const styles = theme => {
   const dark = type === 'dark';
   return {
     hash: {
-      '&, & li': {
+      '&, & li, & ul': {
         overflow: 'visible !important'
       }
     },
     partialHash: {
       textAlign: 'center',
       position: 'relative !important',
-      '&:hover $lastFullHash': {
-        marginLeft: -400
-      },
       '&:hover $fullHash': {
         display: 'block',
         position: 'absolute !important',
@@ -47,12 +44,25 @@ const styles = theme => {
         borderRadius: 8,
         color: '#ffffff',
         opacity: dark ? 1 : undefined
+      },
+      '&:hover $lastFullHash': {
+        display: 'block',
+        position: 'absolute !important',
+        padding: '4px 4px',
+        backgroundColor: dark ? '#5e558e' : '#000000',
+        marginTop: -30,
+        marginLeft: -415,
+        borderRadius: 8,
+        color: '#ffffff',
+        opacity: dark ? 1 : undefined
       }
     },
     fullHash: {
       display: 'none'
     },
-    lastFullHash: {},
+    lastFullHash: {
+      display: 'none'
+    },
     filter: {
       width: '100%',
       textAlign: 'center',
@@ -335,7 +345,7 @@ export class Blocks extends Component {
         <ul>
           {!isNull(row.value)
             ? row.value.map(tid => (
-                <li
+                <ul
                   key={tid}
                   style={{
                     overflow: 'hidden',
@@ -349,14 +359,14 @@ export class Blocks extends Component {
                     href="#/blocks"
                   >
                     <div
-                      className={`${classes.fullHash} ${classes.lastFullHash}`}
+                      className={classes.lastFullHash}
                       id="showTransactionId"
                     >
                       {tid}
                     </div>{' '}
                     {tid.slice(0, 6)} {!tid ? '' : '... '}
                   </a>
-                </li>
+                </ul>
               ))
             : 'null'}
         </ul>

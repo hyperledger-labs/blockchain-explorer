@@ -64,6 +64,9 @@ const styles = theme => {
         fontSize: 10,
         marginTop: -10
       },
+      '&:active $copy': {
+        display: 'none'
+      },
       '&:active $copied': {
         display: 'block',
         position: 'absolute',
