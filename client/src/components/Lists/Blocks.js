@@ -345,7 +345,7 @@ export class Blocks extends Component {
         <ul>
           {!isNull(row.value)
             ? row.value.map(tid => (
-                <ul
+                <li
                   key={tid}
                   style={{
                     overflow: 'hidden',
@@ -366,7 +366,7 @@ export class Blocks extends Component {
                     </div>{' '}
                     {tid.slice(0, 6)} {!tid ? '' : '... '}
                   </a>
-                </ul>
+                </li>
               ))
             : 'null'}
         </ul>
