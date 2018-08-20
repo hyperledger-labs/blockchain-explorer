@@ -9,8 +9,8 @@ import { Button } from 'reactstrap';
 import matchSorter from 'match-sorter';
 import ReactTable from '../Styled/Table';
 import TransactionView from '../View/TransactionView';
-import Select from '../Styled/Select';
 import DatePicker from '../Styled/DatePicker';
+import MultiSelect from '../Styled/MultiSelect';
 import moment from 'moment';
 
 import {
@@ -130,12 +130,22 @@ export class Transactions extends Component {
   componentWillUnmount() {
     clearInterval(this.interVal);
   }
+  handleCustomRender(selected, options) {
+    if (selected.length === 0) {
+      return 'Select Orgs';
+    }
+    if (selected.length === options.length) {
+      return 'All Orgs Selected';
+    }
+
+    return selected.join(',');
+  }
   searchTransactionList = async channel => {
     let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
       this.state.to
     ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
-      query += `&&orgs=${this.state.orgs[i].value}`;
+      query += `&&orgs=${this.state.orgs[i]}`;
     }
     let channelhash = this.props.currentChannel;
     if (channel !== undefined) {
@@ -328,16 +338,19 @@ export class Transactions extends Component {
               </div>
             </DatePicker>
           </div>
-          <Select
-            className="col-md-2"
-            multi={true}
-            filter={true}
-            value={this.state.orgs}
-            options={this.state.options}
-            onChange={value => {
-              this.handleMultiSelect(value);
-            }}
-          />
+          <div className="col-md-2">
+            <MultiSelect
+              hasSelectAll={true}
+              valueRenderer={this.handleCustomRender}
+              shouldToggleOnHover={false}
+              selected={this.state.orgs}
+              options={this.state.options}
+              selectAllLabel={'All Orgs'}
+              onSelectedChanged={value => {
+                this.handleMultiSelect(value);
+              }}
+            />
+          </div>
           <div className="col-md-2">
             <Button
               className={classes.searchButton}
