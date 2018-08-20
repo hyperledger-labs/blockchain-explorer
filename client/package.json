@@ -4,6 +4,7 @@
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
+    "@khanacademy/react-multi-select": "^0.2.8",
     "@material-ui/core": "^1.4.1",
     "@material-ui/icons": "^2.0.0",
     "ajv": "^6.2.0",
