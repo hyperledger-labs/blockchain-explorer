@@ -442,8 +442,8 @@ class BlockScanner {
     let peerlen = peerlists.length;
     for (let i = 0; i < peerlen; i++) {
       var peers = {};
-      let peerlist = peerlists[i];
-      peers.requests = peerlist._url;
+      let peerlist = peerlists[i].getPeer();
+      peers.requests = peerlist.getUrl();
       peers.channel_genesis_hash = genesisBlockHash;
       if (peerlist._options['grpc.default_authority']) {
         peers.server_hostname = peerlist._options['grpc.default_authority'];
