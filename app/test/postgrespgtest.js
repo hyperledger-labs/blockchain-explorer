@@ -22,11 +22,8 @@ var options = {
   }
 };
 var list = new ArrayList();
+list.add("DROP USER IF EXISTS testuser;");
 describe('Test explorerpg.sql for DDL statements syntax verification', function() {
-  before(function() {
-    //Skipping, needs rework
-    this.skip();
-  });
   it('should read the file explorerpg.sql for ddl statements ', function(readdone) {
     this.timeout(5000);
     var sb = new StringBuilder('');
@@ -49,11 +46,10 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
         if (
           !(
             line.toUpperCase().startsWith('CREATE DATABASE') ||
-            line.toUpperCase().startsWith('DROP DATABASE') ||
-            line.toUpperCase().startsWith('CREATE USER')
+            line.toUpperCase().startsWith('DROP DATABASE')
           )
         ) {
-          line = line.replace(/:user/i, 'hppoc');
+          line = line.replace(/:user/i, 'testuser');
           line = line.replace(/:passwd/, "'password'");
           line = line.replace(/:dbname/, 'pgtestdb');
           list.add(line);
@@ -68,7 +64,7 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
         sb.append(line);
         isMergeline = true;
       } else if (isMergeline && line.endsWith(';')) {
-        line = line.replace(/:user/i, 'hppoc');
+        line = line.replace(/:user/i, 'testuser');
         line = line.replace(/:passwd/, "'password'");
         line = line.replace(/:dbname/, 'pgtestdb');
         list.add(line);
@@ -83,7 +79,6 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
     rl.on('close', function(line) {});
     readdone();
   });
-
   it('should execute statements successfully in  explorerpg.sql file ', function(testdone) {
     this.timeout(7000);
     options.tests = [];
@@ -93,7 +88,6 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
         newList.add(list.get(i));
       }
     }
-
     test('Test Results', t => {
       for (let i = 0; i < newList.size(); i++) {
         options.tests[i] = client => {
