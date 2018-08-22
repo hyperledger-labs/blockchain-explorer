@@ -153,6 +153,7 @@ class Platform {
 
   setupPeers(org, client, isReturn) {
     configuration.getPeersByOrg(org).forEach(key => {
+      let hostname = configuration.getOrg(org)[key]['server-hostname'];
       let peer;
       if (configuration.getOrg(org)[key]["tls_cacerts"] != undefined) {
         let data = fs.readFileSync(
@@ -160,19 +161,17 @@ class Platform {
         );
         peer = client.newPeer(configuration.getOrg(org)[key].requests, {
           pem: Buffer.from(data).toString(),
-          "ssl-target-name-override": configuration.getOrg(org)[key][
-            "server-hostname"
-          ]
+          "ssl-target-name-override": hostname,
+          "name": hostname
         });
         this.addStatusPeer(org, key,configuration.getOrg(org)[key].requests, {
           pem: Buffer.from(data).toString(),
-          "ssl-target-name-override": configuration.getOrg(org)[key][
-            "server-hostname"
-          ]
+          "ssl-target-name-override": hostname,
+          "name": hostname
         });
       } else {
-        peer = client.newPeer(configuration.getOrg(org)[key].requests);
-        this.addStatusPeer(org, key,configuration.getOrg(org)[key].requests);
+        peer = client.newPeer(configuration.getOrg(org)[key].requests, { 'name': hostname });
+        this.addStatusPeer(org, key,configuration.getOrg(org)[key].requests, { 'name': hostname });
       }
 
       this.peers[[org, key]] = peer;

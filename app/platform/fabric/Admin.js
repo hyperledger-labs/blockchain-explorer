@@ -126,18 +126,18 @@ var Admin = class extends Remote {
 
             self._endorserClient.GetStatus({}, function(err, serverStatus) {
                 clearTimeout(send_timeout);
-                if (err) {
-                    logger.debug('Error GetStatus response from: %s status: %s',self._url, err);
-                    if(err instanceof Error) {
-                            resolve({"status":"DOWN","server_hostname" : self._url});
-                        }
-                        else {
-                            resolve({"status":"DOWN","server_hostname" : self._url});
-                    }
-                } else {
-                    logger.debug('Received GetStatus response from peer "%s": status - %s', self._url, JSON.stringify(serverStatus));
-                    resolve({"status":"RUNNING","server_hostname" : self._url});
+              if (err) {
+                logger.debug('Error GetStatus response from: %s status: %s',self._url, err);
+                if(err instanceof Error) {
+                  resolve({"status":"DOWN","server_hostname" : self.getName()});
                 }
+                else {
+                  resolve({"status":"DOWN","server_hostname" : self.getName()});
+                }
+              } else {
+                logger.debug('Received GetStatus response from peer "%s": status - %s', self._url, JSON.stringify(serverStatus));
+                resolve({"status":"RUNNING","server_hostname" : self.getName()});
+              }
             });
         });
     }
