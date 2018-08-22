@@ -3,73 +3,89 @@
  */
 
 import React, { Component } from 'react';
+import compose from 'recompose/compose';
+import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import ExpansionPanel, {
-    ExpansionPanelSummary,
-    ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Typography from 'material-ui/Typography';
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
+} from '@material-ui/core/ExpansionPanel';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Typography from '@material-ui/core/Typography';
 import ChannelForm from '../Forms/ChannelForm';
 import FontAwesome from 'react-fontawesome';
-import { MenuItem } from 'material-ui/Menu';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import Select from 'material-ui/Select';
+import { MenuItem } from '@material-ui/core/Menu';
+import { FormControl, FormHelperText } from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    current: {
+      color: dark ? 'rgb(42, 173, 230)' : undefined
+    },
+    panel: {
+      color: dark ? '#ffffff' : undefined,
+      backgroundColor: dark ? '#3c3558' : undefined
+    },
+    channel: {
+      width: 200
+    }
+  };
+};
 
 class AdminPanel extends Component {
-    constructor(props, context) {
-        super(props, context);
-    }
-
-    handleChange = () => {}
+  handleChange = () => {};
 
   render() {
+    const { classes } = this.props;
     return (
-      <div className="admin-panel">
-        <Typography variant="headline" className="admin-panel">
-          <FontAwesome name="cogs" className="admin-panel"/> ADMIN PANEL
+      <div className={classes.panel}>
+        <Typography variant="headline" className={classes.panel}>
+          <FontAwesome name="cogs" className={classes.panel} /> ADMIN PANEL
         </Typography>
-        <ExpansionPanel className="admin-panel">
+        <ExpansionPanel className={classes.panel}>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}
-            className="admin-panel"
+            className={classes.panel}
           >
-            <Typography variant="subheading" className="admin-panel">
-              MANAGE CHANNEL{" "}
+            <Typography variant="subheading" className={classes.panel}>
+              MANAGE CHANNEL{' '}
             </Typography>
-            <Typography variant="caption" className="admin-panelCurrent">
+            <Typography variant="caption" className={classes.current}>
               {this.props.channel.currentChannel} <br />
             </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className="admin-panel">
+          <ExpansionPanelDetails className={classes.panel}>
             {/* <Typography variant='subheading' color="textSecondary">
                             Select Channel
                             </Typography> */}
-            <form className="admin-panel">
-              <FormControl className="select-channel" className="admin-panel">
+            <form className={classes.panel}>
+              <FormControl className={`${classes.channel} ${classes.panel}`}>
                 <Select
                   value={20}
                   onChange={this.handleChange}
                   helperText="select channel"
                   inputProps={{
-                    name: "age",
-                    id: "age-simple"
+                    name: 'age',
+                    id: 'age-simple'
                   }}
                 >
-                  <MenuItem value="" className="admin-panel">
+                  <MenuItem value="" className={classes.panel}>
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem className="admin-panel" value={10}>
+                  <MenuItem className={classes.panel} value={10}>
                     mock1
                   </MenuItem>
-                  <MenuItem className="admin-panel" value={20}>
+                  <MenuItem className={classes.panel} value={20}>
                     mychannel
                   </MenuItem>
-                  <MenuItem className="admin-panel" value={30}>
+                  <MenuItem className={classes.panel} value={30}>
                     mock2
                   </MenuItem>
                 </Select>
-                <FormHelperText className="admin-panel">
+                <FormHelperText className={classes.panel}>
                   select a channel
                 </FormHelperText>
               </FormControl>
@@ -85,16 +101,16 @@ class AdminPanel extends Component {
                             </div> */}
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel className="admin-panel">
+        <ExpansionPanel className={classes.panel}>
           <ExpansionPanelSummary
-            className="admin-panel"
+            className={classes.panel}
             expandIcon={<ExpandMoreIcon />}
           >
-            <Typography variant="subheading" className="admin-panel">
+            <Typography variant="subheading" className={classes.panel}>
               ADD CHANNEL
             </Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className="admin-panel">
+          <ExpansionPanelDetails className={classes.panel}>
             <ChannelForm />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -112,4 +128,8 @@ function mapStateToProps(state, ownProps) {
 // function mapDispatchToProps(dispatch){
 //   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}
 // }
-export default connect(mapStateToProps/*,mapDispatchToProps*/)(AdminPanel);
+
+export default compose(
+  withStyles(styles),
+  connect(mapStateToProps /*,mapDispatchToProps*/)
+)(AdminPanel);

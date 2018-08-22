@@ -23,7 +23,11 @@ const CHANNEL = `${namespaces}/CHANNEL`;
 const CHANGE_CHANNEL = `${namespaces}/CHANGE_CHANNEL`;
 const CHANNEL_LIST = `${namespaces}/CHANNEL_LIST`;
 
-const PEER_STATUS = `${namespaces}/PEER_STATUS`
+const PEER_STATUS = `${namespaces}/PEER_STATUS`;
+
+const ERROR_MESSAGE = `ERROR_MESSAGE`;
+
+const BLOCK_ACTIVITY = `${namespaces}/BLOCK_ACTIVITY`;
 
 export default {
   BLOCK_CHART_HOUR,
@@ -37,4 +41,6 @@ export default {
   TRANSACTION_CHART_HOUR,
   TRANSACTION_CHART_MIN,
   TRANSACTION_CHART_ORG,
-}
+  ERROR_MESSAGE,
+  BLOCK_ACTIVITY
+};

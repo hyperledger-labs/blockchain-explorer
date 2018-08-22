@@ -1,0 +1,22 @@
+/* Media Queries*/
+/*Resizing the dashboard buttons when browser resized*/
+@media (max-width: 1415px) and (min-width: 990px) {
+  .navbar-brand {
+    width: 50%;
+  }
+  .navbar-expand-md .navbar-nav {
+    width: 60%;
+    float: left;
+  }
+  .ml-auto,
+  .mx-auto {
+    margin-left: 5px !important;
+  }
+}
+/*Toggle Navbar*/
+@media (max-width: 990px) {
+  .navbar-nav {
+    margin-top: 20px;
+    padding-left: 30px;
+  }
+}

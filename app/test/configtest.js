@@ -6,15 +6,14 @@ let should = chai.should();
 chai.use(chaiHttp);
 var config = require('../platform/fabric/config.json');
 
-describe('config.json should contain properties', function () {
-    it('should contain configtxgenToolPath property', function () {
-        var configtxgenToolPath = config.configtxgenToolPath;
-        assert.notEqual(null, configtxgenToolPath);
-    })
+describe('config.json should contain properties', function() {
+  it('should contain configtxgenToolPath property', function() {
+    var configtxgenToolPath = config.configtxgenToolPath;
+    assert.notEqual(null, configtxgenToolPath);
+  });
 
-    it('should contain syncStartDate property', function () {
-        var syncStartDate = config.syncStartDate;
-        assert.notEqual(null, syncStartDate);
-    })
-})
-
+  it('should contain syncStartDate property', function() {
+    var syncStartDate = config.syncStartDate;
+    assert.notEqual(null, syncStartDate);
+  });
+});

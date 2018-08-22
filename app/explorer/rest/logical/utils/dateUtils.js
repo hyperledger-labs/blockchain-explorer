@@ -9,13 +9,13 @@
  */
 
 function toUTCmilliseconds(dateStr) {
-    var startSyncMills = null;
-    try {
-        startSyncMills = Date.parse(dateStr);
-    } catch (err) {
-        logger.error("Unparsable date format, dateStr= ", dateStr, " ", err)
-    }
-    return startSyncMills;
+  var startSyncMills = null;
+  try {
+    startSyncMills = Date.parse(dateStr);
+  } catch (err) {
+    logger.error('Unparsable date format, dateStr= ', dateStr, ' ', err);
+  }
+  return startSyncMills;
 }
 
 exports.toUTCmilliseconds = toUTCmilliseconds;

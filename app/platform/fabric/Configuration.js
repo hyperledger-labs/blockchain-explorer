@@ -1,10 +1,10 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-var config = require("./config.json");
-var helper = require("../../helper.js");
-var logger = helper.getLogger("FabricConfiguration");
-var dateUtils = require("../../explorer/rest/logical/utils/dateUtils.js");
+var config = require('./config.json');
+var helper = require('../../helper.js');
+var logger = helper.getLogger('FabricConfiguration');
+var dateUtils = require('../../explorer/rest/logical/utils/dateUtils.js');
 
 var defaultOrg;
 var defaultPeer;
@@ -12,26 +12,44 @@ var currChannel;
 
 class Configuration {
   constructor(config) {
-    this.networkConfig = config["network-config"];
+    this.networkConfig = config['network-config'];
   }
 
   getDefaultOrg() {
-    if (defaultOrg == undefined) {
-      defaultOrg = Object.keys(this.networkConfig)[0];
+    if (typeof defaultOrg === 'undefined') {
+      const keys = Object.keys(this.networkConfig);
+      keys.forEach(key => {
+        const org = this.networkConfig[key];
+        if ('name' in org && 'mspid' in org && 'admin' in org) {
+          if (typeof defaultOrg === 'undefined') {
+            defaultOrg = key;
+          }
+        }
+      });
     }
-
     return defaultOrg;
   }
 
   getDefaultPeer() {
-    if (defaultPeer == undefined) {
-      var org = this.getDefaultOrg();
-      var orgObj = config["network-config"][org];
-      var orgKey = Object.keys(orgObj);
-      var index = orgKey.indexOf("peer1");
-      defaultPeer = orgKey[index];
+    if (typeof defaultPeer === 'undefined') {
+      const org = this.getDefaultOrg();
+      const orgObj = this.networkConfig[org];
+      const orgkeys = Object.keys(orgObj);
+      orgkeys.forEach(key => {
+        const elem = orgObj[key];
+        if (
+          typeof elem === 'object' &&
+          'requests' in elem &&
+          'tls_cacerts' in elem &&
+          'events' in elem &&
+          'server-hostname' in elem
+        ) {
+          if (typeof defaultPeer === 'undefined') {
+            defaultPeer = key;
+          }
+        }
+      });
     }
-
     return defaultPeer;
   }
 
@@ -44,15 +62,15 @@ class Configuration {
   }
 
   getOrgAdmin(org) {
-    this.networkConfig[org].admin;
+    return this.networkConfig[org].admin;
   }
 
   getKeyStoreForOrg(org) {
-    return config.keyValueStore + "_" + org;
+    return config.keyValueStore + '_' + org;
   }
 
   getMspID(org) {
-    logger.debug("Msp ID : " + this.networkConfig[org].mspid);
+    logger.debug('Msp ID : ' + this.networkConfig[org].mspid);
     return this.networkConfig[org].mspid;
   }
   getPeerAddressByName(org, peer) {
@@ -63,7 +81,7 @@ class Configuration {
   getOrgs() {
     let orgList = [];
     for (let key in this.networkConfig) {
-      if (key.indexOf("org") === 0) {
+      if (key.indexOf('org') === 0) {
         orgList.push(key);
       }
     }
@@ -73,7 +91,7 @@ class Configuration {
   getPeersByOrg(org) {
     let peerList = [];
     for (let key in this.networkConfig[org]) {
-      if (key.indexOf("peer") === 0) {
+      if (key.indexOf('peer') === 0) {
         peerList.push(key);
       }
     }
@@ -92,11 +110,11 @@ class Configuration {
       var properties = Object.keys(org);
       properties.forEach(prop => {
         if (
-          typeof org[prop] === "object" &&
-          "requests" in org[prop] &&
-          "events" in org[prop] &&
-          "server-hostname" in org[prop] &&
-          "tls_cacerts" in org[prop]
+          typeof org[prop] === 'object' &&
+          'requests' in org[prop] &&
+          'events' in org[prop] &&
+          'server-hostname' in org[prop] &&
+          'tls_cacerts' in org[prop]
         )
           peerlist.push({
             key: ele,
@@ -119,13 +137,15 @@ class Configuration {
   getSyncStartDate() {
     var startSyncMills = null;
     if (config.syncStartDate) {
-      console.log("\nProperty config.syncStartDate set to ", config.syncStartDate);
-      startSyncMills = dateUtils.toUTCmilliseconds(config.syncStartDate)
+      console.log(
+        '\nProperty config.syncStartDate set to ',
+        config.syncStartDate
+      );
+      startSyncMills = dateUtils.toUTCmilliseconds(config.syncStartDate);
     } else {
-      logger.error("Property config.syncStartDate missing");
+      logger.error('Property config.syncStartDate missing');
     }
     return startSyncMills;
   }
-
 }
 module.exports = new Configuration(config);

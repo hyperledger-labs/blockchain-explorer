@@ -1,19 +1,16 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-var ledgerMgr = require("./ledgerMgr");
+var ledgerMgr = require('./ledgerMgr');
 
-var PlatformBuilder = require("../../platform/PlatformBuilder.js");
+var PlatformBuilder = require('../../platform/PlatformBuilder.js');
 
-var requtil = require("./requestutils");
-var helper = require('../../helper.js')
-var chs = require("../../explorer/rest/logical/channelService.js");
-var logger = helper.getLogger("main");
+var requtil = require('./requestutils');
+var helper = require('../../helper.js');
+var chs = require('../../explorer/rest/logical/channelService.js');
+var logger = helper.getLogger('main');
 
-
-
-const platformroutes = async function (app, pltfrm, persistence) {
-
+const platformroutes = async function(app, pltfrm, persistence) {
   platform = await PlatformBuilder.build(pltfrm);
   proxy = platform.getDefaultProxy();
   statusMetrics = persistence.getMetricService();
@@ -25,11 +22,12 @@ const platformroutes = async function (app, pltfrm, persistence) {
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get("/api/block/:channel/:number", function (req, res) {
+  app.get('/api/block/:channel_genesis_hash/:number', function(req, res) {
     let number = parseInt(req.params.number);
-    let channelName = req.params.channel;
-    if (!isNaN(number) && channelName) {
-      proxy.getBlockByNumber(channelName, number).then(block => {
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+
+    if (!isNaN(number) && channel_genesis_hash) {
+      proxy.getBlockByNumber(channel_genesis_hash, number).then(block => {
         res.send({
           status: 200,
           number: block.header.number.toString(),
@@ -57,7 +55,7 @@ const platformroutes = async function (app, pltfrm, persistence) {
       }
       */
 
-  app.get("/api/channels", function (req, res) {
+  app.get('/api/channels', function(req, res) {
     var channels = [],
       counter = 0;
     var channels = platform.getChannels();
@@ -65,7 +63,7 @@ const platformroutes = async function (app, pltfrm, persistence) {
     var response = {
       status: 200
     };
-    response["channels"] = [...new Set(channels)];
+    response['channels'] = [...new Set(channels)];
     res.send(response);
   });
 
@@ -74,13 +72,12 @@ const platformroutes = async function (app, pltfrm, persistence) {
   GET /api/curChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/curChannel", function (req, res) {
- this.proxy.getGenesisBlockHash().then((data)=>{
-  res.send({
-    currentChannel: data
-  });
- })
-
+  app.get('/api/curChannel', function(req, res) {
+    this.proxy.getGenesisBlockHash().then(data => {
+      res.send({
+        currentChannel: data
+      });
+    });
   });
 
   /**
@@ -88,17 +85,18 @@ const platformroutes = async function (app, pltfrm, persistence) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get("/api/changeChannel/:channelName", async function (req, res) {
-    let channelName = req.params.channelName;
-    let channel = await this.crudService.getChannelByGenesisBlockHash(channelName)
+  app.get('/api/changeChannel/:channel_genesis_hash', async function(req, res) {
+    let channel_genesis_hash = req.params.channel_genesis_hash;
+    let channel = await this.crudService.getChannelByGenesisBlockHash(
+      channel_genesis_hash
+    );
     proxy.changeChannel(channel.name);
-    ledgerMgr.ledgerEvent.emit("changeLedger");
-   let  curChannel = await  this.proxy.getGenesisBlockHash(channel.name)
+    ledgerMgr.ledgerEvent.emit('changeLedger');
+    let curChannel = await this.proxy.getGenesisBlockHash(channel.name);
     res.send({
-      currentChannel:curChannel
+      currentChannel: curChannel
     });
   });
-
 
   /***
      Read "blockchain-explorer/app/config/CREATE-CHANNEL.md" on "how to create a channel"
@@ -123,7 +121,7 @@ const platformroutes = async function (app, pltfrm, persistence) {
   Response: {  success: true, message: "Successfully created channel "   }
   */
 
-  app.post('/api/channel', async function (req, res) {
+  app.post('/api/channel', async function(req, res) {
     try {
       // upload channel config, and org config
       let artifacts = await requtil.aSyncUpload(req, res);
@@ -133,13 +131,12 @@ const platformroutes = async function (app, pltfrm, persistence) {
         message: chCreate.message
       };
       return res.send(channelResponse);
-
     } catch (err) {
-      logger.error(err)
+      logger.error(err);
       let channelError = {
         success: false,
-        message: "Invalid request, payload"
-      }
+        message: 'Invalid request, payload'
+      };
       return res.send(channelError);
     }
   });
@@ -153,7 +150,7 @@ const platformroutes = async function (app, pltfrm, persistence) {
   Response: {  success: true, message: "Successfully joined peer to the channel "   }
   */
 
-  app.post("/api/joinChannel", function (req, res) {
+  app.post('/api/joinChannel', function(req, res) {
     var channelName = req.body.channelName;
     var peers = req.body.peers;
     var orgName = req.body.orgName;
@@ -182,10 +179,10 @@ const platformroutes = async function (app, pltfrm, persistence) {
       ]
     */
 
-  app.get("/api/chaincode/:channel", function (req, res) {
+  app.get('/api/chaincode/:channel', function(req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function (data) {
+      statusMetrics.getTxPerChaincode(channelName, async function(data) {
         for (let chaincode of data) {
           let temp = await proxy.loadChaincodeSrc(chaincode.path);
           chaincode.source = temp;
@@ -212,16 +209,16 @@ const platformroutes = async function (app, pltfrm, persistence) {
   ]
   */
 
-  app.get("/api/peersStatus/:channel", function (req, res) {
+  app.get('/api/peersStatus/:channel', function(req, res) {
     let channelName = req.params.channel;
     if (channelName) {
-       platform.getPeersStatus(channelName,function (data) {
+      platform.getPeersStatus(channelName, function(data) {
         res.send({ status: 200, peers: data });
       });
     } else {
       return requtil.invalidRequest(req, res);
     }
   });
-}
+};
 
 module.exports = platformroutes;

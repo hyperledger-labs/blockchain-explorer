@@ -10,15 +10,27 @@ const initialState = {};
 
 const blockPerHourReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.BLOCK_CHART_HOUR:{
-            return {
+    case types.BLOCK_CHART_HOUR: {
+      return {
         rows: action.payload.blockPerHour.rows,
         loaded: true,
         errors: action.errors
-      }
+      };
     }
-    default:{
-            return state;
+    default: {
+      return state;
+    }
+  }
+};
+const errorMessageReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.ERROR_MESSAGE: {
+      return {
+        error: action.payload
+      };
+    }
+    default: {
+      return state;
     }
   }
 };
@@ -55,7 +67,7 @@ const channelListReducer = (state = initialState, action) => {
 
 const channelReducer = (state = initialState, action) => {
   switch (action.type) {
-    case types.CHANNEL:{
+    case types.CHANNEL: {
       return action.payload.channel;
     }
     case types.CHANGE_CHANNEL: {
@@ -77,7 +89,20 @@ const dashStatsReducer = (state = initialState, action) => {
     }
   }
 };
-
+const blockActivityReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case types.BLOCK_ACTIVITY: {
+      return {
+        rows: action.payload.row,
+        loaded: true,
+        errors: action.errors
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
 const notificationReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.NOTIFICATION_LOAD: {
@@ -137,7 +162,7 @@ const transactionPerHourReducer = (state = initialState, action) => {
 const transactionPerMinReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.TRANSACTION_CHART_MIN: {
-            return {
+      return {
         rows: action.payload.transactionPerMin.rows,
         loaded: true,
         errors: action.errors
@@ -160,6 +185,8 @@ const reducer = combineReducers({
   transactionByOrg: transactionByOrgReducer,
   transactionPerHour: transactionPerHourReducer,
   transactionPerMin: transactionPerMinReducer,
+  errorMessage: errorMessageReducer,
+  blockActivity: blockActivityReducer
 });
 
 export default reducer;

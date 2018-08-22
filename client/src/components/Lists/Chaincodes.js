@@ -3,18 +3,30 @@
  */
 
 import React, { Component } from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css';
+import { withStyles } from '@material-ui/core/styles';
 import matchSorter from 'match-sorter';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import ReactTable from '../Styled/Table';
 import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
+import { chaincodeListType } from '../types';
 
-class Chaincodes extends Component {
+const styles = theme => {
+  return {
+    hash: {
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      maxWidth: 60,
+      letterSpacing: '2px'
+    }
+  };
+};
+
+export class Chaincodes extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
       dialogOpen: false,
       sourceDialog: false,
       chaincode: {}
@@ -30,7 +42,7 @@ class Chaincodes extends Component {
   };
 
   sourceDialogOpen = chaincode => {
-    this.setState({ chaincode: chaincode });
+    this.setState({ chaincode });
     this.setState({ sourceDialog: true });
   };
 
@@ -38,108 +50,121 @@ class Chaincodes extends Component {
     this.setState({ sourceDialog: false });
   };
 
-  reactTableSetup = () => {
-    return [
-      {
-        Header: 'Chaincode Name',
-        accessor: 'chaincodename',
-        Cell: row => (
-          <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
+  reactTableSetup = classes => [
+    {
+      Header: 'Chaincode Name',
+      accessor: 'chaincodename',
+      Cell: row => (
+        <a
+          className={classes.hash}
+          onClick={() => this.sourceDialogOpen(row.original)}
+          href="#/chaincodes"
+        >
+          {row.value}
+        </a>
+      ),
+      filterMethod: (filter, rows) =>
+        matchSorter(
+          rows,
+          filter.value,
+          { keys: ['chaincodename'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH }
         ),
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['chaincodename'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
-        Header: 'Channel Name',
-        accessor: 'channelName',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['channelName'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
-        Header: 'Path',
-        accessor: 'path',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['path'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
-        Header: 'Transaction Count',
-        accessor: 'txCount',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['txCount'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      },
-      {
-        Header: 'Version',
-        accessor: 'version',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['version'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      }
-    ];
-  };
+      filterAll: true
+    },
+    {
+      Header: 'Channel Name',
+      accessor: 'channelName',
+      filterMethod: (filter, rows) =>
+        matchSorter(
+          rows,
+          filter.value,
+          { keys: ['channelName'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH }
+        ),
+      filterAll: true
+    },
+    {
+      Header: 'Path',
+      accessor: 'path',
+      filterMethod: (filter, rows) =>
+        matchSorter(
+          rows,
+          filter.value,
+          { keys: ['path'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH }
+        ),
+      filterAll: true
+    },
+    {
+      Header: 'Transaction Count',
+      accessor: 'txCount',
+      filterMethod: (filter, rows) =>
+        matchSorter(
+          rows,
+          filter.value,
+          { keys: ['txCount'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH }
+        ),
+      filterAll: true
+    },
+    {
+      Header: 'Version',
+      accessor: 'version',
+      filterMethod: (filter, rows) =>
+        matchSorter(
+          rows,
+          filter.value,
+          { keys: ['version'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH }
+        ),
+      filterAll: true
+    }
+  ];
 
   render() {
+    const { chaincodeList, classes } = this.props;
+    const { dialogOpen, sourceDialog, chaincode } = this.state;
     return (
-      <div >
+      <div>
         {/* <Button className="button" onClick={() => this.handleDialogOpen()}>
           Add Chaincode
           </Button> */}
         <ReactTable
-          data={this.props.chaincodeList}
-          columns={this.reactTableSetup()}
+          data={chaincodeList}
+          columns={this.reactTableSetup(classes)}
           defaultPageSize={5}
-          className="-striped -highlight"
           filterable
           minRows={0}
-          showPagination={ this.props.chaincodeList.length < 5  ?  false : true }
+          showPagination={!(chaincodeList.length < 5)}
         />
         <Dialog
-          open={this.state.dialogOpen}
+          open={dialogOpen}
           onClose={this.handleDialogClose}
-          fullWidth={true}
-          maxWidth={"md"}
+          fullWidth
+          maxWidth="md"
         >
           <ChaincodeForm />
         </Dialog>
         <Dialog
-          open={this.state.sourceDialog}
+          open={sourceDialog}
           onClose={this.sourceDialogClose}
-          fullWidth={true}
-          maxWidth={"md"}
+          fullWidth
+          maxWidth="md"
         >
-          <ChaincodeModal chaincode={this.state.chaincode} />
+          <ChaincodeModal
+            chaincode={chaincode}
+            classes={classes}
+            onClose={this.sourceDialogClose}
+          />
         </Dialog>
-      </div >
+      </div>
     );
   }
 }
 
-export default Chaincodes;
+Chaincodes.propTypes = {
+  chaincodeList: chaincodeListType.isRequired
+};
+
+export default withStyles(styles)(Chaincodes);

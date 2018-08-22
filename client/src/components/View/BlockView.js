@@ -2,79 +2,73 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { Component } from "react";
-import FontAwesome from "react-fontawesome";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
+import FontAwesome from 'react-fontawesome';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Table, Card, CardBody, CardTitle } from 'reactstrap';
+import { blockHashType, onCloseType } from '../types';
+import Modal from '../Styled/Modal';
 
-import {
-  Table,
-  Card,
-  CardBody,
-  CardTitle } from "reactstrap";
-
-const blockIcon = {
-  color: "#79c879",
-  margin: "20px"
+const styles = theme => {
+  return {
+    cubeIcon: {
+      color: '#ffffff',
+      marginRight: 20
+    }
+  };
 };
 
 class BlockView extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      loading: false
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({ loading: false });
-  }
-  componentWillMount() {
-    const theme = sessionStorage.getItem("toggleTheme") === "true";
-    this.setState({ toggleClass: theme });
-  }
   handleClose = () => {
-    this.props.onClose();
+    const { onClose } = this.props;
+    onClose();
   };
 
   render() {
-    const { blockHash } = this.props;
+    const { blockHash, classes } = this.props;
     if (!blockHash) {
       return (
-        <div className={this.state.toggleClass ? "dark-theme" : ""}>
-          <Card>
-            <CardTitle className="dialogTitle">
-              <FontAwesome name="cube" />Block Details
-            </CardTitle>
-            <CardBody>
-              <span className="loading-wheel">
-                {" "}
-                <FontAwesome name="circle-o-notch" size="3x" spin />
-              </span>
-            </CardBody>
-          </Card>
-        </div>
+        <Modal>
+          {modalClasses => (
+            <Card className={modalClasses.card}>
+              <CardTitle className={modalClasses.title}>
+                <FontAwesome name="cube" />
+                Block Details
+              </CardTitle>
+              <CardBody className={modalClasses.body}>
+                <span>
+                  {' '}
+                  <FontAwesome name="circle-o-notch" size="3x" spin />
+                </span>
+              </CardBody>
+            </Card>
+          )}
+        </Modal>
       );
-    } else {
-      return (
-        <div className={this.state.toggleClass ? "dark-theme" : ""}>
-          <div className="dialog">
-            <Card>
-              <CardTitle className="dialogTitle">
-                <FontAwesome name="cube" className="cubeIcon" />Block Details
-                <button onClick={this.handleClose} className="closeBtn">
+    }
+    return (
+      <Modal>
+        {modalClasses => (
+          <div className={modalClasses.dialog}>
+            <Card className={modalClasses.card}>
+              <CardTitle className={modalClasses.title}>
+                <FontAwesome name="cube" className={classes.cubeIcon} />
+                Block Details
+                <button
+                  type="button"
+                  onClick={this.handleClose}
+                  className={modalClasses.closeBtn}
+                >
                   <FontAwesome name="close" />
                 </button>
               </CardTitle>
-              <CardBody>
+              <CardBody className={modalClasses.body}>
                 <Table striped hover responsive className="table-striped">
                   <tbody>
                     <tr>
                       <th>Channel name:</th>
                       <td>{blockHash.channelname}</td>
-                    </tr>
-                    <tr>
-                      <th>ID</th>
-                      <td>{blockHash.id}</td>
                     </tr>
                     <tr>
                       <th>Block Number</th>
@@ -93,8 +87,9 @@ class BlockView extends Component {
                       <th>Block Hash</th>
                       <td>
                         {blockHash.blockhash}
-                        <button className="copyBtn">
-                        <div className="copyMessage">Copy</div>
+                        <button type="button" className={modalClasses.copyBtn}>
+                          <div className={modalClasses.copy}>Copy</div>
+                          <div className={modalClasses.copied}>Copied</div>
                           <CopyToClipboard text={blockHash.blockhash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -105,8 +100,9 @@ class BlockView extends Component {
                       <th>Data Hash</th>
                       <td>
                         {blockHash.datahash}
-                        <button className="copyBtn">
-                        <div className="copyMessage">Copy</div>
+                        <button type="button" className={modalClasses.copyBtn}>
+                          <div className={modalClasses.copy}>Copy</div>
+                          <div className={modalClasses.copied}>Copied</div>
                           <CopyToClipboard text={blockHash.datahash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -117,8 +113,9 @@ class BlockView extends Component {
                       <th>Prehash</th>
                       <td>
                         {blockHash.prehash}
-                        <button className="copyBtn">
-                        <div className="copyMessage">Copy</div>
+                        <button type="button" className={modalClasses.copyBtn}>
+                          <div className={modalClasses.copy}>Copy</div>
+                          <div className={modalClasses.copied}>Copied</div>
                           <CopyToClipboard text={blockHash.prehash}>
                             <FontAwesome name="copy" />
                           </CopyToClipboard>
@@ -130,10 +127,15 @@ class BlockView extends Component {
               </CardBody>
             </Card>
           </div>
-        </div>
-      );
-    }
+        )}
+      </Modal>
+    );
   }
 }
 
-export default BlockView;
+BlockView.propTypes = {
+  blockHash: blockHashType.isRequired,
+  onClose: onCloseType.isRequired
+};
+
+export default withStyles(styles)(BlockView);

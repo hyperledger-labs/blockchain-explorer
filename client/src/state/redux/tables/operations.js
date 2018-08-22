@@ -1,83 +1,146 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
-import actions from './actions'
-import { get } from '../../../services/request.js';
-import moment from "moment-timezone";
-
-const blockList = (channel) => (dispatch) => {
- return get(`/api/blockAndTxList/${channel}/0`)
-    .then( resp => {
-      dispatch(actions.getBlockList(resp))
-    }).catch( error => {
-      console.error(error)
-    })
-}
-
-const chaincodeList = (channel) => (dispatch) => {
- return get(`/api/chaincode/${channel}`)
-    .then( resp => {
-      dispatch(actions.getChaincodeList(resp))
-    }).catch( error => {
-      console.error(error)
-    })
-}
-
-//table channel
-const channels = () => (dispatch) => {
-  return get('/api/channels/info')
+import actions from './actions';
+import { get } from '../../../services/request';
+const blockList = channel => dispatch =>
+  get(`/api/blockAndTxList/${channel}/0`)
     .then(resp => {
-      resp['channels'].forEach(element => {
-        element.createdat = moment(element.createdat)
-          .tz(moment.tz.guess())
-          .format("M-D-YYYY h:mm A zz");
-      })
-
-      dispatch(actions.getChannels(resp))
-    }).catch( error => {
-      console.error(error)
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getBlockList(resp));
+      }
     })
-}
-
-const peerList = (channel) => (dispatch) => {
- return get(`/api/peers/${channel}`)
+    .catch(error => {
+      console.error(error);
+    });
+const blockListSearch = (channel, query) => dispatch =>
+  get(`/api/blockAndTxList/${channel}/0?${query}`)
     .then(resp => {
-      dispatch(actions.getPeerList(resp))
-    }).catch( error => {
-      console.error(error)
+      dispatch(actions.getBlockListSearch(resp));
     })
-}
+    .catch(error => {
+      console.error(error);
+    });
 
-const transaction = (channel, transactionId) => (dispatch) => {
-  return get(`/api/transaction/${channel}/${transactionId}`)
+const chaincodeList = channel => dispatch =>
+  get(`/api/chaincode/${channel}`)
     .then(resp => {
-      dispatch(actions.getTransaction(resp))
-    }).catch( error => {
-      console.error(error)
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChaincodeList(resp));
+      }
     })
-}
+    .catch(error => {
+      console.error(error);
+    });
 
-const transactionList = (channel) => (dispatch) => {
-  return get(`/api/txList/${channel}/0/0/`)
+// table channel
+const channels = () => dispatch =>
+  get('/api/channels/info')
     .then(resp => {
-      resp.rows.forEach(element => {
-        element.createdt = moment(element.createdt)
-          .tz(moment.tz.guess())
-          .format("M-D-YYYY h:mm A zz");
-      })
-
-      dispatch(actions.getTransactionList(resp))
-    }).catch( error => {
-      console.error(error)
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getChannels(resp));
+      }
     })
-}
+    .catch(error => {
+      console.error(error);
+    });
 
+const peerList = channel => dispatch =>
+  get(`/api/peers/${channel}`)
+    .then(resp => {
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getPeerList(resp));
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+const transaction = (channel, transactionId) => dispatch =>
+  get(`/api/transaction/${channel}/${transactionId}`)
+    .then(resp => {
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransaction(resp));
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+const transactionListSearch = (channel, query) => dispatch =>
+  get(`/api/txList/${channel}/0/0?${query}`)
+    .then(resp => {
+      dispatch(actions.getTransactionListSearch(resp));
+    })
+    .catch(error => {
+      console.error(error);
+    });
+
+const transactionList = channel => dispatch =>
+  get(`/api/txList/${channel}/0/0/`)
+    .then(resp => {
+      if (resp.status === 500) {
+        dispatch(
+          actions.getErroMessage(
+            '500 Internl Server Error: The server has encountered an internal error and unable to complete your request'
+          )
+        );
+      } else if (resp.status === 400) {
+        dispatch(actions.getErroMessage(resp.error));
+      } else {
+        dispatch(actions.getTransactionList(resp));
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
 export default {
   blockList,
   chaincodeList,
   channels,
   peerList,
   transaction,
-  transactionList
-}
+  transactionList,
+  transactionListSearch,
+  blockListSearch
+};

@@ -2,12 +2,20 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import TimelineStream from './TimelineStream';
+import { TimelineStream } from './TimelineStream';
 
 const setup = () => {
   const props = {
+    classes: {
+      scrollable: 'scrollable',
+      text: 'text',
+      event: 'event',
+      open: 'open'
+    },
     notifications: [
       {
+        blockhash:
+          '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
         datahash:
           '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7',
         time: '2018-05-30T21:15:09.000Z',
@@ -54,7 +62,24 @@ const setup = () => {
           '85770c2057e4b63504de6fa8b0c711f33ec897d9e8fc10659d7712e51d57c513'
         ]
       }
-    ]
+    ],
+    blockHash: {
+      blockhash:
+        '7880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+      blocknum: 19,
+      channelname: 'mychannel',
+      createdt: '2018-04-26T20:32:11.000Z',
+      datahash:
+        '1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf',
+      id: 20,
+      prehash:
+        '68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d',
+      prev_blockhash: null,
+      txcount: 3,
+      txhash: [
+        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6'
+      ]
+    }
   };
 
   const wrapper = mount(<TimelineStream {...props} />);
@@ -72,14 +97,18 @@ describe('TimelineStream', () => {
   });
 
   test('handleDialogOpenBlockHash sets the correct state', () => {
-    const { wrapper } = setup();
+    const { wrapper, props } = setup();
     const instance = wrapper.instance();
-    const blockHash = '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f';
+    const { blockHash } = props;
     expect(wrapper.state('dialogOpenBlockHash')).toBe(false);
-    expect(wrapper.state('blockHash')).not.toMatchObject({ blockhash: blockHash });
-    instance.handleDialogOpenBlockHash(blockHash);
+    expect(wrapper.state('blockHash')).not.toMatchObject({
+      blockhash: blockHash.blockhash
+    });
+    instance.handleDialogOpenBlockHash(blockHash.blockhash);
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
-    expect(wrapper.state('blockHash')).toMatchObject({ blockhash: blockHash});
+    expect(wrapper.state('blockHash')).toMatchObject({
+      blockhash: blockHash.blockhash
+    });
   });
 
   test('handleDialogCloseBlockHash sets dialogOpenBlockHash to fasle', () => {
@@ -92,8 +121,11 @@ describe('TimelineStream', () => {
 
   test('onClick for blockLink', () => {
     const { wrapper } = setup();
-    const instance = wrapper.instance()
-    wrapper.find('.blockLink').at(0).simulate('click')
-    expect(wrapper.state('dialogOpenBlockHash')).toBe(true)
-  })
+    wrapper
+      .find('a[data-command="block-link"]')
+      .at(0)
+      .simulate('click');
+    wrapper.update();
+    expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
+  });
 });

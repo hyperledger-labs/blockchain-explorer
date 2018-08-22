@@ -1,17 +1,17 @@
 {
-    "status": 200,
-    "rows": [
-        {
-            "count": "3",
-            "creator_msp_id": "OrdererMSP"
-        },
-        {
-            "count": "8",
-            "creator_msp_id": "Org1MSP"
-        },
-        {
-            "count": "1",
-            "creator_msp_id": "Org2MSP"
-        }
-    ]
+  "status": 200,
+  "rows": [
+    {
+      "count": "3",
+      "creator_msp_id": "OrdererMSP"
+    },
+    {
+      "count": "8",
+      "creator_msp_id": "Org1MSP"
+    },
+    {
+      "count": "1",
+      "creator_msp_id": "Org2MSP"
+    }
+  ]
 }

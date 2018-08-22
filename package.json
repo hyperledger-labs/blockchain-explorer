@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "hyperledger-explorer",
   "private": true,
   "main": "main.js",
@@ -18,6 +18,7 @@
     "asn1.js": "^5.0.1",
     "body-parser": "^1.17.2",
     "child_process": "^1.0.2",
+    "classnames": "^2.2.6",
     "co": "^4.6.0",
     "compression": "^1.7.2",
     "convert-hex": "^0.1.0",
@@ -25,18 +26,21 @@
     "enum": "^2.5.0",
     "express": "^4.15.3",
     "express-fileupload": "^0.4.0",
-    "fabric-ca-client": "^1.1.2",
-    "fabric-client": "^1.1.2",
+    "fabric-ca-client": "^1.1.0",
+    "fabric-client": "^1.1.0",
     "fast-stats": "0.0.3",
+    "fs-extra": "^6.0.1",
     "http-status-codes": "^1.3.0",
     "js-sha256": "^0.9.0",
     "log4js": "^0.6.38",
     "multer": "^1.3.0",
     "pg": "^7.4.1",
     "prettyjson": "^1.2.1",
+    "prop-types": "^15.6.2",
     "stomp-broker-js": "^0.1.3",
     "stompjs": "^2.3.3",
     "swagger-ui-express": "^3.0.9",
+    "utf8-bytes": "0.0.1",
     "winston": "^2.2.0",
     "ws": "^5.1.1"
   },
@@ -46,9 +50,19 @@
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.0",
-    "eslint-plugin-react": "^7.10.0"
+    "eslint-plugin-react": "^7.10.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "prettier": "^1.13.7"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   },
   "scripts": {
+    "precommit": "lint-staged",
     "lint": "eslint"
   }
 }

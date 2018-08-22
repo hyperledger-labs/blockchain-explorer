@@ -14,12 +14,12 @@
  limitations under the License.
  */
 
-"use strict";
-var log4js = require("log4js/lib/log4js");
+'use strict';
+var log4js = require('log4js/lib/log4js');
 var appList = [];
 
-var path = require("path");
-var fs = require("fs-extra");
+var path = require('path');
+var fs = require('fs-extra');
 
 function readAllFiles(dir) {
   var files = fs.readdirSync(dir);
@@ -46,8 +46,8 @@ logger.setLevel('INFO');
 */
 
 var getLogger = function(moduleName) {
-  if (moduleName == "pgservice") {
-    var logger = log4js.getLogger("pgservice");
+  if (moduleName == 'pgservice') {
+    var logger = log4js.getLogger('pgservice');
   } else {
     appList.push(moduleName);
     var logger = log4js.getLogger(moduleName);
@@ -55,25 +55,25 @@ var getLogger = function(moduleName) {
 
   var appLog = 'logs/app/app.log';
   var dbLog = 'logs/db/db.log';
-  fs.ensureFileSync(appLog) ;
+  fs.ensureFileSync(appLog);
   fs.ensureFileSync(dbLog);
   log4js.configure({
     appenders: [
       {
-        type: "dateFile",
+        type: 'dateFile',
         filename: appLog,
-        pattern: "-yyyy-MM-dd",
+        pattern: '-yyyy-MM-dd',
         category: appList
       },
       {
-        type: "dateFile",
+        type: 'dateFile',
         filename: dbLog,
-        pattern: "-yyyy-MM-dd",
-        category: ["pgservice"]
+        pattern: '-yyyy-MM-dd',
+        category: ['pgservice']
       }
     ]
   });
-  logger.setLevel("DEBUG");
+  logger.setLevel('DEBUG');
   return logger;
 };
 

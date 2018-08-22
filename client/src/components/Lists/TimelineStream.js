@@ -3,34 +3,67 @@
  */
 
 import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import { Timeline, TimelineEvent } from 'react-event-timeline';
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
 import FontAwesome from 'react-fontawesome';
-import Typography from 'material-ui/Typography';
+import Typography from '@material-ui/core/Typography';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import blockOpen from '../../static/images/blockOpen.png';
+import { blockListType, notificationsType } from '../types';
 
-class TimelineStream extends Component {
+const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  return {
+    scrollable: {
+      height: 300,
+      overflowY: 'scroll'
+    },
+    text: {
+      color: dark ? '#ffffff' : undefined,
+      '& .badge-secondary': {
+        backgroundColor: '#5e548f'
+      }
+    },
+    event: {
+      wordWrap: 'break-word',
+      width: '90% !important',
+      backgroundColor: dark ? '#423b5f !important' : undefined,
+      '& p': {
+        color: dark ? '#ffffff' : undefined
+      },
+      '& > div': {
+        color: dark ? 'red' : undefined
+      }
+    },
+    open: {
+      height: 35,
+      marginTop: -10,
+      backgroundColor: 'transparent'
+    }
+  };
+};
+
+export class TimelineStream extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      notifications: [],
       dialogOpenBlockHash: false,
       blockHash: {}
     };
   }
 
   handleDialogOpenBlockHash = rowValue => {
-    const data = find(this.props.blockList, item => {
-      return item.blockhash === rowValue;
-    });
+    const { blockList } = this.props;
+    const data = find(blockList, item => item.blockhash === rowValue);
     this.setState({
       dialogOpenBlockHash: true,
-      blockHash: data });
+      blockHash: data
+    });
   };
 
   handleDialogCloseBlockHash = () => {
@@ -38,30 +71,32 @@ class TimelineStream extends Component {
   };
 
   render() {
+    const { notifications, classes } = this.props;
+    const { blockHash, dialogOpenBlockHash } = this.state;
     return (
       <div>
-        <div className="scrollable-card">
+        <div className={classes.scrollable}>
           <Timeline>
-            {this.props.notifications.map(item => (
+            {notifications.map(item => (
               <TimelineEvent
                 key={item.title}
                 title={item.title}
                 icon={<FontAwesome name="cube" />}
                 iconColor="#0D3799"
                 container="card"
-                className="timeline-event"
-                titleStyle={{ fontWeight: "bold" }}
-                style={{ width: "65%" }}
+                className={classes.event}
+                titleStyle={{ fontWeight: 'bold' }}
+                style={{ width: '65%' }}
                 cardHeaderStyle={{
-                  backgroundColor: "#6283D0",
-                  fontSize: "13pt"
+                  backgroundColor: '#6283D0',
+                  fontSize: '13pt'
                 }}
                 contentStyle={{
-                  backgroundColor: "transparent"
+                  backgroundColor: 'transparent'
                 }}
                 buttons={
                   <a
-                    className="blockLink"
+                    data-command="block-link"
                     href="#/"
                     onClick={() =>
                       this.handleDialogOpenBlockHash(item.blockhash)
@@ -70,20 +105,22 @@ class TimelineStream extends Component {
                     <img
                       src={blockOpen}
                       alt="View Blocks"
-                      className="blockOpen"
+                      className={classes.open}
                     />
                   </a>
                 }
               >
                 <Typography variant="body1">
-                  <b className="timeLineText"> Datahash:</b> {item.datahash}{" "}
+                  <b className={classes.text}> Channel Name:</b>{' '}
+                  {item.channelName} <br />
+                  <b className={classes.text}> Datahash:</b> {item.datahash}{' '}
                   <br />
-                  <b className="timeLineText"> Number of Tx:</b> {item.txcount}
+                  <b className={classes.text}> Number of Tx:</b> {item.txcount}
                 </Typography>
-                <h5 className="timeLineText">
-                  <Badge className="timeLineText">
+                <h5 className={classes.text}>
+                  <Badge className={classes.text}>
                     <Timeago
-                      className="timeLineText"
+                      className={classes.text}
                       date={item.time}
                       live={false}
                       minPeriod={60}
@@ -96,13 +133,13 @@ class TimelineStream extends Component {
         </div>
 
         <Dialog
-          open={this.state.dialogOpenBlockHash}
+          open={dialogOpenBlockHash}
           onClose={this.handleDialogCloseBlockHash}
-          fullWidth={true}
-          maxWidth={"md"}
+          fullWidth
+          maxWidth="md"
         >
           <BlockView
-            blockHash={this.state.blockHash}
+            blockHash={blockHash}
             onClose={this.handleDialogCloseBlockHash}
           />
         </Dialog>
@@ -111,4 +148,9 @@ class TimelineStream extends Component {
   }
 }
 
-export default TimelineStream;
+TimelineStream.propTypes = {
+  blockList: blockListType.isRequired,
+  notifications: notificationsType.isRequired
+};
+
+export default withStyles(styles)(TimelineStream);
