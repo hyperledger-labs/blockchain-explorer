@@ -53,6 +53,7 @@ var Admin = class extends Remote {
      */
     constructor(url, opts) {
         super(url, opts);
+        this.setName(opts.name);
 
         //logger.debug('Peer.const - url: %s timeout: %s', url, this._request_timeout);
         this._endorserClient = new _serviceProto.Admin(this._endpoint.addr, this._endpoint.creds, this._options);
