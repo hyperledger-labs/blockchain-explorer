@@ -13,6 +13,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 - [Fabric Network Setup](#Fabric-Network-Setup)
 - [Fabric Configure Hyperledger Explorer](#Fabric-Configure-Hyperledger-Explorer)
 - [Composer Configure Hyperledger Explorer](#Composer-Configure-Hyperledger-Explorer)
+- [Cello Configure Hyperledger Explorer](#Cello-Configure-Hyperledger-Explorer)
 - [Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
 - [Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
 - [Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
@@ -141,6 +142,28 @@ On another terminal.
 - Modify config.json to update network-config.
 	- Change "fabric-path" to your composer network path,
 	- Configure the Hyperledger composer based on this link [CONFIG-COMPOSER-HLEXPLORER.md](CONFIG-COMPOSER-HLEXPLORER.md)
+- Modify "syncStartDate" to filter data by block timestamp
+- Modify "channel" to your default channel
+
+If you are connecting to a non TLS fabric peer, please modify the
+protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+
+**or**
+
+## Hyperledger Cello Setup
+
+ Setup your fabric network using Cello [Build your network](https://cello.readthedocs.io/en/latest/setup/) from Hyperledger Cello. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+
+<a name="Cello-Configure-Hyperledger-Explorer"/>
+
+## Cello Configure Hyperledger Explorer
+
+On another terminal.
+
+- `cd blockchain-explorer/app/platform/fabric`
+- Modify config.json to update network-config.
+	- Change "fabric-path" to your cello network path,
+	- Configure the Hyperledger cello based on this link [CONFIG-CELLO-HLEXPLORER.md](CONFIG-CELLO-HLEXPLORER.md)
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 
