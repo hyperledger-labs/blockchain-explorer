@@ -43,11 +43,15 @@ export class ChannelsView extends Component {
   }
 
   render() {
+   
+    let channels = this.props.channels
+    channels[0].blocks_ = this.props.dashStats.latestBlock
+    channels[0].transactions_ = this.props.dashStats.txCount
     return (
       <div className="view-fullwidth" >
         <div className="view-display">
           <Card className="table-card">
-            <Channels channels={this.props.channels} />
+            <Channels channels={channels} />
           </Card>
         </div>
       </div>

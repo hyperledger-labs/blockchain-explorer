@@ -53,7 +53,7 @@ class Channels extends Component {
       },
       {
         Header: 'Blocks',
-        accessor: 'blocks',
+        accessor: 'blocks_',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,
@@ -66,7 +66,7 @@ class Channels extends Component {
       },
       {
         Header: 'Transactions',
-        accessor: 'transactions',
+        accessor: 'transactions_',
         filterMethod: (filter, rows) =>
           matchSorter(
             rows,

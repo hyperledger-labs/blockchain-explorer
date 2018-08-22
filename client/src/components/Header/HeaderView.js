@@ -286,7 +286,7 @@ export class HeaderView extends Component {
                     DASHBOARD
                   </NavLink>
                 </li>
-                <li>
+                {/* <li>
                   <NavLink
                     to="/network"
                     className="dashButtons"
@@ -294,7 +294,7 @@ export class HeaderView extends Component {
                   >
                     NETWORK
                   </NavLink>
-                </li>
+                </li> */}
                 <li>
                   <NavLink
                     to="/blocks"

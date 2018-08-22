@@ -75,7 +75,20 @@ export class DashboardView extends Component {
           <Row>
             <Col sm="12">
               <Card className="stats-block ">
-
+                <div className="statistic vdivide">
+                    <Row>
+                      <Col sm="4">
+                        <Avatar className="stat-avatar avatar-node" >
+                          <FontAwesome name="users" />
+                        </Avatar>
+                      </Col>
+                      <Col sm="4">
+                        {/* <h1 className="stat-count">{this.props.dashStats.peerCount}</h1> */}
+                        <h1 className="stat-count">{this.props.peerStatus.length}</h1>
+                      </Col>
+                    </Row>
+                    NODES
+                    </div>
                 <div className="statistic vdivide">
                   <Row>
                     <Col sm="4">
@@ -102,19 +115,6 @@ export class DashboardView extends Component {
                   </Row>
                   TRANSACTIONS
                    </div>
-                <div className="statistic vdivide">
-                  <Row>
-                    <Col sm="4">
-                      <Avatar className="stat-avatar avatar-node" >
-                        <FontAwesome name="users" />
-                      </Avatar>
-                    </Col>
-                    <Col sm="4">
-                      <h1 className="stat-count">{this.props.dashStats.peerCount}</h1>
-                    </Col>
-                  </Row>
-                  NODES
-                  </div>
                 <div className="statistic">
                   <Row>
                     <Col sm="4">

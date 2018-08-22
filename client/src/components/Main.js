@@ -77,7 +77,7 @@ export const Main = (props) => {
           <Route exact path="/" render={() => <DashboardView {...dashboardViewProps} />} />
           <Route path="/blocks" render={() => <BlocksView {...blocksViewProps} />} />
           <Route path="/chaincodes" render={() => <ChaincodeView {...chaincodeViewProps} />} />
-          <Route path="/channels" render={() => <ChannelsView {...channelsViewProps} />} />
+          <Route path="/channels" render={() => <ChannelsView {...channelsViewProps} {...dashboardViewProps}/>} />
           <Route path="/network" render={() => <NetworkView  {...networkViewProps} />} />
           <Route path="/transactions" render={() => <TransactionsView {...transactionsViewProps} />} />
         </Switch>
