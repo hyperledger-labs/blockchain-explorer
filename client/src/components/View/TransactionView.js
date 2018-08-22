@@ -53,6 +53,12 @@ const styles = theme => {
     listIcon: {
       color: '#ffffff',
       marginRight: 20
+    },
+    JSONtree: {
+      '& ul': {
+        backgroundColor: 'transparent !important',
+        color: '#fff'
+      }
     }
   };
 };
@@ -167,7 +173,7 @@ export class TransactionView extends Component {
                       </tr>
                       <tr>
                         <th style={reads}>Reads:</th>
-                        <td>
+                        <td className={classes.JSONtree}>
                           <JSONTree
                             data={transaction.read_set}
                             theme={readTheme}
@@ -177,7 +183,7 @@ export class TransactionView extends Component {
                       </tr>
                       <tr>
                         <th style={writes}>Writes:</th>
-                        <td>
+                        <td className={classes.JSONtree}>
                           <JSONTree
                             data={transaction.write_set}
                             theme={writeTheme}

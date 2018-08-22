@@ -38,20 +38,22 @@ const styles = theme => {
       }
     },
     copy: {
-      display: 'none'
+      display: 'none',
+      color: dark ? '#ffffff' : undefined
     },
     copied: {
-      display: 'none'
+      display: 'none',
+      color: dark ? '#ffffff' : undefined
     },
     copyBtn: {
       float: 'right',
       borderColor: 'transparent',
-      color: dark ? '#8d7af5' : '#4c69c7',
+      color: dark ? '#ffffff' : '#4c69c7',
       backgroundColor: 'transparent',
       cursor: 'pointer',
       textShadow: '1px 1px 2px rgba(129, 129, 129, 0.753)',
       '&:hover': {
-        color: '#2153f8'
+        color: dark ? '#ffffff' : '#2153f8'
       },
       '&:focus': {
         outline: 'none'

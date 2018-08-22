@@ -118,7 +118,6 @@ svg.custom path.link {
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th {
   transition: background-color 1s ease;
-  background-color: #53b4b1;
   opacity: 0.8;
 }
 tr {
