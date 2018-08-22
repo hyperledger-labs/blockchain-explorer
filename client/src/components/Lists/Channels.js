@@ -35,18 +35,6 @@ class Channels extends Component {
       filterAll: true
     },
     {
-      Header: 'Channel Hash',
-      accessor: 'channel_hash',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['channel_hash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
-    },
-    {
       Header: 'Blocks',
       accessor: 'blocks',
       filterMethod: (filter, rows) =>

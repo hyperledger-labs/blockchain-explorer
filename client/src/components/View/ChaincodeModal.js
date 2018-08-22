@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import beautify from 'js-beautify';
 import FontAwesome from 'react-fontawesome';
@@ -43,37 +43,52 @@ const styles = theme => {
     }
   };
 };
+export class ChaincodeModal extends Component {
+  handleClose = () => {
+    const { onClose } = this.props;
+    onClose();
+  };
 
-export const ChaincodeModal = ({ chaincode, classes }) => {
-  const formattedSrc = beautify(chaincode.source, {
-    indent_size: 4
-  });
-  const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
+  render() {
+    const { chaincode, classes } = this.props;
 
-  return (
-    <Modal>
-      {modalClasses => (
-        <div className={classes.source}>
-          <div className={modalClasses.dialog}>
-            <Card className={modalClasses.card}>
-              <CardTitle className={modalClasses.title}>
-                <FontAwesome name="file-text" className={classes.cubeIcon} />
-                {srcHeader}
-              </CardTitle>
-              <CardBody className={modalClasses.body}>
-                <textarea
-                  className={classes.code}
-                  value={formattedSrc}
-                  readOnly
-                />
-              </CardBody>
-            </Card>
+    const formattedSrc = beautify(chaincode.source, {
+      indent_size: 4
+    });
+    const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
+
+    return (
+      <Modal>
+        {modalClasses => (
+          <div className={classes.source}>
+            <div className={modalClasses.dialog}>
+              <Card className={modalClasses.card}>
+                <CardTitle className={modalClasses.title}>
+                  <FontAwesome name="file-text" className={classes.cubeIcon} />
+                  {srcHeader}
+                  <button
+                    type="button"
+                    onClick={this.handleClose}
+                    className={modalClasses.closeBtn}
+                  >
+                    <FontAwesome name="close" />
+                  </button>
+                </CardTitle>
+                <CardBody className={modalClasses.body}>
+                  <textarea
+                    className={classes.code}
+                    value={formattedSrc}
+                    readOnly
+                  />
+                </CardBody>
+              </Card>
+            </div>
           </div>
-        </div>
-      )}
-    </Modal>
-  );
-};
+        )}
+      </Modal>
+    );
+  }
+}
 
 ChaincodeModal.propTypes = {
   chaincode: chaincodeType

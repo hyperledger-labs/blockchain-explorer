@@ -12,8 +12,6 @@ const setup = () => {
     channels: [
       {
         blocks: 5,
-        channel_hash:
-          '0bc9fb4bca66ff0583e39e888eebdf9e01f976d292af3e9deff7d3199ecf3977',
         channelname: 'mychannel',
         createdat: '2018-05-30T20:56:47.795Z',
         id: 3,
@@ -56,21 +54,11 @@ describe('Channels', () => {
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
-  test('Simulate Channel Hash filterMethod should have one result when given a value of 0bc', () => {
-    const { wrapper } = setup();
-    wrapper
-      .find('ThComponent')
-      .findWhere(n => n.key() === '2-channel_hash')
-      .find('input')
-      .simulate('change', { target: { value: '0bc' } });
-    expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
-  });
-
   test('Simulate Blocks filterMethod should have one result when given a value of 5', () => {
     const { wrapper } = setup();
     wrapper
       .find('ThComponent')
-      .findWhere(n => n.key() === '3-blocks')
+      .findWhere(n => n.key() === '2-blocks')
       .find('input')
       .simulate('change', { target: { value: '5' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
@@ -80,7 +68,7 @@ describe('Channels', () => {
     const { wrapper } = setup();
     wrapper
       .find('ThComponent')
-      .findWhere(n => n.key() === '4-transactions')
+      .findWhere(n => n.key() === '3-transactions')
       .find('input')
       .simulate('change', { target: { value: '5' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
@@ -90,7 +78,7 @@ describe('Channels', () => {
     const { wrapper } = setup();
     wrapper
       .find('ThComponent')
-      .findWhere(n => n.key() === '5-createdat')
+      .findWhere(n => n.key() === '4-createdat')
       .find('input')
       .simulate('change', { target: { value: '2018' } });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
