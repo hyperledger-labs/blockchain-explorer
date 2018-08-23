@@ -1,0 +1,21 @@
+# Copyright Tecnalia Research & Innovation (https://www.tecnalia.com)
+# Copyright Tecnalia Blockchain LAB
+#
+# SPDX-License-Identifier: Apache-2.0
+
+FROM postgres:10.4-alpine
+
+# default username for HLF Explorer db connection
+ENV USERNAME 	hppoc
+
+# default password for HLF Explorer db connection
+ENV PGPASSWORD 	password
+
+# default password for postgres default user
+ENV POSTGRES_PASSWORD password
+
+WORKDIR /opt
+
+# Copy files
+COPY app/persistence/postgreSQL/db/explorerpg.sql 	/opt/explorerpg.sql
+COPY app/persistence/postgreSQL/db/updatepg.sql 	/opt/updatepg.sql

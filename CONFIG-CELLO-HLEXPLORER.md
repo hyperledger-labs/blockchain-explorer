@@ -2,7 +2,7 @@
 
 ##Verify docker is running from Master Node
 
-1. docker -H 172.24.200.103:2375 info
+1. docker -H <YOUR IP>:2375 info
 
 ##Verify Peer is running and get Ip to configure in explorer from Worker Node
 

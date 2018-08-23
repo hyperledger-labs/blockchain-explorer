@@ -22,7 +22,7 @@ var options = {
   }
 };
 var list = new ArrayList();
-list.add("DROP USER IF EXISTS testuser;");
+list.add('DROP USER IF EXISTS testuser;');
 describe('Test explorerpg.sql for DDL statements syntax verification', function() {
   it('should read the file explorerpg.sql for ddl statements ', function(readdone) {
     this.timeout(5000);
