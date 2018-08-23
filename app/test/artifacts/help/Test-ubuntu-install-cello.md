@@ -1,6 +1,6 @@
 #Fabric Cluster started using Hyperledger Cello and configure to Explorer
 
-##Master Node (  172.24.200.218)
+##Master Node (  <YOUR IP>)
 
 1. git clone http://gerrit.hyperledger.org/r/cello && cd cello
 
@@ -9,11 +9,11 @@
 3. sudo make start
 
 
-##Worker Node  ( 172.24.200.103)
+##Worker Node  ( <YOUR IP>)
 
 1. sudo systemctl stop docker.service
 
-2. sudo dockerd -H tcp://172.24.200.103:2375 -H unix:///var/run/docker.sock --api-cors-header='*' --default-ulimit=nofile=8192:16384 --default-ulimit=nproc=8192:16384 -D &
+2. sudo dockerd -H tcp://<YOUR IP>:2375 -H unix:///var/run/docker.sock --api-cors-header='*' --default-ulimit=nofile=8192:16384 --default-ulimit=nproc=8192:16384 -D &
 
 3.git clone http://gerrit.hyperledger.org/r/cello && cd cello
 
@@ -21,7 +21,7 @@
 
 ##Verify docker is running from Master Node
 
-1. docker -H 172.24.200.103:2375 info
+1. docker -H <YOUR IP>:2375 info
 
 ##Verify Peer is running and get Ip to configure in explorer from Worker Node
 

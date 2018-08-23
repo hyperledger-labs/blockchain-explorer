@@ -66,7 +66,7 @@ const styles = theme => {
       opacity: 0.8,
       margin: 'auto',
       width: '100% !important',
-      backgroundColor: '#086108',
+      backgroundColor: dark ? undefined : '#086108',
       'margin-bottom': '4px'
     },
     filterElement: {

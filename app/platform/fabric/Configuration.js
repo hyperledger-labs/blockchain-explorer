@@ -40,7 +40,8 @@ class Configuration {
         if (
           typeof elem === 'object' &&
           'requests' in elem &&
-          'tls_cacerts' in elem &&
+          (elem.requests.startsWith('grpc://') ||
+            (elem.requests.startsWith('grpcs://') && 'tls_cacerts' in elem)) &&
           'events' in elem &&
           'server-hostname' in elem
         ) {
@@ -114,7 +115,9 @@ class Configuration {
           'requests' in org[prop] &&
           'events' in org[prop] &&
           'server-hostname' in org[prop] &&
-          'tls_cacerts' in org[prop]
+          (org[prop].requests.startsWith('grpc://') ||
+            (org[prop].requests.startsWith('grpcs://') &&
+              'tls_cacerts' in org[prop]))
         )
           peerlist.push({
             key: ele,

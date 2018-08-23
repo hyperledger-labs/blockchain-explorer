@@ -2,9 +2,6 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 /* Dark-Theme is switched by the class name */
-.dark-theme {
-  background-color: #242036 !important;
-}
 
 .dark-theme svg.custom .node circle {
   fill: #f3f3ff;
@@ -57,4 +54,8 @@
 /*Time Chart and Chart stats */
 .dark-theme .nav-link:hover {
   color: #007bff !important;
+}
+.dark-theme .rt-noData {
+  color: #ffffff !important;
+  background: transparent !important;
 }
