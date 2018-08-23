@@ -12,6 +12,10 @@ const styles = theme => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
+    '.rt-noData': {
+      color: '#ffffff !important',
+      background: '#7165ae !important'
+    },
     table: {
       '& .rt-tbody': {
         overflow: 'scroll !important'

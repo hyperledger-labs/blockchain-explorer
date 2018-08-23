@@ -52,6 +52,11 @@ const {
 const { currentChannelSelector } = chartSelectors;
 
 const styles = theme => {
+  const { type } = theme.palette;
+  const dark = type === 'dark';
+  dark
+    ? (document.body.style.backgroundColor = '#242036')
+    : (document.body.style.backgroundColor = '#f0f5f9');
   return {
     background: {
       backgroundColor: '#f0f5f9'
