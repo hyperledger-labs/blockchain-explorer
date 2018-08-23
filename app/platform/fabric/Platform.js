@@ -172,7 +172,11 @@ class Platform {
         });
       } else {
         peer = client.newPeer(configuration.getOrg(org)[key].requests);
-        this.addStatusPeer(org, key, configuration.getOrg(org)[key].requests);
+        this.addStatusPeer(org, key, configuration.getOrg(org)[key].requests, {
+          'ssl-target-name-override': configuration.getOrg(org)[key][
+            'server-hostname'
+          ]
+        });
       }
 
       this.peers[[org, key]] = peer;
