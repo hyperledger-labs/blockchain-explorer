@@ -26,7 +26,8 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
-- [Release Notes](release_notes/v0.3.4.md)
+- [Release Notes v0.3.5](release_notes/v0.3.5.md)
+- [Release Notes v0.3.4](release_notes/v0.3.4.md)
 
 
 <a name="Directory-Structure"/>
@@ -86,7 +87,8 @@ Clone this repository to get the latest using the following command.
 	}
 ```
 
-**Important repeat after every git pull
+**Important repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/postgreSQL run: `chmod -R 775 db/` )
+
 Run create database script.
 
 - `cd blockchain-explorer/app/persistence/postgreSQL/db`
