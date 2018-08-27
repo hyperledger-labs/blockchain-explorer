@@ -1,4 +1,0 @@
-{
-  "persistence": "postgreSQL",
-  "platforms": ["fabric"]
-}

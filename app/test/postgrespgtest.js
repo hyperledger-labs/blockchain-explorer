@@ -3,8 +3,8 @@ var assert = require('assert');
 var chai = require('chai');
 var should = chai.should();
 const { spy, stub } = require('sinon');
-var config = require('../persistence/postgreSQL/db/pgconfig.json');
-var pgconfig = config.pg;
+var config = require('../explorerconfig.json');
+var pgconfig = config.postgreSQL;
 var pgtestdb = require('pg-testdb');
 var test = require('tape');
 var readline = require('readline');
@@ -31,7 +31,7 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
     var fs = require('fs'),
       readline = require('readline'),
       instream = fs.createReadStream(
-        '../persistence/postgreSQL/db/explorerpg.sql'
+        '../persistence/fabric/postgreSQL/db/explorerpg.sql'
       ),
       outstream = new (require('stream'))(),
       rl = readline.createInterface(instream, outstream);
