@@ -44,6 +44,7 @@ class BlockScanner {
     this.proxy = platform.getDefaultProxy();
     this.crudService = persistence.getCrudService();
     this.broadcaster = broadcaster;
+    this.platform = platform;
   }
 
   async syncBlock() {
@@ -340,7 +341,7 @@ class BlockScanner {
   }
 
   calculateBlockHash(header) {
-    let headerAsn = asn.define('headerAsn', function() {
+    let headerAsn = asn.define('headerAsn', function () {
       this.seq().obj(
         this.key('Number').int(),
         this.key('PreviousHash').octstr(),
@@ -435,14 +436,15 @@ class BlockScanner {
   }
 
   async savePeerlist(channelName) {
-    var peerlists = await this.proxy.getConnectedPeers(channelName);
+    var peerlists = this.platform.peersForDb();
+    peerlists = Object.values(peerlists);
     let genesisBlock = await this.proxy.getGenesisBlock(channelName);
     let temp = BlockDecoder.decodeBlock(genesisBlock);
     let genesisBlockHash = await fileUtil.generateBlockHash(temp.header);
     let peerlen = peerlists.length;
     for (let i = 0; i < peerlen; i++) {
       var peers = {};
-      let peerlist = peerlists[i].getPeer();
+      let peerlist = peerlists[i];
       peers.requests = peerlist.getUrl();
       peers.channel_genesis_hash = genesisBlockHash;
       if (peerlist._options['grpc.default_authority']) {

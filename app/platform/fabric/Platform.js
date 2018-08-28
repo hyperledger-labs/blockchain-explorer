@@ -111,7 +111,7 @@ class Platform {
         var psPromise = client.GetStatus({});
         promises.push(psPromise);
       });
-      Promise.all(promises).then(function(successMessage) {
+      Promise.all(promises).then(function (successMessage) {
         logger.debug('GetStatus All!', successMessage);
         cb(successMessage);
       });
@@ -183,6 +183,10 @@ class Platform {
     });
   }
 
+  peersForDb() {
+    return this.peers;
+  }
+
   async setChannels() {
     var client = this.getClientForOrg(configuration.getDefaultOrg());
 
@@ -221,7 +225,7 @@ class Platform {
       });
     } catch (err) {
       throw 'There is error in reading config.json for orderer parameters.Please check config.json parameters:' +
-        err;
+      err;
       return null;
     }
   }
