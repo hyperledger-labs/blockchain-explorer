@@ -457,7 +457,9 @@ class FabricClient {
 
   async getPeerStatus(peer) {
     let channel = this.getDefaultChannel();
-    await this.initializeChannelFromDiscover(channel._name);
+    if (this.status) {
+      await this.initializeChannelFromDiscover(channel._name);
+    }
     let adminpeer = this.adminpeers.get(peer.requests);
     let status = {};
     if (adminpeer) {
