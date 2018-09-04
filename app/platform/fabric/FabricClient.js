@@ -7,7 +7,7 @@ var helper = require('../../common/helper');
 var logger = helper.getLogger('FabricClient');
 var ExplorerError = require('../../common/ExplorerError');
 const BlockDecoder = require('fabric-client/lib/BlockDecoder');
-var Admin = require('./Admin.js');
+var AdminPeer = require('./AdminPeer');
 var grpc = require('grpc');
 const User = require('fabric-client/lib/User.js');
 const client_utils = require('fabric-client/lib/client-utils.js');
@@ -147,44 +147,55 @@ class FabricClient {
       } catch (e) {}
       if (newchannel === undefined) {
         newchannel = this.hfc_client.newChannel(channel.channelname);
-        if (nodes.length > 0) {
-          let url = 'grpc://localhost';
-          let newpeer = this.hfc_client.newPeer(url, {
-            'ssl-target-name-override': default_peer_name,
-            name: default_peer_name
-          });
-          newchannel.addPeer(newpeer);
-        }
       }
 
       for (let node of nodes) {
         let peer_config = this.client_config.peers[node.server_hostname];
         let pem;
         try {
-          if (
-            this.client_config.client.tlsEnable &&
-            (peer_config && peer_config.tlsCACerts)
-          ) {
+          if (peer_config && peer_config.tlsCACerts) {
             pem = FabricUtils.getPEMfromConfig(peer_config.tlsCACerts);
-          }
-        } catch (e) {}
-        let adminpeer = await this.newAdminPeer(node, pem);
-        if (adminpeer) {
-          let username = this.client_name + '_' + node.mspid + 'Admin';
-          if (!this.adminusers.get(username)) {
-            let user = await this.newUser(node.mspid, username);
-            if (user) {
-              logger.debug(
-                'Successfully created user [%s] for client [%s]',
-                username,
-                this.client_name
-              );
-              this.adminusers.set(username, user);
+            let msps = {
+              [node.mspid]: {
+                tls_root_certs: pem
+              }
+            };
+            let adminpeer = await this.newAdminPeer(
+              newchannel,
+              node.requests,
+              node.mspid,
+              node.server_hostname,
+              msps
+            );
+            if (adminpeer) {
+              let username = this.client_name + '_' + node.mspid + 'Admin';
+              if (!this.adminusers.get(username)) {
+                let user = await this.newUser(node.mspid, username);
+                if (user) {
+                  logger.debug(
+                    'Successfully created user [%s] for client [%s]',
+                    username,
+                    this.client_name
+                  );
+                  this.adminusers.set(username, user);
+                }
+              }
             }
           }
-        }
+        } catch (e) {}
+      }
+      try {
+        newchannel.getPeer(default_peer_name);
+      } catch (e) {
+        let url = 'grpc://localhost:7051';
+        let newpeer = this.hfc_client.newPeer(url, {
+          'ssl-target-name-override': default_peer_name,
+          name: default_peer_name
+        });
+        newchannel.addPeer(newpeer);
       }
     }
+
     this.defaultChannel = this.hfc_client.getChannel(default_channel_name);
     if (this.defaultChannel.getPeers().length > 0) {
       this.defaultPeer = this.defaultChannel.getPeer(default_peer_name);
@@ -345,7 +356,7 @@ class FabricClient {
             ) {
               requesturl = this.client_config.orderers[requesturl].url;
               this.newOrderer(
-                channel_name,
+                channel,
                 requesturl,
                 msp_id,
                 endpoint.host,
@@ -366,11 +377,33 @@ class FabricClient {
         for (let org_name in discover_results.peers_by_org) {
           let org = discover_results.peers_by_org[org_name];
           for (var peer of org.peers) {
-            let pem;
-            if (this.client_config.client.tlsEnable) {
-              pem = this.buildTlsRootCerts(discover_results.msps[org_name]);
+            let host = peer.endpoint.split(':')[0];
+            if (
+              this.client_config.peers &&
+              this.client_config.peers[host] &&
+              this.client_config.peers[host].url
+            ) {
+              let adminpeer = this.newAdminPeer(
+                channel,
+                this.client_config.peers[host].url,
+                peer.mspid,
+                host,
+                discover_results.msps
+              );
+              logger.debug(
+                'Successfully created peer [%s:%s] for client [%s]',
+                host,
+                peer.port,
+                this.client_name
+              );
+            } else {
+              logger.error(
+                'Peer configuration is not found in config.json for peer %s and url %s , so peer status not work for the peer',
+                host_port,
+                requesturl
+              );
+              return;
             }
-            let adminpeer = await this.newAdminPeer(peer, pem);
           }
         }
       }
@@ -380,23 +413,8 @@ class FabricClient {
     return;
   }
 
-  newAdminPeer(peer, pem) {
-    if (this.client_config.client.tlsEnable && !pem) {
-      logger.debug('Client.newAdminPeer parameter pem is required ');
-      return;
-    }
-    let requesturl;
-    let host;
-
-    if (peer.server_hostname) {
-      requesturl = peer.requests;
-      host = peer.server_hostname;
-    } else {
-      requesturl = peer.endpoint;
-      host = peer.endpoint.split(':')[0];
-    }
-
-    if (!requesturl) {
+  newAdminPeer(channel, url, msp_id, host, msps) {
+    if (!url) {
       logger.debug('Client.newAdminPeer requesturl is required ');
       return;
     }
@@ -406,33 +424,27 @@ class FabricClient {
       return;
     }
 
-    if (this.client_config.peers[host] && this.client_config.peers[host].url) {
-      requesturl = this.client_config.peers[host].url;
-      if (!this.adminpeers.get(requesturl)) {
-        let adminpeer = new Admin(requesturl, {
-          pem: pem,
-          'ssl-target-name-override': host
-        });
-        logger.debug(
-          'Successfully created Admin peer [%s] for client [%s]',
-          requesturl,
-          this.client_name
-        );
-        this.adminpeers.set(requesturl, adminpeer);
-        return adminpeer;
+    if (!this.adminpeers.get(url)) {
+      let newpeer = this.newPeer(channel, url, msp_id, host, msps);
+      if (
+        newpeer &&
+        newpeer.constructor &&
+        newpeer.constructor.name === 'ChannelPeer'
+      ) {
+        newpeer = newpeer.getPeer();
       }
-    } else {
-      logger.error(
-        'Peer configuration is not found in config.json for peer %s and url %s , so peer status not work for the peer',
-        host_port,
-        requesturl
+      let adminpeer = new AdminPeer(msp_id, newpeer);
+      logger.debug(
+        'Successfully created Admin peer [%s] for client [%s]',
+        url,
+        this.client_name
       );
-      return;
+      this.adminpeers.set(url, adminpeer);
+      return adminpeer;
     }
   }
 
-  newOrderer(channel_name, url, msp_id, host, msps) {
-    let channel = this.hfc_client.getChannel(channel_name);
+  newOrderer(channel, url, msp_id, host, msps) {
     let newOrderer = null;
     channel._orderers.forEach(orderer => {
       if (orderer.getUrl() === url) {
@@ -447,7 +459,7 @@ class FabricClient {
           url,
           channel._buildOptions(url, url, host, msps[msp_id])
         );
-        channel.addOrderer(newOrderer, true);
+        channel.addOrderer(newOrderer);
       } else {
         throw new ExplorerError(explorer_mess.error.ERROR_2007);
       }
@@ -455,11 +467,31 @@ class FabricClient {
     return newOrderer;
   }
 
+  newPeer(channel, url, msp_id, host, msps) {
+    let newpeer = null;
+    channel._channel_peers.forEach(peer => {
+      if (peer.getUrl() === url) {
+        logger.debug('Found existing peer %s', url);
+        newpeer = peer;
+      }
+    });
+    if (!newpeer) {
+      if (msps[msp_id]) {
+        logger.debug('Create a new peer %s', url);
+        newpeer = this.hfc_client.newPeer(
+          url,
+          channel._buildOptions(url, url, host, msps[msp_id])
+        );
+        channel.addPeer(newpeer, msp_id);
+      } else {
+        throw new ExplorerError(explorer_mess.error.ERROR_2007);
+      }
+    }
+    return newpeer;
+  }
+
   async getPeerStatus(peer) {
     let channel = this.getDefaultChannel();
-    if (this.status) {
-      await this.initializeChannelFromDiscover(channel._name);
-    }
     let adminpeer = this.adminpeers.get(peer.requests);
     let status = {};
     if (adminpeer) {
@@ -601,27 +633,6 @@ class FabricClient {
       this.client_config.peers
     );
     return respose;
-  }
-
-  buildOptions(url, host, msp) {
-    const caroots = this.buildTlsRootCerts(msp);
-    const opts = {
-      pem: caroots,
-      'ssl-target-name-override': host,
-      name: url
-    };
-    return opts;
-  }
-
-  buildTlsRootCerts(msp) {
-    let caroots = '';
-    if (msp.tls_root_certs) {
-      caroots = caroots + msp.tls_root_certs;
-    }
-    if (msp.tls_intermediate_certs) {
-      caroots = caroots + msp.tls_intermediate_certs;
-    }
-    return caroots;
   }
 
   getChannelNames() {

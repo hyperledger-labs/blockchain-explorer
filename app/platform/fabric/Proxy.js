@@ -44,15 +44,34 @@ class Proxy {
   }
 
   async getPeersStatus(channel_genesis_hash) {
+    let client = await this.platform.getClient();
+    let channel = client.getDefaultChannel();
     let nodes = await this.persistence
       .getMetricService()
       .getPeerList(channel_genesis_hash);
+    let discover_results;
+    if (client.status) {
+      try {
+        discover_results = await client.initializeChannelFromDiscover(
+          channel._name
+        );
+      } catch (e) {}
+    }
     let peers = [];
-    let client = this.platform.getClient();
     for (let node of nodes) {
       if (node.peer_type === 'PEER') {
         let res = await client.getPeerStatus(node);
         node.status = res.status ? res.status : 'DOWN';
+        if (discover_results && discover_results.peers_by_org) {
+          let org = discover_results.peers_by_org[node.mspid];
+          for (var peer of org.peers) {
+            if (peer.endpoint.indexOf(node.server_hostname) > -1) {
+              node.ledger_height_low = peer.ledger_height.low;
+              node.ledger_height_high = peer.ledger_height.high;
+              node.ledger_height_unsigned = peer.ledger_height.unsigned;
+            }
+          }
+        }
         peers.push(node);
       }
     }
@@ -69,7 +88,9 @@ class Proxy {
 
   async getChannelsInfo() {
     let client = this.platform.getClient();
-    let channels = await this.persistence.getCrudService().getChannelsInfo(client.getDefaultPeer().getName());
+    let channels = await this.persistence
+      .getCrudService()
+      .getChannelsInfo(client.getDefaultPeer().getName());
     let currentchannels = [];
     for (var channel of channels) {
       let channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -85,8 +106,12 @@ class Proxy {
   }
 
   async getTxByOrgs(channel_genesis_hash) {
-    let rows = await this.persistence.getMetricService().getTxByOrgs(channel_genesis_hash);
-    let organizations = await this.persistence.getMetricService().getOrgsData(channel_genesis_hash);
+    let rows = await this.persistence
+      .getMetricService()
+      .getTxByOrgs(channel_genesis_hash);
+    let organizations = await this.persistence
+      .getMetricService()
+      .getOrgsData(channel_genesis_hash);
 
     for (let organization of rows) {
       var index = organizations.indexOf(organization.creator_msp_id);
@@ -138,13 +163,17 @@ class Proxy {
   async getChannels() {
     let client = this.platform.getClient();
     let client_channels = client.getChannelNames();
-    let channels = await this.persistence.getCrudService().getChannelsInfo(client.getDefaultPeer().getName());
+    let channels = await this.persistence
+      .getCrudService()
+      .getChannelsInfo(client.getDefaultPeer().getName());
     let respose = [];
 
     for (let i = 0; i < channels.length; i++) {
       var index = client_channels.indexOf(channels[i].channelname);
       if (!(index > -1)) {
-        await this.platform.getClient().initializeNewChannel(channels[i].channelname);
+        await this.platform
+          .getClient()
+          .initializeNewChannel(channels[i].channelname);
       }
       respose.push(channels[i].channelname);
     }
@@ -153,13 +182,14 @@ class Proxy {
   }
 
   processSyncMessage(msg) {
-
     // get message from child process
     logger.debug('Message from child %j', msg);
     if (fabric_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
       // initialize new channel instance in parent
       if (msg.network_name && msg.client_name) {
-        let client = this.platform.networks.get(msg.network_name).get(msg.client_name);
+        let client = this.platform.networks
+          .get(msg.network_name)
+          .get(msg.client_name);
         if (msg.channel_name) {
           client.initializeNewChannel(msg.channel_name);
         } else {
@@ -178,7 +208,9 @@ class Proxy {
     ) {
       // update channel details in parent
       if (msg.network_name && msg.client_name) {
-        let client = this.platform.networks.get(msg.network_name).get(msg.client_name);
+        let client = this.platform.networks
+          .get(msg.network_name)
+          .get(msg.client_name);
         if (msg.channel_name) {
           client.initializeChannelFromDiscover(msg.channel_name);
         } else {
@@ -212,7 +244,6 @@ class Proxy {
         msg.notify_type
       );
     }
-
   }
 }
 
