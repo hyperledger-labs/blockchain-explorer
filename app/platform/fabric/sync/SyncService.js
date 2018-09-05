@@ -10,12 +10,14 @@ var helper = require('../../../common/helper');
 var logger = helper.getLogger('SyncServices');
 const ExplorerError = require('../../../common/ExplorerError');
 const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
-const fabric_const = require('../../../platform/fabric/utils/FabricConst').fabric.const;
-const explorer_error = require('../../../common/ExplorerMessage').explorer.error;
+const fabric_const = require('../../../platform/fabric/utils/FabricConst')
+  .fabric.const;
+const explorer_error = require('../../../common/ExplorerMessage').explorer
+  .error;
 
 var _transProto = grpc.load(
   __dirname +
-  '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto'
+    '/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto'
 ).protos;
 
 const blocksInProcess = [];
@@ -36,7 +38,7 @@ class SyncServices {
     this.synchInProcess = [];
   }
 
-  async initialize() { }
+  async initialize() {}
 
   async synchNetworkConfigToDB(client) {
     let channels = client.getChannels();
@@ -100,8 +102,7 @@ class SyncServices {
           channel_name: channel_name
         };
         this.platform.send(notify);
-        throw new ExplorerError(explorer_error.ERROR_2013,
-          channel_name);
+        throw new ExplorerError(explorer_error.ERROR_2013, channel_name);
         return false;
       }
     }
@@ -326,7 +327,7 @@ class SyncServices {
     if (!channel_genesis_hash) {
       // get discovery and insert channel details to db and create new channel object in client context
       setTimeout(
-        async function (client, channel_name, block) {
+        async function(client, channel_name, block) {
           await client.initializeNewChannel(channel_name);
           channel_genesis_hash = client.getChannelGenHash(channel_name);
           // inserting new channel details to DB
@@ -361,7 +362,7 @@ class SyncServices {
       header.channel_header.typeString === fabric_const.BLOCK_TYPE_CONFIG
     ) {
       setTimeout(
-        async function (client, channel_name, channel_genesis_hash) {
+        async function(client, channel_name, channel_genesis_hash) {
           // get discovery and insert new peer, orders details to db
           let channel = client.hfc_client.getChannel(channel_name);
           await client.initializeChannelFromDiscover(channel_name);
@@ -490,15 +491,25 @@ class SyncServices {
         }
         let read_set = JSON.stringify(readSet, null, 2);
         let write_set = JSON.stringify(writeSet, null, 2);
+
+        if (typeof read_set === 'string' || read_set instanceof String) {
+          console.log('read_set length', read_set.length);
+          let bytes = Buffer.byteLength(write_set, 'utf8');
+          let kb = (bytes + 512) / 1024;
+          let mb = (kb + 512) / 1024;
+          let size = mb + ' MB';
+          console.log('write_set size >>>>>>>>> : ', size);
+        }
+
         let chaincode_id = String.fromCharCode.apply(null, chaincodeID);
         // checking new chaincode is deployed
         if (
           header.channel_header.typeString ===
-          fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
+            fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
           chaincode === fabric_const.CHAINCODE_LSCC
         ) {
           setTimeout(
-            async function (client, channel_name, channel_genesis_hash) {
+            async function(client, channel_name, channel_genesis_hash) {
               let channel = client.hfc_client.getChannel(channel_name);
               // get discovery and insert chaincode details to db
               await _self.insertFromDiscoveryResults(
@@ -515,7 +526,6 @@ class SyncServices {
               };
 
               _self.platform.send(notify);
-
             },
             10000,
             client,
