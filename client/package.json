@@ -55,7 +55,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint"
   },
-  "proxy": "http://localhost:8080/",
+  "proxy": "http://106.14.48.46/",
   "devDependencies": {
     "babel-eslint": "^8.2.5",
     "enzyme": "^3.3.0",

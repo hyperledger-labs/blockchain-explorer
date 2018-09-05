@@ -18,13 +18,13 @@ class PeersHealth extends Component {
   render() {
     const columnHeaders = [
       {
-        Header: 'Peer Name',
+        Header: '节点名称',
         accessor: 'server_hostname',
         filterAll: false,
         className: 'center-column',
       },
       {
-        Header: 'Status',
+        Header: '状态',
         accessor: 'status',
         filterAll: false,
         className: 'center-column',

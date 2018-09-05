@@ -79,8 +79,7 @@ export class TransactionView extends Component {
           <div className="dialog">
             <Card>
               <CardTitle className="dialogTitle">
-                <FontAwesome name="list-alt" className="listIcon" />Transaction
-                Details
+                <FontAwesome name="list-alt" className="listIcon" />交易详情
                 <button onClick={this.handleClose} className="closeBtn">
                   <FontAwesome name="close" />
                 </button>
@@ -89,7 +88,7 @@ export class TransactionView extends Component {
                 <Table striped hover responsive className="table-striped">
                   <tbody>
                     <tr>
-                      <th>Transaction ID:</th>
+                      <th>交易ID:</th>
                       <td>
                         {this.props.transaction.txhash}
                         <button className="copyBtn">
@@ -102,31 +101,31 @@ export class TransactionView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <th>Validation Code:</th>
+                      <th>验证码:</th>
                       <td>{this.props.transaction.validation_code}</td>
                     </tr>
                     <tr>
-                      <th>Payload Proposal Hash:</th>
+                      <th>建议哈希:</th>
                       <td>{this.props.transaction.payload_proposal_hash}</td>
                     </tr>
                     <tr>
-                      <th>Creator MSP:</th>
+                      <th>MSP创建者:</th>
                       <td>{this.props.transaction.creator_msp_id}</td>
                     </tr>
                     <tr>
-                      <th>Endoser:</th>
+                      <th>背书节点:</th>
                       <td>{this.props.transaction.endorser_msp_id}</td>
                     </tr>
                     <tr>
-                      <th>Chaincode Name:</th>
+                      <th>链码名称:</th>
                       <td>{this.props.transaction.chaincodename}</td>
                     </tr>
                     <tr>
-                      <th>Type:</th>
+                      <th>交易类型:</th>
                       <td>{this.props.transaction.type}</td>
                     </tr>
                     <tr>
-                      <th>Time:</th>
+                      <th>交易时间:</th>
                       <td>
                         {moment(this.props.transaction.createdt)
                           .tz(moment.tz.guess())
@@ -134,7 +133,7 @@ export class TransactionView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <th style={reads}>Reads:</th>
+                      <th style={reads}>读取信息:</th>
                       <td>
                         {" "}
                         {this.props.transaction.read_set.map(function(
@@ -178,7 +177,7 @@ export class TransactionView extends Component {
                       </td>
                     </tr>
                     <tr>
-                      <th style={writes}>Writes:</th>
+                      <th style={writes}>写入信息:</th>
                       <td>
                         {" "}
                         {this.props.transaction.write_set.map(function(

@@ -41,7 +41,7 @@ class Chaincodes extends Component {
   reactTableSetup = () => {
     return [
       {
-        Header: 'Chaincode Name',
+        Header: '链码名称',
         accessor: 'chaincodename',
         Cell: row => (
           <a className="hash-hide" onClick={() => this.sourceDialogOpen(row.original)} href="#/chaincodes" >{row.value}</a>
@@ -56,7 +56,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Channel Name',
+        Header: '渠道名称',
         accessor: 'channelName',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -68,7 +68,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Path',
+        Header: '链码地址',
         accessor: 'path',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -80,7 +80,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Transaction Count',
+        Header: '累计交易',
         accessor: 'txCount',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -92,7 +92,7 @@ class Chaincodes extends Component {
         filterAll: true
       },
       {
-        Header: 'Version',
+        Header: '版本',
         accessor: 'version',
         filterMethod: (filter, rows) =>
           matchSorter(

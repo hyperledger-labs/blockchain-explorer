@@ -64,7 +64,7 @@ class Blocks extends Component {
   reactTableSetup = () => {
     return [
       {
-        Header: "Block Number",
+        Header: "区块编号",
         accessor: "blocknum",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -77,7 +77,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Channel Name",
+        Header: "渠道编号",
         accessor: "channelname",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -89,7 +89,7 @@ class Blocks extends Component {
         filterAll: true
       },
       {
-        Header: "Number of Tx",
+        Header: "交易数",
         accessor: "txcount",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -102,7 +102,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Data Hash",
+        Header: "数据哈希",
         accessor: "datahash",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -114,7 +114,7 @@ class Blocks extends Component {
         filterAll: true
       },
       {
-        Header: "Block Hash",
+        Header: "区块",
         accessor: "blockhash",
         Cell: row => (
           <span>
@@ -140,7 +140,7 @@ class Blocks extends Component {
         filterAll: true
       },
       {
-        Header: "Previous Hash",
+        Header: "紧前区块哈希",
         accessor: "prehash",
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -153,7 +153,7 @@ class Blocks extends Component {
         width: 150
       },
       {
-        Header: "Transactions",
+        Header: "交易详情",
         accessor: "txhash",
         Cell: row => (
           <ul>

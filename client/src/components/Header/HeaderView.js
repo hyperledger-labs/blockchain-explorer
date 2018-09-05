@@ -283,7 +283,7 @@ export class HeaderView extends Component {
                     className="dashButtons"
                     activeClassName="activeTab"
                   >
-                    DASHBOARD
+                    仪表盘
                   </NavLink>
                 </li>
                 {/* <li>
@@ -301,7 +301,7 @@ export class HeaderView extends Component {
                     className="dashButtons"
                     activeClassName="activeTab"
                   >
-                    BLOCKS
+                    区块
                   </NavLink>
                 </li>
                 <li>
@@ -310,7 +310,7 @@ export class HeaderView extends Component {
                     className="dashButtons"
                     activeClassName="activeTab"
                   >
-                    TRANSACTIONS
+                    交易
                   </NavLink>
                 </li>
                 <li>
@@ -319,7 +319,7 @@ export class HeaderView extends Component {
                     className="dashButtons"
                     activeClassName="activeTab"
                   >
-                    CHAINCODES
+                    链码
                   </NavLink>
                 </li>
                 <li>
@@ -328,7 +328,7 @@ export class HeaderView extends Component {
                     className="dashButtons"
                     activeClassName="activeTab"
                   >
-                    CHANNELS
+                    渠道
                   </NavLink>
                 </li>
 

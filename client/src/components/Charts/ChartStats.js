@@ -103,7 +103,7 @@ export class ChartStats extends Component {
                     this.toggle("1");
                   }}
                 >
-                  BLOCKS / HOUR
+                  区块数/每小时
                      </NavLink>
               </NavItem>
               <NavItem>
@@ -115,7 +115,7 @@ export class ChartStats extends Component {
                     this.toggle("2");
                   }}
                 >
-                  BLOCKS / MIN
+                  区块数/每分钟
                         </NavLink>
               </NavItem>
               <NavItem>
@@ -127,7 +127,7 @@ export class ChartStats extends Component {
                     this.toggle("3");
                   }}
                 >
-                  TX / HOUR
+                  交易数/每小时
                         </NavLink>
               </NavItem>
               <NavItem>
@@ -139,7 +139,7 @@ export class ChartStats extends Component {
                     this.toggle("4");
                   }}
                 >
-                  TX / MIN
+                  交易数/每分钟
                         </NavLink>
               </NavItem>
             </Nav>

@@ -28,7 +28,7 @@ class Channels extends Component {
         width: 100
       },
       {
-        Header: 'Channel Name',
+        Header: '渠道名称',
         accessor: 'channelname',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -40,7 +40,7 @@ class Channels extends Component {
         filterAll: true
       },
       {
-        Header: 'Channel Hash',
+        Header: '渠道哈希',
         accessor: 'channel_hash',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -52,7 +52,7 @@ class Channels extends Component {
         filterAll: true
       },
       {
-        Header: 'Blocks',
+        Header: '区块编号',
         accessor: 'blocks_',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -65,7 +65,7 @@ class Channels extends Component {
         width: 125
       },
       {
-        Header: 'Transactions',
+        Header: '累计交易',
         accessor: 'transactions_',
         filterMethod: (filter, rows) =>
           matchSorter(
@@ -78,7 +78,7 @@ class Channels extends Component {
         width: 125
       },
       {
-        Header: 'Timestamp',
+        Header: '时间戳',
         accessor: 'createdat',
         filterMethod: (filter, rows) =>
           matchSorter(

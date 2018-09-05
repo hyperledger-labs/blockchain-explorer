@@ -87,7 +87,7 @@ export class DashboardView extends Component {
                         <h1 className="stat-count">{this.props.peerStatus.length}</h1>
                       </Col>
                     </Row>
-                    NODES
+                    节点
                     </div>
                 <div className="statistic vdivide">
                   <Row>
@@ -100,7 +100,7 @@ export class DashboardView extends Component {
                       <h1 className="stat-count">{this.props.dashStats.latestBlock}</h1>
                     </Col>
                   </Row>
-                  BLOCKS
+                  区块
                     </div>
                 <div className="statistic vdivide">
                   <Row>
@@ -113,7 +113,7 @@ export class DashboardView extends Component {
                       <h1 className="stat-count">{this.props.dashStats.txCount}</h1>
                     </Col>
                   </Row>
-                  TRANSACTIONS
+                  交易数
                    </div>
                 <div className="statistic">
                   <Row>
@@ -126,7 +126,7 @@ export class DashboardView extends Component {
                       <h1 className="stat-count">{this.props.dashStats.chaincodeCount}</h1>
                     </Col>
                   </Row>
-                  CHAINCODES
+                  链码
                   </div>
               </Card>
             </Col>
@@ -147,7 +147,7 @@ export class DashboardView extends Component {
                 <ChartStats />
               </Card>
               <Card className="dash-section center-column">
-                <h5 className="org-header">Transactions by Organziation</h5>
+                <h5 className="org-header">各用户交易统计</h5>
                 <hr />
                 <OrgPieChart transactionByOrg={this.props.transactionByOrg} />
               </Card>

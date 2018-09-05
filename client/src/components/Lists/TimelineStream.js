@@ -76,9 +76,9 @@ class TimelineStream extends Component {
                 }
               >
                 <Typography variant="body1">
-                  <b className="timeLineText"> Datahash:</b> {item.datahash}{" "}
+                  <b className="timeLineText"> 哈希:</b> {item.datahash}{" "}
                   <br />
-                  <b className="timeLineText"> Number of Tx:</b> {item.txcount}
+                  <b className="timeLineText"> 交易数量:</b> {item.txcount}
                 </Typography>
                 <h5 className="timeLineText">
                   <Badge className="timeLineText">
