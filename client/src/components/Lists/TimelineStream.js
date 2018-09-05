@@ -9,6 +9,8 @@ import FontAwesome from 'react-fontawesome';
 import Typography from 'material-ui/Typography';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
+import chineseStrings from 'react-timeago/lib/language-strings/zh-CN'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import blockOpen from '../../static/images/blockOpen.png';
@@ -37,7 +39,10 @@ class TimelineStream extends Component {
     this.setState({ dialogOpenBlockHash: false });
   };
 
+
   render() {
+    const chineseFormatter = buildFormatter(chineseStrings);
+
     return (
       <div>
         <div className="scrollable-card">
@@ -87,6 +92,7 @@ class TimelineStream extends Component {
                       date={item.time}
                       live={false}
                       minPeriod={60}
+                      formatter={chineseFormatter}
                     />
                   </Badge>
                 </h5>
