@@ -16,6 +16,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 - [Cello Configure Hyperledger Explorer](#Cello-Configure-Hyperledger-Explorer)
 - [Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
 - [Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
+- [Run Hyperledger Explorer using Docker](#Run-Hyperledger-Explorer-using-Docker)
 - [Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
 - [Logs](#Logs)
 - [Troubleshooting](#Troubleshooting)
@@ -26,6 +27,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
+- [Release Notes v0.3.6](release_notes/v0.3.6.md)
 - [Release Notes v0.3.5](release_notes/v0.3.5.md)
 - [Release Notes v0.3.4](release_notes/v0.3.4.md)
 
@@ -78,15 +80,23 @@ Clone this repository to get the latest using the following command.
 - `cd blockchain-explorer/app`
 - Modify explorerconfig.json to update postgresql properties
 	- postgreSQL host, port, database, username, password details.
-```json
- "postgreSQL": {
-		"host": "127.0.0.1",
-		"port": "5432",
-		"database": "fabricexplorer",
-		"username": "hppoc",
-		"passwd": "password"
-	}
-```
+
+- "postgreSQL": {
+-		"host": "127.0.0.1",
+-		"port": "5432",
+-		"database": "fabricexplorer",
+-		"username": "hppoc",
+-		"passwd": "password"
+-	}
+
+
+Another alternative to configure database properties is to use environment variables, example of setting:
+
+ - export DATABASE_HOST=127.0.0.1
+ - export DATABASE_PORT=5432
+ - export DATABASE_DATABASE=fabricexplorer
+ - export DATABASE_USERNAME=hppoc
+ - export DATABASE_PASSWD=pass12345
 
 **Important repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/` )
 
@@ -94,6 +104,7 @@ Run create database script.
 
 - `cd blockchain-explorer/app/persistence/fabric/postgreSQL/db`
 - `./createdb.sh`
+
 
 Run db status commands.
 Connect to PostgreSQL database.
@@ -233,7 +244,7 @@ From new terminal(If Sync Process in Standalone).
 
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
 
-<a name="Hyperledger-Explorer-Swagger"/>
+<a name="Run-Hyperledger-Explorer-using-Docker"/>
 
 ## Run Hyperledger Explorer using Docker
 
@@ -260,6 +271,8 @@ From new terminal.
 From new terminal.
 - `cd blockchain-explorer/`
 - `./deploy_explorer.sh dockerConfig`  (it will automatically deploy both database and frontend apps using Hyperledger Fabric network configuration stored under `examples/dockerConfig` folder)
+
+<a name="Hyperledger-Explorer-Swagger"/>
 
 ## Hyperledger Explorer Swagger
 
