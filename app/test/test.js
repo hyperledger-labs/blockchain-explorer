@@ -4,7 +4,7 @@
 
 var expect = require('chai').expect;
 var assert = require('assert');
-var helper = require('../helper');
+var helper = require('../common/helper');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();

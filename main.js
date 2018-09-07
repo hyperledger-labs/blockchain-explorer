@@ -12,10 +12,12 @@ var http = require('http');
 var url = require('url');
 var WebSocket = require('ws');
 var appconfig = require('./appconfig.json');
-var helper = require('./app/helper.js');
+var helper = require('./app/common/helper');
 var logger = helper.getLogger('main');
 var express = require('express');
 var path = require('path');
+var Explorer = require('./app/Explorer');
+var ExplorerError = require('./app/common/ExplorerError');
 
 var host = process.env.HOST || appconfig.host;
 var port = process.env.PORT || appconfig.port;
@@ -34,7 +36,8 @@ class Broadcaster extends WebSocket.Server {
   broadcast(data) {
     this.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        console.log('Broadcast >> ' + JSON.stringify(data));
+        logger.debug('Broadcast >> %j' , data);
+        console.log('Broadcast >> %j' , data);
         client.send(JSON.stringify(data));
       }
     });
@@ -42,13 +45,8 @@ class Broadcaster extends WebSocket.Server {
 }
 
 var server;
+var explorer;
 async function startExplorer() {
-  var Explorer = {};
-  if (appconfig.version && appconfig.version === '1.2.0') {
-    Explorer = require('./app/explorer/Explorer_' + appconfig.version);
-  } else {
-    Explorer = require('./app/explorer/Explorer');
-  }
   explorer = new Explorer();
   //============ web socket ==============//
   server = http.createServer(explorer.getApp());
@@ -79,13 +77,14 @@ server.on('connection', connection => {
   );
 });
 
+
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
 var shutDown = function() {
   console.log('Received kill signal, shutting down gracefully');
   server.close(() => {
-    console.log('Closed out remaining connections');
     explorer.close();
+    console.log('Closed out connections');
     process.exit(0);
   });
 
@@ -100,6 +99,30 @@ var shutDown = function() {
   connections.forEach(curr => curr.end());
   setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 };
+
+process.on('unhandledRejection', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+  if (up instanceof ExplorerError) {
+    console.log('Error : ', up.message);
+  } else {
+    console.log(up);
+  }
+  setTimeout(() => {
+    shutDown();
+  }, 2000);
+});
+process.on('uncaughtException', up => {
+  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+  if (up instanceof ExplorerError) {
+    console.log('Error : ', up.message);
+  } else {
+    console.log(up);
+  }
+  setTimeout(() => {
+    shutDown();
+  }, 2000);
+});
+
 // listen for TERM signal .e.g. kill
 process.on('SIGTERM', shutDown);
 // listen for INT signal e.g. Ctrl-C

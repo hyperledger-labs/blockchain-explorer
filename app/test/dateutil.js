@@ -4,12 +4,12 @@
 
 var expect = require('chai').expect;
 var assert = require('assert');
-var helper = require('../helper');
+var helper = require('../common/helper');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
 chai.use(chaiHttp);
-var dateUtils = require('../explorer/rest/logical/utils/dateUtils.js');
+var dateUtils = require('../common/commonUtils');
 
 describe('dateUtils().toUTCmilliseconds', function() {
   var DATE = '2018/06/18';
