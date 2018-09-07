@@ -69,6 +69,7 @@ function config(){
 	# Default Hyperledger Explorer Database Credentials.
 	explorer_db_user="hppoc"
 	explorer_db_pwd="password"
+	explorer_db_name="fabricexplorer"
 	#configure explorer to connect to specific Blockchain network using given configuration
 	network_config_file=$(pwd)/examples/$fabricBlockchainNetworkName/config.json
 	#configure explorer to connect to specific Blockchain network using given crypto materials
@@ -137,8 +138,9 @@ function deploy_run_database(){
 		-d \
 		--name $fabric_explorer_db_name \
 		--net $docker_network_name --ip $db_ip \
-		-e POSTGRES_PASSWORD=$explorer_db_pwd \
-		-e PGPASSWORD=$explorer_db_pwd \
+        -e DATABASE_DATABASE=$explorer_db_name \
+        -e DATABASE_USERNAME=$explorer_db_user \
+        -e DATABASE_PASSWORD=$explorer_db_pwd \
 		$fabric_explorer_db_tag
 }
 
@@ -156,11 +158,8 @@ function deploy_load_database(){
 	sleep 1s
 	echo "Waiting...1s"
 	sleep 1s
-	echo "Creating Default user..."
-	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -c "CREATE USER $explorer_db_user WITH PASSWORD '$explorer_db_pwd'"
 	echo "Creating default database schemas..."
-	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -a -f /opt/explorerpg.sql
-	docker exec $fabric_explorer_db_name psql -h localhost -U postgres -a -f /opt/updatepg.sql
+	docker exec $fabric_explorer_db_name /bin/bash /opt/createdb.sh
 }
 
 function deploy_build_explorer(){
@@ -195,6 +194,12 @@ function deploy_run_explorer(){
 		hyperledger-blockchain-explorer
 }
 
+function connect_to_network(){
+    echo "Trying to join to existing network $1"
+    docker network connect $1 $(docker ps -qf name=^/$fabric_explorer_name$)
+    docker network connect $1 $(docker ps -qf name=^/$fabric_explorer_db_name$)
+}
+
 function deploy(){
 
 	deploy_prepare_network
@@ -209,13 +214,29 @@ function deploy(){
 		deploy_build_explorer
 	fi
 	deploy_run_explorer
+
+    if [ -n "$2" ]; then
+        connect_to_network $2
+    fi
 }
 
 function main(){
 	banner
-	#Pass arguments to function exactly as-is
-	config "$@"
-	deploy
+    #Pass arguments to function exactly as-is
+    config "$@"
+
+	MODE=$1;
+    if [ "$MODE" == "--down" ]; then
+	    echo "Stopping Hyperledger Fabric explorer containers..."
+    elif [ "$MODE" == "--clean" ]; then
+	    echo "Cleaning Hyperledger Fabric explorer images..."
+        stop_explorer
+        stop_database
+        docker rmi $(docker images -q ${fabric_explorer_db_tag})
+        docker rmi $(docker images -q ${fabric_explorer_tag})
+    else
+        deploy "$@"
+    fi
 }
 
 #Pass arguments to function exactly as-is
