@@ -168,128 +168,116 @@ class MetricService {
   //transaction metrics
 
   getTxByMinute(channel_genesis_hash, hours) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerMinute = ` with minutes as (
-        select generate_series(
-          date_trunc('min', now()) - '${hours}hour'::interval,
-          date_trunc('min', now()),
-          '1 min'::interval
-        ) as datetime
-      )
-      select
-        minutes.datetime,
-        count(createdt)
-      from minutes
-      left join TRANSACTIONS on date_trunc('min', TRANSACTIONS.createdt) + '${tz}hour'::interval = minutes.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('min', now()) - '${hours}hour'::interval,
+              date_trunc('min', now()),
+              '1 min'::interval
+            ) as datetime
+          )
+          select
+            minutes.datetime,
+            count(createdt)
+          from minutes
+          left join TRANSACTIONS on date_trunc('min', TRANSACTIONS.createdt) = minutes.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerMinute);
   }
 
   getTxByHour(channel_genesis_hash, day) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerHour = ` with hours as (
-        select generate_series(
-          date_trunc('hour', now()) - '${day}day'::interval,
-          date_trunc('hour', now()),
-          '1 hour'::interval
-        ) as datetime
-      )
-      select
-        hours.datetime,
-        count(createdt)
-      from hours
-      left join TRANSACTIONS on date_trunc('hour', TRANSACTIONS.createdt) + '${tz}hour'::interval = hours.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('hour', now()) - '${day}day'::interval,
+              date_trunc('hour', now()),
+              '1 hour'::interval
+            ) as datetime
+          )
+          select
+            hours.datetime,
+            count(createdt)
+          from hours
+          left join TRANSACTIONS on date_trunc('hour', TRANSACTIONS.createdt) = hours.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerHour);
   }
 
   getTxByDay(channel_genesis_hash, days) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerDay = ` with days as (
-        select generate_series(
-          date_trunc('day', now()) - '${days}day'::interval,
-          date_trunc('day', now()),
-          '1 day'::interval
-        ) as datetime
-      )
-      select
-        days.datetime,
-        count(createdt)
-      from days
-      left join TRANSACTIONS on date_trunc('day', TRANSACTIONS.createdt) + '${tz}hour'::interval = days.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('day', now()) - '${days}day'::interval,
+              date_trunc('day', now()),
+              '1 day'::interval
+            ) as datetime
+          )
+          select
+            days.datetime,
+            count(createdt)
+          from days
+          left join TRANSACTIONS on date_trunc('day', TRANSACTIONS.createdt) =days.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerDay);
   }
 
   getTxByWeek(channel_genesis_hash, weeks) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerWeek = ` with weeks as (
-        select generate_series(
-          date_trunc('week', now()) - '${weeks}week'::interval,
-          date_trunc('week', now()),
-          '1 week'::interval
-        ) as datetime
-      )
-      select
-        weeks.datetime,
-        count(createdt)
-      from weeks
-      left join TRANSACTIONS on date_trunc('week', TRANSACTIONS.createdt) + '${tz}hour'::interval = weeks.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('week', now()) - '${weeks}week'::interval,
+              date_trunc('week', now()),
+              '1 week'::interval
+            ) as datetime
+          )
+          select
+            weeks.datetime,
+            count(createdt)
+          from weeks
+          left join TRANSACTIONS on date_trunc('week', TRANSACTIONS.createdt) =weeks.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerWeek);
   }
 
   getTxByMonth(channel_genesis_hash, months) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerMonth = ` with months as (
-        select generate_series(
-          date_trunc('month', now()) - '${months}month'::interval,
-          date_trunc('month', now()),
-          '1 month'::interval
-        ) as datetime
-      )
+            select generate_series(
+              date_trunc('month', now()) - '${months}month'::interval,
+              date_trunc('month', now()),
+              '1 month'::interval
+            ) as datetime
+          )
 
-      select
-        months.datetime,
-        count(createdt)
-      from months
-      left join TRANSACTIONS on date_trunc('month', TRANSACTIONS.createdt) + '${tz}hour'::interval = months.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+          select
+            months.datetime,
+            count(createdt)
+          from months
+          left join TRANSACTIONS on date_trunc('month', TRANSACTIONS.createdt) =months.datetime  and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerMonth);
   }
 
   getTxByYear(channel_genesis_hash, years) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerYear = ` with years as (
-        select generate_series(
-          date_trunc('year', now()) - '${years}year'::interval,
-          date_trunc('year', now()),
-          '1 year'::interval
-        ) as year
-      )
-      select
-        years.year,
-        count(createdt)
-      from years
-      left join TRANSACTIONS on date_trunc('year', TRANSACTIONS.createdt) + '${tz}hour'::interval = years.year and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('year', now()) - '${years}year'::interval,
+              date_trunc('year', now()),
+              '1 year'::interval
+            ) as year
+          )
+          select
+            years.year,
+            count(createdt)
+          from years
+          left join TRANSACTIONS on date_trunc('year', TRANSACTIONS.createdt) =years.year and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerYear);
   }
@@ -297,129 +285,117 @@ class MetricService {
   // block metrics API
 
   getBlocksByMinute(channel_genesis_hash, hours) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerMinute = ` with minutes as (
-        select generate_series(
-          date_trunc('min', now()) - '${hours} hour'::interval,
-          date_trunc('min', now()),
-          '1 min'::interval
-        ) as datetime
-      )
-      select
-        minutes.datetime,
-        count(createdt)
-      from minutes
-      left join BLOCKS on date_trunc('min', BLOCKS.createdt) + '${tz}hour'::interval = minutes.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1  `;
+            select generate_series(
+              date_trunc('min', now()) - '${hours} hour'::interval,
+              date_trunc('min', now()),
+              '1 min'::interval
+            ) as datetime
+          )
+          select
+            minutes.datetime,
+            count(createdt)
+          from minutes
+          left join BLOCKS on date_trunc('min', BLOCKS.createdt) = minutes.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1  `;
 
     return this.sql.getRowsBySQlQuery(sqlPerMinute);
   }
 
   getBlocksByHour(channel_genesis_hash, days) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerHour = ` with hours as (
-        select generate_series(
-          date_trunc('hour', now()) - '${days}day'::interval,
-          date_trunc('hour', now()),
-          '1 hour'::interval
-        ) as datetime
-      )
-      select
-        hours.datetime,
-        count(createdt)
-      from hours
-      left join BLOCKS on date_trunc('hour', BLOCKS.createdt) + '${tz}hour'::interval = hours.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('hour', now()) - '${days}day'::interval,
+              date_trunc('hour', now()),
+              '1 hour'::interval
+            ) as datetime
+          )
+          select
+            hours.datetime,
+            count(createdt)
+          from hours
+          left join BLOCKS on date_trunc('hour', BLOCKS.createdt) = hours.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerHour);
   }
 
   getBlocksByDay(channel_genesis_hash, days) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerDay = `  with days as (
-        select generate_series(
-          date_trunc('day', now()) - '${days}day'::interval,
-          date_trunc('day', now()),
-          '1 day'::interval
-        ) as datetime
-      )
-      select
-        days.datetime,
-        count(createdt)
-      from days
-      left join BLOCKS on date_trunc('day', BLOCKS.createdt) + '${tz}hour'::interval = days.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('day', now()) - '${days}day'::interval,
+              date_trunc('day', now()),
+              '1 day'::interval
+            ) as datetime
+          )
+          select
+            days.datetime,
+            count(createdt)
+          from days
+          left join BLOCKS on date_trunc('day', BLOCKS.createdt) =days.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerDay);
   }
 
   getBlocksByWeek(channel_genesis_hash, weeks) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerWeek = ` with weeks as (
-        select generate_series(
-          date_trunc('week', now()) - '${weeks}week'::interval,
-          date_trunc('week', now()),
-          '1 week'::interval
-        ) as datetime
-      )
-      select
-        weeks.datetime,
-        count(createdt)
-      from weeks
-      left join BLOCKS on date_trunc('week', BLOCKS.createdt) + '${tz}hour'::interval = weeks.datetime and channel_genesis_hash ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('week', now()) - '${weeks}week'::interval,
+              date_trunc('week', now()),
+              '1 week'::interval
+            ) as datetime
+          )
+          select
+            weeks.datetime,
+            count(createdt)
+          from weeks
+          left join BLOCKS on date_trunc('week', BLOCKS.createdt) =weeks.datetime and channel_genesis_hash ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerWeek);
   }
 
   getBlocksByMonth(channel_genesis_hash, months) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerMonth = `  with months as (
-        select generate_series(
-          date_trunc('month', now()) - '${months}month'::interval,
-          date_trunc('month', now()),
-          '1 month'::interval
-        ) as datetime
-      )
-      select
-        months.datetime,
-        count(createdt)
-      from months
-      left join BLOCKS on date_trunc('month', BLOCKS.createdt) + '${tz}hour'::interval = months.datetime and channel_genesis_hash  ='${channel_genesis_hash}'
-      group by 1
-      order by 1 `;
+            select generate_series(
+              date_trunc('month', now()) - '${months}month'::interval,
+              date_trunc('month', now()),
+              '1 month'::interval
+            ) as datetime
+          )
+          select
+            months.datetime,
+            count(createdt)
+          from months
+          left join BLOCKS on date_trunc('month', BLOCKS.createdt) =months.datetime and channel_genesis_hash  ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
     return this.sql.getRowsBySQlQuery(sqlPerMonth);
   }
 
   getBlocksByYear(channel_genesis_hash, years) {
-    let x = new Date();
-    let tz = x.getTimezoneOffset() / 60;
     let sqlPerYear = ` with years as (
-        select generate_series(
-          date_trunc('year', now()) - '${years}year'::interval,
-          date_trunc('year', now()),
-          '1 year'::interval
-        ) as year
-      )
-      select
-        years.year,
-        count(createdt)
-      from years
-      left join BLOCKS on date_trunc('year', BLOCKS.createdt) + '${tz}hour'::interval = years.year and channel_genesis_hash  ='${channel_genesis_hash}'
-      group by 1
-        order by 1 `;
+            select generate_series(
+              date_trunc('year', now()) - '${years}year'::interval,
+              date_trunc('year', now()),
+              '1 year'::interval
+            ) as year
+          )
+          select
+            years.year,
+            count(createdt)
+          from years
+          left join BLOCKS on date_trunc('year', BLOCKS.createdt) =years.year and channel_genesis_hash  ='${channel_genesis_hash}'
+          group by 1
+          order by 1 `;
 
-      return this.sql.getRowsBySQlQuery(sqlPerYear);
+    return this.sql.getRowsBySQlQuery(sqlPerYear);
   }
 
   getTxByOrgs(channel_genesis_hash) {
