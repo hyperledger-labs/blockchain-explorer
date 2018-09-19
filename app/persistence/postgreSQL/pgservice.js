@@ -20,20 +20,25 @@ var helper = require('../../common/helper');
 var logger = helper.getLogger('pgservice');
 
 class pgservice {
-
   constructor(pgconfig) {
     this.pgconfig = pgconfig;
+    this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
+    this.pgconfig.port = process.env.DATABASE_PORT || pgconfig.port;
+    this.pgconfig.database = process.env.DATABASE_DATABASE || pgconfig.database;
+    this.pgconfig.username = process.env.DATABASE_USERNAME || pgconfig.username;
+    this.pgconfig.passwd = process.env.DATABASE_PASSWD || pgconfig.passwd;
+
     this.connectionString =
       'postgres://' +
-      pgconfig.username +
+      this.pgconfig.username +
       ':' +
-      pgconfig.passwd +
+      this.pgconfig.passwd +
       '@' +
-      pgconfig.host +
+      this.pgconfig.host +
       ':' +
-      pgconfig.port +
+      this.pgconfig.port +
       '/' +
-      pgconfig.database;
+      this.pgconfig.database;
 
     console.log(this.connectionString);
 
@@ -81,7 +86,7 @@ class pgservice {
 
   saveRow(tablename, columnValues) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var addSqlParams = [];
       var updatesqlcolumn = [];
       var updatesqlflag = [];
@@ -132,7 +137,7 @@ class pgservice {
    */
   updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var addSqlParams = [];
       var updateParms = [];
 
@@ -196,7 +201,7 @@ class pgservice {
    */
   updateRow(tablename, columnAndValue, condition) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var addSqlParams = [];
       var updateParms = [];
 
@@ -244,15 +249,13 @@ class pgservice {
     });
   }
 
-
-
   /**
    *  excute update or delete  sql.
    *  @param string  updateSql   the excute sql
    */
   updateBySql(updateSql) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       logger.debug(`update sql is :  ${updateSql}`);
 
       _self.client.query(updateSql, [], (err, res) => {
@@ -285,7 +288,7 @@ class pgservice {
    */
   getRowByPk(tablename, column, pkColumn, value) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       if (column == '') column = '*';
 
       var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
@@ -312,7 +315,7 @@ class pgservice {
    */
   getRowByPkOne(sql) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       //var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
       _self.client.query(sql, (err, res) => {
@@ -341,7 +344,7 @@ class pgservice {
    */
   getRowsByCondition(tablename, column, condtion, orderBy, limit) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       if (column == '') column = '*';
 
       var updatewhereparm = ' (1=1)  ';
@@ -381,7 +384,7 @@ class pgservice {
    */
   getRowsBySQl(sqlcharacter, condition, limit) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var updatewhereparm = ' (1=1)  ';
       var addSqlParams = [];
 
@@ -410,7 +413,7 @@ class pgservice {
   }
   getRowsBySQlQuery(sql) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -434,7 +437,7 @@ class pgservice {
    */
   getRowsBySQlNoCondtion(sqlcharacter, limit) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       var sql;
       if (limit && sqlcharacter) {
         sql = `${sqlcharacter} ${limit}`;
@@ -458,14 +461,14 @@ class pgservice {
   }
 
   /**
- * 自动橱窗日志查找/评价历史记录查找
- * @param unknown_type sql
- * @param unknown_type DB
- * @return unknown
- */
+   * 自动橱窗日志查找/评价历史记录查找
+   * @param unknown_type sql
+   * @param unknown_type DB
+   * @return unknown
+   */
   getRowsBySQlCase(sql) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -488,7 +491,7 @@ class pgservice {
    */
   getSQL2Map(sql, key) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -517,7 +520,7 @@ class pgservice {
    */
   getSQL2Map4Arr(sql, key) {
     let _self = this;
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       _self.client.query(sql, (err, rows) => {
         if (err) {
           reject(err);
