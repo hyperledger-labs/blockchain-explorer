@@ -23,6 +23,9 @@ async function loadChaincodeSrc(path) {
   if (path.substring(0, 10) === 'github.com') {
     path = path.slice(10);
   }
+  if (path.length > 0 && ( path.charAt(path.length -  1) !='/')){
+    path=path+'/';
+  }
   try {
     if (CURRENT_OS === 'darwin') {
       location = await child_process.execSync(locate_cmd).toString();
