@@ -70,7 +70,7 @@ const channels = () => dispatch =>
     });
 
 const peerList = channel => dispatch =>
-  get(`/api/peers/${channel}`)
+  get(`/api/peersStatus/${channel}`)
     .then(resp => {
       if (resp.status === 500) {
         dispatch(

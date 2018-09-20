@@ -124,7 +124,7 @@ describe('Tables', () => {
 
     test('peerList', async done => {
       nock(/\w*(\W)/g)
-        .get(`/api/peers/${channel}`)
+        .get(`/api/peersStatus/${channel}`)
         .reply(200, {
           rows: [{ test: 'rows' }]
         });
@@ -142,7 +142,7 @@ describe('Tables', () => {
     test('peerList catch error', async done => {
       spyOn(console, 'error');
       nock(/\w*(\W)/g)
-        .get(`/api/peers/${channel}`)
+        .get(`/api/peersStatus/${channel}`)
         .replyWithError({ code: 'ECONNREFUSED' });
 
       const expectedActions = [{ type: types.PEER_LIST }];
