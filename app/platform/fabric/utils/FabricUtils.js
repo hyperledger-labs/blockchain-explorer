@@ -376,11 +376,11 @@ async function generateBlockHash(block_header) {
 
 async function getBlockTimeStamp(dateStr) {
   try {
-    return new Date(dateStr);
+    return new Date(dateStr).toISOString();
   } catch (err) {
     logger.error(err);
   }
-  return new Date(dateStr);
+  return new Date(dateStr).toISOString();
 }
 
 async function generateDir() {
