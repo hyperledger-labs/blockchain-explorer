@@ -27,7 +27,10 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
+- [Release Notes v0.3.7](release_notes/v0.3.7.md)
+- [Release Notes v0.3.6.1](release_notes/v0.3.6.1.md)
 - [Release Notes v0.3.6](release_notes/v0.3.6.md)
+- [Release Notes v0.3.5.1](release_notes/v0.3.5.1.md)
 - [Release Notes v0.3.5](release_notes/v0.3.5.md)
 - [Release Notes v0.3.4](release_notes/v0.3.4.md)
 
