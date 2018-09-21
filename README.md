@@ -228,6 +228,19 @@ From new terminal.
 - `cd blockchain-explorer/`
 - `./deploy_explorer.sh dockerConfig`  (it will automatically deploy both database and frontend apps using Hyperledger Fabric network configuration stored under `examples/dockerConfig` folder)
 
+Note: the example with additional information can be found at [examples/net1](./examples/net1) folder.
+
+### Joining existing Docker network
+If the Blockchain network is deployed in the Docker, you may pass network name as second parameter to join that network
+(docker_network in the example below):
+- `./deploy_explorer.sh dockerConfig docker_network`
+
+### Steps to stop containers
+- `./deploy_explorer.sh --down`
+
+### Steps to remove containers and clean images
+- `./deploy_explorer.sh --clean`
+
 ## Hyperledger Explorer Swagger
 
 - Once the Hyperledger Explorer has been launched go to http://localhost:8080/api-docs to view the Rust API description
