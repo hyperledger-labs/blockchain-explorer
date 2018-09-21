@@ -391,4 +391,36 @@ Related Information:
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.2
+    
+### Docker Troubleshooting commands
+    List your networks
+    $docker network ls
+    List docker images id
+    $docker images | grep block
+    Remove an image
+    $docker rmi <image_id>
+    Login to docker
+    $docker exec -it <image_id> sh
+    Read explorer app log
+    $docker exec <image_id> cat /opt/logs/app/app.log
+    Inspect real IP's
+    $docker inspect <image_id> | grep IPAddress
+    Stop and remove dockers
+    $docker stop $(docker ps -a -q)
+    $docker rm -f $(docker ps -a -q)
+    Remove default fabric crypto
+    $rm -rf ./crypto-config/*
+    $rm -rf ~/.hfc*
+    From the docker ($docker exec -it <image_id> sh)
+    Install curl:
+    $apk update && apk add curl
+    Use curl in docker to query explorer REST API
+    Example:
+    $curl http://localhost:8080/api/channels
+    Example response: {"status":200,"channels":["dockerchannel","mychannel"]
+
+
+
+
+
 
