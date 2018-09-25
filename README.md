@@ -261,6 +261,8 @@ There is also an automated deployment of the **Hyperledger Explorer** available 
 * Crypto material is correctly loaded under `examples/$network/crypto`
 * Fabric network configuration is correctly set under `examples/$network/config.json`
 
+## Docker
+
 ### Steps to deploy using Docker
 
 From new terminal.
@@ -289,6 +291,23 @@ If the Blockchain network is deployed in the Docker, you may pass network name a
 - `./deploy_explorer.sh --clean`
 
 <a name="Hyperledger-Explorer-Swagger"/>
+
+### NPM utility scripts to Dockerise application
+
+Set the `DOCKER_REGISTRY` variable to the Container Registry you will use and login to that registry if you want to store your container there.
+
+To build the container (auto-tagged as `latest`), run:
+
+    npm run docker_build
+
+To tag the container with your registry and the NPM package version, run:
+
+    npm run docker_tag
+
+
+To push the container to your registry, run:
+
+    npm run docker_push
 
 ## Hyperledger Explorer Swagger
 
