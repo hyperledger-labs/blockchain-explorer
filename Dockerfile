@@ -48,4 +48,4 @@ RUN apk del npm-deps
 EXPOSE 8080
 
 # run blockchain explorer main app
-CMD node $DEFAULT_WORKDIR/explorer/main.js && tail -f /dev/null
+CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null

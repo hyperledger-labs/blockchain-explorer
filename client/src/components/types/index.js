@@ -2,7 +2,9 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { arrayOf, shape, number, string, func } from 'prop-types';
+import {
+  arrayOf, shape, number, string, func,
+} from 'prop-types';
 
 export const blockHashType = shape({
   blockhash: string,
@@ -12,7 +14,7 @@ export const blockHashType = shape({
   datahash: string,
   prehash: string,
   txcount: number,
-  txhash: arrayOf(string)
+  txhash: arrayOf(string),
 });
 
 export const blockListType = arrayOf(
@@ -24,22 +26,22 @@ export const blockListType = arrayOf(
     datahash: string,
     prehash: string,
     txcount: number,
-    txhash: arrayOf(string)
-  })
+    txhash: arrayOf(string),
+  }),
 );
 
 export const blockPerHourType = arrayOf(
   shape({
     count: string,
-    datetime: string
-  })
+    datetime: string,
+  }),
 );
 
 export const blockPerMinType = arrayOf(
   shape({
     count: string,
-    datetime: string
-  })
+    datetime: string,
+  }),
 );
 
 export const chaincodeType = shape({
@@ -49,7 +51,7 @@ export const chaincodeType = shape({
   path: string,
   source: string,
   txCount: number,
-  version: string
+  version: string,
 });
 
 export const chaincodeListType = arrayOf(
@@ -60,8 +62,8 @@ export const chaincodeListType = arrayOf(
     path: string,
     source: string,
     txCount: number,
-    version: string
-  })
+    version: string,
+  }),
 );
 
 export const channelsType = arrayOf(
@@ -72,8 +74,8 @@ export const channelsType = arrayOf(
     createdat: string,
     channel_genesis_hash: string,
     id: number,
-    transactions: number
-  })
+    transactions: number,
+  }),
 );
 
 export const chartDataType = shape({
@@ -81,9 +83,9 @@ export const chartDataType = shape({
   displayData: arrayOf(
     shape({
       count: string,
-      datetime: string
-    })
-  ).isRequired
+      datetime: string,
+    }),
+  ).isRequired,
 });
 
 export const currentChannelType = string;
@@ -92,7 +94,7 @@ export const dashStatsType = shape({
   chaincodeCount: string,
   latestBlock: string,
   peerCount: string,
-  txCount: string
+  txCount: string,
 });
 
 export const getBlockListType = func;
@@ -120,8 +122,8 @@ export const notificationsType = arrayOf(
     time: string,
     title: string,
     txcount: number,
-    type: string
-  })
+    type: string,
+  }),
 );
 
 export const onCloseType = func;
@@ -131,15 +133,15 @@ export const peerListType = arrayOf(
     channel_genesis_hash: string,
     name: string,
     requests: string.isRequired,
-    server_hostname: string.isRequired
-  })
+    server_hostname: string.isRequired,
+  }),
 );
 
 export const peerStatusType = arrayOf(
   shape({
     server_hostname: string,
-    status: string
-  })
+    status: string,
+  }),
 );
 
 export const refreshType = func;
@@ -153,14 +155,14 @@ export const transactionType = shape({
   payload_proposal_hash: string,
   txhash: string,
   type: string,
-  validation_code: string
+  validation_code: string,
 });
 
 export const transactionByOrgType = arrayOf(
   shape({
     count: string,
-    creator_msp_id: string
-  })
+    creator_msp_id: string,
+  }),
 );
 
 export const transactionListType = arrayOf(
@@ -170,20 +172,20 @@ export const transactionListType = arrayOf(
     createdt: string,
     creator_msp_id: string,
     txhash: string,
-    type: string
-  })
+    type: string,
+  }),
 );
 
 export const transactionPerHourType = arrayOf(
   shape({
     count: string,
-    datetime: string
-  })
+    datetime: string,
+  }),
 );
 
 export const transactionPerMinType = arrayOf(
   shape({
     count: string,
-    datetime: string
-  })
+    datetime: string,
+  }),
 );

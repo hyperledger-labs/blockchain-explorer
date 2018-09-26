@@ -23,7 +23,7 @@ class Theme extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
     };
   }
 
@@ -46,11 +46,11 @@ class Theme extends Component {
         primary: { ...indigo, dark: '#242036' },
         secondary: lightBlue,
         error: {
-          main: red[500]
+          main: red[500],
         },
         toggleClass: true,
-        type: mode
-      }
+        type: mode,
+      },
     });
   }
 }
@@ -58,5 +58,5 @@ class Theme extends Component {
 const { modeSelector } = themeSelectors;
 
 export default connect(state => ({
-  mode: modeSelector(state)
+  mode: modeSelector(state),
 }))(Theme);

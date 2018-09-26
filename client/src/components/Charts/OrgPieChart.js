@@ -4,34 +4,36 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { PieChart, Pie, Tooltip, Legend } from 'recharts';
+import {
+  PieChart, Pie, Tooltip, Legend,
+} from 'recharts';
 import { transactionByOrgType } from '../types';
 
 const colors = ['#0B091A', '#6283D0', '#0D3799', '#7C7C7C'];
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     container: {
       paddingLeft: '10%',
       '& .recharts-layer': {
-        fill: dark ? 'rgb(42, 173, 230) !important' : '#5bc5c2 !important'
+        fill: dark ? 'rgb(42, 173, 230) !important' : '#5bc5c2 !important',
       },
       '& .recharts-scatter-line': {
         stroke: dark ? '#ffc145 !important' : '#5bc5c2 !important',
-        strokeWidth: '2 !important'
+        strokeWidth: '2 !important',
       },
       '& .recharts-text': {
-        fill: dark ? '#ffffff !important' : undefined
+        fill: dark ? '#ffffff !important' : undefined,
       },
       '& .recharts-cartesian-axis-line': {
-        stroke: dark ? '#ffffff' : undefined
-      }
+        stroke: dark ? '#ffffff' : undefined,
+      },
     },
     chart: {
-      top: -30
-    }
+      top: -30,
+    },
   };
 };
 
@@ -42,8 +44,8 @@ export class OrgPieChart extends Component {
       data: [
         { value: 3, name: 'OrdererMSP', fill: '#0B091A' },
         { value: 40, name: 'Org1MSP', fill: '#6283D0' },
-        { value: 23, name: 'Org2MSP', fill: '#0D3799' }
-      ]
+        { value: 23, name: 'Org2MSP', fill: '#0D3799' },
+      ],
     };
   }
 
@@ -59,14 +61,14 @@ export class OrgPieChart extends Component {
     }
   }
 
-  orgDataSetup = orgData => {
+  orgDataSetup = (orgData) => {
     const temp = [];
     let index = 0;
-    orgData.forEach(element => {
+    orgData.forEach((element) => {
       temp.push({
         value: parseInt(element.count, 10),
         name: element.creator_msp_id,
-        fill: colors[index]
+        fill: colors[index],
       });
       index += 1;
     });
@@ -98,7 +100,7 @@ export class OrgPieChart extends Component {
 }
 
 OrgPieChart.propTypes = {
-  transactionByOrg: transactionByOrgType.isRequired
+  transactionByOrg: transactionByOrgType.isRequired,
 };
 
 export default withStyles(styles)(OrgPieChart);

@@ -14,22 +14,22 @@
  limitations under the License.
  */
 
-'use strict';
-var log4js = require('log4js/lib/log4js');
-var appList = [];
+const log4js = require('log4js/lib/log4js');
 
-var path = require('path');
-var fs = require('fs-extra');
+const appList = [];
+
+const path = require('path');
+const fs = require('fs-extra');
 
 exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;
 
 function readAllFiles(dir) {
-  var files = fs.readdirSync(dir);
-  var certs = [];
-  files.forEach(file_name => {
-    let file_path = path.join(dir, file_name);
-    let data = fs.readFileSync(file_path);
+  const files = fs.readdirSync(dir);
+  const certs = [];
+  files.forEach((file_name) => {
+    const file_path = path.join(dir, file_name);
+    const data = fs.readFileSync(file_path);
     certs.push(data);
   });
   return certs;
@@ -48,7 +48,7 @@ logger.setLevel('INFO');
 
 */
 
-var getLogger = function(moduleName) {
+var getLogger = function (moduleName) {
   if (moduleName == 'pgservice') {
     var logger = log4js.getLogger('pgservice');
   } else {
@@ -58,8 +58,8 @@ var getLogger = function(moduleName) {
   var appLog = 'logs/app/app.log';
   var dbLog = 'logs/db/db.log';
   if (process.env.SYNC_LOG_PATH) {
-    var appLog = process.env.SYNC_LOG_PATH + '/app/app.log';
-    var dbLog = process.env.SYNC_LOG_PATH + '/db/db.log';
+    var appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
+    var dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
   }
   fs.ensureFileSync(appLog);
   fs.ensureFileSync(dbLog);

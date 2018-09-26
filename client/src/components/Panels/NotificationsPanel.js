@@ -13,31 +13,31 @@ import FontAwesome from 'react-fontawesome';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     root: {
       width: '100%',
       maxWidth: 360,
-      backgroundColor: theme.palette.background.paper
+      backgroundColor: theme.palette.background.paper,
     },
     avatarBlue: {
-      backgroundColor: '#1C3860'
+      backgroundColor: '#1C3860',
     },
     panel: {
       color: dark ? '#ffffff' : undefined,
-      backgroundColor: dark ? '#5e558e' : undefined
+      backgroundColor: dark ? '#5e558e' : undefined,
     },
     badge: {
       marginLeft: '60% !important',
       color: dark ? '#ffffff' : undefined,
-      backgroundColor: dark ? '#242036' : undefined
+      backgroundColor: dark ? '#242036' : undefined,
     },
     time: {
       color: dark ? '#ffffff' : undefined,
-      backgroundColor: dark ? '#242036' : undefined
-    }
+      backgroundColor: dark ? '#242036' : undefined,
+    },
   };
 };
 
@@ -47,13 +47,15 @@ export class NotificationsPanel extends Component {
       case 'block':
         return (
           <Avatar className={classes.avatarBlue}>
-            <FontAwesome name="cube" />{' '}
+            <FontAwesome name="cube" />
+            {' '}
           </Avatar>
         );
       default:
         return (
           <Avatar>
-            <FontAwesome name="exclamation" />{' '}
+            <FontAwesome name="exclamation" />
+            {' '}
           </Avatar>
         );
     }

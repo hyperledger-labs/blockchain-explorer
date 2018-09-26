@@ -25,7 +25,7 @@ import {
   getTransactionByOrgType,
   getTransactionListType,
   getTransactionPerHourType,
-  getTransactionPerMinType
+  getTransactionPerMinType,
 } from '../types';
 
 const {
@@ -38,7 +38,7 @@ const {
   peerStatus,
   transactionByOrg,
   transactionPerHour,
-  transactionPerMin
+  transactionPerMin,
 } = chartOperations;
 
 const {
@@ -46,12 +46,12 @@ const {
   chaincodeList,
   channels,
   peerList,
-  transactionList
+  transactionList,
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   dark
@@ -59,18 +59,18 @@ const styles = theme => {
     : (document.body.style.backgroundColor = '#f0f5f9');
   return {
     background: {
-      backgroundColor: '#f0f5f9'
+      backgroundColor: '#f0f5f9',
     },
     content: {
       marginTop: 450,
       marginLeft: 550,
       '& > h1': {
-        fontSize: '40pt'
+        fontSize: '40pt',
       },
       '& > div': {
-        marginLeft: 150
-      }
-    }
+        marginLeft: 150,
+      },
+    },
   };
 };
 
@@ -87,13 +87,13 @@ export class LandingPage extends Component {
         accessibility: false,
         speed: 500,
         slidesToShow: 1,
-        slidesToScroll: 1
+        slidesToScroll: 1,
       },
       logoStyle: {
         width: '520px',
-        height: '100px'
+        height: '100px',
       },
-      hasDbError: false
+      hasDbError: false,
     };
   }
 
@@ -114,7 +114,7 @@ export class LandingPage extends Component {
       getTransactionList,
       getTransactionPerHour,
       getTransactionPerMin,
-      updateLoadStatus
+      updateLoadStatus,
     } = this.props;
     await getChannel();
     const { currentChannel } = this.props;
@@ -137,7 +137,7 @@ export class LandingPage extends Component {
       getTransactionByOrg(currentChannel),
       getTransactionList(currentChannel),
       getTransactionPerHour(currentChannel),
-      getTransactionPerMin(currentChannel)
+      getTransactionPerMin(currentChannel),
     ]);
     clearTimeout(promiseTimeout);
     updateLoadStatus();
@@ -152,7 +152,7 @@ export class LandingPage extends Component {
             height: '100vh',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <h1>
@@ -169,13 +169,19 @@ export class LandingPage extends Component {
           <img src={Logo} style={logoStyle} alt="Hyperledger Logo" />
           <Slider {...settings}>
             <div>
-              <h3>ACCESSING THE NETWORK</h3>
+              <h3>
+ACCESSING THE NETWORK
+              </h3>
             </div>
             <div>
-              <h3>CONNECTING TO CHANNEL</h3>
+              <h3>
+CONNECTING TO CHANNEL
+              </h3>
             </div>
             <div>
-              <h3>LOADING BLOCKS</h3>
+              <h3>
+LOADING BLOCKS
+              </h3>
             </div>
           </Slider>
         </div>
@@ -199,18 +205,18 @@ LandingPage.propTypes = {
   getTransactionByOrg: getTransactionByOrgType.isRequired,
   getTransactionList: getTransactionListType.isRequired,
   getTransactionPerHour: getTransactionPerHourType.isRequired,
-  getTransactionPerMin: getTransactionPerMinType.isRequired
+  getTransactionPerMin: getTransactionPerMinType.isRequired,
 };
 
 LandingPage.defaultProps = {
-  currentChannel: null
+  currentChannel: null,
 };
 
 export default compose(
   withStyles(styles),
   connect(
     state => ({
-      currentChannel: currentChannelSelector(state)
+      currentChannel: currentChannelSelector(state),
     }),
     {
       getBlockList: blockList,
@@ -227,7 +233,7 @@ export default compose(
       getTransactionByOrg: transactionByOrg,
       getTransactionList: transactionList,
       getTransactionPerHour: transactionPerHour,
-      getTransactionPerMin: transactionPerMin
-    }
-  )
+      getTransactionPerMin: transactionPerMin,
+    },
+  ),
 )(LandingPage);

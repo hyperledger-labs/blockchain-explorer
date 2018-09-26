@@ -19,7 +19,7 @@ const setup = () => {
       chaincode: 'chaincode',
       transaction: 'transaction',
       section: 'section',
-      center: 'center'
+      center: 'center',
     },
     blockActivity: [
       {
@@ -37,8 +37,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -55,8 +55,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -73,9 +73,9 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
-      }
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
+      },
     ],
     blockList: [
       {
@@ -93,8 +93,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -111,8 +111,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -129,37 +129,37 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
-      }
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
+      },
     ],
     channel: { currentChannel: 'mychannel' },
     dashStats: {
       chaincodeCount: '3',
       latestBlock: '12',
       peerCount: '4',
-      txCount: '33'
+      txCount: '33',
     },
     peerStatus: [
       {
         server_hostname: 'peer0.org1.example.com',
-        status: 'RUNNING'
-      }
+        status: 'RUNNING',
+      },
     ],
     transactionByOrg: [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
-      }
+        creator_msp_id: 'OrdererMSP',
+      },
     ],
-    getTxByOrg: jest.fn()
+    getTxByOrg: jest.fn(),
   };
 
   const wrapper = shallow(<DashboardView {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -187,8 +187,8 @@ describe('DashboardView', () => {
         time: '2018-05-30T21:15:09.000Z',
         txcount: 3,
         datahash:
-          '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7'
-      }
+          '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7',
+      },
     });
     expect(wrapper.state('notifications')).not.toBe(previousState);
   });

@@ -10,7 +10,7 @@ const themeReducer = (state = { mode: 'light' }, action) => {
     case types.CHANGE_THEME: {
       return {
         ...state,
-        mode: action.payload.mode
+        mode: action.payload.mode,
       };
     }
     default: {

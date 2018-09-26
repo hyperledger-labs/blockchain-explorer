@@ -6,5 +6,5 @@ import types from './types';
 
 export const changeTheme = mode => ({
   type: types.CHANGE_THEME,
-  payload: { mode }
+  payload: { mode },
 });

@@ -12,7 +12,7 @@ jest.useFakeTimers();
 const setup = () => {
   const props = {
     classes: {
-      hash: 'hash'
+      hash: 'hash',
     },
     chaincodeList: [
       {
@@ -20,19 +20,19 @@ const setup = () => {
         channelName: 'mychannel',
         path: '"github.com/chaincode/chaincode_example02/go/"',
         txCount: 33,
-        version: '1.0'
-      }
+        version: '1.0',
+      },
     ],
     channel: {
-      currentChannel: 'mychannel'
+      currentChannel: 'mychannel',
     },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
       peerCount: '4',
-      txCount: '36'
+      txCount: '36',
     },
-    getChaincodes: jest.fn()
+    getChaincodes: jest.fn(),
   };
 
   const chaincode = {
@@ -41,7 +41,7 @@ const setup = () => {
     path: 'github.com/chaincode/chaincode_example02/go/',
     source: 'Location not found',
     txCount: 32,
-    version: '1.0'
+    version: '1.0',
   };
 
   const wrapper = mount(<Chaincodes {...props} />);
@@ -49,7 +49,7 @@ const setup = () => {
   return {
     chaincode,
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -67,37 +67,35 @@ describe('Chaincodes', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('mycc'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Channel Name
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('mychannel'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Path
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n =>
-          n.contains('"github.com/chaincode/chaincode_example02/go/"')
-        )
-        .exists()
+        .findWhere(n => n.contains('"github.com/chaincode/chaincode_example02/go/"'))
+        .exists(),
     ).toBe(true);
     // Transition Count
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(33))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Version
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('1.0'))
-        .exists()
+        .exists(),
     ).toBe(true);
   });
 
@@ -186,7 +184,7 @@ describe('Chaincodes', () => {
       chaincode,
       chaincode,
       chaincode,
-      chaincode
+      chaincode,
     ];
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
     wrapper.setProps({ chaincodeList: chaincodes });

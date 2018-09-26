@@ -8,28 +8,28 @@ const setup = () => {
   const props = {
     classes: {
       chart: 'chart',
-      container: 'container'
+      container: 'container',
     },
     transactionByOrg: [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
+        creator_msp_id: 'OrdererMSP',
       },
       {
         count: '1',
-        creator_msp_id: 'Org2MSP'
+        creator_msp_id: 'Org2MSP',
       },
       {
         count: '100',
-        creator_msp_id: 'Org1MSP'
-      }
-    ]
+        creator_msp_id: 'Org1MSP',
+      },
+    ],
   };
   const wrapper = shallow(<OrgPieChart {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -46,16 +46,16 @@ describe('OrgPieChart', () => {
     const transactionByOrg = [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
+        creator_msp_id: 'OrdererMSP',
       },
       {
         count: '1',
-        creator_msp_id: 'Org2MSP'
+        creator_msp_id: 'Org2MSP',
       },
       {
         count: '110',
-        creator_msp_id: 'Org1MSP'
-      }
+        creator_msp_id: 'Org1MSP',
+      },
     ];
 
     wrapper.setProps({ transactionByOrg });

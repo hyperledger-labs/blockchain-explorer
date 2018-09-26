@@ -8,7 +8,7 @@ const setup = () => {
   const props = {
     classes: {
       background: 'background',
-      content: 'content'
+      content: 'content',
     },
     currentChannel: 'mychannel',
     getBlockList: jest.fn(),
@@ -25,14 +25,14 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
-    updateLoadStatus: jest.fn()
+    updateLoadStatus: jest.fn(),
   };
 
   const wrapper = shallow(<LandingPage {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 

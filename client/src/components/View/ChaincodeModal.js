@@ -10,7 +10,7 @@ import { Card, CardBody, CardTitle } from 'reactstrap';
 import { chaincodeType } from '../types';
 import Modal from '../Styled/Modal';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
@@ -21,26 +21,26 @@ const styles = theme => {
       width: '98%',
       height: 600,
       backgroundColor: dark ? '#443e68' : undefined,
-      color: dark ? '#ffffff' : undefined
+      color: dark ? '#ffffff' : undefined,
     },
     cubeIcon: {
       color: '#ffffff',
-      marginRight: 20
+      marginRight: 20,
     },
     source: {
       '& ::-webkit-scrollbar': {
-        width: '1em'
+        width: '1em',
       },
       '& ::-webkit-scrollbar-track': {
-        background: dark ? '#8375c4' : 'rgb(238, 237, 237)'
+        background: dark ? '#8375c4' : 'rgb(238, 237, 237)',
       },
       '& ::-webkit-scrollbar-thumb': {
-        background: dark ? '#6a5e9e' : 'rgb(192, 190, 190)'
+        background: dark ? '#6a5e9e' : 'rgb(192, 190, 190)',
       },
       '& ::-webkit-scrollbar-corner': {
-        background: dark ? '#443e68' : 'rgb(238, 237, 237)'
-      }
-    }
+        background: dark ? '#443e68' : 'rgb(238, 237, 237)',
+      },
+    },
   };
 };
 export class ChaincodeModal extends Component {
@@ -53,7 +53,7 @@ export class ChaincodeModal extends Component {
     const { chaincode, classes } = this.props;
 
     const formattedSrc = beautify(chaincode.source, {
-      indent_size: 4
+      indent_size: 4,
     });
     const srcHeader = `${chaincode.chaincodename} ${chaincode.version}`;
 
@@ -91,11 +91,11 @@ export class ChaincodeModal extends Component {
 }
 
 ChaincodeModal.propTypes = {
-  chaincode: chaincodeType
+  chaincode: chaincodeType,
 };
 
 ChaincodeModal.defaultProps = {
-  chaincode: null
+  chaincode: null,
 };
 
 export default withStyles(styles)(ChaincodeModal);

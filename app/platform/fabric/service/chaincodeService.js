@@ -1,19 +1,19 @@
 /*
 *SPDX-License-Identifier: Apache-2.0
 */
-var child_process = require('child_process');
-var fs = require('fs');
+const child_process = require('child_process');
+const fs = require('fs');
 // var path = "/chaincode/chaincode_example02/go/";
-var path = '/home/maedwards/example_cc/';
-var regXjs = '[a-z,A-Z,0-9]*.js$';
-var regXgo = '[a-z,A-Z,0-9]*.go$';
-var location;
+const path = '/home/maedwards/example_cc/';
+const regXjs = '[a-z,A-Z,0-9]*.js$';
+const regXgo = '[a-z,A-Z,0-9]*.go$';
+let location;
 const errors = {
   lnf: 'Location not found',
   erf: 'Error reading file'
 };
-var MAC_FIND_CMD = 'locate ';
-var CURRENT_OS = process.platform;
+const MAC_FIND_CMD = 'locate ';
+const CURRENT_OS = process.platform;
 let locate_cmd = 'locate -r ';
 if (CURRENT_OS === 'darwin') {
   locate_cmd = MAC_FIND_CMD;
@@ -53,8 +53,8 @@ async function loadChaincodeSrc(path) {
   if (location === errors.lnf) {
     return errors.lnf;
   }
-  var ccSource;
-  var chaincodePath;
+  let ccSource;
+  let chaincodePath;
 
   try {
     if (Array.isArray(location) && location[0]) {
@@ -68,7 +68,7 @@ async function loadChaincodeSrc(path) {
       chaincodePath = chaincodePath.trim();
     }
 
-    var locationDirectory = chaincodePath.split('/');
+    let locationDirectory = chaincodePath.split('/');
     locationDirectory = locationDirectory
       .slice(0, locationDirectory.length - 1)
       .join('/');
@@ -81,7 +81,7 @@ async function loadChaincodeSrc(path) {
     return errors.lnf;
   }
   try {
-    ccSource = await child_process.execSync('cat ' + chaincodePath);
+    ccSource = await child_process.execSync(`cat ${chaincodePath}`);
   } catch (error) {
     return errors.erf;
   }

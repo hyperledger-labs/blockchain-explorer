@@ -1,14 +1,17 @@
-var expect = require('chai').expect;
-var assert = require('assert');
-var chai = require('chai');
-var should = chai.should();
+const expect = require('chai').expect;
+const assert = require('assert');
+const chai = require('chai');
+
+const should = chai.should();
 const { spy, stub } = require('sinon');
-var config = require('../../app/platform/fabric/config');
-var appconfig = require('../../appconfig.json');
-var host = process.env.HOST || appconfig.host;
-var port = process.env.PORT || appconfig.port;
-var sinon = require('sinon');
-var request = require('request');
+const config = require('../../app/platform/fabric/config');
+const appconfig = require('../../appconfig.json');
+
+const host = process.env.HOST || appconfig.host;
+const port = process.env.PORT || appconfig.port;
+const sinon = require('sinon');
+const request = require('request');
+
 const base = 'http://localhost:1337';
 const blocksbyhour = require('./fixtures/blocksbyhour.json');
 
@@ -26,11 +29,11 @@ describe('GET /api/blocksByHour/:channel/:day', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return blockbyhour ', done => {
+  it('should return blockbyhour ', (done) => {
     const obj = blocksbyhour;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${base}` + '/api/blocksByHour/' + config['channel'] + '/1',
+      `${`${base}` + '/api/blocksByHour/'}${config.channel}/1`,
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'rows');

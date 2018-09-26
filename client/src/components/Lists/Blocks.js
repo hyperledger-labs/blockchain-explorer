@@ -8,28 +8,28 @@ import Dialog from '@material-ui/core/Dialog';
 import { Button } from 'reactstrap';
 import matchSorter from 'match-sorter';
 import find from 'lodash/find';
+import moment from 'moment';
+import { isNull } from 'util';
 import ReactTable from '../Styled/Table';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
 import MultiSelect from '../Styled/MultiSelect';
-import moment from 'moment';
 import DatePicker from '../Styled/DatePicker';
-import { isNull } from 'util';
 import {
   blockListType,
   currentChannelType,
   getTransactionType,
-  transactionType
+  transactionType,
 } from '../types';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     hash: {
       '&, & li, & ul': {
-        overflow: 'visible !important'
-      }
+        overflow: 'visible !important',
+      },
     },
     partialHash: {
       textAlign: 'center',
@@ -43,7 +43,7 @@ const styles = theme => {
         marginLeft: -215,
         borderRadius: 8,
         color: '#ffffff',
-        opacity: dark ? 1 : undefined
+        opacity: dark ? 1 : undefined,
       },
       '&:hover $lastFullHash': {
         display: 'block',
@@ -54,32 +54,32 @@ const styles = theme => {
         marginLeft: -415,
         borderRadius: 8,
         color: '#ffffff',
-        opacity: dark ? 1 : undefined
-      }
+        opacity: dark ? 1 : undefined,
+      },
     },
     fullHash: {
-      display: 'none'
+      display: 'none',
     },
     lastFullHash: {
-      display: 'none'
+      display: 'none',
     },
     filter: {
       width: '100%',
       textAlign: 'center',
-      margin: '0px !important'
+      margin: '0px !important',
     },
     filterButton: {
       opacity: 0.8,
       margin: 'auto',
       width: '100% !important',
-      'margin-bottom': '4px'
+      'margin-bottom': '4px',
     },
     searchButton: {
       opacity: 0.8,
       margin: 'auto',
       width: '100% !important',
       backgroundColor: dark ? undefined : '#086108',
-      'margin-bottom': '4px'
+      'margin-bottom': '4px',
     },
     filterElement: {
       textAlign: 'center',
@@ -87,12 +87,12 @@ const styles = theme => {
       padding: '0px !important',
       '& > div': {
         width: '100% !important',
-        marginTop: 20
+        marginTop: 20,
       },
       '& .label': {
-        margin: '25px 10px 0px 10px'
-      }
-    }
+        margin: '25px 10px 0px 10px',
+      },
+    },
   };
 };
 
@@ -110,18 +110,18 @@ export class Blocks extends Component {
       filtered: [],
       sorted: [],
       from: moment().subtract(1, 'days'),
-      blockHash: {}
+      blockHash: {},
     };
   }
 
   componentDidMount() {
     const { blockList } = this.props;
     const selection = {};
-    blockList.forEach(element => {
+    blockList.forEach((element) => {
       selection[element.blocknum] = false;
     });
-    let opts = [];
-    this.props.transactionByOrg.forEach(val => {
+    const opts = [];
+    this.props.transactionByOrg.forEach((val) => {
       opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
     });
     this.setState({ selection, options: opts });
@@ -129,8 +129,8 @@ export class Blocks extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (
-      this.state.search &&
-      nextProps.currentChannel !== this.props.currentChannel
+      this.state.search
+      && nextProps.currentChannel !== this.props.currentChannel
     ) {
       if (this.interval !== undefined) {
         clearInterval(this.interval);
@@ -145,6 +145,7 @@ export class Blocks extends Component {
   componentWillUnmount() {
     clearInterval(this.interVal);
   }
+
   handleCustomRender(selected, options) {
     if (selected.length === 0) {
       return 'Select Orgs';
@@ -156,9 +157,9 @@ export class Blocks extends Component {
     return selected.join(',');
   }
 
-  searchBlockList = async channel => {
+  searchBlockList = async (channel) => {
     let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.state.to
+      this.state.to,
     ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
       query += `&&orgs=${this.state.orgs[i]}`;
@@ -170,12 +171,13 @@ export class Blocks extends Component {
     await this.props.getBlockListSearch(channelhash, query);
   };
 
-  handleDialogOpen = async tid => {
+  handleDialogOpen = async (tid) => {
     const { getTransaction, currentChannel } = this.props;
     await getTransaction(currentChannel, tid);
     this.setState({ dialogOpen: true });
   };
-  handleMultiSelect = value => {
+
+  handleMultiSelect = (value) => {
     this.setState({ orgs: value });
   };
 
@@ -203,11 +205,11 @@ export class Blocks extends Component {
       to: moment(),
       orgs: [],
       err: false,
-      from: moment().subtract(1, 'days')
+      from: moment().subtract(1, 'days'),
     });
   };
 
-  handleDialogOpenBlockHash = blockHash => {
+  handleDialogOpenBlockHash = (blockHash) => {
     const blockList = this.state.search
       ? this.props.blockListSearch
       : this.props.blockList;
@@ -215,7 +217,7 @@ export class Blocks extends Component {
 
     this.setState({
       dialogOpenBlockHash: true,
-      blockHash: data
+      blockHash: data,
     });
   };
 
@@ -233,40 +235,37 @@ export class Blocks extends Component {
     {
       Header: 'Block Number',
       accessor: 'blocknum',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['blocknum'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['blocknum'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
       filterAll: true,
-      width: 150
+      width: 150,
     },
     {
       Header: 'Channel Name',
       accessor: 'channelname',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['channelname'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['channelname'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Number of Tx',
       accessor: 'txcount',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['txcount'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['txcount'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
       filterAll: true,
-      width: 150
+      width: 150,
     },
     {
       Header: 'Data Hash',
@@ -277,19 +276,22 @@ export class Blocks extends Component {
           <ul className={classes.partialHash} href="#/blocks">
             <div className={classes.fullHash} id="showTransactionId">
               {row.value}
-            </div>{' '}
-            {row.value.slice(0, 6)} {!row.value ? '' : '... '}
-          </ul>{' '}
+            </div>
+            {' '}
+            {row.value.slice(0, 6)}
+            {' '}
+            {!row.value ? '' : '... '}
+          </ul>
+          {' '}
         </span>
       ),
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['datahash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['datahash'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Block Hash',
@@ -305,19 +307,22 @@ export class Blocks extends Component {
           >
             <div className={classes.fullHash} id="showTransactionId">
               {row.value}
-            </div>{' '}
-            {row.value.slice(0, 6)} {!row.value ? '' : '... '}
-          </a>{' '}
+            </div>
+            {' '}
+            {row.value.slice(0, 6)}
+            {' '}
+            {!row.value ? '' : '... '}
+          </a>
+          {' '}
         </span>
       ),
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['blockhash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['blockhash'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Previous Hash',
@@ -332,20 +337,23 @@ export class Blocks extends Component {
           >
             <div className={classes.fullHash} id="showTransactionId">
               {row.value}
-            </div>{' '}
-            {row.value.slice(0, 6)} {!row.value ? '' : '... '}
-          </ul>{' '}
+            </div>
+            {' '}
+            {row.value.slice(0, 6)}
+            {' '}
+            {!row.value ? '' : '... '}
+          </ul>
+          {' '}
         </span>
       ),
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['prehash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['prehash'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
       filterAll: true,
-      width: 150
+      width: 150,
     },
     {
       Header: 'Transactions',
@@ -355,41 +363,43 @@ export class Blocks extends Component {
         <ul>
           {!isNull(row.value)
             ? row.value.map(tid => (
-                <li
-                  key={tid}
-                  style={{
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    textOverflow: 'ellipsis'
-                  }}
+              <li
+                key={tid}
+                style={{
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                <a
+                  className={classes.partialHash}
+                  onClick={() => this.handleDialogOpen(tid)}
+                  href="#/blocks"
                 >
-                  <a
-                    className={classes.partialHash}
-                    onClick={() => this.handleDialogOpen(tid)}
-                    href="#/blocks"
+                  <div
+                    className={classes.lastFullHash}
+                    id="showTransactionId"
                   >
-                    <div
-                      className={classes.lastFullHash}
-                      id="showTransactionId"
-                    >
-                      {tid}
-                    </div>{' '}
-                    {tid.slice(0, 6)} {!tid ? '' : '... '}
-                  </a>
-                </li>
-              ))
+                    {tid}
+                  </div>
+                  {' '}
+                  {tid.slice(0, 6)}
+                  {' '}
+                  {!tid ? '' : '... '}
+                </a>
+              </li>
+            ))
             : 'null'}
         </ul>
       ),
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['txhash'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
-    }
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['txhash'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
+    },
   ];
 
   render() {
@@ -402,14 +412,16 @@ export class Blocks extends Component {
       <div>
         <div className={`${classes.filter} row searchRow`}>
           <div className={`${classes.filterElement} col-md-3`}>
-            <label className="label">From</label>
+            <label className="label">
+From
+            </label>
             <DatePicker
               id="from"
               selected={this.state.from}
               showTimeSelect
               timeIntervals={5}
               dateFormat="LLL"
-              onChange={date => {
+              onChange={(date) => {
                 if (date > this.state.to) {
                   this.setState({ err: true, from: date });
                 } else {
@@ -419,14 +431,16 @@ export class Blocks extends Component {
             />
           </div>
           <div className={`${classes.filterElement} col-md-3`}>
-            <label className="label">To</label>
+            <label className="label">
+To
+            </label>
             <DatePicker
               id="to"
               selected={this.state.to}
               showTimeSelect
               timeIntervals={5}
               dateFormat="LLL"
-              onChange={date => {
+              onChange={(date) => {
                 if (date > this.state.from) {
                   this.setState({ to: date, err: false });
                 } else {
@@ -446,13 +460,13 @@ export class Blocks extends Component {
           </div>
           <div className="col-md-2">
             <MultiSelect
-              hasSelectAll={true}
+              hasSelectAll
               valueRenderer={this.handleCustomRender}
               shouldToggleOnHover={false}
               selected={this.state.orgs}
               options={this.state.options}
-              selectAllLabel={'All Orgs'}
-              onSelectedChanged={value => {
+              selectAllLabel="All Orgs"
+              onSelectedChanged={(value) => {
                 this.handleMultiSelect(value);
               }}
             />
@@ -497,11 +511,11 @@ export class Blocks extends Component {
           list
           filterable
           sorted={this.state.sorted}
-          onSortedChange={sorted => {
+          onSortedChange={(sorted) => {
             this.setState({ sorted });
           }}
           filtered={this.state.filtered}
-          onFilteredChange={filtered => {
+          onFilteredChange={(filtered) => {
             this.setState({ filtered });
           }}
           minRows={0}
@@ -541,11 +555,11 @@ Blocks.propTypes = {
   blockList: blockListType.isRequired,
   currentChannel: currentChannelType.isRequired,
   getTransaction: getTransactionType.isRequired,
-  transaction: transactionType
+  transaction: transactionType,
 };
 
 Blocks.defaultProps = {
-  transaction: null
+  transaction: null,
 };
 
 export default withStyles(styles)(Blocks);

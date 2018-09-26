@@ -9,7 +9,7 @@ import {
   blockListType,
   currentChannelType,
   getTransactionType,
-  transactionType
+  transactionType,
 } from '../types';
 
 export const BlocksView = ({
@@ -19,7 +19,7 @@ export const BlocksView = ({
   transaction,
   blockListSearch,
   getBlockListSearch,
-  transactionByOrg
+  transactionByOrg,
 }) => (
   <View>
     <Blocks
@@ -38,11 +38,11 @@ BlocksView.propTypes = {
   blockList: blockListType.isRequired,
   currentChannel: currentChannelType.isRequired,
   getTransaction: getTransactionType.isRequired,
-  transaction: transactionType
+  transaction: transactionType,
 };
 
 BlocksView.defaultProps = {
-  transaction: null
+  transaction: null,
 };
 
 export default BlocksView;

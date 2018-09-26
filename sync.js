@@ -1,11 +1,12 @@
-var Synchronizer = require('./app/Synchronizer');
-var helper = require('./app/common/helper');
-var logger = helper.getLogger('Sync');
-var ExplorerError = require('./app/common/ExplorerError');
+const Synchronizer = require('./app/Synchronizer');
+const helper = require('./app/common/helper');
 
-var args = process.argv.slice(2);
+const logger = helper.getLogger('Sync');
+const ExplorerError = require('./app/common/ExplorerError');
 
-var synchronizer;
+const args = process.argv.slice(2);
+
+let synchronizer;
 
 async function start() {
   logger.debug('Start synchronizer');
@@ -13,7 +14,7 @@ async function start() {
   await synchronizer.initialize();
 
   console.log('\n');
-  console.log('Synchronizer pid is ' + process.pid);
+  console.log(`Synchronizer pid is ${process.pid}`);
   console.log('\n');
 }
 
@@ -21,8 +22,10 @@ start();
 
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
-var shutDown = function () {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>');
+const shutDown = function () {
+  console.log(
+    '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>'
+  );
   if (synchronizer) {
     synchronizer.close();
   }
@@ -40,8 +43,10 @@ var shutDown = function () {
   }, 2000);
 };
 
-process.on('unhandledRejection', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>');
+process.on('unhandledRejection', (up) => {
+  console.log(
+    '<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
+  );
   if (up instanceof ExplorerError) {
     console.log('Error : ', up.message);
   } else {
@@ -49,8 +54,10 @@ process.on('unhandledRejection', up => {
   }
   shutDown();
 });
-process.on('uncaughtException', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>');
+process.on('uncaughtException', (up) => {
+  console.log(
+    '<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
+  );
   if (up instanceof ExplorerError) {
     console.log('Error : ', up.message);
   } else {
@@ -63,5 +70,3 @@ process.on('uncaughtException', up => {
 process.on('SIGTERM', shutDown);
 // listen for INT signal e.g. Ctrl-C
 process.on('SIGINT', shutDown);
-
-

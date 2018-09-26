@@ -8,7 +8,7 @@ const setup = () => {
   const wrapper = shallow(<ChannelForm />);
 
   return {
-    wrapper
+    wrapper,
   };
 };
 

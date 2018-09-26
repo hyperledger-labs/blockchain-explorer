@@ -12,28 +12,28 @@ const setup = () => {
       hash: 'hash',
       partialHash: 'partialHash',
       fullHash: 'fullHash',
-      lastFullHash: 'lastFullHash'
+      lastFullHash: 'lastFullHash',
     },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
       peerCount: '4',
-      txCount: '36'
+      txCount: '36',
     },
     currentChannel: 'mychannel',
     transactionByOrg: [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
+        creator_msp_id: 'OrdererMSP',
       },
       {
         count: '1',
-        creator_msp_id: 'Org2MSP'
+        creator_msp_id: 'Org2MSP',
       },
       {
         count: '100',
-        creator_msp_id: 'Org1MSP'
-      }
+        creator_msp_id: 'Org1MSP',
+      },
     ],
     transaction: {
       id: 39,
@@ -56,10 +56,10 @@ const setup = () => {
               key: 'mycc',
               version: {
                 blocknum: '3',
-                tx_num: '0'
-              }
-            }
-          ]
+                tx_num: '0',
+              },
+            },
+          ],
         },
         {
           chaincode: 'mycc',
@@ -68,23 +68,23 @@ const setup = () => {
               key: 'a',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
+                tx_num: '0',
+              },
             },
             {
               key: 'b',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
-            }
-          ]
-        }
+                tx_num: '0',
+              },
+            },
+          ],
+        },
       ],
       write_set: [
         {
           chaincode: 'lscc',
-          set: []
+          set: [],
         },
         {
           chaincode: 'lscc',
@@ -92,16 +92,16 @@ const setup = () => {
             {
               is_delete: false,
               key: 'a',
-              value: '-60'
+              value: '-60',
             },
             {
               is_delete: false,
               key: 'b',
-              value: '360'
-            }
-          ]
-        }
-      ]
+              value: '360',
+            },
+          ],
+        },
+      ],
     },
     orgs: ['org1', 'org2'],
     transactionList: [
@@ -119,7 +119,7 @@ const setup = () => {
         txhash:
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 20,
@@ -135,7 +135,7 @@ const setup = () => {
         txhash:
           '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 19,
@@ -151,8 +151,8 @@ const setup = () => {
         txhash:
           '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
-      }
+        write_set: [],
+      },
     ],
     transactionListSearch: [
       {
@@ -169,7 +169,7 @@ const setup = () => {
         txhash:
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 20,
@@ -185,7 +185,7 @@ const setup = () => {
         txhash:
           '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
+        write_set: [],
       },
       {
         blockid: 19,
@@ -201,8 +201,8 @@ const setup = () => {
         txhash:
           '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
-      }
+        write_set: [],
+      },
     ],
     getTransactionList: jest.fn(),
     getTransactionListSearch: jest.fn(),
@@ -210,14 +210,14 @@ const setup = () => {
     getTransactionInfo: jest.fn(),
     handleDialogClose: jest.fn(),
     removeTransactionInfo: jest.fn(),
-    getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
+    getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve()),
   };
 
   const wrapper = mount(<Transactions {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -235,47 +235,47 @@ describe('Transactions', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('Org1MSP'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Tx Id
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('308a24'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('9abc8c'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('912cd6'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Type
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('ENDORSER_TRANSACTION'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Chaincode
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('mycc'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Number of Transactions
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('4-26-2018 4:32 PM EDT'))
-        .exists()
+        .exists(),
     ).toBe(true);
   });
 
@@ -296,7 +296,7 @@ describe('Transactions', () => {
     await wrapper
       .instance()
       .handleDialogOpen(
-        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6'
+        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
       );
     expect(wrapper.state('dialogOpen')).toBe(true);
     wrapper.update();
@@ -331,8 +331,8 @@ describe('Transactions', () => {
       .simulate('change', {
         target: {
           value:
-            '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'
-        }
+            '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+        },
       });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
@@ -391,7 +391,7 @@ describe('Transactions', () => {
     Array.prototype.push.apply(transactions, [
       transaction,
       transaction,
-      transaction
+      transaction,
     ]);
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
     wrapper.setProps({ transactionList: transactions });

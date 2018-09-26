@@ -6,9 +6,11 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import FontAwesome from 'react-fontawesome';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Table, Card, CardBody, CardTitle } from 'reactstrap';
-import { transactionType } from '../types';
+import {
+  Table, Card, CardBody, CardTitle,
+} from 'reactstrap';
 import JSONTree from 'react-json-tree';
+import { transactionType } from '../types';
 import Modal from '../Styled/Modal';
 
 const readTheme = {
@@ -27,7 +29,7 @@ const readTheme = {
   base0C: '#80b1d3',
   base0D: '#3182bd',
   base0E: '#756bb1',
-  base0F: '#b15928'
+  base0F: '#b15928',
 };
 const writeTheme = {
   base00: '#ffffff',
@@ -45,29 +47,27 @@ const writeTheme = {
   base0C: '#80b1d3',
   base0D: '#3182bd',
   base0E: '#756bb1',
-  base0F: '#b15928'
+  base0F: '#b15928',
 };
 
-const styles = theme => {
-  return {
-    listIcon: {
-      color: '#ffffff',
-      marginRight: 20
+const styles = theme => ({
+  listIcon: {
+    color: '#ffffff',
+    marginRight: 20,
+  },
+  JSONtree: {
+    '& ul': {
+      backgroundColor: 'transparent !important',
+      color: '#fff',
     },
-    JSONtree: {
-      '& ul': {
-        backgroundColor: 'transparent !important',
-        color: '#fff'
-      }
-    }
-  };
-};
+  },
+});
 
 const reads = {
-  color: '#2AA233'
+  color: '#2AA233',
 };
 const writes = {
-  color: '#DD8016'
+  color: '#DD8016',
 };
 
 export class TransactionView extends Component {
@@ -128,15 +128,21 @@ export class TransactionView extends Component {
                   <Table striped hover responsive className="table-striped">
                     <tbody>
                       <tr>
-                        <th>Transaction ID:</th>
+                        <th>
+Transaction ID:
+                        </th>
                         <td>
                           {transaction.txhash}
                           <button
                             type="button"
                             className={modalClasses.copyBtn}
                           >
-                            <div className={modalClasses.copy}>Copy</div>
-                            <div className={modalClasses.copied}>Copied</div>
+                            <div className={modalClasses.copy}>
+Copy
+                            </div>
+                            <div className={modalClasses.copied}>
+Copied
+                            </div>
                             <CopyToClipboard text={transaction.txhash}>
                               <FontAwesome name="copy" />
                             </CopyToClipboard>
@@ -144,35 +150,65 @@ export class TransactionView extends Component {
                         </td>
                       </tr>
                       <tr>
-                        <th>Validation Code:</th>
-                        <td>{transaction.validation_code}</td>
+                        <th>
+Validation Code:
+                        </th>
+                        <td>
+                          {transaction.validation_code}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Payload Proposal Hash:</th>
-                        <td>{transaction.payload_proposal_hash}</td>
+                        <th>
+Payload Proposal Hash:
+                        </th>
+                        <td>
+                          {transaction.payload_proposal_hash}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Creator MSP:</th>
-                        <td>{transaction.creator_msp_id}</td>
+                        <th>
+Creator MSP:
+                        </th>
+                        <td>
+                          {transaction.creator_msp_id}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Endoser:</th>
-                        <td>{transaction.endorser_msp_id}</td>
+                        <th>
+Endoser:
+                        </th>
+                        <td>
+                          {transaction.endorser_msp_id}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Chaincode Name:</th>
-                        <td>{transaction.chaincodename}</td>
+                        <th>
+Chaincode Name:
+                        </th>
+                        <td>
+                          {transaction.chaincodename}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Type:</th>
-                        <td>{transaction.type}</td>
+                        <th>
+Type:
+                        </th>
+                        <td>
+                          {transaction.type}
+                        </td>
                       </tr>
                       <tr>
-                        <th>Time:</th>
-                        <td>{transaction.createdt}</td>
+                        <th>
+Time:
+                        </th>
+                        <td>
+                          {transaction.createdt}
+                        </td>
                       </tr>
                       <tr>
-                        <th style={reads}>Reads:</th>
+                        <th style={reads}>
+Reads:
+                        </th>
                         <td className={classes.JSONtree}>
                           <JSONTree
                             data={transaction.read_set}
@@ -182,7 +218,9 @@ export class TransactionView extends Component {
                         </td>
                       </tr>
                       <tr>
-                        <th style={writes}>Writes:</th>
+                        <th style={writes}>
+Writes:
+                        </th>
                         <td className={classes.JSONtree}>
                           <JSONTree
                             data={transaction.write_set}
@@ -231,11 +269,11 @@ export class TransactionView extends Component {
 }
 
 TransactionView.propTypes = {
-  transaction: transactionType
+  transaction: transactionType,
 };
 
 TransactionView.defaultProps = {
-  transaction: null
+  transaction: null,
 };
 
 export default withStyles(styles)(TransactionView);

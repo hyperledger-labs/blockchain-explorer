@@ -21,7 +21,7 @@ const setup = () => {
         channel_genesis_hash:
           '5e02f3535193eafeb084ea68e61b6ab73b6b9123e317499be2b428c37c24c46e',
         id: 3,
-        transactions: 5
+        transactions: 5,
       },
       {
         blocks: 5,
@@ -32,12 +32,12 @@ const setup = () => {
         channel_genesis_hash:
           '5e02f3535193eafeb084ea68e61b6ab73b6b9123e317499be2b428c37c24c46e',
         id: 3,
-        transactions: 5
-      }
+        transactions: 5,
+      },
     ],
     classes: {
       margin: 'Connect-HeaderView--margin-1',
-      padding: 'Connect-HeaderView--padding-2'
+      padding: 'Connect-HeaderView--padding-2',
     },
     currentChannel:
       'f3ed9c95452b184a4d5d66e25ba47f866ad6907a31f28f8067ca5596f64d8e0f',
@@ -58,14 +58,14 @@ const setup = () => {
     getTransactionList: jest.fn(),
     getTransactionPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
-    refresh: jest.fn()
+    refresh: jest.fn(),
   };
 
   const wrapper = shallow(<HeaderView {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -86,8 +86,7 @@ describe('HeaderView', () => {
 
   test('handleData sets notification', () => {
     const { wrapper } = setup();
-    const notification =
-      '{"title":"Block 12 Added","type":"block","message":"Block 12 established with 3 tx","time":"2018-05-30T21:15:09.000Z","txcount":3,"datahash":"07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7"}';
+    const notification = '{"title":"Block 12 Added","type":"block","message":"Block 12 established with 3 tx","time":"2018-05-30T21:15:09.000Z","txcount":3,"datahash":"07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7"}';
     expect(wrapper.state('notifyCount')).toBe(0);
     wrapper.instance().handleData(notification);
     expect(wrapper.state('notifications').length).toBe(1);

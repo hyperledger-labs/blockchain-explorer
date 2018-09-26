@@ -7,33 +7,33 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import { Button } from 'reactstrap';
 import matchSorter from 'match-sorter';
+import moment from 'moment';
 import ReactTable from '../Styled/Table';
 import TransactionView from '../View/TransactionView';
 import DatePicker from '../Styled/DatePicker';
 import MultiSelect from '../Styled/MultiSelect';
-import moment from 'moment';
 
 import {
   currentChannelType,
   getTransactionType,
   transactionListType,
-  transactionType
+  transactionType,
 } from '../types';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     hash: {
       '&, & li': {
-        overflow: 'visible !important'
-      }
+        overflow: 'visible !important',
+      },
     },
     partialHash: {
       textAlign: 'center',
       position: 'relative !important',
       '&:hover $lastFullHash': {
-        marginLeft: -400
+        marginLeft: -400,
       },
       '&:hover $fullHash': {
         display: 'block',
@@ -44,30 +44,30 @@ const styles = theme => {
         marginLeft: -215,
         borderRadius: 8,
         color: '#ffffff',
-        opacity: dark ? 1 : undefined
-      }
+        opacity: dark ? 1 : undefined,
+      },
     },
     fullHash: {
-      display: 'none'
+      display: 'none',
     },
     lastFullHash: {},
     filter: {
       width: '100%',
       textAlign: 'center',
-      margin: '0px !important'
+      margin: '0px !important',
     },
     filterButton: {
       opacity: 0.8,
       margin: 'auto',
       width: '100% !important',
-      'margin-bottom': '4px'
+      'margin-bottom': '4px',
     },
     searchButton: {
       opacity: 0.8,
       margin: 'auto',
       width: '100% !important',
       backgroundColor: dark ? undefined : '#086108',
-      'margin-bottom': '4px'
+      'margin-bottom': '4px',
     },
     filterElement: {
       textAlign: 'center',
@@ -75,12 +75,12 @@ const styles = theme => {
       padding: '0px !important',
       '& > div': {
         width: '100% !important',
-        marginTop: 20
+        marginTop: 20,
       },
       '& .label': {
-        margin: '25px 10px 0px 10px'
-      }
-    }
+        margin: '25px 10px 0px 10px',
+      },
+    },
   };
 };
 
@@ -96,26 +96,27 @@ export class Transactions extends Component {
       filtered: [],
       sorted: [],
       err: false,
-      from: moment().subtract(1, 'days')
+      from: moment().subtract(1, 'days'),
     };
   }
 
   componentDidMount() {
     const { transactionList } = this.props;
     const selection = {};
-    transactionList.forEach(element => {
+    transactionList.forEach((element) => {
       selection[element.blocknum] = false;
     });
-    let opts = [];
-    this.props.transactionByOrg.forEach(val => {
+    const opts = [];
+    this.props.transactionByOrg.forEach((val) => {
       opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
     });
     this.setState({ selection, options: opts });
   }
+
   componentWillReceiveProps(nextProps) {
     if (
-      this.state.search &&
-      nextProps.currentChannel !== this.props.currentChannel
+      this.state.search
+      && nextProps.currentChannel !== this.props.currentChannel
     ) {
       if (this.interval !== undefined) {
         clearInterval(this.interval);
@@ -130,6 +131,7 @@ export class Transactions extends Component {
   componentWillUnmount() {
     clearInterval(this.interVal);
   }
+
   handleCustomRender(selected, options) {
     if (selected.length === 0) {
       return 'Select Orgs';
@@ -140,9 +142,10 @@ export class Transactions extends Component {
 
     return selected.join(',');
   }
-  searchTransactionList = async channel => {
+
+  searchTransactionList = async (channel) => {
     let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-      this.state.to
+      this.state.to,
     ).toString()}`;
     for (let i = 0; i < this.state.orgs.length; i++) {
       query += `&&orgs=${this.state.orgs[i]}`;
@@ -154,18 +157,20 @@ export class Transactions extends Component {
     await this.props.getTransactionListSearch(channelhash, query);
   };
 
-  handleDialogOpen = async tid => {
+  handleDialogOpen = async (tid) => {
     const { currentChannel, getTransaction } = this.props;
     await getTransaction(currentChannel, tid);
     this.setState({ dialogOpen: true });
   };
-  handleMultiSelect = value => {
+
+  handleMultiSelect = (value) => {
     this.setState({ orgs: value });
   };
 
   handleDialogClose = () => {
     this.setState({ dialogOpen: false });
   };
+
   handleSearch = async () => {
     if (this.interval !== undefined) {
       clearInterval(this.interval);
@@ -183,7 +188,7 @@ export class Transactions extends Component {
       to: moment(),
       orgs: [],
       err: false,
-      from: moment().subtract(1, 'days')
+      from: moment().subtract(1, 'days'),
     });
   };
 
@@ -199,26 +204,24 @@ export class Transactions extends Component {
       {
         Header: 'Creator',
         accessor: 'creator_msp_id',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['creator_msp_id'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['creator_msp_id'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
         Header: 'Channel Name',
         accessor: 'channelname',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['channelname'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['channelname'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
         Header: 'Tx Id',
@@ -234,57 +237,54 @@ export class Transactions extends Component {
             >
               <div className={classes.fullHash} id="showTransactionId">
                 {row.value}
-              </div>{' '}
+              </div>
+              {' '}
               {row.value.slice(0, 6)}
               {!row.value ? '' : '... '}
             </a>
           </span>
         ),
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['txhash'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['txhash'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
         Header: 'Type',
         accessor: 'type',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['type'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['type'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
         Header: 'Chaincode',
         accessor: 'chaincodename',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['chaincodename'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['chaincodename'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
       },
       {
         Header: 'Timestamp',
         accessor: 'createdt',
-        filterMethod: (filter, rows) =>
-          matchSorter(
-            rows,
-            filter.value,
-            { keys: ['createdt'] },
-            { threshold: matchSorter.rankings.SIMPLEMATCH }
-          ),
-        filterAll: true
-      }
+        filterMethod: (filter, rows) => matchSorter(
+          rows,
+          filter.value,
+          { keys: ['createdt'] },
+          { threshold: matchSorter.rankings.SIMPLEMATCH },
+        ),
+        filterAll: true,
+      },
     ];
 
     const transactionList = this.state.search
@@ -296,14 +296,16 @@ export class Transactions extends Component {
       <div>
         <div className={`${classes.filter} row searchRow`}>
           <div className={`${classes.filterElement} col-md-3`}>
-            <label className="label">From</label>
+            <label className="label">
+From
+            </label>
             <DatePicker
               id="from"
               selected={this.state.from}
               showTimeSelect
               timeIntervals={5}
               dateFormat="LLL"
-              onChange={date => {
+              onChange={(date) => {
                 if (date > this.state.to) {
                   this.setState({ err: true, from: date });
                 } else {
@@ -313,14 +315,16 @@ export class Transactions extends Component {
             />
           </div>
           <div className={`${classes.filterElement} col-md-3`}>
-            <label className="label">To</label>
+            <label className="label">
+To
+            </label>
             <DatePicker
               id="to"
               selected={this.state.to}
               showTimeSelect
               timeIntervals={5}
               dateFormat="LLL"
-              onChange={date => {
+              onChange={(date) => {
                 if (date > this.state.from) {
                   this.setState({ to: date, err: false });
                 } else {
@@ -340,13 +344,13 @@ export class Transactions extends Component {
           </div>
           <div className="col-md-2">
             <MultiSelect
-              hasSelectAll={true}
+              hasSelectAll
               valueRenderer={this.handleCustomRender}
               shouldToggleOnHover={false}
               selected={this.state.orgs}
               options={this.state.options}
-              selectAllLabel={'All Orgs'}
-              onSelectedChanged={value => {
+              selectAllLabel="All Orgs"
+              onSelectedChanged={(value) => {
                 this.handleMultiSelect(value);
               }}
             />
@@ -391,11 +395,11 @@ export class Transactions extends Component {
           list
           filterable
           sorted={this.state.sorted}
-          onSortedChange={sorted => {
+          onSortedChange={(sorted) => {
             this.setState({ sorted });
           }}
           filtered={this.state.filtered}
-          onFilteredChange={filtered => {
+          onFilteredChange={(filtered) => {
             this.setState({ filtered });
           }}
           minRows={0}
@@ -423,11 +427,11 @@ Transactions.propTypes = {
   currentChannel: currentChannelType.isRequired,
   getTransaction: getTransactionType.isRequired,
   transaction: transactionType,
-  transactionList: transactionListType.isRequired
+  transactionList: transactionListType.isRequired,
 };
 
 Transactions.defaultProps = {
-  transaction: null
+  transaction: null,
 };
 
 export default withStyles(styles)(Transactions);

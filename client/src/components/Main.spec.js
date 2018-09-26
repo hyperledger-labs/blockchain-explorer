@@ -23,9 +23,9 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
-      }
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
+      },
     ],
     chaincodeList: [
       {
@@ -34,8 +34,8 @@ const setup = () => {
         path: 'github.com/chaincode/chaincode_example02/go/',
         source: 'Location not found',
         txCount: 32,
-        version: '1.0'
-      }
+        version: '1.0',
+      },
     ],
     channels: [
       {
@@ -45,15 +45,15 @@ const setup = () => {
         channelname: 'mychannel',
         createdat: '2018-05-30T20:56:47.795Z',
         id: 3,
-        transactions: 5
-      }
+        transactions: 5,
+      },
     ],
     currentChannel: 'mychannel',
     dashStats: {
       chaincodeCount: '3',
       latestBlock: '12',
       peerCount: '4',
-      txCount: '33'
+      txCount: '33',
     },
     getTransaction: jest.fn(),
     peerList: [
@@ -62,26 +62,26 @@ const setup = () => {
           'f3ed9c95452b184a4d5d66e25ba47f866ad6907a31f28f8067ca5596f64d8e0f',
         name: 'mychannel',
         requests: 'grpcs://127.0.0.1:7051',
-        server_hostname: 'peer0.org1.example.com'
+        server_hostname: 'peer0.org1.example.com',
       },
       {
         requests: 'grpcs://127.0.0.1:8051',
-        server_hostname: 'peer1.org1.example.com'
+        server_hostname: 'peer1.org1.example.com',
       },
       {
         requests: 'grpcs://127.0.0.1:9051',
-        server_hostname: 'peer0.org2.example.com'
+        server_hostname: 'peer0.org2.example.com',
       },
       {
         requests: 'grpcs://127.0.0.1:10051',
-        server_hostname: 'peer1.org2.example.com'
-      }
+        server_hostname: 'peer1.org2.example.com',
+      },
     ],
     peerStatus: [
       {
         server_hostname: 'peer0.org1.example.com',
-        status: 'RUNNING'
-      }
+        status: 'RUNNING',
+      },
     ],
     transaction: {
       id: 39,
@@ -104,10 +104,10 @@ const setup = () => {
               key: 'mycc',
               version: {
                 blocknum: '3',
-                tx_num: '0'
-              }
-            }
-          ]
+                tx_num: '0',
+              },
+            },
+          ],
         },
         {
           chaincode: 'mycc',
@@ -116,23 +116,23 @@ const setup = () => {
               key: 'a',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
+                tx_num: '0',
+              },
             },
             {
               key: 'b',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
-            }
-          ]
-        }
+                tx_num: '0',
+              },
+            },
+          ],
+        },
       ],
       write_set: [
         {
           chaincode: 'lscc',
-          set: []
+          set: [],
         },
         {
           chaincode: 'lscc',
@@ -140,22 +140,22 @@ const setup = () => {
             {
               is_delete: false,
               key: 'a',
-              value: '-60'
+              value: '-60',
             },
             {
               is_delete: false,
               key: 'b',
-              value: '360'
-            }
-          ]
-        }
-      ]
+              value: '360',
+            },
+          ],
+        },
+      ],
     },
     transactionByOrg: [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
-      }
+        creator_msp_id: 'OrdererMSP',
+      },
     ],
     transactionList: [
       {
@@ -172,14 +172,14 @@ const setup = () => {
         txhash:
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
         type: 'ENDORSER_TRANSACTION',
-        write_set: []
-      }
-    ]
+        write_set: [],
+      },
+    ],
   };
   const wrapper = shallow(<Main {...props} />);
 
   return {
-    wrapper
+    wrapper,
   };
 };
 

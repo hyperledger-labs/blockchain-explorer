@@ -14,7 +14,7 @@ export const ChannelsView = ({ channels }) => (
 );
 
 ChannelsView.propTypes = {
-  channels: channelsType.isRequired
+  channels: channelsType.isRequired,
 };
 
 export default ChannelsView;

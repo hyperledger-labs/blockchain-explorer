@@ -2,36 +2,32 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-var requtil = require('./requestutils');
+const requtil = require('./requestutils');
 
 const platformroutes = async function (app, platform) {
+  const proxy = platform.getProxy();
+  const statusMetrics = platform.getPersistence().getMetricService();
+  const crudService = platform.getPersistence().getCrudService();
 
-  let proxy = platform.getProxy();
-  let statusMetrics = platform.getPersistence().getMetricService();
-  let crudService = platform.getPersistence().getCrudService();
-
-
-  /***
+  /** *
       Block by number
       GET /api/block/getinfo -> /api/block
       curl -i 'http://<host>:<port>/api/block/<channel>/<number>'
       *
       */
-  app.get('/api/block/:channel_genesis_hash/:number', function (req, res) {
-    let number = parseInt(req.params.number);
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/block/:channel_genesis_hash/:number', (req, res) => {
+    const number = parseInt(req.params.number);
+    const channel_genesis_hash = req.params.channel_genesis_hash;
     if (!isNaN(number) && channel_genesis_hash) {
-      proxy
-        .getBlockByNumber(channel_genesis_hash, number)
-        .then(block => {
-          res.send({
-            status: 200,
-            number: block.header.number.toString(),
-            previous_hash: block.header.previous_hash,
-            data_hash: block.header.data_hash,
-            transactions: block.data.data
-          });
+      proxy.getBlockByNumber(channel_genesis_hash, number).then((block) => {
+        res.send({
+          status: 200,
+          number: block.header.number.toString(),
+          previous_hash: block.header.previous_hash,
+          data_hash: block.header.data_hash,
+          transactions: block.data.data
         });
+      });
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -51,16 +47,14 @@ const platformroutes = async function (app, platform) {
       }
       */
 
-  app.get('/api/channels', function (req, res) {
-
-    proxy.getChannels().then(channels => {
-      let response = {
+  app.get('/api/channels', (req, res) => {
+    proxy.getChannels().then((channels) => {
+      const response = {
         status: 200
       };
-      response['channels'] = channels;
+      response.channels = channels;
       res.send(response);
     });
-
   });
 
   /**
@@ -68,8 +62,8 @@ const platformroutes = async function (app, platform) {
   GET /api/curChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get('/api/curChannel', function (req, res) {
-    proxy.getCurrentChannel().then(data => {
+  app.get('/api/curChannel', (req, res) => {
+    proxy.getCurrentChannel().then((data) => {
       res.send(data);
     });
   });
@@ -79,16 +73,16 @@ const platformroutes = async function (app, platform) {
   POST /api/changeChannel
   curl -i 'http://<host>:<port>/api/curChannel'
   */
-  app.get('/api/changeChannel/:channel_genesis_hash', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    proxy.changeChannel(channel_genesis_hash).then(data => {
+  app.get('/api/changeChannel/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+    proxy.changeChannel(channel_genesis_hash).then((data) => {
       res.send({
         currentChannel: data
       });
     });
   });
 
-  /***
+  /** *
      Read 'blockchain-explorer/app/config/CREATE-CHANNEL.md' on 'how to create a channel'
 
       The values of the profile and genesisBlock are taken fron the configtx.yaml file that
@@ -111,19 +105,19 @@ const platformroutes = async function (app, platform) {
   Response: {  success: true, message: 'Successfully created channel '   }
   */
 
-  app.post('/api/channel', async function (req, res) {
+  app.post('/api/channel', async (req, res) => {
     try {
       // upload channel config, and org config
-      let artifacts = await requtil.aSyncUpload(req, res);
-      let chCreate = await proxy.createChannel(artifacts);
-      let channelResponse = {
+      const artifacts = await requtil.aSyncUpload(req, res);
+      const chCreate = await proxy.createChannel(artifacts);
+      const channelResponse = {
         success: chCreate.success,
         message: chCreate.message
       };
       return res.send(channelResponse);
     } catch (err) {
       logger.error(err);
-      let channelError = {
+      const channelError = {
         success: false,
         message: 'Invalid request, payload'
       };
@@ -131,7 +125,7 @@ const platformroutes = async function (app, platform) {
     }
   });
 
-  /***
+  /** *
       An API to join channel
   POST /api/joinChannel
 
@@ -140,14 +134,14 @@ const platformroutes = async function (app, platform) {
   Response: {  success: true, message: 'Successfully joined peer to the channel '   }
   */
 
-  app.post('/api/joinChannel', function (req, res) {
-    var channelName = req.body.channelName;
-    var peers = req.body.peers;
-    var orgName = req.body.orgName;
+  app.post('/api/joinChannel', (req, res) => {
+    const channelName = req.body.channelName;
+    const peers = req.body.peers;
+    const orgName = req.body.orgName;
     if (channelName && peers && orgName) {
-      proxy.joinChannel(channelName, peers, orgName).then(resp => {
-        return res.send(resp);
-      });
+      proxy
+        .joinChannel(channelName, peers, orgName)
+        .then(resp => res.send(resp));
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -169,12 +163,12 @@ const platformroutes = async function (app, platform) {
       ]
     */
 
-  app.get('/api/chaincode/:channel', function (req, res) {
-    let channelName = req.params.channel;
+  app.get('/api/chaincode/:channel', (req, res) => {
+    const channelName = req.params.channel;
     if (channelName) {
-      statusMetrics.getTxPerChaincode(channelName, async function (data) {
-        for (let chaincode of data) {
-          let temp = await proxy.loadChaincodeSrc(chaincode.path);
+      statusMetrics.getTxPerChaincode(channelName, async (data) => {
+        for (const chaincode of data) {
+          const temp = await proxy.loadChaincodeSrc(chaincode.path);
           chaincode.source = temp;
         }
         res.send({
@@ -187,7 +181,7 @@ const platformroutes = async function (app, platform) {
     }
   });
 
-  /***Peer Status List
+  /** *Peer Status List
   GET /peerlist -> /api/peersStatus
   curl -i 'http://<host>:<port>/api/peersStatus/<channel>'
   Response:
@@ -199,10 +193,10 @@ const platformroutes = async function (app, platform) {
   ]
   */
 
-  app.get('/api/peersStatus/:channel', function (req, res) {
-    let channelName = req.params.channel;
+  app.get('/api/peersStatus/:channel', (req, res) => {
+    const channelName = req.params.channel;
     if (channelName) {
-      proxy.getPeersStatus(channelName).then(data => {
+      proxy.getPeersStatus(channelName).then((data) => {
         res.send({ status: 200, peers: data });
       });
     } else {

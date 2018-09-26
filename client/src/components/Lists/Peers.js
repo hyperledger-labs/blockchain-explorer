@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import ReactTable from '../Styled/Table';
 import matchSorter from 'match-sorter';
+import ReactTable from '../Styled/Table';
 import { peerListType } from '../types';
 
 const Peers = ({ peerList }) => {
@@ -12,50 +12,46 @@ const Peers = ({ peerList }) => {
     {
       Header: 'Peer Name',
       accessor: 'server_hostname',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['server_hostname'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['server_hostname'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Request Url',
       accessor: 'requests',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['requests'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['requests'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Peer Type',
       accessor: 'peer_type',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['peer_type'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['peer_type'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'MSPID',
       accessor: 'mspid',
-      filterMethod: (filter, rows) =>
-        matchSorter(
-          rows,
-          filter.value,
-          { keys: ['mspid'] },
-          { threshold: matchSorter.rankings.SIMPLEMATCH }
-        ),
-      filterAll: true
+      filterMethod: (filter, rows) => matchSorter(
+        rows,
+        filter.value,
+        { keys: ['mspid'] },
+        { threshold: matchSorter.rankings.SIMPLEMATCH },
+      ),
+      filterAll: true,
     },
     {
       Header: 'Ledger Height',
@@ -63,42 +59,39 @@ const Peers = ({ peerList }) => {
         {
           Header: 'High',
           accessor: 'ledger_height_high',
-          filterMethod: (filter, rows) =>
-            matchSorter(
-              rows,
-              filter.value,
-              { keys: ['ledger_height_high'] },
-              { threshold: matchSorter.rankings.SIMPLEMATCH }
-            ),
-          filterAll: true
+          filterMethod: (filter, rows) => matchSorter(
+            rows,
+            filter.value,
+            { keys: ['ledger_height_high'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH },
+          ),
+          filterAll: true,
         },
         {
           Header: 'Low',
           accessor: 'ledger_height_low',
-          filterMethod: (filter, rows) =>
-            matchSorter(
-              rows,
-              filter.value,
-              { keys: ['ledger_height_low'] },
-              { threshold: matchSorter.rankings.SIMPLEMATCH }
-            ),
-          filterAll: true
+          filterMethod: (filter, rows) => matchSorter(
+            rows,
+            filter.value,
+            { keys: ['ledger_height_low'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH },
+          ),
+          filterAll: true,
         },
         {
           Header: 'Unsigned',
           id: 'ledger_height_unsigned',
           accessor: d => d.ledger_height_unsigned.toString(),
-          filterMethod: (filter, rows) =>
-            matchSorter(
-              rows,
-              filter.value,
-              { keys: ['ledger_height_unsigned'] },
-              { threshold: matchSorter.rankings.SIMPLEMATCH }
-            ),
-          filterAll: true
-        }
-      ]
-    }
+          filterMethod: (filter, rows) => matchSorter(
+            rows,
+            filter.value,
+            { keys: ['ledger_height_unsigned'] },
+            { threshold: matchSorter.rankings.SIMPLEMATCH },
+          ),
+          filterAll: true,
+        },
+      ],
+    },
   ];
 
   return (
@@ -116,7 +109,7 @@ const Peers = ({ peerList }) => {
 };
 
 Peers.propTypes = {
-  peerList: peerListType.isRequired
+  peerList: peerListType.isRequired,
 };
 
 export default Peers;

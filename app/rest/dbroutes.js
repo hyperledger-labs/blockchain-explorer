@@ -2,30 +2,28 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-var requtil = require('./requestutils.js');
+const requtil = require('./requestutils.js');
 
 const dbroutes = (app, platform) => {
+  const proxy = platform.getProxy();
+  const statusMetrics = platform.getPersistence().getMetricService();
+  const crudService = platform.getPersistence().getCrudService();
 
-  let proxy = platform.getProxy();
-  let statusMetrics = platform.getPersistence().getMetricService();
-  let crudService = platform.getPersistence().getCrudService();
-
-  app.get('/api/status/:channel_genesis_hash', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/status/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      statusMetrics.getStatus(channel_genesis_hash, function (data) {
+      statusMetrics.getStatus(channel_genesis_hash, (data) => {
         if (data && (data.chaincodeCount && data.txCount && data.peerCount)) {
           return res.send(data);
-        } else {
-          return requtil.notFound(req, res);
         }
+        return requtil.notFound(req, res);
       });
     } else {
       return requtil.invalidRequest(req, res);
     }
   });
 
-  /***
+  /** *
   Transaction count
   GET /api/block/get -> /api/block/transactions/
   curl -i 'http://<host>:<port>/api/block/transactions/<channel_genesis_hash>/<number>'
@@ -37,11 +35,11 @@ const dbroutes = (app, platform) => {
   */
   app.get(
     '/api/block/transactions/:channel_genesis_hash/:number',
-    async function (req, res) {
-      let number = parseInt(req.params.number);
-      let channel_genesis_hash = req.params.channel_genesis_hash;
+    async (req, res) => {
+      const number = parseInt(req.params.number);
+      const channel_genesis_hash = req.params.channel_genesis_hash;
       if (!isNaN(number) && channel_genesis_hash) {
-        var row = await crudService.getTxCountByBlockNum(
+        const row = await crudService.getTxCountByBlockNum(
           channel_genesis_hash,
           number
         );
@@ -53,14 +51,13 @@ const dbroutes = (app, platform) => {
           });
         }
         return requtil.notFound(req, res);
-      } else {
-        return requtil.invalidRequest(req, res);
       }
+      return requtil.invalidRequest(req, res);
     }
   );
 
   //
-  /***
+  /** *
   Transaction Information
   GET /api/tx/getinfo -> /api/transaction/<txid>
   curl -i 'http://<host>:<port>/api/transaction/<channel_genesis_hash>/<txid>'
@@ -73,11 +70,11 @@ const dbroutes = (app, platform) => {
   }
   */
 
-  app.get('/api/transaction/:channel_genesis_hash/:txid', function (req, res) {
-    let txid = req.params.txid;
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/transaction/:channel_genesis_hash/:txid', (req, res) => {
+    const txid = req.params.txid;
+    const channel_genesis_hash = req.params.channel_genesis_hash;
     if (txid && txid != '0' && channel_genesis_hash) {
-      crudService.getTransactionByID(channel_genesis_hash, txid).then(row => {
+      crudService.getTransactionByID(channel_genesis_hash, txid).then((row) => {
         if (row) {
           row.createdt = new Date(row.createdt).toISOString();
           return res.send({ status: 200, row });
@@ -88,10 +85,10 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  app.get('/api/blockActivity/:channel_genesis_hash', function(req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/blockActivity/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      crudService.getBlockActivityList(channel_genesis_hash).then(row => {
+      crudService.getBlockActivityList(channel_genesis_hash).then((row) => {
         if (row) {
           return res.send({ status: 200, row });
         }
@@ -101,7 +98,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  /***
+  /** *
   Transaction list
   GET /api/txList/
   curl -i 'http://<host>:<port>/api/txList/<channel_genesis_hash>/<blocknum>/<txid>/<limitrows>/<offset>'
@@ -110,32 +107,35 @@ const dbroutes = (app, platform) => {
   'txhash':'c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8',
   'createdt':'2018-03-09T19:40:59.000Z','chaincodename':'mycc'}]}
   */
-  app.get('/api/txList/:channel_genesis_hash/:blocknum/:txid', async function (
-    req,
-    res
-  ) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let blockNum = parseInt(req.params.blocknum);
-    let txid = parseInt(req.params.txid);
-    let orgs = requtil.orgsArrayToString(req.query.orgs);
-    let { from, to } = requtil.queryDatevalidator(req.query.from, req.query.to);
-    if (isNaN(txid)) {
-      txid = 0;
+  app.get(
+    '/api/txList/:channel_genesis_hash/:blocknum/:txid',
+    async (req, res) => {
+      const channel_genesis_hash = req.params.channel_genesis_hash;
+      const blockNum = parseInt(req.params.blocknum);
+      let txid = parseInt(req.params.txid);
+      const orgs = requtil.orgsArrayToString(req.query.orgs);
+      const { from, to } = requtil.queryDatevalidator(
+        req.query.from,
+        req.query.to
+      );
+      if (isNaN(txid)) {
+        txid = 0;
+      }
+      if (channel_genesis_hash) {
+        crudService
+          .getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs)
+          .then((rows) => {
+            if (rows) {
+              return res.send({ status: 200, rows });
+            }
+          });
+      } else {
+        return requtil.invalidRequest(req, res);
+      }
     }
-    if (channel_genesis_hash) {
-      crudService
-        .getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs)
-        .then(rows => {
-          if (rows) {
-            return res.send({ status: 200, rows });
-          }
-        });
-    } else {
-      return requtil.invalidRequest(req, res);
-    }
-  });
+  );
 
-  /***Peer List
+  /** *Peer List
   GET /peerlist -> /api/peers
   curl -i 'http://<host>:<port>/api/peers/<channel_genesis_hash>'
   Response:
@@ -146,10 +146,10 @@ const dbroutes = (app, platform) => {
     }
   ]
   */
-  app.get('/api/peers/:channel_genesis_hash', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/peers/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      statusMetrics.getPeerList(channel_genesis_hash, function (data) {
+      statusMetrics.getPeerList(channel_genesis_hash, (data) => {
         res.send({ status: 200, peers: data });
       });
     } else {
@@ -157,7 +157,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  /***
+  /** *
    List of blocks and transaction list per block
   GET /api/blockAndTxList
   curl -i 'http://<host>:<port>/api/blockAndTxList/channel_genesis_hash/<blockNum>/<limitrows>/<offset>'
@@ -168,31 +168,34 @@ const dbroutes = (app, platform) => {
   *
   */
 
-  app.get('/api/blockAndTxList/:channel_genesis_hash/:blocknum', async function (
-    req,
-    res
-  ) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let blockNum = parseInt(req.params.blocknum);
-    let orgs = requtil.orgsArrayToString(req.query.orgs);
-    let { from, to } = requtil.queryDatevalidator(req.query.from, req.query.to);
-    if (channel_genesis_hash && !isNaN(blockNum)) {
-      crudService
-        .getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs)
-        .then(rows => {
-          if (rows) {
-            return res.send({ status: 200, rows });
-          }
-          return requtil.notFound(req, res);
-        });
-    } else {
-      return requtil.invalidRequest(req, res);
+  app.get(
+    '/api/blockAndTxList/:channel_genesis_hash/:blocknum',
+    async (req, res) => {
+      const channel_genesis_hash = req.params.channel_genesis_hash;
+      const blockNum = parseInt(req.params.blocknum);
+      const orgs = requtil.orgsArrayToString(req.query.orgs);
+      const { from, to } = requtil.queryDatevalidator(
+        req.query.from,
+        req.query.to
+      );
+      if (channel_genesis_hash && !isNaN(blockNum)) {
+        crudService
+          .getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs)
+          .then((rows) => {
+            if (rows) {
+              return res.send({ status: 200, rows });
+            }
+            return requtil.notFound(req, res);
+          });
+      } else {
+        return requtil.invalidRequest(req, res);
+      }
     }
-  });
+  );
 
   // TRANSACTION METRICS
 
-  /***
+  /** *
    Transactions per minute with hour interval
   GET /api/txByMinute
   curl -i 'http://<host>:<port>/api/txByMinute/<channel_genesis_hash>/<hours>'
@@ -202,12 +205,12 @@ const dbroutes = (app, platform) => {
 
   */
 
-  app.get('/api/txByMinute/:channel_genesis_hash/:hours', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let hours = parseInt(req.params.hours);
+  app.get('/api/txByMinute/:channel_genesis_hash/:hours', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const hours = parseInt(req.params.hours);
 
     if (channel_genesis_hash && !isNaN(hours)) {
-      statusMetrics.getTxByMinute(channel_genesis_hash, hours).then(rows => {
+      statusMetrics.getTxByMinute(channel_genesis_hash, hours).then((rows) => {
         if (rows) {
           return res.send({ status: 200, rows });
         }
@@ -218,7 +221,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  /***
+  /** *
    Transactions per hour(s) with day interval
   GET /api/txByHour
   curl -i 'http://<host>:<port>/api/txByHour/<channel_genesis_hash>/<days>'
@@ -227,12 +230,12 @@ const dbroutes = (app, platform) => {
   {'datetime':'2018-03-12T20:00:00.000Z','count':'0'}]}
   */
 
-  app.get('/api/txByHour/:channel_genesis_hash/:days', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let days = parseInt(req.params.days);
+  app.get('/api/txByHour/:channel_genesis_hash/:days', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
-      statusMetrics.getTxByHour(channel_genesis_hash, days).then(rows => {
+      statusMetrics.getTxByHour(channel_genesis_hash, days).then((rows) => {
         if (rows) {
           return res.send({ status: 200, rows });
         }
@@ -245,7 +248,7 @@ const dbroutes = (app, platform) => {
 
   // BLOCK METRICS
 
-  /***
+  /** *
    Blocks per minute with hour interval
   GET /api/blocksByMinute
   curl -i 'http://<host>:<port>/api/blocksByMinute/<channel_genesis_hash>/<hours>'
@@ -254,17 +257,14 @@ const dbroutes = (app, platform) => {
 
   */
 
-  app.get('/api/blocksByMinute/:channel_genesis_hash/:hours', function (
-    req,
-    res
-  ) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let hours = parseInt(req.params.hours);
+  app.get('/api/blocksByMinute/:channel_genesis_hash/:hours', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const hours = parseInt(req.params.hours);
 
     if (channel_genesis_hash && !isNaN(hours)) {
       statusMetrics
         .getBlocksByMinute(channel_genesis_hash, hours)
-        .then(rows => {
+        .then((rows) => {
           if (rows) {
             return res.send({ status: 200, rows });
           }
@@ -275,7 +275,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  /***
+  /** *
    Blocks per hour(s) with day interval
   GET /api/blocksByHour
   curl -i 'http://<host>:<port>/api/blocksByHour/<channel_genesis_hash>/<days>'
@@ -284,12 +284,12 @@ const dbroutes = (app, platform) => {
 
   */
 
-  app.get('/api/blocksByHour/:channel_genesis_hash/:days', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
-    let days = parseInt(req.params.days);
+  app.get('/api/blocksByHour/:channel_genesis_hash/:days', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
-      statusMetrics.getBlocksByHour(channel_genesis_hash, days).then(rows => {
+      statusMetrics.getBlocksByHour(channel_genesis_hash, days).then((rows) => {
         if (rows) {
           return res.send({ status: 200, rows });
         }
@@ -300,7 +300,7 @@ const dbroutes = (app, platform) => {
     }
   });
 
-  /***
+  /** *
    Transactions by Organization(s)
   GET /api/txByOrg
   curl -i 'http://<host>:<port>/api/txByOrg/<channel_genesis_hash>'
@@ -308,14 +308,13 @@ const dbroutes = (app, platform) => {
   {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
 
   */
-  app.get('/api/txByOrg/:channel_genesis_hash', function (req, res) {
-    let channel_genesis_hash = req.params.channel_genesis_hash;
+  app.get('/api/txByOrg/:channel_genesis_hash', (req, res) => {
+    const channel_genesis_hash = req.params.channel_genesis_hash;
 
     if (channel_genesis_hash) {
-      proxy.getTxByOrgs(channel_genesis_hash).then(rows => {
-        return res.send({ status: 200, rows });
-      });
-
+      proxy
+        .getTxByOrgs(channel_genesis_hash)
+        .then(rows => res.send({ status: 200, rows }));
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -335,11 +334,11 @@ const dbroutes = (app, platform) => {
            ]
          */
 
-  app.get('/api/channels/info', function (req, res) {
+  app.get('/api/channels/info', (req, res) => {
     proxy
       .getChannelsInfo()
-      .then(data => {
-        data.forEach(element => {
+      .then((data) => {
+        data.forEach((element) => {
           element.createdat = new Date(element.createdat).toISOString();
         });
         res.send({ status: 200, channels: data });

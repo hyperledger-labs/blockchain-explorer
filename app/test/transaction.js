@@ -1,14 +1,17 @@
-var expect = require('chai').expect;
-var assert = require('assert');
-var chai = require('chai');
-var should = chai.should();
+const expect = require('chai').expect;
+const assert = require('assert');
+const chai = require('chai');
+
+const should = chai.should();
 const { spy, stub } = require('sinon');
-var config = require('../../app/platform/fabric/config');
-var appconfig = require('../../appconfig.json');
-var host = process.env.HOST || appconfig.host;
-var port = process.env.PORT || appconfig.port;
-var sinon = require('sinon');
-var request = require('request');
+const config = require('../../app/platform/fabric/config');
+const appconfig = require('../../appconfig.json');
+
+const host = process.env.HOST || appconfig.host;
+const port = process.env.PORT || appconfig.port;
+const sinon = require('sinon');
+const request = require('request');
+
 const base = 'http://localhost:1337';
 const transaction = require('./fixtures/transaction.json');
 
@@ -26,12 +29,12 @@ describe('GET /api/transaction/:channel/:id', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', done => {
+  it('should return currentchannel ', (done) => {
     const obj = transaction;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${base}` +
-        '/api/transaction/mychannel/1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840',
+      `${base}`
+        + '/api/transaction/mychannel/1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'row');

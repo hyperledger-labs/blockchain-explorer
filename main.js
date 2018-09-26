@@ -8,60 +8,61 @@
  *
  */
 
-var http = require('http');
-var url = require('url');
-var WebSocket = require('ws');
-var appconfig = require('./appconfig.json');
-var helper = require('./app/common/helper');
-var logger = helper.getLogger('main');
-var express = require('express');
-var path = require('path');
-var Explorer = require('./app/Explorer');
-var ExplorerError = require('./app/common/ExplorerError');
+const http = require('http');
+const url = require('url');
+const WebSocket = require('ws');
+const appconfig = require('./appconfig.json');
+const helper = require('./app/common/helper');
 
-var host = process.env.HOST || appconfig.host;
-var port = process.env.PORT || appconfig.port;
+const logger = helper.getLogger('main');
+const express = require('express');
+const path = require('path');
+const Explorer = require('./app/Explorer');
+const ExplorerError = require('./app/common/ExplorerError');
+
+const host = process.env.HOST || appconfig.host;
+const port = process.env.PORT || appconfig.port;
 
 class Broadcaster extends WebSocket.Server {
   constructor(server) {
     super({ server });
     this.on('connection', function connection(ws, req) {
       const location = url.parse(req.url, true);
-      this.on('message', function incoming(message) {
+      this.on('message', (message) => {
         console.log('received: %s', message);
       });
     });
   }
 
   broadcast(data) {
-    this.clients.forEach(function each(client) {
+    this.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        logger.debug('Broadcast >> %j' , data);
-        console.log('Broadcast >> %j' , data);
+        logger.debug('Broadcast >> %j', data);
+        console.log('Broadcast >> %j', data);
         client.send(JSON.stringify(data));
       }
     });
   }
 }
 
-var server;
-var explorer;
+let server;
+let explorer;
 async function startExplorer() {
   explorer = new Explorer();
-  //============ web socket ==============//
+  //= =========== web socket ==============//
   server = http.createServer(explorer.getApp());
-  var broadcaster = new Broadcaster(server);
+  const broadcaster = new Broadcaster(server);
   await explorer.initialize(broadcaster);
   explorer.getApp().use(express.static(path.join(__dirname, 'client/build')));
   logger.info(
     'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
   );
   // ============= start server =======================
-  server.listen(port, function() {
+  server.listen(port, () => {
     console.log('\n');
     console.log(`Please open web browser to access ：http://${host}:${port}/`);
     console.log('\n');
-    console.log('pid is ' + process.pid);
+    console.log(`pid is ${process.pid}`);
     console.log('\n');
   });
 }
@@ -69,7 +70,7 @@ async function startExplorer() {
 startExplorer();
 
 let connections = [];
-server.on('connection', connection => {
+server.on('connection', (connection) => {
   connections.push(connection);
   connection.on(
     'close',
@@ -77,10 +78,9 @@ server.on('connection', connection => {
   );
 });
 
-
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
-var shutDown = function() {
+const shutDown = function () {
   console.log('Received kill signal, shutting down gracefully');
   server.close(() => {
     explorer.close();
@@ -100,8 +100,10 @@ var shutDown = function() {
   setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 };
 
-process.on('unhandledRejection', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+process.on('unhandledRejection', (up) => {
+  console.log(
+    '<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>'
+  );
   if (up instanceof ExplorerError) {
     console.log('Error : ', up.message);
   } else {
@@ -111,8 +113,10 @@ process.on('unhandledRejection', up => {
     shutDown();
   }, 2000);
 });
-process.on('uncaughtException', up => {
-  console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+process.on('uncaughtException', (up) => {
+  console.log(
+    '<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>'
+  );
   if (up instanceof ExplorerError) {
     console.log('Error : ', up.message);
   } else {

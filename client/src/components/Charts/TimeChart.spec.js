@@ -7,7 +7,7 @@ import { TimeChart } from './TimeChart';
 const setup = () => {
   const props = {
     classes: {
-      content: 'content'
+      content: 'content',
     },
     chartData: {
       dataMax: 10,
@@ -36,16 +36,16 @@ const setup = () => {
         { datetime: '2018-05-14T14:00:00.000Z', count: '0' },
         { datetime: '2018-05-14T15:00:00.000Z', count: '0' },
         { datetime: '2018-05-14T16:00:00.000Z', count: '0' },
-        { datetime: '2018-05-14T17:00:00.000Z', count: '0' }
-      ]
-    }
+        { datetime: '2018-05-14T17:00:00.000Z', count: '0' },
+      ],
+    },
   };
 
   const wrapper = shallow(<TimeChart {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 

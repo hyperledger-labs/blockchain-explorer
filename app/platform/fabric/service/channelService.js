@@ -3,24 +3,25 @@
 */
 
 const util = require('util');
-var path = require('path');
-var fs = require('fs');
+let path = require('path');
+let fs = require('fs');
 const exec = util.promisify(require('child_process').exec);
-var config = require('../../../platform/fabric/config.json');
-var FabricUtils = require('./../utils/FabricUtils.js');
-var helper = require('../../../common/helper');
-var ExplorerError = require('../../../common/ExplorerError');
-var configtxgenToolPath = config.configtxgenToolPath;
-//var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml');
-//var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml');
+let config = require('../../../platform/fabric/config.json');
+let FabricUtils = require('./../utils/FabricUtils.js');
+let helper = require('../../../common/helper');
+let ExplorerError = require('../../../common/ExplorerError');
 
-var logger = helper.getLogger('channelservice');
+let configtxgenToolPath = config.configtxgenToolPath;
+// var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml');
+// var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml');
 
-var generateChannelArtifacts = async function(artifacts) {
-  let artifactsDir = await FabricUtils.generateDir();
-  var artifactChannelPath = path.resolve(artifactsDir);
-  let channelTxPath = `${artifactChannelPath}/${artifacts.channelName}.tx`;
-  let channelBlockPath = `${artifactChannelPath}/${
+let logger = helper.getLogger('channelservice');
+
+let generateChannelArtifacts = async function(artifacts) {
+  const artifactsDir = await FabricUtils.generateDir();
+  let artifactChannelPath = path.resolve(artifactsDir);
+  const channelTxPath = `${artifactChannelPath}/${artifacts.channelName}.tx`;
+  const channelBlockPath = `${artifactChannelPath}/${
     artifacts.channelName
   }.block`;
   logger.info(
@@ -53,9 +54,9 @@ var generateChannelArtifacts = async function(artifacts) {
     logger.error(error);
     throw new Error(error);
   });
-  let channelArtifacts = {
-    channelTxPath: channelTxPath,
-    channelBlockPath: channelBlockPath
+  const channelArtifacts = {
+    channelTxPath,
+    channelBlockPath
   };
   return channelArtifacts;
 };
@@ -116,14 +117,13 @@ async function createChannel(artifacts, client) {
         };
         return resp;
       }
-    } else {
-      logger.debug('artifacts ', artifacts);
-      let response = {
-        success: false,
-        message: 'Invalid request '
-      };
-      return response;
     }
+    logger.debug('artifacts ', artifacts);
+    let response = {
+      success: false,
+      message: 'Invalid request '
+    };
+    return response;
   } catch (err) {
     logger.error('createChannel ', err);
     let response = {
@@ -137,7 +137,7 @@ async function createChannel(artifacts, client) {
 /*
  * Have an organization join a channel
  */
-var joinChannel = async function(
+let joinChannel = async function(
   channel_name,
   peers,
   org_name,
@@ -233,18 +233,17 @@ var joinChannel = async function(
       message: message
     };
     return response;
-  } else {
-    let message = util.format(
-      'Failed to join all peers to channel. cause:%s',
-      error_message
-    );
-    logger.error(message);
-    let response = {
-      success: true,
-      message: message
-    };
-    return response;
   }
+  let message = util.format(
+    'Failed to join all peers to channel. cause:%s',
+    error_message
+  );
+  logger.error(message);
+  let response = {
+    success: true,
+    message: message
+  };
+  return response;
 };
 
 exports.createChannel = createChannel;

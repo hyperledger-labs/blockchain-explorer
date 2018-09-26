@@ -8,15 +8,17 @@ const fs = require('fs-extra');
 const Proxy = require('./Proxy');
 const helper = require('../../common/helper');
 const ExplorerError = require('../../common/ExplorerError');
+
 const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
 const ExplorerListener = require('../../sync/listener/ExplorerListener');
 
-let CRUDService = require('../../persistence/fabric/CRUDService');
-let MetricService = require('../../persistence/fabric/MetricService');
+const CRUDService = require('../../persistence/fabric/CRUDService');
+const MetricService = require('../../persistence/fabric/MetricService');
 
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
+
 const config_path = path.resolve(__dirname, './config.json');
 
 class Platform {
@@ -33,11 +35,11 @@ class Platform {
   }
 
   async initialize() {
-    let _self = this;
+    const _self = this;
 
     // loading the config.json
-    let all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
-    let network_configs = all_config[fabric_const.NETWORK_CONFIGS];
+    const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+    const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
     this.syncType = all_config.syncType;
 
     // build client context
@@ -48,8 +50,8 @@ class Platform {
     await this.buildClients(network_configs);
 
     if (
-      this.networks.size == 0 &&
-      this.networks.get(this.defaultNetwork).size == 0
+      this.networks.size == 0
+      && this.networks.get(this.defaultNetwork).size == 0
     ) {
       logger.error(
         '************* There is no client found for Hyperledger fabric platform *************'
@@ -59,29 +61,31 @@ class Platform {
   }
 
   async buildClients(network_configs) {
-    let _self = this;
+    const _self = this;
     let clientstatus = true;
 
     // setting organization enrolment files
     logger.debug('Setting admin organization enrolment files');
     try {
-      this.network_configs = await FabricUtils.setAdminEnrolmentPath(network_configs);
+      this.network_configs = await FabricUtils.setAdminEnrolmentPath(
+        network_configs
+      );
     } catch (e) {
       logger.error(e);
       clientstatus = false;
       this.network_configs = network_configs;
     }
 
-    for (let network_name in this.network_configs) {
+    for (const network_name in this.network_configs) {
       this.networks.set(network_name, new Map());
-      let client_configs = this.network_configs[network_name];
+      const client_configs = this.network_configs[network_name];
       if (!this.defaultNetwork) {
         this.defaultNetwork = network_name;
       }
 
       // Create fabric explorer client for each
       // Each client is connected to only a single peer and monitor that particular peer only
-      for (let client_name in client_configs.clients) {
+      for (const client_name in client_configs.clients) {
         // set default client as first client
         if (!this.defaultClient) {
           this.defaultClient = client_name;
@@ -97,16 +101,16 @@ class Platform {
             client_name,
             this.persistence
           );
-        }
-        else {
+        } else {
           client = await FabricUtils.createDetachClient(
             client_configs,
             client_name,
-            this.persistence);
+            this.persistence
+          );
         }
         if (client) {
           // set client into clients map
-          let clients = this.networks.get(network_name);
+          const clients = this.networks.get(network_name);
           clients.set(client_name, client);
         }
       }
@@ -114,10 +118,10 @@ class Platform {
   }
 
   initializeListener(syncconfig) {
-    for (var [network_name, clients] of this.networks.entries()) {
-      for (var [client_name, client] of clients.entries()) {
+    for (const [network_name, clients] of this.networks.entries()) {
+      for (const [client_name, client] of clients.entries()) {
         if (this.getClient(network_name, client_name).getStatus()) {
-          let explorerListener = new ExplorerListener(this, syncconfig);
+          const explorerListener = new ExplorerListener(this, syncconfig);
           explorerListener.initialize([network_name, client_name, '1']);
           explorerListener.send('Successfully send a message to child process');
           this.explorerListeners.push(explorerListener);
@@ -128,12 +132,16 @@ class Platform {
 
   setPersistenceService() {
     // setting platfrom specific CRUDService and MetricService
-    this.persistence.setMetricService(new MetricService(this.persistence.getPGService()));
-    this.persistence.setCrudService(new CRUDService(this.persistence.getPGService()));
+    this.persistence.setMetricService(
+      new MetricService(this.persistence.getPGService())
+    );
+    this.persistence.setCrudService(
+      new CRUDService(this.persistence.getPGService())
+    );
   }
 
   changeNetwork(network_name, client_name, channel_name) {
-    let network = this.networks.get(network_name);
+    const network = this.networks.get(network_name);
     if (network) {
       this.defaultNetwork = network_name;
       let client;
@@ -142,20 +150,20 @@ class Platform {
         if (client) {
           this.defaultClient = client_name;
         } else {
-          return 'Client [' + network_name + '] is not found in network';
+          return `Client [${network_name}] is not found in network`;
         }
       } else {
-        var iterator = network.values();
+        const iterator = network.values();
         client = iterator.next().value;
         if (!client) {
-          return 'Client [' + network_name + '] is not found in network';
+          return `Client [${network_name}] is not found in network`;
         }
       }
       if (channel_name) {
         client.setDefaultChannel(channel_name);
       }
     } else {
-      return 'Network [' + network_name + '] is not found';
+      return `Network [${network_name}] is not found`;
     }
   }
 
@@ -164,15 +172,15 @@ class Platform {
   }
 
   getClient(network_name, client_name) {
-
     return this.networks
-      .get(network_name ? network_name : this.defaultNetwork)
-      .get(client_name ? client_name : this.defaultClient);
+      .get(network_name || this.defaultNetwork)
+      .get(client_name || this.defaultClient);
   }
 
   getPersistence() {
     return this.persistence;
   }
+
   getBroadcaster() {
     return this.broadcaster;
   }
@@ -189,7 +197,7 @@ class Platform {
     console.log(
       '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'
     );
-    for (let explorerListener of this.explorerListeners) {
+    for (const explorerListener of this.explorerListeners) {
       explorerListener.close();
     }
   }

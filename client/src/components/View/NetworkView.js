@@ -14,7 +14,7 @@ export const NetworkView = ({ peerList }) => (
 );
 
 NetworkView.propTypes = {
-  peerList: peerListType.isRequired
+  peerList: peerListType.isRequired,
 };
 
 export default NetworkView;

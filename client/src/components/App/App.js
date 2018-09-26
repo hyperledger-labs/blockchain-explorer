@@ -15,7 +15,7 @@ import ErrorMesage from '../ErrorMesage';
 import { chartSelectors } from '../../state/redux/charts';
 import { themeSelectors, themeActions } from '../../state/redux/theme';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
@@ -27,9 +27,9 @@ const styles = theme => {
       bottom: 0,
       right: 0,
       '& ol, & ul': {
-        listStyle: 'none'
-      }
-    }
+        listStyle: 'none',
+      },
+    },
   };
 };
 
@@ -37,7 +37,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true
+      loading: true,
     };
   }
 
@@ -45,7 +45,7 @@ export class App extends Component {
     this.setState({ loading: false });
   };
 
-  refreshComponent = mode => {
+  refreshComponent = (mode) => {
     this.props.changeTheme(mode);
   };
 
@@ -76,8 +76,8 @@ export default compose(
   connect(
     state => ({
       error: errorMessageSelector(state),
-      mode: modeSelector(state)
+      mode: modeSelector(state),
     }),
-    { changeTheme }
-  )
+    { changeTheme },
+  ),
 )(App);

@@ -1,7 +1,6 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
-'use strict';
 
 const path = require('path');
 const fs = require('fs-extra');
@@ -11,14 +10,16 @@ const FabricUtils = require('../utils/FabricUtils');
 const FabricEvent = require('./FabricEvent');
 
 const helper = require('../../../common/helper');
+
 const logger = helper.getLogger('SyncPlatform');
 const ExplorerError = require('../../../common/ExplorerError');
 
-let CRUDService = require('../../../persistence/fabric/CRUDService');
-let MetricService = require('../../../persistence/fabric/MetricService');
+const CRUDService = require('../../../persistence/fabric/CRUDService');
+const MetricService = require('../../../persistence/fabric/MetricService');
 
 const fabric_const = require('../utils/FabricConst').fabric.const;
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
+
 const config_path = path.resolve(__dirname, '../config.json');
 
 class SyncPlatform {
@@ -35,7 +36,7 @@ class SyncPlatform {
   }
 
   async initialize(args) {
-    let _self = this;
+    const _self = this;
 
     logger.debug(
       '******* Initialization started for child client process %s ******',
@@ -43,8 +44,8 @@ class SyncPlatform {
     );
 
     // loading the config.json
-    let all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
-    let network_configs = all_config[fabric_const.NETWORK_CONFIGS];
+    const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+    const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
     if (args.length == 0) {
       // get the first network and first client
@@ -64,7 +65,7 @@ class SyncPlatform {
     }
 
     console.log(
-      '\n' + explorer_mess.message.MESSAGE_1002,
+      `\n${explorer_mess.message.MESSAGE_1002}`,
       this.network_name,
       this.client_name
     );
@@ -76,7 +77,7 @@ class SyncPlatform {
     // update the discovery-cache-life as block synch interval time in global config
     global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
 
-    let client_configs = network_configs[this.network_name];
+    const client_configs = network_configs[this.network_name];
 
     this.client_configs = await FabricUtils.setOrgEnrolmentPath(client_configs);
 
@@ -87,29 +88,29 @@ class SyncPlatform {
     if (!this.client) {
       throw new ExplorerError(explorer_mess.error.ERROR_2011);
     }
-    let peer = {
+    const peer = {
       requests: this.client.getDefaultPeer().getUrl(),
       mspid: this.client_configs.organizations[
         this.client_configs.clients[this.client_name].organization
       ].mspid
     };
 
-    let peerStatus = await this.client.getPeerStatus(peer);
+    const peerStatus = await this.client.getPeerStatus(peer);
 
     if (peerStatus.status) {
       // updating the client network and other details to DB
-      let res = await this.syncService.synchNetworkConfigToDB(this.client);
+      const res = await this.syncService.synchNetworkConfigToDB(this.client);
       if (!res) {
         return;
       }
 
-      //start event
+      // start event
       this.eventHub = new FabricEvent(this.client, this.syncService);
       await this.eventHub.initialize();
 
       // setting interval for validating any missing block from the current client ledger
       // set blocksSyncTime property in platform config.json in minutes
-      setInterval(function() {
+      setInterval(() => {
         _self.isChannelEventHubConnected();
       }, this.blocksSyncTime);
       logger.debug(
@@ -122,9 +123,9 @@ class SyncPlatform {
   }
 
   async isChannelEventHubConnected() {
-    for (var [channel_name, channel] of this.client.getChannels().entries()) {
+    for (const [channel_name, channel] of this.client.getChannels().entries()) {
       // validate channel event is connected
-      let status = this.eventHub.isChannelEventHubConnected(channel_name);
+      const status = this.eventHub.isChannelEventHubConnected(channel_name);
       if (status) {
         await this.syncService.synchBlocks(this.client, channel);
       } else {
@@ -136,9 +137,9 @@ class SyncPlatform {
 
   setBlocksSyncTime(blocksSyncTime) {
     if (blocksSyncTime) {
-      let time = parseInt(blocksSyncTime, 10);
+      const time = parseInt(blocksSyncTime, 10);
       if (!isNaN(time)) {
-        //this.blocksSyncTime = 1 * 10 * 1000;
+        // this.blocksSyncTime = 1 * 10 * 1000;
         this.blocksSyncTime = time * 60 * 1000;
       }
     }

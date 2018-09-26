@@ -9,7 +9,7 @@ jest.useFakeTimers();
 const setup = () => {
   const props = {
     classes: {
-      chart: 'chart'
+      chart: 'chart',
     },
     blockPerHour: [
       { datetime: '2018-05-13T17:00:00.000Z', count: '0' },
@@ -36,7 +36,7 @@ const setup = () => {
       { datetime: '2018-05-14T14:00:00.000Z', count: '0' },
       { datetime: '2018-05-14T15:00:00.000Z', count: '0' },
       { datetime: '2018-05-14T16:00:00.000Z', count: '0' },
-      { datetime: '2018-05-14T17:00:00.000Z', count: '0' }
+      { datetime: '2018-05-14T17:00:00.000Z', count: '0' },
     ],
     blockPerMin: [
       { datetime: '2018-05-14T16:23:00.000Z', count: '0' },
@@ -99,7 +99,7 @@ const setup = () => {
       { datetime: '2018-05-14T17:20:00.000Z', count: '0' },
       { datetime: '2018-05-14T17:21:00.000Z', count: '0' },
       { datetime: '2018-05-14T17:22:00.000Z', count: '0' },
-      { datetime: '2018-05-14T17:23:00.000Z', count: '0' }
+      { datetime: '2018-05-14T17:23:00.000Z', count: '0' },
     ],
     transactionPerHour: [
       { datetime: '2018-05-13T17:00:00.000Z', count: '0' },
@@ -126,7 +126,7 @@ const setup = () => {
       { datetime: '2018-05-14T14:00:00.000Z', count: '0' },
       { datetime: '2018-05-14T15:00:00.000Z', count: '0' },
       { datetime: '2018-05-14T16:00:00.000Z', count: '0' },
-      { datetime: '2018-05-14T17:00:00.000Z', count: '0' }
+      { datetime: '2018-05-14T17:00:00.000Z', count: '0' },
     ],
     transactionPerMin: [
       { datetime: '2018-05-14T16:23:00.000Z', count: '0' },
@@ -189,20 +189,20 @@ const setup = () => {
       { datetime: '2018-05-14T17:20:00.000Z', count: '0' },
       { datetime: '2018-05-14T17:21:00.000Z', count: '0' },
       { datetime: '2018-05-14T17:22:00.000Z', count: '0' },
-      { datetime: '2018-05-14T17:23:00.000Z', count: '0' }
+      { datetime: '2018-05-14T17:23:00.000Z', count: '0' },
     ],
     getBlocksPerMin: jest.fn(),
     getBlocksPerHour: jest.fn(),
     getTransactionPerMin: jest.fn(),
     getTransactionPerHour: jest.fn(),
-    currentChannel: 'mychannel'
+    currentChannel: 'mychannel',
   };
 
   const wrapper = shallow(<ChartStats {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -278,7 +278,7 @@ describe('ChartStats', () => {
       getBlocksPerHour,
       getBlocksPerMin,
       getTransactionPerHour,
-      getTransactionPerMin
+      getTransactionPerMin,
     } = props;
     wrapper.instance().syncData('newData');
     expect(getBlocksPerHour).toHaveBeenCalled();

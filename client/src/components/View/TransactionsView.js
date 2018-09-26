@@ -11,7 +11,7 @@ import {
   getTransactionInfoType,
   getTransactionListType,
   transactionType,
-  transactionListType
+  transactionListType,
 } from '../types';
 
 export const TransactionsView = ({
@@ -23,7 +23,7 @@ export const TransactionsView = ({
   transactionList,
   getTransactionListSearch,
   transactionByOrg,
-  transactionListSearch
+  transactionListSearch,
 }) => (
   <View>
     <Transactions
@@ -46,7 +46,7 @@ TransactionsView.propTypes = {
   getTransactionInfo: getTransactionInfoType.isRequired,
   getTransactionList: getTransactionListType.isRequired,
   transaction: transactionType.isRequired,
-  transactionList: transactionListType.isRequired
+  transactionList: transactionListType.isRequired,
 };
 
 export default TransactionsView;

@@ -14,20 +14,18 @@
  limitations under the License.
 */
 
-'use strict';
+const api = require('fabric-client/lib/api.js');
+const utils = require('fabric-client/lib/utils.js');
+const Remote = require('fabric-client/lib/Remote');
+const grpc = require('grpc');
+const util = require('util');
+const appRoot = require('app-root-path');
 
-var api = require('fabric-client/lib/api.js');
-var utils = require('fabric-client/lib/utils.js');
-var Remote = require('fabric-client/lib/Remote');
-var grpc = require('grpc');
-var util = require('util');
-var appRoot = require('app-root-path');
-
-var _serviceProto = grpc.load(
-  appRoot + '/node_modules/fabric-client/lib/protos/peer/admin.proto'
+const _serviceProto = grpc.load(
+  `${appRoot}/node_modules/fabric-client/lib/protos/peer/admin.proto`
 ).protos;
 
-var logger = utils.getLogger('Admin.js');
+const logger = utils.getLogger('Admin.js');
 
 /**
  *
@@ -140,9 +138,8 @@ class AdminPeer {
   isInOrg(mspid) {
     if (!mspid || !this._mspid) {
       return true;
-    } else {
-      return mspid === this._mspid;
     }
+    return mspid === this._mspid;
   }
 
   /**
@@ -169,27 +166,26 @@ class AdminPeer {
    */
   GetStatus(envelope, timeout) {
     logger.debug('Admin.GetStatus - Start');
-    let self = this;
+    const self = this;
     let rto = self._peer._request_timeout;
     if (typeof timeout === 'number') rto = timeout;
 
     // Send the transaction to the peer node via grpc
     // The rpc specification on the peer side is:
     //     rpc ProcessProposal(Proposal) returns (ProposalResponse) {}
-    return new Promise(function(resolve, reject) {
-      var send_timeout = setTimeout(function() {
+    return new Promise((resolve, reject) => {
+      const send_timeout = setTimeout(() => {
         logger.error('GetStatus - timed out after:%s', rto);
         return reject(new Error('REQUEST_TIMEOUT'));
       }, rto);
 
-      self._endorserClient.GetStatus(envelope, function(err, serverStatus) {
+      self._endorserClient.GetStatus(envelope, (err, serverStatus) => {
         clearTimeout(send_timeout);
         let server_hostname;
         if (self._peer._options['grpc.default_authority']) {
           server_hostname = self._peer._options['grpc.default_authority'];
         } else {
-          server_hostname =
-            self._peer._options['grpc.ssl_target_name_override'];
+          server_hostname = self._peer._options['grpc.ssl_target_name_override'];
         }
         if (err) {
           logger.debug(
@@ -198,9 +194,9 @@ class AdminPeer {
             err
           );
           if (err instanceof Error) {
-            resolve({ status: 'DOWN', server_hostname: server_hostname });
+            resolve({ status: 'DOWN', server_hostname });
           } else {
-            resolve({ status: 'DOWN', server_hostname: server_hostname });
+            resolve({ status: 'DOWN', server_hostname });
           }
         } else {
           logger.debug(
@@ -208,7 +204,7 @@ class AdminPeer {
             self._peer._url,
             serverStatus
           );
-          resolve({ status: 'RUNNING', server_hostname: server_hostname });
+          resolve({ status: 'RUNNING', server_hostname });
         }
       });
     });
@@ -218,7 +214,7 @@ class AdminPeer {
    * return a printable representation of this object
    */
   toString() {
-    return ' Admin : {' + 'url:' + this._url + '}';
+    return `${' Admin : {' + 'url:'}${this._url}}`;
   }
 }
 

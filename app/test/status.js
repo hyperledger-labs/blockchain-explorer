@@ -1,14 +1,17 @@
-var expect = require('chai').expect;
-var assert = require('assert');
-var chai = require('chai');
-var should = chai.should();
+const expect = require('chai').expect;
+const assert = require('assert');
+const chai = require('chai');
+
+const should = chai.should();
 const { spy, stub } = require('sinon');
-var config = require('../../app/platform/fabric/config');
-var appconfig = require('../../appconfig.json');
-var host = process.env.HOST || appconfig.host;
-var port = process.env.PORT || appconfig.port;
-var sinon = require('sinon');
-var request = require('request');
+const config = require('../../app/platform/fabric/config');
+const appconfig = require('../../appconfig.json');
+
+const host = process.env.HOST || appconfig.host;
+const port = process.env.PORT || appconfig.port;
+const sinon = require('sinon');
+const request = require('request');
+
 const base = 'http://localhost:1337';
 const status = require('./fixtures/status.json');
 
@@ -26,22 +29,25 @@ describe('GET /api/status', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return channel status', done => {
+  it('should return channel status', (done) => {
     const obj = status;
     this.get.yields(null, JSON.stringify(obj));
-    request.get(`${base}` + '/api/status/' + config['channel'], (err, body) => {
-      body = JSON.parse(body);
-      body.should.include.keys(
-        'chaincodeCount',
-        'latestBlock',
-        'peerCount',
-        'txCount'
-      );
-      body.chaincodeCount.should.eql(1);
-      body.latestBlock.should.eql(2);
-      body.peerCount.should.eql(3);
-      body.txCount.should.eql(5);
-      done();
-    });
+    request.get(
+      `${`${base}` + '/api/status/'}${config.channel}`,
+      (err, body) => {
+        body = JSON.parse(body);
+        body.should.include.keys(
+          'chaincodeCount',
+          'latestBlock',
+          'peerCount',
+          'txCount'
+        );
+        body.chaincodeCount.should.eql(1);
+        body.latestBlock.should.eql(2);
+        body.peerCount.should.eql(3);
+        body.txCount.should.eql(5);
+        done();
+      }
+    );
   });
 });

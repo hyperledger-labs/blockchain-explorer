@@ -8,17 +8,15 @@ import { Badge } from 'reactstrap';
 import ReactTable from '../Styled/Table';
 import { peerStatusType } from '../types';
 
-const styles = theme => {
-  return {
-    table: {
-      height: 335,
-      overflowY: 'scroll'
-    },
-    center: {
-      textAlign: 'center'
-    }
-  };
-};
+const styles = theme => ({
+  table: {
+    height: 335,
+    overflowY: 'scroll',
+  },
+  center: {
+    textAlign: 'center',
+  },
+});
 
 const PeersHealth = ({ peerStatus, classes }) => {
   const columnHeaders = [
@@ -26,15 +24,19 @@ const PeersHealth = ({ peerStatus, classes }) => {
       Header: 'Peer Name',
       accessor: 'server_hostname',
       filterAll: false,
-      className: classes.center
+      className: classes.center,
     },
     {
       Header: 'Status',
       accessor: 'status',
       filterAll: false,
       className: classes.center,
-      Cell: row => <Badge color="success">{row.value}</Badge>
-    }
+      Cell: row => (
+        <Badge color="success">
+          {row.value}
+        </Badge>
+      ),
+    },
   ];
   return (
     <div>
@@ -50,7 +52,7 @@ const PeersHealth = ({ peerStatus, classes }) => {
 };
 
 PeersHealth.propTypes = {
-  peerStatus: peerStatusType.isRequired
+  peerStatus: peerStatusType.isRequired,
 };
 
 export default withStyles(styles)(PeersHealth);

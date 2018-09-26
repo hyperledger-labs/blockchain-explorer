@@ -18,7 +18,7 @@ const setup = () => {
         peer_type: 'PEER',
         ledger_height_high: '0',
         ledger_height_low: '0',
-        ledger_height_unsigned: true
+        ledger_height_unsigned: true,
       },
       {
         requests: 'grpcs://127.0.0.1:8051',
@@ -27,7 +27,7 @@ const setup = () => {
         peer_type: 'PEER',
         ledger_height_high: '0',
         ledger_height_low: '10',
-        ledger_height_unsigned: true
+        ledger_height_unsigned: true,
       },
       {
         requests: 'grpcs://127.0.0.1:9051',
@@ -36,7 +36,7 @@ const setup = () => {
         peer_type: 'PEER',
         ledger_height_high: '10',
         ledger_height_low: '0',
-        ledger_height_unsigned: true
+        ledger_height_unsigned: true,
       },
       {
         requests: 'grpcs://127.0.0.1:10051',
@@ -45,16 +45,16 @@ const setup = () => {
         peer_type: 'PEER',
         ledger_height_high: '10',
         ledger_height_low: '10',
-        ledger_height_unsigned: false
-      }
-    ]
+        ledger_height_unsigned: false,
+      },
+    ],
   };
 
   const wrapper = mount(<Peers {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -72,175 +72,175 @@ describe('Peers', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('peer0.org1.example.com'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('peer1.org1.example.com'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('peer0.org2.example.com'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('peer1.org2.example.com'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Request Url
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('grpcs://127.0.0.1:7051'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('grpcs://127.0.0.1:8051'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('grpcs://127.0.0.1:9051'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('grpcs://127.0.0.1:10051'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Peer Type
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('PEER'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('PEER'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('PEER'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('PEER'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // MSPID
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('Org1MSP'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('Org1MSP'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('Org2MSP'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('Org2MSP'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Ledger Height (high)
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('10'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('0'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('10'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('10'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Ledger Height (low)
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('0'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('10'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('0'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('10'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Ledger Height (unsigned)
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('true'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('true'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('true'))
-        .exists()
+        .exists(),
     ).toBe(true);
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('false'))
-        .exists()
+        .exists(),
     ).toBe(true);
   });
 
@@ -274,7 +274,7 @@ describe('Peers', () => {
       peer_type: 'PEER',
       ledger_height_high: 10,
       ledger_height_low: 10,
-      ledger_height_unsigned: true
+      ledger_height_unsigned: true,
     };
     peerList.push(peer);
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false);

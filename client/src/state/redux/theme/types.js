@@ -7,5 +7,5 @@ const namespaces = 'theme';
 const CHANGE_THEME = `${namespaces}/CHANGE_THEME`;
 
 export default {
-  CHANGE_THEME
+  CHANGE_THEME,
 };

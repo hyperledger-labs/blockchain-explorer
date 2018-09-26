@@ -9,33 +9,33 @@ const setup = () => {
   const props = {
     classes: {
       table: 'table',
-      center: 'center'
+      center: 'center',
     },
     peerStatus: [
       {
         status: 'UP',
-        server_hostname: 'peer0.org1.example.com'
+        server_hostname: 'peer0.org1.example.com',
       },
       {
         status: 'UP',
-        server_hostname: 'peer1.org1.example.com'
+        server_hostname: 'peer1.org1.example.com',
       },
       {
         status: 'UP',
-        server_hostname: 'peer0.org2.example.com'
+        server_hostname: 'peer0.org2.example.com',
       },
       {
         status: 'DOWN',
-        server_hostname: 'peer1.org2.example.com'
-      }
-    ]
+        server_hostname: 'peer1.org2.example.com',
+      },
+    ],
   };
 
   const wrapper = mount(<PeersHealth {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 

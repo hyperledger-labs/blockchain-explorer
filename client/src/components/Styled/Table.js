@@ -8,63 +8,65 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import classnames from 'classnames';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     '.rt-noData': {
       color: '#ffffff !important',
-      background: '#7165ae !important'
+      background: '#7165ae !important',
     },
     table: {
       '& .rt-tbody': {
-        overflow: 'scroll !important'
+        overflow: 'scroll !important',
       },
       '& .rt-tr-group .rt-tr': {
-        paddingTop: 30
+        paddingTop: 30,
       },
       '& .rt-td': {
-        textAlign: 'center'
+        textAlign: 'center',
       },
       '& .rt-th input': {
         background: dark ? '#7165ad !important' : undefined,
-        color: dark ? '#ffffff' : undefined
-      }
+        color: dark ? '#ffffff' : undefined,
+      },
     },
     list: {
       '& ::-webkit-scrollbar': {
-        width: '1em'
+        width: '1em',
       },
       '& ::-webkit-scrollbar-track': {
-        background: dark ? '#443e68' : 'rgb(238, 237, 237)'
+        background: dark ? '#443e68' : 'rgb(238, 237, 237)',
       },
       '& ::-webkit-scrollbar-thumb': {
-        background: dark ? '#6a5e9e' : 'rgb(192, 190, 190)'
+        background: dark ? '#6a5e9e' : 'rgb(192, 190, 190)',
       },
       '& ::-webkit-scrollbar-corner': {
-        background: dark ? '#443e68' : 'rgb(238, 237, 237)'
-      }
+        background: dark ? '#443e68' : 'rgb(238, 237, 237)',
+      },
     },
     pagination: {
       '& button': {
         color: dark ? '#ffffff !important' : undefined,
-        backgroundColor: dark ? '#5d538e !important' : undefined
+        backgroundColor: dark ? '#5d538e !important' : undefined,
       },
       '& button:hover': {
         color: dark ? '#39c9f5 !important' : undefined,
-        backgroundColor: dark ? '#7165ad !important' : undefined
-      }
-    }
+        backgroundColor: dark ? '#7165ad !important' : undefined,
+      },
+    },
   };
 };
 
-const Table = props => {
-  const { className = '', list = false, classes, ...rest } = props;
+const Table = (props) => {
+  const {
+    className = '', list = false, classes, ...rest
+  } = props;
   const clazz = classnames(
     classes.table,
     '-striped -highlight',
     className,
-    list && classes.list
+    list && classes.list,
   );
   return (
     <ReactTable

@@ -13,7 +13,7 @@ const blockListReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -28,7 +28,7 @@ const blockListSearchReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -43,7 +43,7 @@ const chaincodeListReducer = (state = initialState, action) => {
       return {
         rows: action.payload.chaincode,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -58,7 +58,7 @@ const channelsReducer = (state = initialState, action) => {
       return {
         rows: action.payload.channels,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -73,7 +73,7 @@ const peerListReducer = (state = initialState, action) => {
       return {
         rows: action.payload.peers,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -88,7 +88,7 @@ const transactionReducer = (state = initialState, action) => {
       return {
         transaction: action.payload.row,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -103,7 +103,7 @@ const transactionListReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -118,7 +118,7 @@ const transactionListSearchReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.error
+        errors: action.error,
       };
     }
     default: {
@@ -135,7 +135,7 @@ const reducer = combineReducers({
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,
-  transactionListSearch: transactionListSearchReducer
+  transactionListSearch: transactionListSearchReducer,
 });
 
 export default reducer;

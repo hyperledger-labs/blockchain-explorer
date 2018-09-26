@@ -3,25 +3,21 @@
 */
 
 class ForkSenderHandler {
+  constructor() {}
 
-    constructor() {
+  async initialize() {
+    process.on('message', (msg) => {
+      logger.debug('Message from parent: %j', msg);
+    });
+  }
+
+  send(message) {
+    if (process.send) {
+      process.send(message);
     }
+  }
 
-    async initialize() {
-        process.on('message', msg => {
-            logger.debug('Message from parent: %j', msg);
-        });
-    }
-
-    send(message) {
-        if (process.send) {
-            process.send(message);
-        }
-    }
-
-    close() {
-
-    }
+  close() {}
 }
 
 module.exports = ForkSenderHandler;

@@ -6,14 +6,14 @@ import { NetworkView } from './NetworkView';
 
 const setup = () => {
   const props = {
-    peerList: []
+    peerList: [],
   };
 
   const wrapper = shallow(<NetworkView {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 

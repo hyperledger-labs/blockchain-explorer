@@ -14,7 +14,7 @@ export const ChaincodeView = ({ chaincodeList }) => (
 );
 
 ChaincodeView.propTypes = {
-  chaincodeList: chaincodeListType.isRequired
+  chaincodeList: chaincodeListType.isRequired,
 };
 
 export default ChaincodeView;

@@ -1,11 +1,10 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
-'use strict';
-var explorer_const = require('../../common/ExplorerConst').explorer.const;
+
+const explorer_const = require('../../common/ExplorerConst').explorer.const;
 
 class ExplorerSender {
-
   constructor(syncconfig) {
     this.syncType = syncconfig.type;
     this.syncSenderHandler;
@@ -13,7 +12,7 @@ class ExplorerSender {
 
   async initialize() {
     if (this.syncType && this.syncType === explorer_const.SYNC_TYPE_LOCAL) {
-      let ForkSenderHandler = require('./ForkSenderHandler');
+      const ForkSenderHandler = require('./ForkSenderHandler');
       this.syncSenderHandler = new ForkSenderHandler();
     }
     if (this.syncSenderHandler) {
@@ -29,7 +28,6 @@ class ExplorerSender {
 
   close() {
     if (this.syncSenderHandler) {
-
     }
   }
 }

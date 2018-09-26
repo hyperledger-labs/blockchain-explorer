@@ -15,16 +15,16 @@ const setup = () => {
         channelname: 'mychannel',
         createdat: '2018-05-30T20:56:47.795Z',
         id: 3,
-        transactions: 5
-      }
-    ]
+        transactions: 5,
+      },
+    ],
   };
 
   const wrapper = mount(<Channels {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -94,7 +94,7 @@ describe('Channels', () => {
       channel,
       channel,
       channel,
-      channel
+      channel,
     ];
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
     wrapper.setProps({ channels: lotsOfChannels });

@@ -14,7 +14,7 @@ const setup = () => {
       hash: 'hash',
       partialHash: 'partialHash',
       fullHash: 'fullHash',
-      lastFullHash: 'lastFullHash'
+      lastFullHash: 'lastFullHash',
     },
     blockList: [
       {
@@ -32,8 +32,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -51,9 +51,9 @@ const setup = () => {
         txhash: [
           '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
           'a9cc2d309967fbba0d9575319ea0c7eb75e7c003142e6c43060015e59909d91d',
-          '85770c2057e4b63504de6fa8b0c711f33ec897d9e8fc10659d7712e51d57c513'
-        ]
-      }
+          '85770c2057e4b63504de6fa8b0c711f33ec897d9e8fc10659d7712e51d57c513',
+        ],
+      },
     ],
     blockListSearch: [
       {
@@ -71,8 +71,8 @@ const setup = () => {
         txcount: 2,
         txhash: [
           '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
-          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1'
-        ]
+          '9abc8cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bddbb1',
+        ],
       },
       {
         blockhash:
@@ -90,15 +90,15 @@ const setup = () => {
         txhash: [
           '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
           'a9cc2d309967fbba0d9575319ea0c7eb75e7c003142e6c43060015e59909d91d',
-          '85770c2057e4b63504de6fa8b0c711f33ec897d9e8fc10659d7712e51d57c513'
-        ]
-      }
+          '85770c2057e4b63504de6fa8b0c711f33ec897d9e8fc10659d7712e51d57c513',
+        ],
+      },
     ],
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
       peerCount: '4',
-      txCount: '36'
+      txCount: '36',
     },
     currentChannel: 'mychannel',
     transaction: {
@@ -122,10 +122,10 @@ const setup = () => {
               key: 'mycc',
               version: {
                 blocknum: '3',
-                tx_num: '0'
-              }
-            }
-          ]
+                tx_num: '0',
+              },
+            },
+          ],
         },
         {
           chaincode: 'mycc',
@@ -134,23 +134,23 @@ const setup = () => {
               key: 'a',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
+                tx_num: '0',
+              },
             },
             {
               key: 'b',
               version: {
                 block_num: '18',
-                tx_num: '0'
-              }
-            }
-          ]
-        }
+                tx_num: '0',
+              },
+            },
+          ],
+        },
       ],
       write_set: [
         {
           chaincode: 'lscc',
-          set: []
+          set: [],
         },
         {
           chaincode: 'lscc',
@@ -158,44 +158,44 @@ const setup = () => {
             {
               is_delete: false,
               key: 'a',
-              value: '-60'
+              value: '-60',
             },
             {
               is_delete: false,
               key: 'b',
-              value: '360'
-            }
-          ]
-        }
-      ]
+              value: '360',
+            },
+          ],
+        },
+      ],
     },
     transactionByOrg: [
       {
         count: '3',
-        creator_msp_id: 'OrdererMSP'
+        creator_msp_id: 'OrdererMSP',
       },
       {
         count: '1',
-        creator_msp_id: 'Org2MSP'
+        creator_msp_id: 'Org2MSP',
       },
       {
         count: '100',
-        creator_msp_id: 'Org1MSP'
-      }
+        creator_msp_id: 'Org1MSP',
+      },
     ],
     getBlockList: jest.fn(),
     removeTransactionInfo: jest.fn(),
     getTransactionInfo: jest.fn(),
     getTransaction: jest.fn().mockImplementationOnce(() => Promise.resolve()),
     getBlockListSearch: jest.fn(),
-    getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
+    getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve()),
   };
 
   const wrapper = mount(<Blocks {...props} />);
 
   return {
     props,
-    wrapper
+    wrapper,
   };
 };
 
@@ -213,57 +213,52 @@ describe('Blocks', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(20))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Number of Tx
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(2))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Data Hash
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n =>
-          n.contains(
-            '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e'
-          )
-        )
-        .exists()
+        .findWhere(n => n.contains(
+          '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e',
+        ))
+        .exists(),
     ).toBe(true);
     // Block Hash
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('6880fc'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Previous Hash
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n =>
-          n.contains(
-            '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
-          )
-        )
-        .exists()
+        .findWhere(n => n.contains(
+          '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        ))
+        .exists(),
     ).toBe(true);
     // Number of Transactions
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(
-          n =>
-            n.type() === 'div' &&
-            n.contains(
-              '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'
-            )
+          n => n.type() === 'div'
+            && n.contains(
+              '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+            ),
         )
         .children()
-        .children().length
+        .children().length,
     ).toBe(2);
 
     // Block Number
@@ -271,57 +266,52 @@ describe('Blocks', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(19))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Number of Tx
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(3))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Data Hash
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n =>
-          n.contains(
-            '1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf'
-          )
-        )
-        .exists()
+        .findWhere(n => n.contains(
+          '1adc2b51cb7d7df44f114fc42df1f6fdca64a5da3f9a07edbd3b0d8060bb2edf',
+        ))
+        .exists(),
     ).toBe(true);
     // Block Hash
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('7880fc'))
-        .exists()
+        .exists(),
     ).toBe(true);
     // Previous Hash
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n =>
-          n.contains(
-            '68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d'
-          )
-        )
-        .exists()
+        .findWhere(n => n.contains(
+          '68f4481e0caec16a5aceebabd01cb31635d9f0a8cf9f378f86e06b76c21c633d',
+        ))
+        .exists(),
     ).toBe(true);
     // Number of Transactions
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(
-          n =>
-            n.type() === 'div' &&
-            n.contains(
-              '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6'
-            )
+          n => n.type() === 'div'
+            && n.contains(
+              '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
+            ),
         )
         .children()
-        .children().length
+        .children().length,
     ).toBe(3);
   });
 
@@ -335,7 +325,7 @@ describe('Blocks', () => {
     await wrapper
       .instance()
       .handleDialogOpen(
-        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6'
+        '912cd6e7624313675cb1806e2ce0243bbeff247792f2c7aae857a8c5436074f6',
       );
     wrapper.update();
     expect(wrapper.state('dialogOpen')).toBe(true);
@@ -380,8 +370,8 @@ describe('Blocks', () => {
       .simulate('change', {
         target: {
           value:
-            '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e'
-        }
+            '2802f7e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9166e',
+        },
       });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
@@ -394,8 +384,8 @@ describe('Blocks', () => {
       .simulate('change', {
         target: {
           value:
-            '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
-        }
+            '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        },
       });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
@@ -409,8 +399,8 @@ describe('Blocks', () => {
       .simulate('change', {
         target: {
           value:
-            '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
-        }
+            '5880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+        },
       });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
@@ -424,8 +414,8 @@ describe('Blocks', () => {
       .simulate('change', {
         target: {
           value:
-            '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80'
-        }
+            '308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+        },
       });
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
@@ -455,11 +445,10 @@ describe('Blocks', () => {
   test('handleDialogOpenBlockHash sets the correct state', () => {
     const { wrapper } = setup();
     const instance = wrapper.instance();
-    const blockHash =
-      '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f';
+    const blockHash = '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f';
     expect(wrapper.state('dialogOpenBlockHash')).toBe(false);
     expect(wrapper.state('blockHash')).not.toMatchObject({
-      blockhash: blockHash
+      blockhash: blockHash,
     });
     instance.handleDialogOpenBlockHash(blockHash);
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
@@ -483,7 +472,7 @@ describe('Blocks', () => {
     expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
     expect(wrapper.state('blockHash')).toMatchObject({
       blockhash:
-        '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
+        '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
     });
   });
 

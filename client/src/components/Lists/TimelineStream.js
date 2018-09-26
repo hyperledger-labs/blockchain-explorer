@@ -15,36 +15,36 @@ import BlockView from '../View/BlockView';
 import blockOpen from '../../static/images/blockOpen.png';
 import { blockListType, notificationsType } from '../types';
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     scrollable: {
       height: 300,
-      overflowY: 'scroll'
+      overflowY: 'scroll',
     },
     text: {
       color: dark ? '#ffffff' : undefined,
       '& .badge-secondary': {
-        backgroundColor: '#5e548f'
-      }
+        backgroundColor: '#5e548f',
+      },
     },
     event: {
       wordWrap: 'break-word',
       width: '90% !important',
       backgroundColor: dark ? '#423b5f !important' : undefined,
       '& p': {
-        color: dark ? '#ffffff' : undefined
+        color: dark ? '#ffffff' : undefined,
       },
       '& > div': {
-        color: dark ? 'red' : undefined
-      }
+        color: dark ? 'red' : undefined,
+      },
     },
     open: {
       height: 35,
       marginTop: -10,
-      backgroundColor: 'transparent'
-    }
+      backgroundColor: 'transparent',
+    },
   };
 };
 
@@ -53,16 +53,16 @@ export class TimelineStream extends Component {
     super(props);
     this.state = {
       dialogOpenBlockHash: false,
-      blockHash: {}
+      blockHash: {},
     };
   }
 
-  handleDialogOpenBlockHash = rowValue => {
+  handleDialogOpenBlockHash = (rowValue) => {
     const { blockList } = this.props;
     const data = find(blockList, item => item.blockhash === rowValue);
     this.setState({
       dialogOpenBlockHash: true,
-      blockHash: data
+      blockHash: data,
     });
   };
 
@@ -89,17 +89,16 @@ export class TimelineStream extends Component {
                 style={{ width: '65%' }}
                 cardHeaderStyle={{
                   backgroundColor: '#6283D0',
-                  fontSize: '13pt'
+                  fontSize: '13pt',
                 }}
                 contentStyle={{
-                  backgroundColor: 'transparent'
+                  backgroundColor: 'transparent',
                 }}
-                buttons={
+                buttons={(
                   <a
                     data-command="block-link"
                     href="#/"
-                    onClick={() =>
-                      this.handleDialogOpenBlockHash(item.blockhash)
+                    onClick={() => this.handleDialogOpenBlockHash(item.blockhash)
                     }
                   >
                     <img
@@ -108,14 +107,31 @@ export class TimelineStream extends Component {
                       className={classes.open}
                     />
                   </a>
-                }
+)}
               >
                 <Typography variant="body1">
-                  <b className={classes.text}> Channel Name:</b>{' '}
-                  {item.channelName} <br />
-                  <b className={classes.text}> Datahash:</b> {item.datahash}{' '}
+                  <b className={classes.text}>
+                    {' '}
+Channel Name:
+                  </b>
+                  {' '}
+                  {item.channelName}
+                  {' '}
                   <br />
-                  <b className={classes.text}> Number of Tx:</b> {item.txcount}
+                  <b className={classes.text}>
+                    {' '}
+Datahash:
+                  </b>
+                  {' '}
+                  {item.datahash}
+                  {' '}
+                  <br />
+                  <b className={classes.text}>
+                    {' '}
+Number of Tx:
+                  </b>
+                  {' '}
+                  {item.txcount}
                 </Typography>
                 <h5 className={classes.text}>
                   <Badge className={classes.text}>
@@ -150,7 +166,7 @@ export class TimelineStream extends Component {
 
 TimelineStream.propTypes = {
   blockList: blockListType.isRequired,
-  notifications: notificationsType.isRequired
+  notifications: notificationsType.isRequired,
 };
 
 export default withStyles(styles)(TimelineStream);

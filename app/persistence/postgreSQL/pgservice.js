@@ -16,8 +16,9 @@
 
 const { Client } = require('pg');
 
-var helper = require('../../common/helper');
-var logger = helper.getLogger('pgservice');
+const helper = require('../../common/helper');
+
+const logger = helper.getLogger('pgservice');
 
 class pgservice {
   constructor(pgconfig) {
@@ -28,17 +29,9 @@ class pgservice {
     this.pgconfig.username = process.env.DATABASE_USERNAME || pgconfig.username;
     this.pgconfig.passwd = process.env.DATABASE_PASSWD || pgconfig.passwd;
 
-    this.connectionString =
-      'postgres://' +
-      this.pgconfig.username +
-      ':' +
-      this.pgconfig.passwd +
-      '@' +
-      this.pgconfig.host +
-      ':' +
-      this.pgconfig.port +
-      '/' +
-      this.pgconfig.database;
+    this.connectionString = `postgres://${this.pgconfig.username}:${
+      this.pgconfig.passwd
+    }@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
 
     console.log(this.connectionString);
 
@@ -52,9 +45,9 @@ class pgservice {
   }
 
   async handleDisconnect() {
-    var port = this.pgconfig.port ? this.pgconfig.port : '5432';
+    const port = this.pgconfig.port ? this.pgconfig.port : '5432';
     try {
-      this.client.on('error', err => {
+      this.client.on('error', (err) => {
         console.log('db error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
           handleDisconnect();
@@ -74,34 +67,34 @@ class pgservice {
     }
   }
 
-  //open connection
+  // open connection
   openconnection() {
     this.client.connect();
   }
 
-  //close connection
+  // close connection
   closeconnection() {
     this.client.end();
   }
 
   saveRow(tablename, columnValues) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      var addSqlParams = [];
-      var updatesqlcolumn = [];
-      var updatesqlflag = [];
-      var i = 1;
-      Object.keys(columnValues).forEach(k => {
-        let v = columnValues[k];
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      const addSqlParams = [];
+      const updatesqlcolumn = [];
+      const updatesqlflag = [];
+      let i = 1;
+      Object.keys(columnValues).forEach((k) => {
+        const v = columnValues[k];
         addSqlParams.push(v);
         updatesqlcolumn.push(JSON.stringify(k));
-        updatesqlflag.push('$' + i);
-        i = i + 1;
+        updatesqlflag.push(`$${i}`);
+        i += 1;
       });
 
-      var updatesqlparmstr = updatesqlcolumn.join(',');
-      var updatesqlflagstr = updatesqlflag.join(',');
-      var addSql = `INSERT INTO ${tablename}  ( ${updatesqlparmstr} ) VALUES( ${updatesqlflagstr}  ) RETURNING *;`;
+      const updatesqlparmstr = updatesqlcolumn.join(',');
+      const updatesqlflagstr = updatesqlflag.join(',');
+      const addSql = `INSERT INTO ${tablename}  ( ${updatesqlparmstr} ) VALUES( ${updatesqlflagstr}  ) RETURNING *;`;
       logger.debug(`Insert sql is ${addSql}`);
       console.log(`Insert sql is ${addSql}`);
       _self.client.query(addSql, addSqlParams, (err, res) => {
@@ -123,6 +116,7 @@ class pgservice {
       });
     });
   }
+
   /**
    * Update table
    *
@@ -136,34 +130,34 @@ class pgservice {
    *
    */
   updateRowByPk(tablename, columnAndValue, pkName, pkValue) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      var addSqlParams = [];
-      var updateParms = [];
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      const addSqlParams = [];
+      const updateParms = [];
 
-      var updateparm = ' set 1=1 ';
+      const updateparm = ' set 1=1 ';
 
-      Object.keys(columnAndValue).forEach(k => {
-        let v = columnAndValue[k];
+      Object.keys(columnAndValue).forEach((k) => {
+        const v = columnAndValue[k];
 
         addSqlParams.push(v);
-        //updateparm = updateparm + ` ,${k}=? `
+        // updateparm = updateparm + ` ,${k}=? `
         updateParms.push(`${k} = ?`);
       });
 
-      var updatewhereparm = ' (1=1)  ';
-      var searchparm = { pkName: pkValue };
+      let updatewhereparm = ' (1=1)  ';
+      const searchparm = { pkName: pkValue };
 
-      Object.keys(searchparm).forEach(k => {
-        let v = searchparm[k];
+      Object.keys(searchparm).forEach((k) => {
+        const v = searchparm[k];
 
         addSqlParams.push(v);
-        updatewhereparm = updatewhereparm + ` and ${k}=? `;
+        updatewhereparm += ` and ${k}=? `;
       });
 
-      var updateParmsStr = updateParms.join(',');
+      const updateParmsStr = updateParms.join(',');
 
-      var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
+      const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
 
       logger.debug(`update sql is ${addSql}`);
       console.log(`update sql is ${addSql}`);
@@ -176,8 +170,8 @@ class pgservice {
         logger.debug(
           '--------------------------UPDATE----------------------------'
         );
-        //logger.debug(' update result :', result.affectedRows);
-        //console.log(res);
+        // logger.debug(' update result :', result.affectedRows);
+        // console.log(res);
         logger.debug(
           '-----------------------------------------------------------------\n\n'
         );
@@ -200,33 +194,33 @@ class pgservice {
    *
    */
   updateRow(tablename, columnAndValue, condition) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      var addSqlParams = [];
-      var updateParms = [];
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      const addSqlParams = [];
+      const updateParms = [];
 
-      var updateparm = ' set 1=1 ';
+      const updateparm = ' set 1=1 ';
 
-      Object.keys(columnAndValue).forEach(k => {
-        let v = columnAndValue[k];
+      Object.keys(columnAndValue).forEach((k) => {
+        const v = columnAndValue[k];
 
         addSqlParams.push(v);
-        //updateparm = updateparm + ` ,${k}=? `
+        // updateparm = updateparm + ` ,${k}=? `
         updateParms.push(`${k} = ?`);
       });
 
-      var updatewhereparm = ' (1=1)  ';
+      let updatewhereparm = ' (1=1)  ';
 
-      Object.keys(condition).forEach(k => {
-        let v = condition[k];
+      Object.keys(condition).forEach((k) => {
+        const v = condition[k];
 
         addSqlParams.push(v);
-        updatewhereparm = updatewhereparm + ` and ${k}=? `;
+        updatewhereparm += ` and ${k}=? `;
       });
 
-      var updateParmsStr = updateParms.join(',');
+      const updateParmsStr = updateParms.join(',');
 
-      var addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
+      const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
 
       logger.debug(`update sql is ${addSql}`);
       console.log(`update sql is ${addSql}`);
@@ -254,8 +248,8 @@ class pgservice {
    *  @param string  updateSql   the excute sql
    */
   updateBySql(updateSql) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       logger.debug(`update sql is :  ${updateSql}`);
 
       _self.client.query(updateSql, [], (err, res) => {
@@ -287,11 +281,11 @@ class pgservice {
    *
    */
   getRowByPk(tablename, column, pkColumn, value) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       if (column == '') column = '*';
 
-      var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
+      const sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
 
       _self.client.query(sql, (err, res) => {
         if (err) {
@@ -314,9 +308,9 @@ class pgservice {
    * @return unknown
    */
   getRowByPkOne(sql) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      //var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      // var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
       _self.client.query(sql, (err, res) => {
         if (err) {
@@ -325,7 +319,7 @@ class pgservice {
 
         // console.log(  `The solution is: ${rows.length }  `  );
         logger.debug(` the getRowByPkOne sql ${sql}`);
-        //(` the getRowByPkOne sql ${sql}`)
+        // (` the getRowByPkOne sql ${sql}`)
 
         if (res && res.rows && res.rows[0]) resolve(res.rows[0]);
         else resolve(null);
@@ -343,22 +337,22 @@ class pgservice {
    *
    */
   getRowsByCondition(tablename, column, condtion, orderBy, limit) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       if (column == '') column = '*';
 
-      var updatewhereparm = ' (1=1)  ';
-      var searchparm = { pkName: pkValue };
-      var addSqlParams = [];
+      let updatewhereparm = ' (1=1)  ';
+      const searchparm = { pkName: pkValue };
+      const addSqlParams = [];
 
-      Object.keys(condtion).forEach(k => {
-        let v = condtion[k];
+      Object.keys(condtion).forEach((k) => {
+        const v = condtion[k];
 
         addSqlParams.push(v);
-        updatewhereparm = updatewhereparm + ` and ${k}=? `;
+        updatewhereparm += ` and ${k}=? `;
       });
 
-      var sql = ` select  ${column} from ${tablename} where ${updatewhereparm} ${orderBy} ${limit}`;
+      const sql = ` select  ${column} from ${tablename} where ${updatewhereparm} ${orderBy} ${limit}`;
 
       logger.debug(` the search sql is : ${sql} `);
 
@@ -383,19 +377,19 @@ class pgservice {
    *
    */
   getRowsBySQl(sqlcharacter, condition, limit) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      var updatewhereparm = ' (1=1)  ';
-      var addSqlParams = [];
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      let updatewhereparm = ' (1=1)  ';
+      const addSqlParams = [];
 
-      Object.keys(condition).forEach(k => {
-        let v = condition[k];
+      Object.keys(condition).forEach((k) => {
+        const v = condition[k];
 
         addSqlParams.push(v);
-        updatewhereparm = updatewhereparm + ` and ${k}=? `;
+        updatewhereparm += ` and ${k}=? `;
       });
 
-      var sql = ` ${sqlcharacter} where ${updatewhereparm}   ${limit}`;
+      const sql = ` ${sqlcharacter} where ${updatewhereparm}   ${limit}`;
 
       logger.debug(` the search sql is : ${sql} `);
 
@@ -404,16 +398,17 @@ class pgservice {
           reject(err);
         }
 
-        //console.log(` The solution is: ${res.rows.length}  `);
+        // console.log(` The solution is: ${res.rows.length}  `);
         logger.debug(' The getRowsBySQl  ');
 
         resolve(res.rows);
       });
     });
   }
+
   getRowsBySQlQuery(sql) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -436,9 +431,9 @@ class pgservice {
    *
    */
   getRowsBySQlNoCondtion(sqlcharacter, limit) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
-      var sql;
+    const _self = this;
+    return new Promise((resolve, reject) => {
+      let sql;
       if (limit && sqlcharacter) {
         sql = `${sqlcharacter} ${limit}`;
       } else if (sqlcharacter) {
@@ -467,8 +462,8 @@ class pgservice {
    * @return unknown
    */
   getRowsBySQlCase(sql) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -490,8 +485,8 @@ class pgservice {
    *
    */
   getSQL2Map(sql, key) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
@@ -499,9 +494,9 @@ class pgservice {
 
         logger.debug(`The solution is: ${res.rows.length}  `);
 
-        var keymap = new Map();
+        const keymap = new Map();
 
-        for (var ind = 0; ind < res.rows.length; ind++) {
+        for (let ind = 0; ind < res.rows.length; ind++) {
           logger.debug(`The ind value is: ${res.rows[ind].id}  `);
           keymap.set(res.rows[ind][key], rows[ind]);
         }
@@ -519,8 +514,8 @@ class pgservice {
    * @return unknown
    */
   getSQL2Map4Arr(sql, key) {
-    let _self = this;
-    return new Promise(function(resolve, reject) {
+    const _self = this;
+    return new Promise((resolve, reject) => {
       _self.client.query(sql, (err, rows) => {
         if (err) {
           reject(err);
@@ -529,11 +524,11 @@ class pgservice {
         // logger.debug(  `The solution is: ${rows.length }  `  );
         logger.debug(' the getSqlMap ');
 
-        var keymap = new Map();
+        const keymap = new Map();
 
-        for (var ind = 0; ind < res.rows.length; ind++) {
-          var keyvalue = res.rows[ind][key];
-          var arrvalue = [];
+        for (let ind = 0; ind < res.rows.length; ind++) {
+          const keyvalue = res.rows[ind][key];
+          let arrvalue = [];
 
           if (keymap.has(keyvalue)) {
             arrvalue = keymap.get(keyvalue);

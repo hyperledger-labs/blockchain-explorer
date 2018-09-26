@@ -14,7 +14,7 @@ const blockPerHourReducer = (state = initialState, action) => {
       return {
         rows: action.payload.blockPerHour.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -26,7 +26,7 @@ const errorMessageReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.ERROR_MESSAGE: {
       return {
-        error: action.payload
+        error: action.payload,
       };
     }
     default: {
@@ -41,7 +41,7 @@ const blockPerMinReducer = (state = initialState, action) => {
       return {
         rows: action.payload.blockPerMin.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -56,7 +56,7 @@ const channelListReducer = (state = initialState, action) => {
       return {
         list: action.payload.channels,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -95,7 +95,7 @@ const blockActivityReducer = (state = initialState, action) => {
       return {
         rows: action.payload.row,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -120,7 +120,7 @@ const peerStatusReducer = (state = initialState, action) => {
       return {
         list: action.payload.peers,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -135,7 +135,7 @@ const transactionByOrgReducer = (state = initialState, action) => {
       return {
         rows: action.payload.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -150,7 +150,7 @@ const transactionPerHourReducer = (state = initialState, action) => {
       return {
         rows: action.payload.transactionPerHour.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -165,7 +165,7 @@ const transactionPerMinReducer = (state = initialState, action) => {
       return {
         rows: action.payload.transactionPerMin.rows,
         loaded: true,
-        errors: action.errors
+        errors: action.errors,
       };
     }
     default: {
@@ -186,7 +186,7 @@ const reducer = combineReducers({
   transactionPerHour: transactionPerHourReducer,
   transactionPerMin: transactionPerMinReducer,
   errorMessage: errorMessageReducer,
-  blockActivity: blockActivityReducer
+  blockActivity: blockActivityReducer,
 });
 
 export default reducer;

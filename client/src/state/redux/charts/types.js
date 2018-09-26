@@ -25,7 +25,7 @@ const CHANNEL_LIST = `${namespaces}/CHANNEL_LIST`;
 
 const PEER_STATUS = `${namespaces}/PEER_STATUS`;
 
-const ERROR_MESSAGE = `ERROR_MESSAGE`;
+const ERROR_MESSAGE = 'ERROR_MESSAGE';
 
 const BLOCK_ACTIVITY = `${namespaces}/BLOCK_ACTIVITY`;
 
@@ -42,5 +42,5 @@ export default {
   TRANSACTION_CHART_MIN,
   TRANSACTION_CHART_ORG,
   ERROR_MESSAGE,
-  BLOCK_ACTIVITY
+  BLOCK_ACTIVITY,
 };

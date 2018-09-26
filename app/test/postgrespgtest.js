@@ -1,17 +1,22 @@
-var expect = require('chai').expect;
-var assert = require('assert');
-var chai = require('chai');
-var should = chai.should();
+const expect = require('chai').expect;
+const assert = require('assert');
+const chai = require('chai');
+
+const should = chai.should();
 const { spy, stub } = require('sinon');
-var config = require('../explorerconfig.json');
-var pgconfig = config.postgreSQL;
-var pgtestdb = require('pg-testdb');
-var test = require('tape');
-var readline = require('readline');
-var ArrayList = require('arraylist');
+
+const test = require('tape');
+const readline = require('readline');
+const ArrayList = require('arraylist');
 const StringBuilder = require('string-builder');
-var fs = require('fs');
-var options = {
+const fs = require('fs');
+const pgtestdb = require('pg-testdb');
+
+const config = require('../explorerconfig.json');
+
+const pgconfig = config.postgreSQL;
+
+const options = {
   testdb: 'pgtestdb',
   messages: false,
   connection: {
@@ -21,32 +26,36 @@ var options = {
     password: 'postgres'
   }
 };
-var list = new ArrayList();
+const list = new ArrayList();
 list.add('DROP USER IF EXISTS testuser;');
-describe('Test explorerpg.sql for DDL statements syntax verification', function() {
-  it('should read the file explorerpg.sql for ddl statements ', function(readdone) {
+describe('Test explorerpg.sql for DDL statements syntax verification', () => {
+  it('should read the file explorerpg.sql for ddl statements ', function (readdone) {
     this.timeout(5000);
-    var sb = new StringBuilder('');
-    var isMergeline = false;
-    var fs = require('fs'),
-      readline = require('readline'),
-      instream = fs.createReadStream(
-        '../persistence/fabric/postgreSQL/db/explorerpg.sql'
-      ),
-      outstream = new (require('stream'))(),
-      rl = readline.createInterface(instream, outstream);
-    rl.on('line', function(line) {
+    let sb = new StringBuilder('');
+    let isMergeline = false;
+    const fs = require('fs');
+
+    const readline = require('readline');
+
+    const instream = fs.createReadStream(
+      '../persistence/fabric/postgreSQL/db/explorerpg.sql'
+    );
+
+    const outstream = new (require('stream'))();
+
+    const rl = readline.createInterface(instream, outstream);
+    rl.on('line', (line) => {
       if (
-        (line.toUpperCase().startsWith('CREATE') ||
-          line.toUpperCase().startsWith('DROP') ||
-          line.toUpperCase().startsWith('ALTER') ||
-          line.toUpperCase().startsWith('GRANT')) &&
-        line.endsWith(';')
+        (line.toUpperCase().startsWith('CREATE')
+          || line.toUpperCase().startsWith('DROP')
+          || line.toUpperCase().startsWith('ALTER')
+          || line.toUpperCase().startsWith('GRANT'))
+        && line.endsWith(';')
       ) {
         if (
           !(
-            line.toUpperCase().startsWith('CREATE DATABASE') ||
-            line.toUpperCase().startsWith('DROP DATABASE')
+            line.toUpperCase().startsWith('CREATE DATABASE')
+            || line.toUpperCase().startsWith('DROP DATABASE')
           )
         ) {
           line = line.replace(/:user/i, 'testuser');
@@ -55,11 +64,11 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
           list.add(line);
         }
       } else if (
-        (line.toUpperCase().startsWith('CREATE') ||
-          line.toUpperCase().startsWith('DROP') ||
-          line.toUpperCase().startsWith('ALTER') ||
-          line.toUpperCase().startsWith('GRANT')) &&
-        !line.endsWith(';')
+        (line.toUpperCase().startsWith('CREATE')
+          || line.toUpperCase().startsWith('DROP')
+          || line.toUpperCase().startsWith('ALTER')
+          || line.toUpperCase().startsWith('GRANT'))
+        && !line.endsWith(';')
       ) {
         sb.append(line);
         isMergeline = true;
@@ -76,21 +85,21 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
         sb.append(line);
       }
     });
-    rl.on('close', function(line) {});
+    rl.on('close', (line) => {});
     readdone();
   });
-  it('should execute statements successfully in  explorerpg.sql file ', function(testdone) {
+  it('should execute statements successfully in  explorerpg.sql file ', function (testdone) {
     this.timeout(7000);
     options.tests = [];
-    var newList = new ArrayList();
+    const newList = new ArrayList();
     for (let i = 0; i < list.size(); i++) {
       if (!list.get(i).startsWith(');') && list.get(i).length > 6) {
         newList.add(list.get(i));
       }
     }
-    test('Test Results', t => {
+    test('Test Results', (t) => {
       for (let i = 0; i < newList.size(); i++) {
-        options.tests[i] = client => {
+        options.tests[i] = (client) => {
           if (i == 0) {
             client.connect();
           }
@@ -99,7 +108,7 @@ describe('Test explorerpg.sql for DDL statements syntax verification', function(
             .then(() => {
               t.pass(newList.get(i));
             })
-            .catch(err => {
+            .catch((err) => {
               t.fail(newList.get(i));
             });
         };

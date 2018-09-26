@@ -38,5 +38,5 @@ ReactDOM.render(
       <App />
     </Theme>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

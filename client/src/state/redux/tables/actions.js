@@ -6,40 +6,40 @@ import types from './types';
 
 const getBlockList = blockList => ({
   type: types.BLOCK_LIST,
-  payload: blockList
+  payload: blockList,
 });
 const getBlockListSearch = blockList => ({
   type: types.BLOCK_LIST_SEARCH,
-  payload: blockList
+  payload: blockList,
 });
 
 const getChaincodeList = chaincodeList => ({
   type: types.CHAINCODE_LIST,
-  payload: chaincodeList
+  payload: chaincodeList,
 });
 
 const getChannels = channels => ({
   type: types.CHANNELS,
-  payload: channels
+  payload: channels,
 });
 
 const getPeerList = peerList => ({
   type: types.PEER_LIST,
-  payload: peerList
+  payload: peerList,
 });
 
 const getTransaction = transaction => ({
   type: types.TRANSACTION,
-  payload: transaction
+  payload: transaction,
 });
 
 const getTransactionList = transactionList => ({
   type: types.TRANSACTION_LIST,
-  payload: transactionList
+  payload: transactionList,
 });
 const getTransactionListSearch = transactionList => ({
   type: types.TRANSACTION_LIST_SEARCH,
-  payload: transactionList
+  payload: transactionList,
 });
 
 export default {
@@ -50,5 +50,5 @@ export default {
   getTransaction,
   getTransactionList,
   getBlockListSearch,
-  getTransactionListSearch
+  getTransactionListSearch,
 };

@@ -2,20 +2,21 @@
     SPDX-License-Identifier: Apache-2.0
 */
 
-var expect = require('chai').expect;
-var assert = require('assert');
-var helper = require('../common/helper');
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let should = chai.should();
+const expect = require('chai').expect;
+const assert = require('assert');
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const helper = require('../common/helper');
+
+const should = chai.should();
 chai.use(chaiHttp);
-var dateUtils = require('../common/commonUtils');
+const dateUtils = require('../common/commonUtils');
 
-describe('dateUtils().toUTCmilliseconds', function() {
-  var DATE = '2018/06/18';
-  var dateMilliseconds = dateUtils.toUTCmilliseconds(DATE);
+describe('dateUtils().toUTCmilliseconds', () => {
+  const DATE = '2018/06/18';
+  const dateMilliseconds = dateUtils.toUTCmilliseconds(DATE);
 
-  it('dateUtils.toUTCmilliseconds should be not null', function() {
+  it('dateUtils.toUTCmilliseconds should be not null', () => {
     assert.notEqual(null, dateMilliseconds);
   });
 });

@@ -7,7 +7,9 @@ import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import {
+  TabContent, TabPane, Nav, NavItem, NavLink,
+} from 'reactstrap';
 import classnames from 'classnames';
 import { chartSelectors, chartOperations } from '../../state/redux/charts';
 import TimeChart from './TimeChart';
@@ -20,7 +22,7 @@ import {
   getTransactionPerHourType,
   getTransactionPerMinType,
   transactionPerHourType,
-  transactionPerMinType
+  transactionPerMinType,
 } from '../types';
 
 const {
@@ -28,17 +30,17 @@ const {
   blockPerMinSelector,
   currentChannelSelector,
   transactionPerHourSelector,
-  transactionPerMinSelector
+  transactionPerMinSelector,
 } = chartSelectors;
 
-const styles = theme => {
+const styles = (theme) => {
   const { type } = theme.palette;
   const dark = type === 'dark';
   return {
     chart: {
       color: dark ? '#ffffff' : undefined,
-      backgroundColor: dark ? '#453e68' : undefined
-    }
+      backgroundColor: dark ? '#453e68' : undefined,
+    },
   };
 };
 
@@ -46,7 +48,7 @@ export class ChartStats extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeTab: '1'
+      activeTab: '1',
     };
   }
 
@@ -61,12 +63,12 @@ export class ChartStats extends Component {
     clearInterval(this.interVal);
   }
 
-  syncData = currentChannel => {
+  syncData = (currentChannel) => {
     const {
       getBlocksPerHour,
       getBlocksPerMin,
       getTransactionPerHour,
-      getTransactionPerMin
+      getTransactionPerMin,
     } = this.props;
 
     getBlocksPerMin(currentChannel);
@@ -77,7 +79,7 @@ export class ChartStats extends Component {
 
   timeDataSetup = (chartData = []) => {
     let dataMax = 0;
-    const displayData = chartData.map(data => {
+    const displayData = chartData.map((data) => {
       if (parseInt(data.count, 10) > dataMax) {
         dataMax = parseInt(data.count, 10);
       }
@@ -86,7 +88,7 @@ export class ChartStats extends Component {
         datetime: moment(data.datetime)
           .tz(moment.tz.guess())
           .format('h:mm A'),
-        count: data.count
+        count: data.count,
       };
     });
 
@@ -94,13 +96,13 @@ export class ChartStats extends Component {
 
     return {
       displayData,
-      dataMax
+      dataMax,
     };
   };
 
-  toggle = tab => {
+  toggle = (tab) => {
     this.setState({
-      activeTab: tab
+      activeTab: tab,
     });
   };
 
@@ -111,7 +113,7 @@ export class ChartStats extends Component {
       blockPerMin,
       transactionPerHour,
       transactionPerMin,
-      classes
+      classes,
     } = this.props;
 
     return (
@@ -120,7 +122,7 @@ export class ChartStats extends Component {
           <NavItem>
             <NavLink
               className={classnames({
-                active: activeTab === '1'
+                active: activeTab === '1',
               })}
               onClick={() => {
                 this.toggle('1');
@@ -132,7 +134,7 @@ export class ChartStats extends Component {
           <NavItem>
             <NavLink
               className={classnames({
-                active: activeTab === '2'
+                active: activeTab === '2',
               })}
               onClick={() => {
                 this.toggle('2');
@@ -144,7 +146,7 @@ export class ChartStats extends Component {
           <NavItem>
             <NavLink
               className={classnames({
-                active: activeTab === '3'
+                active: activeTab === '3',
               })}
               onClick={() => {
                 this.toggle('3');
@@ -156,7 +158,7 @@ export class ChartStats extends Component {
           <NavItem>
             <NavLink
               className={classnames({
-                active: activeTab === '4'
+                active: activeTab === '4',
               })}
               onClick={() => {
                 this.toggle('4');
@@ -194,7 +196,7 @@ ChartStats.propTypes = {
   getTransactionPerHour: getTransactionPerHourType.isRequired,
   getTransactionPerMin: getTransactionPerMinType.isRequired,
   transactionPerHour: transactionPerHourType.isRequired,
-  transactionPerMin: transactionPerMinType.isRequired
+  transactionPerMin: transactionPerMinType.isRequired,
 };
 
 export default compose(
@@ -205,13 +207,13 @@ export default compose(
       blockPerMin: blockPerMinSelector(state),
       transactionPerHour: transactionPerHourSelector(state),
       transactionPerMin: transactionPerMinSelector(state),
-      currentChannel: currentChannelSelector(state)
+      currentChannel: currentChannelSelector(state),
     }),
     {
       getBlocksPerHour: chartOperations.blockPerHour,
       getBlocksPerMin: chartOperations.blockPerMin,
       getTransactionPerHour: chartOperations.transactionPerHour,
-      getTransactionPerMin: chartOperations.transactionPerMin
-    }
-  )
+      getTransactionPerMin: chartOperations.transactionPerMin,
+    },
+  ),
 )(ChartStats);
