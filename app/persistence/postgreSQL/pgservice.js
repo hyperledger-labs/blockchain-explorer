@@ -102,6 +102,7 @@ class pgservice {
           logger.error('[INSERT ERROR] - ', err.message);
           console.log(err.stack);
           reject(err);
+          return;
         }
 
         logger.debug(
@@ -165,6 +166,7 @@ class pgservice {
         if (err) {
           logger.error('[INSERT ERROR] - ', err.message);
           reject(err);
+          return;
         }
 
         logger.debug(
@@ -228,6 +230,7 @@ class pgservice {
         if (err) {
           logger.error('[INSERT ERROR] - ', err.message);
           reject(err);
+          return;
         }
 
         logger.debug(
@@ -256,6 +259,7 @@ class pgservice {
         if (err) {
           logger.error('[INSERT ERROR] - ', err.message);
           reject(err);
+          return;
         }
 
         logger.debug(
@@ -290,6 +294,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
@@ -315,6 +320,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
@@ -359,6 +365,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
@@ -396,6 +403,7 @@ class pgservice {
       _self.client.query(sql, addSqlParams, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(` The solution is: ${res.rows.length}  `);
@@ -412,6 +420,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
         logger.debug(` the getRowsBySQlQuery ${sql}`);
 
@@ -440,10 +449,12 @@ class pgservice {
         sql = sqlcharacter;
       } else {
         reject(null);
+        return;
       }
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
@@ -467,6 +478,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // console.log(  `The solution is: ${rows.length }  `  );
@@ -490,6 +502,7 @@ class pgservice {
       _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
+          return;
         }
 
         logger.debug(`The solution is: ${res.rows.length}  `);
@@ -519,6 +532,7 @@ class pgservice {
       _self.client.query(sql, (err, rows) => {
         if (err) {
           reject(err);
+          return;
         }
 
         // logger.debug(  `The solution is: ${rows.length }  `  );
