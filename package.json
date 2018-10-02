@@ -57,12 +57,8 @@
     "prettier": "^1.13.7"
   },
   "lint-staged": {
-    "**/*.{jsx,json,css}": [
+    "**/*.{js,jsx,json,css}": [
       "prettier --single-quote --write",
-      "git add"
-    ],
-    "**/*.js": [
-      "npm run lint:fix",
       "git add"
     ]
   },
