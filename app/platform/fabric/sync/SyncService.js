@@ -148,16 +148,16 @@ class SyncServices {
     let requesturl = peer.endpoint;
     const host_port = peer.endpoint.split(':');
     if (
-      client.client_config.peers
-      && client.client_config.peers[host_port[0]]
-      && client.client_config.peers[host_port[0]].url
+      client.client_config.peers &&
+      client.client_config.peers[host_port[0]] &&
+      client.client_config.peers[host_port[0]].url
     ) {
       requesturl = client.client_config.peers[host_port[0]].url;
     }
     if (
-      client.client_config.peers
-      && client.client_config.peers[host_port[0]]
-      && client.client_config.peers[host_port[0]].eventUrl
+      client.client_config.peers &&
+      client.client_config.peers[host_port[0]] &&
+      client.client_config.peers[host_port[0]].eventUrl
     ) {
       eventurl = client.client_config.peers[host_port[0]].eventUrl;
     }
@@ -184,9 +184,9 @@ class SyncServices {
   async insertNewOrderers(orderer, channel_genesis_hash, client) {
     let requesturl = `${orderer.host}:${orderer.port}`;
     if (
-      client.client_config.orderers
-      && client.client_config.orderers[orderer.host]
-      && client.client_config.orderers[orderer.host].url
+      client.client_config.orderers &&
+      client.client_config.orderers[orderer.host] &&
+      client.client_config.orderers[orderer.host].url
     ) {
       requesturl = client.client_config.orderers[orderer.host].url;
     }
@@ -234,8 +234,8 @@ class SyncServices {
           for (const peer of org.peers) {
             for (const c_code of peer.chaincodes) {
               if (
-                c_code.name === chaincode.name
-                && c_code.version === chaincode.version
+                c_code.name === chaincode.name &&
+                c_code.version === chaincode.version
               ) {
                 await this.insertNewChaincodePeerRef(
                   c_code,
@@ -420,7 +420,8 @@ class SyncServices {
         let status;
         let mspId = [];
         if (txid != undefined && txid != '') {
-          const validation_codes = block.metadata.metadata[block.metadata.metadata.length - 1];
+          const validation_codes =
+            block.metadata.metadata[block.metadata.metadata.length - 1];
           const val_code = validation_codes[i];
           validation_code = convertValidationCode(val_code);
         }
@@ -436,20 +437,24 @@ class SyncServices {
         if (creator_nonce != undefined) {
           creator_nonce = convertHex.bytesToHex(creator_nonce);
         }
-        const creator_id_bytes = txObj.payload.header.signature_header.creator.IdBytes;
+        const creator_id_bytes =
+          txObj.payload.header.signature_header.creator.IdBytes;
         if (txObj.payload.data.actions != undefined) {
-          chaincode = txObj.payload.data.actions[0].payload.action
-            .proposal_response_payload.extension.chaincode_id.name;
+          chaincode =
+            txObj.payload.data.actions[0].payload.action
+              .proposal_response_payload.extension.chaincode_id.name;
           chaincodeID = new Uint8Array(
             txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension
           );
-          status = txObj.payload.data.actions[0].payload.action
-            .proposal_response_payload.extension.response.status;
+          status =
+            txObj.payload.data.actions[0].payload.action
+              .proposal_response_payload.extension.response.status;
           mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(
             i => i.endorser.Mspid
           );
-          rwset = txObj.payload.data.actions[0].payload.action
-            .proposal_response_payload.extension.results.ns_rwset;
+          rwset =
+            txObj.payload.data.actions[0].payload.action
+              .proposal_response_payload.extension.results.ns_rwset;
           readSet = rwset.map(i => ({
             chaincode: i.namespace,
             set: i.rwset.reads
@@ -458,25 +463,30 @@ class SyncServices {
             chaincode: i.namespace,
             set: i.rwset.writes
           }));
-          chaincode_proposal_input = txObj.payload.data.actions[0].payload.chaincode_proposal_payload
-            .input.chaincode_spec.input.args;
+          chaincode_proposal_input =
+            txObj.payload.data.actions[0].payload.chaincode_proposal_payload
+              .input.chaincode_spec.input.args;
           if (chaincode_proposal_input != undefined) {
             let inputs = '';
             for (const input of chaincode_proposal_input) {
-              inputs = (inputs === '' ? inputs : `${inputs},`)
-                + convertHex.bytesToHex(input);
+              inputs =
+                (inputs === '' ? inputs : `${inputs},`) +
+                convertHex.bytesToHex(input);
             }
             chaincode_proposal_input = inputs;
           }
-          endorser_signature = txObj.payload.data.actions[0].payload.action.endorsements[0]
-            .signature;
+          endorser_signature =
+            txObj.payload.data.actions[0].payload.action.endorsements[0]
+              .signature;
           if (endorser_signature != undefined) {
             endorser_signature = convertHex.bytesToHex(endorser_signature);
           }
-          payload_proposal_hash = txObj.payload.data.actions[0].payload.action
-            .proposal_response_payload.proposal_hash;
-          endorser_id_bytes = txObj.payload.data.actions[0].payload.action.endorsements[0]
-            .endorser.IdBytes;
+          payload_proposal_hash =
+            txObj.payload.data.actions[0].payload.action
+              .proposal_response_payload.proposal_hash;
+          endorser_id_bytes =
+            txObj.payload.data.actions[0].payload.action.endorsements[0]
+              .endorser.IdBytes;
         }
         const read_set = JSON.stringify(readSet, null, 2);
         const write_set = JSON.stringify(writeSet, null, 2);
@@ -493,9 +503,9 @@ class SyncServices {
         const chaincode_id = String.fromCharCode.apply(null, chaincodeID);
         // checking new chaincode is deployed
         if (
-          header.channel_header.typeString
-            === fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION
-          && chaincode === fabric_const.CHAINCODE_LSCC
+          header.channel_header.typeString ===
+            fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
+          chaincode === fabric_const.CHAINCODE_LSCC
         ) {
           setTimeout(
             async (client, channel_name, channel_genesis_hash) => {
@@ -562,7 +572,9 @@ class SyncServices {
           network_name: _self.platform.network_name,
           client_name: client.client_name,
           channel_name,
-          title: `Block ${block.header.number} Added`,
+          title: `Block ${
+            block.header.number
+          } added to Channel: ${channel_name}`,
           type: 'block',
           message: `Block ${block.header.number} established with ${
             block.data.data.length
