@@ -21,7 +21,7 @@
     $pkill node
     Before killing the node , check that same port is running `“ps -ef | grep node”` if yes kill the particular port “ kill -9 ‘number’” . if no change the port in config.json
 ####Related Information:
-    
+
 ### Problem Description: Hypeledger Explorer fails to start, ENOENT: no such file or directory, scandir
 
 #### Background Information
@@ -300,7 +300,6 @@ Related Information:
 ### Problem Description:  Explorer fails to start
 
 #### Background Information:
- 
     postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
     E0823 15:26:47.308219000 140736010920832 ssl_transport_security.cc:989] Handshake failed with fatal
     error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
@@ -322,7 +321,7 @@ Related Information:
 
    (node:23110) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code. E0823 15:26:53.086211000 140736010920832 ssl_transport_security.cc:989] Handshake failed with fatal error
    SSL_ERROR_SSL:error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
-    
+
 
 #### Possible cause:
           Fabric network down, or unavailable, miss configuration
@@ -335,7 +334,7 @@ Related Information:
 ##### Problem Description:  Explorer fails to start, fabric 1.2
 
 #### Background Information:
-    
+
        **************************************************************************************
     Error : Failed to connect client peer, please check the configuration and peer status
     Info :  Explorer will continue working with only DB data
@@ -391,7 +390,32 @@ Related Information:
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.2
-    
+
+### Problem Description:  Handshake failed with fatal error SSL_ERROR_SSL: error
+
+#### Background Information:
+        E1004 14:32:11.593740000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:11.595861000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:12.594545000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:12.596974000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:14.217387000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:14.219383000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    error: [Remote.js]: Error: Failed to connect before the deadline
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+    Error: Failed to connect before the deadline
+        at checkState (/Users/nfrunza/workspace/blockchain-explorer/node_modules/grpc/src/client.js:838:16)
+    E1004 14:32:16.436058000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    Received kill signal, shutting down gracefully
+    Closed out connections
+
+#### Possible cause:
+    Missconfiguration in blockchain-explorer/app/platform/fabric/config.json
+#### Possible solution:
+    Verify all peers, orderers ports, and paths to crypto
+
+#### Related Information:
+    HL Explorer support for HL Fabric 1.2
+
 ### Docker Troubleshooting commands
     List your networks
     $docker network ls
