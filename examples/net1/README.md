@@ -276,8 +276,8 @@ Note: Make sure you put the right node IPs, ports and certs paths before running
             "path":
               "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
           },
-          "url": "grpcs://peer1.org1.example.com:8051",
-          "eventUrl": "grpcs://peer1.org1.example.com:8053",
+          "url": "grpcs://peer1.org1.example.com:7051",
+          "eventUrl": "grpcs://peer1.org1.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer1.org1.example.com"
           }
@@ -287,8 +287,8 @@ Note: Make sure you put the right node IPs, ports and certs paths before running
             "path":
               "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
           },
-          "url": "grpcs://peer0.org2.example.com:9051",
-          "eventUrl": "grpcs://peer0.org2.example.com:9053",
+          "url": "grpcs://peer0.org2.example.com:7051",
+          "eventUrl": "grpcs://peer0.org2.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer0.org2.example.com"
           }
@@ -298,8 +298,8 @@ Note: Make sure you put the right node IPs, ports and certs paths before running
             "path":
               "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
           },
-          "url": "grpcs://peer1.org2.example.com:10051",
-          "eventUrl": "grpcs://peer1.org2.example.com:10053",
+          "url": "grpcs://peer1.org2.example.com:7051",
+          "eventUrl": "grpcs://peer1.org2.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer1.org2.example.com"
           }
@@ -319,5 +319,32 @@ Note: Make sure you put the right node IPs, ports and certs paths before running
 
 4. in case if port 8080 is occupied in your system, the `deploy_explorer.sh` should be updated. Please update the line 193
 `-p 8080:8080 \` to `-p <port>:8080 \`, where <port> is a free port, where BE can be browsed.
-5. issue `./deploy_explorer.sh <your_folder> net_byfn` and wait.
+5. issue `./deploy_explorer.sh <your_folder> net_byfn` and wait, example: `./deploy_explorer.sh net1 net_byfn`
 6. open the browser `http://localhost:<port>` and explore the blockchain network.
+
+### Docker Troubleshooting commands
+    List your networks
+    $docker network ls
+    List docker images id
+    $docker images | grep block
+    Remove an image
+    $docker rmi <image_id>
+    Login to docker
+    $docker exec -it <image_id> sh
+    Read explorer app log
+    $docker exec <image_id> cat /opt/logs/app/app.log
+    Inspect real IP's
+    $docker inspect <image_id> | grep IPAddress
+    Stop and remove dockers
+    $docker stop $(docker ps -a -q)
+    $docker rm -f $(docker ps -a -q)
+    Remove default fabric crypto
+    $rm -rf ./crypto-config/*
+    $rm -rf ~/.hfc*
+    From the docker ($docker exec -it <image_id> sh)
+    Install curl:
+    $apk update && apk add curl
+    Use curl in docker to query explorer REST API
+    Example:
+    $curl http://localhost:8080/api/channels
+    Example response: {"status":200,"channels":["dockerchannel","mychannel"]

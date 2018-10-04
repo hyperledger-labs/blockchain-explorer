@@ -90,12 +90,12 @@ function config(){
 	subnet=192.168.10.0/24
 
 	# database container configuration
-	fabric_explorer_db_tag="hyperledger-blockchain-explorer-db"
+	fabric_explorer_db_tag="hyperledger/explorer-db"
 	fabric_explorer_db_name="blockchain-explorer-db"
 	db_ip=192.168.10.11
 
 	# fabric explorer configuratio
-	fabric_explorer_tag="hyperledger-blockchain-explorer"
+	fabric_explorer_tag="hyperledger/explorer"
 	fabric_explorer_name="blockchain-explorer"
 	explorer_ip=192.168.10.12
 	# END: GLOBAL VARIABLES OF THE SCRIPT
@@ -190,8 +190,8 @@ function deploy_run_explorer(){
 		-e DATABASE_PASSWD=$explorer_db_pwd \
 		-v $network_config_file:/opt/explorer/app/platform/fabric/config.json \
 		-v $network_crypto_base_path:/tmp/crypto \
-		-p 8080:8080 \
-		hyperledger-blockchain-explorer
+		-p 8090:8080 \
+		$fabric_explorer_tag
 }
 
 function connect_to_network(){

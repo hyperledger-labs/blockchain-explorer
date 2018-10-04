@@ -263,6 +263,9 @@ There is also an automated deployment of the **Hyperledger Explorer** available 
 
 ## Docker
 
+* Hyperledger Explorer docker repository `https://hub.docker.com/r/hyperledger/explorer/`
+* Hyperledger Explorer PostgreSQL docker repository `https://hub.docker.com/r/hyperledger/explorer-db`
+
 ### Steps to deploy using Docker
 
 From new terminal.
