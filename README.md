@@ -161,8 +161,7 @@ On another terminal.
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 
-If you are connecting to a non TLS fabric peer, please modify the
-protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
 
 **or**
 
@@ -183,8 +182,7 @@ On another terminal.
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 
-If you are connecting to a non TLS fabric peer, please modify the
-protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
 
 <a name="Build-Hyperledger-Explorer"/>
 
