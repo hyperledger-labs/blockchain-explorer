@@ -203,16 +203,10 @@ function connect_to_network(){
 function deploy(){
 
 	deploy_prepare_network
-	echo "Starting explorer in local mode..."
-	if !(existsImage $fabric_explorer_db_tag); then
-		deploy_build_database
-	fi
+
 	deploy_run_database
 	deploy_load_database
 
-	if !(existsImage $fabric_explorer_tag); then
-		deploy_build_explorer
-	fi
 	deploy_run_explorer
 
     if [ -n "$2" ]; then
