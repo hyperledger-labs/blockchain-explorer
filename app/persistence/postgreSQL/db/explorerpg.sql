@@ -2,7 +2,7 @@
 --    SPDX-License-Identifier: Apache-2.0
 --
 
-CREATE USER :user WITH PASSWORD :passwd;
+-- CREATE USER :user WITH PASSWORD :passwd;
 DROP DATABASE IF EXISTS :dbname;
 CREATE DATABASE :dbname owner :user;
 \c :dbname;
