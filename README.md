@@ -63,7 +63,7 @@ Following are the software dependencies required to install and run hyperledger 
 * PostgreSQL 9.5 or greater
 * Jq [https://stedolan.github.io/jq/]
 
-Hyperledger Explorer works with Hyperledger Fabric 1.2.  Install the following software dependencies to manage fabric network.
+Hyperledger Explorer works with Hyperledger Fabric 1.3.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
 * docker-compose 1.14.0 [https://docs.docker.com/compose/]
 
@@ -154,6 +154,7 @@ On another terminal.
 
 On another terminal.
 
+- `git checkout v0.3.5.1`
 - `cd blockchain-explorer/app/platform/fabric`
 - Modify config.json to update network-config.
 	- Change "fabric-path" to your composer network path,
@@ -161,8 +162,7 @@ On another terminal.
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 
-If you are connecting to a non TLS fabric peer, please modify the
-protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
 
 **or**
 
@@ -176,6 +176,7 @@ protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the
 
 On another terminal.
 
+- `git checkout v0.3.5.1`
 - `cd blockchain-explorer/app/platform/fabric`
 - Modify config.json to update network-config.
 	- Change "fabric-path" to your cello network path,
@@ -183,8 +184,7 @@ On another terminal.
 - Modify "syncStartDate" to filter data by block timestamp
 - Modify "channel" to your default channel
 
-If you are connecting to a non TLS fabric peer, please modify the
-protocol (`grpcs->grpc`) and port (`9051-> 9050`) in the peer url and remove the `tls_cacerts`. Depending on this key, the application decides whether to go TLS or non TLS route.
+If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
 
 <a name="Build-Hyperledger-Explorer"/>
 

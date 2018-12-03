@@ -36,34 +36,29 @@
           "mspid": "Org1MSP",
           "fullpath": false,
           "adminPrivateKey": {
-            "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+            "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
           },
           "signedCert": {
-            "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+            "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
           }
         },
         "Org2MSP": {
           "mspid": "Org2MSP",
           "adminPrivateKey": {
-            "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+            "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
           }
         },
         "OrdererMSP": {
           "mspid": "OrdererMSP",
           "adminPrivateKey": {
-            "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+            "path": "fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
           }
         }
       },
       "peers": {
         "peer0.org1.example.com": {
           "tlsCACerts": {
-            "path":
-              "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+            "path": "fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
           },
           "url": "grpcs://localhost:7051",
           "eventUrl": "grpcs://localhost:7053",
