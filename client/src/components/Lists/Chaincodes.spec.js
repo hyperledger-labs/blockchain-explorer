@@ -12,7 +12,7 @@ jest.useFakeTimers();
 const setup = () => {
   const props = {
     classes: {
-      hash: 'hash',
+      hash: 'hash'
     },
     chaincodeList: [
       {
@@ -20,19 +20,25 @@ const setup = () => {
         channelName: 'mychannel',
         path: '"github.com/chaincode/chaincode_example02/go/"',
         txCount: 33,
-        version: '1.0',
-      },
+        version: '1.0'
+      }
     ],
     channel: {
-      currentChannel: 'mychannel',
+      currentChannel: 'mychannel'
     },
     countHeader: {
       chaincodeCount: '1',
       latestBlock: 20,
       peerCount: '4',
-      txCount: '36',
+      txCount: '36'
     },
     getChaincodes: jest.fn(),
+    peerList: [
+      {
+        requests: 'grpcs://127.0.0.1:7051',
+        server_hostname: 'peer0.org1.example.com'
+      }
+    ]
   };
 
   const chaincode = {
@@ -41,7 +47,7 @@ const setup = () => {
     path: 'github.com/chaincode/chaincode_example02/go/',
     source: 'Location not found',
     txCount: 32,
-    version: '1.0',
+    version: '1.0'
   };
 
   const wrapper = mount(<Chaincodes {...props} />);
@@ -49,7 +55,7 @@ const setup = () => {
   return {
     chaincode,
     props,
-    wrapper,
+    wrapper
   };
 };
 
@@ -67,35 +73,37 @@ describe('Chaincodes', () => {
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('mycc'))
-        .exists(),
+        .exists()
     ).toBe(true);
     // Channel Name
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('mychannel'))
-        .exists(),
+        .exists()
     ).toBe(true);
     // Path
     expect(
       wrapper
         .find('TdComponent')
-        .findWhere(n => n.contains('"github.com/chaincode/chaincode_example02/go/"'))
-        .exists(),
+        .findWhere(n =>
+          n.contains('"github.com/chaincode/chaincode_example02/go/"')
+        )
+        .exists()
     ).toBe(true);
     // Transition Count
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains(33))
-        .exists(),
+        .exists()
     ).toBe(true);
     // Version
     expect(
       wrapper
         .find('TdComponent')
         .findWhere(n => n.contains('1.0'))
-        .exists(),
+        .exists()
     ).toBe(true);
   });
 
@@ -149,17 +157,17 @@ describe('Chaincodes', () => {
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
-  test('handleDialogOpen sets state to true', () => {
+  test('handleInstallDialogOpen sets state to true', () => {
     const { wrapper } = setup();
-    wrapper.instance().handleDialogOpen();
-    expect(wrapper.state('dialogOpen')).toBe(true);
+    wrapper.instance().handleInstallDialogOpen();
+    expect(wrapper.state('installDialog')).toBe(true);
   });
 
-  test('handleDialogClose sets state to false', () => {
+  test('handleInstallDialogClose sets state to false', () => {
     const { wrapper } = setup();
-    wrapper.setState({ dialogOpen: true });
-    wrapper.instance().handleDialogClose();
-    expect(wrapper.state('dialogOpen')).toBe(false);
+    wrapper.setState({ installDialog: true });
+    wrapper.instance().handleInstallDialogClose();
+    expect(wrapper.state('installDialog')).toBe(false);
   });
 
   test('sourceDialogOpen', () => {
@@ -184,7 +192,7 @@ describe('Chaincodes', () => {
       chaincode,
       chaincode,
       chaincode,
-      chaincode,
+      chaincode
     ];
     expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
     wrapper.setProps({ chaincodeList: chaincodes });

@@ -7,14 +7,14 @@ import View from '../Styled/View';
 import Chaincodes from '../Lists/Chaincodes';
 import { chaincodeListType } from '../types';
 
-export const ChaincodeView = ({ chaincodeList }) => (
+export const ChaincodeView = ({ chaincodeList, peerList }) => (
   <View>
-    <Chaincodes chaincodeList={chaincodeList} />
+    <Chaincodes chaincodeList={chaincodeList} peerList={peerList} />
   </View>
 );
 
 ChaincodeView.propTypes = {
-  chaincodeList: chaincodeListType.isRequired,
+  chaincodeList: chaincodeListType.isRequired
 };
 
 export default ChaincodeView;

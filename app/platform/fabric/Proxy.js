@@ -97,8 +97,8 @@ class Proxy {
         channel.channelname
       );
       if (
-        channel_genesis_hash
-        && channel_genesis_hash === channel.channel_genesis_hash
+        channel_genesis_hash &&
+        channel_genesis_hash === channel.channel_genesis_hash
       ) {
         currentchannels.push(channel);
       }
@@ -204,8 +204,8 @@ class Proxy {
         );
       }
     } else if (
-      fabric_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type
-      || fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
+      fabric_const.NOTITY_TYPE_UPDATECHANNEL === msg.notify_type ||
+      fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
     ) {
       // update channel details in parent
       if (msg.network_name && msg.client_name) {
@@ -245,6 +245,44 @@ class Proxy {
         msg.notify_type
       );
     }
+  }
+
+  // Install Chaincode BE-268
+  async installChaincode(peers, orgName, name, path, version, type, platform) {
+    return chaincodeService.installChaincode(
+      peers,
+      orgName,
+      name,
+      path,
+      version,
+      type,
+      platform
+    );
+  }
+
+  // Instantiate chaincode BE-268
+  async instantiateChaincode(
+    channel,
+    peers,
+    orgName,
+    name,
+    version,
+    txtype,
+    policy,
+    args,
+    platform
+  ) {
+    return chaincodeService.instantiateChaincode(
+      channel,
+      peers,
+      orgName,
+      name,
+      version,
+      txtype,
+      policy,
+      args,
+      platform
+    );
   }
 }
 
