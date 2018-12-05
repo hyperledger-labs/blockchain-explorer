@@ -9,18 +9,10 @@ class FabricEvent {
   constructor(client, fabricServices) {
     this.client = client;
     this.fabricServices = fabricServices;
-    this.peerEventHub = {};
     this.channelEventHubs = new Map();
   }
 
   async initialize() {
-    // creating peer level event hub to capture new channel
-    //TODO need to fix create event as the peer evenhub was removed from the fabric-client
-    //this.createPeerEventHub();
-    logger.debug(
-      'Successfully created peer event hub for client [%s]',
-      this.client.client_name
-    );
     // creating channel event hub
     const channels = this.client.getChannels();
     for (const [channel_name, channel] of channels.entries()) {
@@ -32,58 +24,17 @@ class FabricEvent {
     }
   }
 
-  createPeerEventHub() {
-    // Creating peer EventHubs
-    this.peerEventHub = this.client.hfc_client.getEventHub(
-      this.client.defaultPeer.getName()
-    );
-    this.peerEventHub.registerBlockEvent(
-      async block => {
-        // process only first block for creating new channel in client
-        if (block.header.number === '0' || block.header.number == 0) {
-          await this.fabricServices.processBlockEvent(this.client, block);
-        }
-      },
-      err => {
-        logger.error('Block Event %s', err);
-      }
-    );
-    this.connectPeerEventHub();
-  }
-
-  connectPeerEventHub() {
-    const _self = this;
-    if (this.peerEventHub) {
-      this.peerEventHub.connect();
-      // wait 5 sec to process blocks
-      setTimeout(() => {
-        _self.synchBlocks();
-      }, 5000);
-    } else {
-      // if peer event hub is not defined then create new peer event hub
-      this.createPeerEventHub();
-      return false;
-    }
-  }
-
-  isPeerEventHubConnected() {
-    if (this.peerEventHub) {
-      return this.peerEventHub.isconnected();
-    }
-    return false;
-  }
-
   createChannelEventHub(channel) {
     // create channel event hub
     const eventHub = channel.newChannelEventHub(this.client.defaultPeer);
     eventHub.registerBlockEvent(
-      async block => {
+      async (block) => {
         // skip first block, it is process by peer event hub
         if (!(block.header.number === '0' || block.header.number == 0)) {
           await this.fabricServices.processBlockEvent(this.client, block);
         }
       },
-      err => {
+      (err) => {
         logger.error('Block Event %s', err);
       }
     );
@@ -97,7 +48,7 @@ class FabricEvent {
     if (eventHub) {
       eventHub.connect(true);
       setTimeout(
-        channel_name => {
+        (channel_name) => {
           _self.synchChannelBlocks(channel_name);
         },
         5000,
@@ -132,9 +83,6 @@ class FabricEvent {
         this.disconnectChannelEventHub(channel_name);
       }
     }
-    if (this.peerEventHub) {
-      //  this.peerEventHub.disconnect();
-    }
   }
 
   // channel event hub used to synch the blocks
@@ -147,9 +95,6 @@ class FabricEvent {
 
   // Interval and peer event hub used to synch the blocks
   async synchBlocks() {
-    if (!this.isPeerEventHubConnected()) {
-      this.connectPeerEventHub();
-    }
     // getting all channels list from client ledger
     const channels = await this.client
       .getHFC_Client()
