@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "hyperledger-explorer",
   "private": true,
   "main": "main.js",
