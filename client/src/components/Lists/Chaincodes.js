@@ -71,7 +71,7 @@ export class Chaincodes extends Component {
       reqType: type
     });
     type === 'install'
-      ? this.handleInstallDialogOpen()
+      ? this.handleInstallDialogClose()
       : this.handleInitDialogClose();
     this.respPopupOpen();
   };
