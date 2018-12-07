@@ -304,7 +304,11 @@ class FabricClient {
   }
 
   async initializeChannelFromDiscover(channel_name) {
-    const channel = this.hfc_client.getChannel(channel_name);
+    let channel = this.hfc_client.getChannel(channel_name, false);
+    if (!channel) {
+      await this.initializeNewChannel(channel_name);
+      channel = this.getChannel(channel_name);
+    }
     const discover_results = await this.getChannelDiscover(channel);
     logger.debug(
       'Discover results for client [%s] >> %j',
@@ -352,9 +356,9 @@ class FabricClient {
           for (const endpoint of endpoints) {
             let requesturl = endpoint.host;
             if (
-              this.client_config.orderers
-              && this.client_config.orderers[requesturl]
-              && this.client_config.orderers[requesturl].url
+              this.client_config.orderers &&
+              this.client_config.orderers[requesturl] &&
+              this.client_config.orderers[requesturl].url
             ) {
               requesturl = this.client_config.orderers[requesturl].url;
               this.newOrderer(
@@ -381,9 +385,9 @@ class FabricClient {
           for (const peer of org.peers) {
             const host = peer.endpoint.split(':')[0];
             if (
-              this.client_config.peers
-              && this.client_config.peers[host]
-              && this.client_config.peers[host].url
+              this.client_config.peers &&
+              this.client_config.peers[host] &&
+              this.client_config.peers[host].url
             ) {
               const adminpeer = this.newAdminPeer(
                 channel,
@@ -428,9 +432,9 @@ class FabricClient {
     if (!this.adminpeers.get(url)) {
       let newpeer = this.newPeer(channel, url, msp_id, host, msps);
       if (
-        newpeer
-        && newpeer.constructor
-        && newpeer.constructor.name === 'ChannelPeer'
+        newpeer &&
+        newpeer.constructor &&
+        newpeer.constructor.name === 'ChannelPeer'
       ) {
         newpeer = newpeer.getPeer();
       }
@@ -447,7 +451,7 @@ class FabricClient {
 
   newOrderer(channel, url, msp_id, host, msps) {
     let newOrderer = null;
-    channel._orderers.forEach((orderer) => {
+    channel._orderers.forEach(orderer => {
       if (orderer.getUrl() === url) {
         logger.debug('Found existing orderer %s', url);
         newOrderer = orderer;
@@ -470,7 +474,7 @@ class FabricClient {
 
   newPeer(channel, url, msp_id, host, msps) {
     let newpeer = null;
-    channel._channel_peers.forEach((peer) => {
+    channel._channel_peers.forEach(peer => {
       if (peer.getUrl() === url) {
         logger.debug('Found existing peer %s', url);
         newpeer = peer;
