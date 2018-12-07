@@ -37,6 +37,7 @@
     "pg": "^7.4.1",
     "prettyjson": "^1.2.1",
     "prop-types": "^15.6.2",
+    "react-router": "^4.3.1",
     "stomp-broker-js": "^0.1.3",
     "stompjs": "^2.3.3",
     "swagger-ui-express": "^3.0.9",
@@ -53,8 +54,8 @@
     "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-react": "^7.10.0",
     "husky": "^0.14.3",
-    "lint-staged": "^7.2.0",
-    "prettier": "^1.13.7"
+    "lint-staged": "^7.3.0",
+    "prettier": "^1.15.3"
   },
   "lint-staged": {
     "**/*.{js,jsx,json,css}": [

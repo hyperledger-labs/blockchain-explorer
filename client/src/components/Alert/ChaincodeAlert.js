@@ -6,8 +6,8 @@ import {
   DialogActions
 } from '@material-ui/core/Dialog';
 import { withStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core/LinearProgress';
-import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Button } from 'reactstrap';
 import service from '../../services/chaincodeService';
 
 const styles = theme => ({
@@ -20,7 +20,7 @@ const styles = theme => ({
   }
 });
 
-export class ChaincodeAlert extends Component {
+class ChaincodeAlert extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,13 +31,14 @@ export class ChaincodeAlert extends Component {
       error: ''
     };
   }
+
   async componentDidMount() {
     const { payload, reqType } = this.props;
     let resp = {};
-    if ('install' === reqType) {
+    if (reqType === 'install') {
       resp = await service.installChaincode(payload);
       resp.title = 'Response of install chaincode';
-    } else if ('init' === reqType) {
+    } else if (reqType === 'init') {
       resp = await service.instantiateChaincode(payload);
       resp.title = 'Response of instantiate chaincode';
     }
@@ -86,4 +87,5 @@ export class ChaincodeAlert extends Component {
     }
   }
 }
+
 export default withStyles(styles)(ChaincodeAlert);

@@ -82,7 +82,7 @@ export class Chaincodes extends Component {
 
   respPopupClose = (reqType, success, payload) => {
     this.setState({ respPopup: false });
-    if ('install' === reqType && success === true) {
+    if (reqType === 'install' && success === true) {
       this.handleInitDialogOpen(payload);
     }
   };
@@ -161,7 +161,7 @@ export class Chaincodes extends Component {
 
   render() {
     const { chaincodeList, peerList, classes } = this.props;
-    const { installDialog, sourceDialog, chaincode } = this.state;
+    const { installDialog, sourceDialog } = this.state;
     return (
       <div>
         <Button
@@ -186,7 +186,7 @@ export class Chaincodes extends Component {
         >
           <ChaincodeForm
             handleDialog={this.handleChaincodeRequest}
-            peerList={peerList}
+            peerList={this.props.peerList}
           />
         </Dialog>
         <Dialog
@@ -195,7 +195,7 @@ export class Chaincodes extends Component {
           fullWidth
           maxWidth="md"
         >
-          <ChaincodeModal chaincode={chaincode} />
+          <ChaincodeModal chaincode={this.state.chaincode} />
         </Dialog>
         <Dialog
           open={this.state.initDialog}
