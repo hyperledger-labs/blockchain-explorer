@@ -1,16 +1,16 @@
 {
   "network-configs": {
-    "network-1": {
+    "fabric-ca": {
       "version": "1.0",
       "clients": {
-        "client-1": {
+        "provider": {
           "tlsEnable": true,
-          "organization": "Org1MSP",
+          "organization": "provider",
           "channel": "mychannel",
           "credentialStore": {
-            "path": "./tmp/credentialStore_Org1/credential",
+            "path": "./tmp/fabric-client-kvs_provider",
             "cryptoStore": {
-              "path": "./tmp/credentialStore_Org1/crypto"
+              "path": "./tmp/fabric-client-kvs_provider"
             }
           }
         }
@@ -18,72 +18,102 @@
       "channels": {
         "mychannel": {
           "peers": {
-            "peer0.org1.example.com": {}
+            "peer1-consumer": {}
           },
           "connection": {
             "timeout": {
               "peer": {
-                "endorser": "6000",
-                "eventHub": "6000",
-                "eventReg": "6000"
+                "endorser": "60000",
+                "eventHub": "60000",
+                "eventReg": "60000"
               }
             }
           }
         }
       },
+      "orderers": {
+        "orderer1-here": {
+          "url": "grpcs://orderer1-here:7050"
+        }
+      },
       "organizations": {
-        "Org1MSP": {
-          "mspid": "Org1MSP",
+        "here": {
+          "mspid": "hereMSP",
           "fullpath": false,
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+            "path": "/data/orgs/here/admin/msp/keystore"
           },
           "signedCert": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+            "path": "/data/orgs/here/admin/msp/signcerts"
           }
         },
-        "Org2MSP": {
-          "mspid": "Org2MSP",
+        "consumer": {
+          "name": "consumer",
+          "mspid": "consumerMSP",
+          "fullpath": false,
+          "tlsEnable": true,
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+            "path": "/data/orgs/consumer/admin/msp/keystore"
+          },
+          "signedCert": {
+            "path": "/data/orgs/consumer/admin/msp/signcerts"
           }
         },
-        "OrdererMSP": {
-          "mspid": "OrdererMSP",
+        "provider": {
+          "name": "provider",
+          "mspid": "providerMSP",
+          "fullpath": false,
+          "tlsEnable": true,
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+            "path": "/data/orgs/provider/admin/msp/keystore"
+          },
+          "signedCert": {
+            "path": "/data/orgs/provider/admin/msp/signcerts"
           }
         }
       },
       "peers": {
-        "peer0.org1.example.com": {
-          "tlsCACerts": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
-          },
-          "url": "grpcs://localhost:7051",
-          "eventUrl": "grpcs://localhost:7053",
+        "peer1-consumer": {
+          "url": "grpcs://peer1-consumer:7051",
+          "eventUrl": "grpcs://peer1-consumer:7053",
           "grpcOptions": {
-            "ssl-target-name-override": "peer0.org1.example.com"
+            "ssl-target-name-override": "peer1-consumer"
+          },
+          "tlsCACerts": {
+            "path": "/data/consumer-ca-chain.pem"
           }
         },
-        "peer1.org1.example.com": {
-          "url": "grpcs://localhost:8051"
+        "peer2-consumer": {
+          "url": "grpcs://peer2-consumer:7051",
+          "eventUrl": "grpcs://peer2-consumer:7053",
+          "grpcOptions": {
+            "ssl-target-name-override": "peer2-consumer"
+          },
+          "tlsCACerts": {
+            "path": "/data/consumer-ca-chain.pem"
+          }
         },
-        "peer0.org2.example.com": {
-          "url": "grpcs://localhost:9051"
+        "peer1-provider": {
+          "url": "grpcs://peer1-provider:7051",
+          "eventUrl": "grpcs://peer1-provider:7053",
+          "grpcOptions": {
+            "ssl-target-name-override": "peer1-provider"
+          },
+          "tlsCACerts": {
+            "path": "/data/provider-ca-chain.pem"
+          }
         },
-        "peer1.org2.example.com": {
-          "url": "grpcs://localhost:10051"
-        }
-      },
-      "orderers": {
-        "orderer.example.com": {
-          "url": "grpcs://localhost:7050"
+        "peer2-provider": {
+          "url": "grpcs://peer2-provider:7051",
+          "eventUrl": "grpcs://peer2-provider:7053",
+          "grpcOptions": {
+            "ssl-target-name-override": "peer2-provider"
+          },
+          "tlsCACerts": {
+            "path": "/data/provider-ca-chain.pem"
+          }
         }
       }
-    },
-    "network-2": {}
-  },
-  "configtxgenToolPath": "/Users/mudryy/aws/fabric-samples/bin",
-  "license": "Apache-2.0"
+    }
+  }
 }

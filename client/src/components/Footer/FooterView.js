@@ -5,7 +5,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import clientJson from '../../../package.json';
-import Version from '../../FabricVersion';
+import Version from '../../FabricVerison';
 
 const styles = theme => {
   const { type } = theme.palette;
