@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:8.11.3-alpine
+FROM node:8.12-alpine
 
 # default values pf environment variables
 # that are used inside container
@@ -33,7 +33,7 @@ RUN apk add --no-cache --virtual npm-deps python make g++ && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \
-	rm -r /root/.cache
+	  rm -r /root/.cache
 
 # install NPM dependencies
 RUN cd $EXPLORER_APP_PATH && npm install && npm build
@@ -48,4 +48,4 @@ RUN apk del npm-deps
 EXPOSE 8080
 
 # run blockchain explorer main app
-CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null
+#CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null
