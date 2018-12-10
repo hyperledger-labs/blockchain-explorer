@@ -2,8 +2,13 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
+'use strickt';
+
 var child_process = require('child_process');
 var fs = require('fs');
+var unzip = require('unzip');
+var path = require('path');
+var mkdir = require('mkdirp');
 var util = require('util');
 let helper = require('../../../common/helper');
 var logger = helper.getLogger('chaincodeService');
@@ -11,14 +16,6 @@ var logger = helper.getLogger('chaincodeService');
 var regXjs = '[a-z,A-Z,0-9]*.js$';
 var regXgo = '[a-z,A-Z,0-9]*.go$';
 var location;
-
-var pathUtil = require('path');
-var orgPath = pathUtil.join(__dirname, '../artifacts/channel/org1.yaml');
-var networkCfgPath = pathUtil.join(
-  __dirname,
-  '../artifacts/channel/network-config-tls.yaml'
-);
-const defaultOrg = 'Org1';
 
 const errors = {
   lnf: 'Location not found',
@@ -30,6 +27,21 @@ var CURRENT_OS = process.platform;
 let locate_cmd = 'locate -r ';
 if (CURRENT_OS === 'darwin') {
   locate_cmd = MAC_FIND_CMD;
+}
+
+function extractChaincodeZipArchive(fileContent, folderName) {
+  fs.createReadStream(fileContent)
+    .pipe(unzip.Parse())
+    .on('entry', function(entry) {
+      var type = entry.type;
+      if (type === 'File') {
+        var fullPath = __dirname + '/tmp/' + path.dirname(folderName);
+        mkdir.sync(fullPath);
+        entry.pipe(fs.createWriteStream(fullPath + '/' + folderName));
+      } else {
+        entry.autodrain();
+      }
+    });
 }
 
 async function loadChaincodeSrc(path) {
@@ -106,14 +118,72 @@ async function installChaincode(
   peers,
   orgName,
   name,
-  path,
+  pathToZip,
   version,
   type,
-  platform
+  platform,
+  channel
 ) {
   logger.debug(
     '===================START INSTALL CHAINCODE========================='
   );
+  const client = await this.platform.getClient();
+  let targets = buildTargets(); //build the list of peers that will require this chaincode
+  let chaincode_path = path.resolve(__dirname, 'tmp/' + name);
+  let metadata_path = path.resolve(__dirname, 'tmp/metaname');
+  extractChaincodeZipArchive(pathToZip, name);
+
+  // send proposal to install
+  var request = {
+    targets: targets,
+    chaincodePath: chaincode_path,
+    metadataPath: metadata_path, // notice this is the new attribute of the request
+    chaincodeId: name,
+    chaincodeType: type,
+    chaincodeVersion: version
+  };
+
+  client.installChaincode(request).then(
+    results => {
+      var proposalResponses = results[0];
+      let all_good = true;
+      for (var i in proposalResponses) {
+        let one_good = false;
+        if (
+          proposalResponses &&
+          proposalResponses[i].response &&
+          proposalResponses[i].response.status === 200
+        ) {
+          one_good = true;
+          console.log('install proposal was good');
+        } else {
+          logger.error(
+            'install proposal was bad %s',
+            proposalResponses.toString()
+          );
+        }
+        all_good = all_good & one_good;
+      }
+      if (all_good) {
+        console.log(
+          'Successfully sent install Proposal and received ProposalResponse'
+        );
+      }
+    },
+    err => {
+      console.log(
+        'Failed to send install proposal due to error: ' + err.stack
+          ? err.stack
+          : err
+      );
+      throw new Error(
+        'Failed to send install proposal due to error: ' + err.stack
+          ? err.stack
+          : err
+      );
+    }
+  );
+  /*
   let error_message = null;
   let message = '';
   let response = {};
@@ -158,6 +228,7 @@ async function installChaincode(
         'Failed to send install Proposal or receive valid response. Response null or status is not 200';
       logger.error(error_message);
     }
+
   } catch (error) {
     logger.error(
       'Failed to install due to error: ' + error.stack ? error.stack : error
@@ -179,7 +250,7 @@ async function installChaincode(
       message: message
     };
   }
-  return response;
+  return response;    */
 }
 
 async function instantiateChaincode(

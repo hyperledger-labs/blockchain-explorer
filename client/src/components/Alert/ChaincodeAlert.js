@@ -55,8 +55,10 @@ class ChaincodeAlert extends Component {
     if (!isFinish) {
       return (
         <Fragment>
-          <DialogTitle id="alert-dialog-title">{'Chaincode...'}</DialogTitle>
-          <CircularProgress size="20" />
+          <DialogTitle id="alert-dialog-title">
+            {'Installing Chaincode...'}
+          </DialogTitle>
+          <CircularProgress size="10" />
           <DialogContent className={classes.progress} />
         </Fragment>
       );

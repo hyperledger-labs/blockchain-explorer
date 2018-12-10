@@ -204,7 +204,7 @@ const platformroutes = async function(app, platform) {
 
   /**
    Chaincode install
-   POST /api/chaincode
+   POST /api/chaincode/install
    Request:
    {
       "peers": ["peer0.org1.example.com"],
@@ -214,30 +214,33 @@ const platformroutes = async function(app, platform) {
       "type": "Go"
     }
    */
-  app.post('/api/chaincode', async (req, res) => {
+  app.post('/api/chaincode/install', async (req, res) => {
     let peer = req.body.peer;
     let name = req.body.name;
     let path = req.body.path;
     let version = req.body.version;
     let type = req.body.type;
+    let channel = req.body.channel;
 
     logger.info(
-      'Install chaincode api params: %s, %s, %s, %s, %s',
+      'Install chaincode api params: %s, %s, %s, %s, %s, %s',
       peer,
       name,
       path,
       version,
-      type
+      type,
+      channel
     );
 
-    if (peer && name && path && version) {
+    if (peer && name && path && version && channel) {
       let message = await proxy.installChaincode(
         peer,
         name,
         path,
         version,
         type,
-        platform
+        platform,
+        channel
       );
       res.send(message);
     } else {

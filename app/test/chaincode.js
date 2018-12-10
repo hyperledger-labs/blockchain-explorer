@@ -14,6 +14,7 @@ const request = require('request');
 
 const base = 'http://localhost:1337';
 const chaincode = require('./fixtures/chaincode.json');
+const chaincodeinstall = require('./fixtures/chaincodeinstall.json');
 
 describe('GET /api/chaincode/:channel', () => {
   before(() => {
@@ -29,7 +30,7 @@ describe('GET /api/chaincode/:channel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return chaincode ', (done) => {
+  it('should return chaincode ', done => {
     const obj = chaincode;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
@@ -50,5 +51,41 @@ describe('GET /api/chaincode/:channel', () => {
         done();
       }
     );
+  });
+});
+
+describe('GET /api/chaincode/install', () => {
+  before(() => {
+    this.get = sinon.stub(request, 'get');
+    this.post = sinon.stub(request, 'post');
+    this.put = sinon.stub(request, 'put');
+    this.delete = sinon.stub(request, 'delete');
+  });
+
+  after(() => {
+    request.get.restore();
+    request.post.restore();
+    request.put.restore();
+    request.delete.restore();
+  });
+  it('should install chaincode ', done => {
+    const obj = chaincodeinstall;
+    this.get.yields(null, JSON.stringify(obj));
+    request.get(`${base}` + '/api/chaincode/install', (err, body) => {
+      body = JSON.parse(body);
+      body.should.include.keys('status', 'chaincode');
+      body.status.should.eql(200);
+      for (let i = 0; i < body.chaincode.length; i++) {
+        body.chaincode[i].should.include.keys(
+          'channelName',
+          'chaincodename',
+          'path',
+          'version',
+          'type',
+          'peer'
+        );
+      }
+      done();
+    });
   });
 });

@@ -1,0 +1,13 @@
+{
+  "status": 200,
+  "chaincode": [
+    {
+      "channelName": "mychannel",
+      "chaincodename": "fabcar",
+      "path": "",
+      "version": "1.0",
+      "type": "node",
+      "peer": "peer0.org1.example.com"
+    }
+  ]
+}
