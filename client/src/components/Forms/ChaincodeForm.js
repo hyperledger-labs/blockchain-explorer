@@ -61,7 +61,7 @@ export class ChaincodeForm extends Component {
         version: '',
         type: '',
         peer: '',
-        channel_name: ''
+        channel: ''
       }
     };
   }
@@ -101,15 +101,19 @@ export class ChaincodeForm extends Component {
             />
             <TextField
               id="channel-name"
+              select
               label="Channel Name"
-              name="channel_name"
-              value={this.state.request.channelname}
+              name="channel"
+              value={this.state.request.channel}
               onChange={this.handleChange}
               className={classes.textField}
               margin="normal"
             >
               {channels.map(channel => (
-                <MenuItem key={channel.requests} value={channel.channelname}>
+                <MenuItem
+                  key={channel.channel_genesis_hash}
+                  value={channel.channelname}
+                >
                   {channel.channelname}
                 </MenuItem>
               ))}
