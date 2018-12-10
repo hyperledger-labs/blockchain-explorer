@@ -9,7 +9,7 @@
 # Log rotating for every 7 days.
 
 rm -rf /tmp/fabric-client-kvs_peerOrg*
-
+rm -rf ./logs/*
 mkdir -p ./logs/app & mkdir -p ./logs/db & mkdir -p ./logs/console
 
 LOG_CONSOLE_PATH="logs/console/console-$(date +%Y-%m-%d).log"

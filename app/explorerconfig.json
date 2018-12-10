@@ -5,7 +5,7 @@
     "host": "127.0.0.1",
     "port": "5432",
     "database": "fabricexplorer",
-    "username": "postgres",
+    "username": "hppoc",
     "passwd": "password"
   },
   "sync": {

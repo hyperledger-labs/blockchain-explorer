@@ -36,29 +36,29 @@
           "mspid": "Org1MSP",
           "fullpath": false,
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+            "path": "../fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
           },
           "signedCert": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+            "path": "../fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
           }
         },
         "Org2MSP": {
           "mspid": "Org2MSP",
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+            "path": "../fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
           }
         },
         "OrdererMSP": {
           "mspid": "OrdererMSP",
           "adminPrivateKey": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+            "path": "../fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
           }
         }
       },
       "peers": {
         "peer0.org1.example.com": {
           "tlsCACerts": {
-            "path": "/Users/mudryy/aws/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+            "path": "../fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
           },
           "url": "grpcs://localhost:7051",
           "eventUrl": "grpcs://localhost:7053",
@@ -84,6 +84,6 @@
     },
     "network-2": {}
   },
-  "configtxgenToolPath": "/Users/mudryy/aws/fabric-samples/fabric-samples/bin",
+  "configtxgenToolPath": "../fabric-samples/bin",
   "license": "Apache-2.0"
 }
