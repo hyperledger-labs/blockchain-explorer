@@ -204,7 +204,7 @@ const platformroutes = async function(app, platform) {
 
   /**
    Chaincode install
-   POST /api/chaincode/install
+   POST /api/chaincode
    Request:
    {
       "peers": ["peer0.org1.example.com"],
@@ -214,7 +214,7 @@ const platformroutes = async function(app, platform) {
       "type": "Go"
     }
    */
-  app.post('/api/chaincode/install', async (req, res) => {
+  app.post('/api/chaincode', async (req, res) => {
     let peer = req.body.peer;
     let name = req.body.name;
     let path = req.body.path;

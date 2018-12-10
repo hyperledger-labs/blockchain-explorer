@@ -12,8 +12,6 @@ let helper = require('../../../common/helper');
 let ExplorerError = require('../../../common/ExplorerError');
 
 let configtxgenToolPath = config.configtxgenToolPath;
-// var orgPath = path.join(__dirname, '../artifacts/channel/org1.yaml');
-// var networkCfgPath = path.join(__dirname, '../artifacts/channel/network-config-tls.yaml');
 
 let logger = helper.getLogger('channelservice');
 

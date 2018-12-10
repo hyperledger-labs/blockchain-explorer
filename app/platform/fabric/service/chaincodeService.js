@@ -2,28 +2,27 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-'use strickt';
+let child_process = require('child_process');
+let fs = require('fs');
+let unzip = require('unzip');
+let path = require('path');
+let mkdir = require('mkdirp');
+let util = require('util');
+const helper = require('../../../common/helper');
 
-var child_process = require('child_process');
-var fs = require('fs');
-var unzip = require('unzip');
-var path = require('path');
-var mkdir = require('mkdirp');
-var util = require('util');
-let helper = require('../../../common/helper');
-var logger = helper.getLogger('chaincodeService');
+let logger = helper.getLogger('chaincodeService');
 
-var regXjs = '[a-z,A-Z,0-9]*.js$';
-var regXgo = '[a-z,A-Z,0-9]*.go$';
-var location;
+let regXjs = '[a-z,A-Z,0-9]*.js$';
+let regXgo = '[a-z,A-Z,0-9]*.go$';
+let location;
 
 const errors = {
   lnf: 'Location not found',
   erf: 'Error reading file'
 };
 
-var MAC_FIND_CMD = 'locate ';
-var CURRENT_OS = process.platform;
+let MAC_FIND_CMD = 'locate ';
+let CURRENT_OS = process.platform;
 let locate_cmd = 'locate -r ';
 if (CURRENT_OS === 'darwin') {
   locate_cmd = MAC_FIND_CMD;
@@ -32,7 +31,7 @@ if (CURRENT_OS === 'darwin') {
 function extractChaincodeZipArchive(fileContent, folderName) {
   fs.createReadStream(fileContent)
     .pipe(unzip.Parse())
-    .on('entry', function(entry) {
+    .on('entry', entry => {
       var type = entry.type;
       if (type === 'File') {
         var fullPath = __dirname + '/tmp/' + path.dirname(folderName);
@@ -78,8 +77,8 @@ async function loadChaincodeSrc(path) {
   if (location === errors.lnf) {
     return errors.lnf;
   }
-  var ccSource;
-  var chaincodePath;
+  let ccSource;
+  let chaincodePath;
 
   try {
     if (Array.isArray(location) && location[0]) {
@@ -93,7 +92,7 @@ async function loadChaincodeSrc(path) {
       chaincodePath = chaincodePath.trim();
     }
 
-    var locationDirectory = chaincodePath.split('/');
+    let locationDirectory = chaincodePath.split('/');
     locationDirectory = locationDirectory
       .slice(0, locationDirectory.length - 1)
       .join('/');
@@ -106,7 +105,7 @@ async function loadChaincodeSrc(path) {
     return errors.lnf;
   }
   try {
-    ccSource = await child_process.execSync('cat ' + chaincodePath);
+    ccSource = await child_process.execSync(`cat ${chaincodePath}`);
   } catch (error) {
     return errors.erf;
   }
@@ -118,7 +117,7 @@ async function installChaincode(
   peers,
   orgName,
   name,
-  pathToZip,
+  zip,
   version,
   type,
   platform,
@@ -128,14 +127,14 @@ async function installChaincode(
     '===================START INSTALL CHAINCODE========================='
   );
   const client = await this.platform.getClient();
-  let targets = buildTargets(); //build the list of peers that will require this chaincode
-  let chaincode_path = path.resolve(__dirname, 'tmp/' + name);
-  let metadata_path = path.resolve(__dirname, 'tmp/metaname');
-  extractChaincodeZipArchive(pathToZip, name);
+  const targets = buildTargets(); // build the list of peers that will require this chaincode
+  const chaincode_path = path.resolve(__dirname, `tmp/${name}`);
+  const metadata_path = path.resolve(__dirname, 'tmp/metaname');
+  extractChaincodeZipArchive(zip, name);
 
   // send proposal to install
-  var request = {
-    targets: targets,
+  let request = {
+    targets,
     chaincodePath: chaincode_path,
     metadataPath: metadata_path, // notice this is the new attribute of the request
     chaincodeId: name,
@@ -145,9 +144,9 @@ async function installChaincode(
 
   client.installChaincode(request).then(
     results => {
-      var proposalResponses = results[0];
+      let proposalResponses = results[0];
       let all_good = true;
-      for (var i in proposalResponses) {
+      for (let i in proposalResponses) {
         let one_good = false;
         if (
           proposalResponses &&
@@ -162,7 +161,7 @@ async function installChaincode(
             proposalResponses.toString()
           );
         }
-        all_good = all_good & one_good;
+        all_good &= one_good;
       }
       if (all_good) {
         console.log(
@@ -172,12 +171,12 @@ async function installChaincode(
     },
     err => {
       console.log(
-        'Failed to send install proposal due to error: ' + err.stack
+        `Failed to send install proposal due to error: ${err.stack}`
           ? err.stack
           : err
       );
       throw new Error(
-        'Failed to send install proposal due to error: ' + err.stack
+        `Failed to send install proposal due to error: ${err.stack}`
           ? err.stack
           : err
       );
@@ -256,10 +255,9 @@ async function installChaincode(
 async function instantiateChaincode(
   channelName,
   peers,
-  orgName,
   name,
   version,
-  orgName,
+  org,
   txtype,
   policy,
   args,
@@ -268,8 +266,8 @@ async function instantiateChaincode(
   logger.debug(
     '===================START INSTANTIATE CHAINCODE========================='
   );
-  let results = '';
-  let org = !orgName ? defaultOrg : orgName;
+  const results = '';
+  /*
   let client = await platform.getClientFromPath(org, orgPath, networkCfgPath);
   let channel = client.getChannel(channelName, true);
   let tx_id = client.newTransactionID(true);
@@ -335,6 +333,7 @@ async function instantiateChaincode(
   );
   logger.debug('instantiate final results: ', results);
   return results;
+  */
 }
 
 // getPath();
