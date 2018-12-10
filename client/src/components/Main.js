@@ -92,7 +92,8 @@ export const Main = props => {
   };
   const chaincodeViewProps = {
     chaincodeList,
-    peerList
+    peerList,
+    channels
   };
 
   const channelsViewProps = {

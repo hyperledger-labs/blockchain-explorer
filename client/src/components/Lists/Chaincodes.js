@@ -7,12 +7,12 @@ import { withStyles } from '@material-ui/core/styles';
 import matchSorter from 'match-sorter';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
-
 import ReactTable from '../Styled/Table';
 import ChaincodeForm from '../Forms/ChaincodeForm';
 import ChaincodeModal from '../View/ChaincodeModal';
 import { chaincodeListType } from '../types';
 import ChaincodeInitForm from '../Forms/ChaincodeInitForm';
+import ChannelForm from '../Forms/ChannelForm';
 import ChaincodeAlert from '../Alert/ChaincodeAlert';
 
 const styles = theme => ({
@@ -111,12 +111,12 @@ export class Chaincodes extends Component {
     },
     {
       Header: 'Channel Name',
-      accessor: 'channelName',
+      accessor: 'channelname',
       filterMethod: (filter, rows) =>
         matchSorter(
           rows,
           filter.value,
-          { keys: ['channelName'] },
+          { keys: ['channelname'] },
           { threshold: matchSorter.rankings.SIMPLEMATCH }
         ),
       filterAll: true
@@ -160,7 +160,7 @@ export class Chaincodes extends Component {
   ];
 
   render() {
-    const { chaincodeList, peerList, classes } = this.props;
+    const { chaincodeList, peerList, classes, channels } = this.props;
     const { installDialog, sourceDialog } = this.state;
     return (
       <div>
@@ -170,14 +170,6 @@ export class Chaincodes extends Component {
         >
           Add Chaincode
         </Button>
-        <ReactTable
-          data={chaincodeList}
-          columns={this.reactTableSetup(classes)}
-          defaultPageSize={5}
-          filterable
-          minRows={0}
-          showPagination={!(chaincodeList.length < 5)}
-        />
         <Dialog
           open={installDialog}
           onClose={this.handleInstallDialogClose}
@@ -187,8 +179,29 @@ export class Chaincodes extends Component {
           <ChaincodeForm
             handleDialog={this.handleChaincodeRequest}
             peerList={this.props.peerList}
+            channels={this.props.channels}
           />
         </Dialog>
+        <Dialog
+          open={this.state.initDialog}
+          onClose={this.handleInitDialogClose}
+          fullWidth={true}
+          maxWidth={'md'}
+        >
+          <ChannelForm
+            channels={channels}
+            channelsInfo={this.state.installedChannels}
+            handleDialog={this.handleChannelRequest}
+          />
+        </Dialog>
+        <ReactTable
+          data={chaincodeList}
+          columns={this.reactTableSetup(classes)}
+          defaultPageSize={5}
+          filterable
+          minRows={0}
+          showPagination={!(chaincodeList.length < 5)}
+        />
         <Dialog
           open={sourceDialog}
           onClose={this.sourceDialogClose}

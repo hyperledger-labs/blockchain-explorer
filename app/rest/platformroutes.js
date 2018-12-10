@@ -4,11 +4,13 @@
  */
 
 const requtil = require('./requestutils');
+const helper = require('../common/helper');
 
 const platformroutes = async function(app, platform) {
   const proxy = platform.getProxy();
   const statusMetrics = platform.getPersistence().getMetricService();
   const crudService = platform.getPersistence().getCrudService();
+  const logger = helper.getLogger('PlatformRoutes');
 
   /** *
     Block by number

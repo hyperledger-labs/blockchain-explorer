@@ -1,3 +1,4 @@
+/* eslint-disable react/prefer-stateless-function */
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
@@ -10,30 +11,29 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   container: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   form: {
-    width: 310,
+    width: 310
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 130,
+    width: 130
   },
   fileField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 300,
+    width: 300
   },
   menu: {
-    width: 200,
-  },
+    width: 200
+  }
 });
 
 class ChannelForm extends Component {
   render() {
     const { classes } = this.props;
-
     return (
       // TODO : Replace with liform-react
       <div>

@@ -60,7 +60,8 @@ export class ChaincodeForm extends Component {
         name: '',
         version: '',
         type: '',
-        peer: ''
+        peer: '',
+        channel_name: ''
       }
     };
   }
@@ -80,7 +81,7 @@ export class ChaincodeForm extends Component {
   };
 
   render() {
-    const { classes, peerList } = this.props;
+    const { classes, peerList, channels } = this.props;
     return (
       // TODO : Replace with liform-react
       <div className={['card', classes.container].join(' ')}>
@@ -98,6 +99,21 @@ export class ChaincodeForm extends Component {
               className={classes.textField}
               margin="normal"
             />
+            <TextField
+              id="channel-name"
+              label="Channel Name"
+              name="channel_name"
+              value={this.state.request.channelname}
+              onChange={this.handleChange}
+              className={classes.textField}
+              margin="normal"
+            >
+              {channels.map(channel => (
+                <MenuItem key={channel.requests} value={channel.channelname}>
+                  {channel.channelname}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               id="targetPeer"
               select
