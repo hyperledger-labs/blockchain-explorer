@@ -89,7 +89,8 @@ export class ChaincodeForm extends Component {
         </div>
         <div className="card-body">
           <form className={classes.container1} onSubmit={this.handleSubmit}>
-            <TextField
+            <input
+              type="file"
               id="file-path"
               label="File Path"
               name="path"

@@ -1,11 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import {
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions
-} from '@material-ui/core/Dialog';
 import { withStyles } from '@material-ui/core/styles';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button } from 'reactstrap';
 import service from '../../services/chaincodeService';
@@ -58,9 +56,7 @@ class ChaincodeAlert extends Component {
       return (
         <Fragment>
           <DialogTitle id="alert-dialog-title">{'Chaincode...'}</DialogTitle>
-          <DialogContent className={classes.progress}>
-            <CircularProgress size={50} />
-          </DialogContent>
+          <DialogContent className={classes.progress} />
         </Fragment>
       );
     } else {
