@@ -248,40 +248,27 @@ class Proxy {
   }
 
   // Install Chaincode BE-268
-  async installChaincode(peers, orgName, name, path, version, type, platform) {
+  async installChaincode(peer, name, zip, version, type) {
     return chaincodeService.installChaincode(
-      peers,
-      orgName,
+      peer,
       name,
-      path,
+      zip,
       version,
       type,
-      platform
+      this.platform
     );
   }
 
   // Instantiate chaincode BE-268
-  async instantiateChaincode(
-    channel,
-    peers,
-    orgName,
-    name,
-    version,
-    txtype,
-    policy,
-    args,
-    platform
-  ) {
+  async instantiateChaincode(peer, name, zip, version, type, channel) {
     return chaincodeService.instantiateChaincode(
-      channel,
-      peers,
-      orgName,
+      peer,
       name,
+      zip,
       version,
-      txtype,
-      policy,
-      args,
-      platform
+      type,
+      channel,
+      this.platform
     );
   }
 }

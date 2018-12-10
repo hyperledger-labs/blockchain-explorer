@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
@@ -56,7 +57,7 @@ export class ChaincodeForm extends Component {
     super(props);
     this.state = {
       request: {
-        path: '',
+        zip: {},
         name: '',
         version: '',
         type: '',
@@ -80,6 +81,18 @@ export class ChaincodeForm extends Component {
     this.props.handleDialog('install', this.state.request);
   };
 
+  handleFileUpload = event => {
+    const data = new FormData();
+    data.append('file', event.target.files[0]);
+    data.append('name', event.target.files[0].name);
+    this.setState({
+      request: {
+        ...this.state.request,
+        [event.target.zip]: data
+      }
+    });
+  };
+
   render() {
     const { classes, peerList, channels } = this.props;
     return (
@@ -94,8 +107,8 @@ export class ChaincodeForm extends Component {
               type="file"
               id="file-path"
               label="File Path"
-              name="path"
-              onChange={this.handleChange}
+              name="zip"
+              onChange={this.handleFileUpload}
               className={classes.textField}
               margin="normal"
             />

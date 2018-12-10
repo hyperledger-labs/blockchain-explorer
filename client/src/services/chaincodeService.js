@@ -6,7 +6,7 @@ import { post } from './request';
 
 const installChaincode = payload => {
   return new Promise(resolve => {
-    post(`/api/chaincode/install`, payload)
+    post(`/api/chaincode`, payload)
       .then(resp => {
         resolve(resp);
       })
