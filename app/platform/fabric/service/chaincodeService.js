@@ -116,8 +116,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   let errorMessage = '';
   const client = await platform.getClient();
   const targets = [peer]; // build the list of peers that will require this chaincode
-  const chaincodePath = path.join(os.tmpdir(), `${Date.now()}`);
-  const metadataPath = path.join(chaincodePath, '/metaname');
+  const chaincodePath = path.join('tmp', `${Date.now()}`);
   try {
     extractChaincodeZipArchive(zip, chaincodePath);
   } catch (error) {
@@ -133,14 +132,14 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const request = {
     targets: targets,
     chaincodePath: chaincodePath,
-    metadataPath: metadataPath, // notice this is the new attribute of the request
+    metadataPath: chaincodePath, // notice this is the new attribute of the request
     chaincodeId: name,
     chaincodeType: type,
     chaincodeVersion: version
   };
 
   try {
-    const results = await client.installChaincode(request);
+    const results = await client.hfc_client.installChaincode(request);
     console.log('install');
     const proposalResponses = results[0];
     let allGood = true;
