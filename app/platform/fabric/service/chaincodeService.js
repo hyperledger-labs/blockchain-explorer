@@ -8,11 +8,8 @@
 
 const child_process = require('child_process');
 const fs = require('fs-extra');
-const os = require('os');
 const AdmZip = require('adm-zip');
-const unzip = require('unzip');
 const path = require('path');
-const mkdir = require('mkdirp');
 const util = require('util');
 const helper = require('../../../common/helper');
 
