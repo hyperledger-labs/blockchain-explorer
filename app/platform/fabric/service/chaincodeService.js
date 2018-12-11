@@ -7,7 +7,9 @@
  */
 
 const child_process = require('child_process');
-const fs = require('fs');
+const fs = require('fs-extra');
+const os = require('os');
+const AdmZip = require('adm-zip');
 const unzip = require('unzip');
 const path = require('path');
 const mkdir = require('mkdirp');
@@ -33,25 +35,8 @@ if (CURRENT_OS === 'darwin') {
 }
 
 function extractChaincodeZipArchive(fileContent, folderName) {
-  fs.createReadStream(fileContent)
-    .pipe(unzip.Parse())
-    .on('entry', entry => {
-      const type = entry.type;
-      fs.readFile(fileContent, { encoding: 'utf-8' }, function(err, data) {
-        if (!err) {
-          console.log('received data: ' + data);
-        } else {
-          console.log(err);
-        }
-      });
-      if (type === 'File') {
-        const fullPath = `${__dirname}/tmp/${path.dirname(folderName)}`;
-        mkdir.sync(fullPath);
-        entry.pipe(fs.createWriteStream(`${fullPath}/${folderName}`));
-      } else {
-        entry.autodrain();
-      }
-    });
+  const zip = new AdmZip(fileContent.data);
+  zip.extractAllTo(folderName, true);
 }
 
 async function loadChaincodeSrc(path) {
@@ -131,11 +116,12 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   let errorMessage = '';
   const client = await platform.getClient();
   const targets = [peer]; // build the list of peers that will require this chaincode
-  const chaincodePath = path.resolve(__dirname, `tmp/${zip.name}`);
-  const metadataPath = path.resolve(__dirname, 'tmp/metaname');
+  const chaincodePath = path.join(os.tmpdir(), `${Date.now()}`);
+  const metadataPath = path.join(chaincodePath, '/metaname');
   try {
-    extractChaincodeZipArchive(zip, zip.name);
+    extractChaincodeZipArchive(zip, chaincodePath);
   } catch (error) {
+    fs.removeSync(chaincodePath);
     return {
       success: false,
       message: 'Failed to extract chaincode from zip archive'
@@ -189,6 +175,8 @@ async function installChaincode(peer, name, zip, version, type, platform) {
       `Failed to install due to error: ${error.stack}` ? error.stack : error
     );
     errorMessage = error.toString();
+  } finally {
+    fs.removeSync(chaincodePath);
   }
 
   if (errorMessage !== '') {
