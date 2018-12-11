@@ -2,6 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const compression = require('compression');
@@ -28,6 +29,7 @@ class Explorer {
       swaggerUi.serve,
       swaggerUi.setup(swaggerDocument)
     );
+    this.app.use(fileUpload());
     this.app.use(compression());
     this.persistence;
     this.platforms = [];

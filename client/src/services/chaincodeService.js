@@ -2,11 +2,11 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { post } from './request';
+import { post, postForm } from './request';
 
 const installChaincode = payload => {
   return new Promise(resolve => {
-    post(`/api/chaincode`, payload)
+    postForm(`/api/chaincode`, payload, payload.zip)
       .then(resp => {
         resolve(resp);
       })

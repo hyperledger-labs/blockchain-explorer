@@ -134,7 +134,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const chaincodePath = path.resolve(__dirname, `tmp/${zip.name}`);
   const metadataPath = path.resolve(__dirname, 'tmp/metaname');
   try {
-    extractChaincodeZipArchive(zip.file, zip.name);
+    extractChaincodeZipArchive(zip, zip.name);
   } catch (error) {
     return {
       success: false,

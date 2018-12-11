@@ -82,15 +82,13 @@ export class ChaincodeForm extends Component {
   };
 
   handleFileUpload = event => {
-    const data = new FormData();
-    data.append('file', event.target.files[0]);
-    data.append('name', event.target.files[0].name);
     this.setState({
       request: {
         ...this.state.request,
-        [event.target.zip]: data
+        [event.target.name]: event.target.files[0]
       }
     });
+    console.log(this.state.request);
   };
 
   render() {
