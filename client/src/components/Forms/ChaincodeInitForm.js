@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -44,10 +45,10 @@ class ChaincodeInitForm extends Component {
     super(props);
     this.state = {
       request: {
+        channel: '',
         peer: '',
         policy: '',
         type: 'init',
-        channel: '',
         params: [{ id: 0, data: '', text: '+' }]
       }
     };
@@ -136,9 +137,7 @@ class ChaincodeInitForm extends Component {
   };
 
   render() {
-    const { classes } = this.props;
-    const { peerList } = this.props;
-    const { chaincodeInfo } = this.props;
+    const { channels, chaincodeInfo, peerList, classes } = this.props;
     const { request } = this.state;
 
     return (
@@ -163,6 +162,25 @@ class ChaincodeInitForm extends Component {
             >
               <MenuItem value="init">Init</MenuItem>
               <MenuItem value="upgrade">Upgrade</MenuItem>
+            </TextField>
+            <TextField
+              id="channel-name"
+              select
+              label="Channel Name"
+              name="channel"
+              value={this.state.request.channel}
+              onChange={this.handleChange}
+              className={classes.textField}
+              margin="normal"
+            >
+              {channels.map(channel => (
+                <MenuItem
+                  key={channel.channel_genesis_hash}
+                  value={channel.channelname}
+                >
+                  {channel.channelname}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
               id="peers"

@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
@@ -179,7 +180,6 @@ export class Chaincodes extends Component {
           <ChaincodeForm
             handleDialog={this.handleChaincodeRequest}
             peerList={this.props.peerList}
-            channels={this.props.channels}
           />
         </Dialog>
         <Dialog
@@ -219,6 +219,7 @@ export class Chaincodes extends Component {
           <ChaincodeInitForm
             peerList={peerList}
             chaincodeInfo={this.state.installedChaincode}
+            channels={this.props.channels}
             handleDialog={this.handleChaincodeRequest}
           />
         </Dialog>

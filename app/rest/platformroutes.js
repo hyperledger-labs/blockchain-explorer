@@ -231,7 +231,7 @@ const platformroutes = async function(app, platform) {
       type
     );
     console.log(zip);
-    if (peer && name && zip && version && channel) {
+    if (peer && name && zip && version) {
       let message = await proxy.installChaincode(
         peer,
         name,
@@ -257,7 +257,7 @@ const platformroutes = async function(app, platform) {
     let args = req.body.params;
 
     logger.info(
-      'Instantiate chaincode api params: %s, %s, %s, %s, %s',
+      'Instantiate chaincode api params: %s, %s, %s, %s, %s, %s, %s',
       peers,
       name,
       channel,

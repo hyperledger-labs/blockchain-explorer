@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 /* eslint-disable comma-dangle */
 /**
  *    SPDX-License-Identifier: Apache-2.0
@@ -61,8 +62,7 @@ export class ChaincodeForm extends Component {
         name: '',
         version: '',
         type: '',
-        peer: '',
-        channel: ''
+        peer: ''
       }
     };
   }
@@ -92,7 +92,7 @@ export class ChaincodeForm extends Component {
   };
 
   render() {
-    const { classes, peerList, channels } = this.props;
+    const { classes, peerList } = this.props;
     return (
       // TODO : Replace with liform-react
       <div className={['card', classes.container].join(' ')}>
@@ -101,8 +101,12 @@ export class ChaincodeForm extends Component {
         </div>
         <div className="card-body">
           <form className={classes.container1} onSubmit={this.handleSubmit}>
+            <label for="file-path">
+              Chaincode ZIP archive file with node/go/java folder inside
+            </label>
             <input
               type="file"
+              accept=".zip,.tar,.rar,.tar.gz,.tgz"
               id="file-path"
               label="File Path"
               name="zip"
@@ -110,25 +114,6 @@ export class ChaincodeForm extends Component {
               className={classes.textField}
               margin="normal"
             />
-            <TextField
-              id="channel-name"
-              select
-              label="Channel Name"
-              name="channel"
-              value={this.state.request.channel}
-              onChange={this.handleChange}
-              className={classes.textField}
-              margin="normal"
-            >
-              {channels.map(channel => (
-                <MenuItem
-                  key={channel.channel_genesis_hash}
-                  value={channel.channelname}
-                >
-                  {channel.channelname}
-                </MenuItem>
-              ))}
-            </TextField>
             <TextField
               id="targetPeer"
               select
@@ -171,8 +156,8 @@ export class ChaincodeForm extends Component {
               name="type"
               margin="normal"
             >
-              <MenuItem value={'Go'}>Go</MenuItem>
-              <MenuItem value={'javascript'}>javascript</MenuItem>
+              <MenuItem value={'go'}>Go</MenuItem>
+              <MenuItem value={'node'}>Nodejs</MenuItem>
               <MenuItem value={'java'}>Java</MenuItem>
             </TextField>
             <Button className={classes.button}>Submit</Button>
