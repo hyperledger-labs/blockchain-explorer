@@ -50,6 +50,10 @@ export class Chaincodes extends Component {
     this.setState({ installDialog: false });
   };
 
+  handleInitDialogClose = () => {
+    this.setState({ initDialog: false });
+  };
+
   sourceDialogOpen = chaincode => {
     this.setState({ chaincode });
     this.setState({ sourceDialog: true });

@@ -243,13 +243,20 @@ const platformroutes = async function(app, platform) {
 
   // Chaincode INSTANTIATE
   app.post('/api/channel/:channel/chaincode', async (req, res) => {
-    let channel = req.params.channel;
+    const {
+      channel,
+      name,
+      version,
+      type: txtype,
+      policy,
+      params: args
+    } = req.body;
+
     let peers = req.body.peer;
-    let name = req.body.name;
-    let version = req.body.version;
-    let txtype = req.body.type;
-    let policy = req.body.policy;
-    let args = req.body.params;
+
+    if (!Array.isArray(peers)) {
+      peers = [peers];
+    }
 
     logger.info(
       'Instantiate chaincode api params: %s, %s, %s, %s, %s, %s, %s',
@@ -264,14 +271,15 @@ const platformroutes = async function(app, platform) {
 
     if (peers && channel && name && version) {
       let message = await proxy.instantiateChaincode(
-        channel,
-        peers,
-        name,
-        version,
-        txtype,
-        policy,
-        args,
-        platform
+        {
+          peers,
+          name,
+          version,
+          channel,
+          policy,
+          args
+        },
+        txtype
       );
       res.send(message);
     } else {

@@ -75,8 +75,7 @@ class ChaincodeInitForm extends Component {
     this.setState({
       request: {
         ...this.state.request,
-        [e.target.name]: e.target.value,
-        channel: e.target.name === 'peer' ? e.target.value.name : ''
+        [e.target.name]: e.target.value
       }
     });
   };
