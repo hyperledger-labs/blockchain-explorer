@@ -111,8 +111,10 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   );
 
   let errorMessage = '';
-  const client = await platform.getClient();
+  const fabricClient = await platform.getClient();
+  const client = fabricClient.hfc_client;
   const targets = [peer]; // build the list of peers that will require this chaincode
+  //todo change file name - nameCode + versionCode
   const chaincodePath = path.join('tmp', `${Date.now()}`);
   try {
     extractChaincodeZipArchive(zip, chaincodePath);
@@ -136,7 +138,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   };
 
   try {
-    const results = await client.hfc_client.installChaincode(request);
+    const results = await client.installChaincode(request);
     console.log('install');
     const proposalResponses = results[0];
     let allGood = true;
@@ -175,7 +177,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     );
     errorMessage = error.toString();
   } finally {
-    fs.removeSync(chaincodePath);
+    // fs.removeSync(chaincodePath);
   }
 
   if (!errorMessage) {
@@ -194,33 +196,34 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   }
 }
 
-async function instantiateChaincode(
-  peer,
-  name,
-  zip,
-  version,
-  type,
-  channel,
-  platform
-) {
+async function instantiateChaincode(chaincodeRequest, txtype, platform) {
   logger.debug(
     '===================START INSTANTIATE CHAINCODE========================='
   );
-  const results = '';
-  /*
-  let client = await platform.getClientFromPath(org, orgPath, networkCfgPath);
-  let channel = client.getChannel(channelName, true);
-  let tx_id = client.newTransactionID(true);
-
-  let request = {
-    targets: peers,
-    chaincodeId: name,
-    chaincodeVersion: version,
-    args: args,
-    txId: tx_id
-  };
-
+  const {
+    peers,
+    name,
+    version,
+    channel: channelName,
+    policy,
+    args
+  } = chaincodeRequest;
+  let results;
   try {
+    const fabricClient = await platform.getClient();
+    const client = fabricClient.hfc_client;
+    let channel = client.getChannel(channelName, true);
+    let tx_id = client.newTransactionID(true);
+
+    let request = {
+      // targets: peers,
+      chaincodeId: name,
+      chaincodeType: 'node',
+      chaincodeVersion: version,
+      // args: args,
+      txId: tx_id
+    };
+
     if ('init' === txtype) {
       results = await channel.sendInstantiateProposal(request, 60000); //instantiate takes much longer
     } else if ('upgrade' === txtype) {
@@ -273,7 +276,6 @@ async function instantiateChaincode(
   );
   logger.debug('instantiate final results: ', results);
   return results;
-  */
 }
 
 // getPath();

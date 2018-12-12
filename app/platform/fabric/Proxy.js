@@ -260,14 +260,10 @@ class Proxy {
   }
 
   // Instantiate chaincode BE-268
-  async instantiateChaincode(peer, name, zip, version, type, channel) {
+  async instantiateChaincode(chaincodeRequest, txtype) {
     return chaincodeService.instantiateChaincode(
-      peer,
-      name,
-      zip,
-      version,
-      type,
-      channel,
+      chaincodeRequest,
+      txtype,
       this.platform
     );
   }
