@@ -215,12 +215,8 @@ const platformroutes = async function(app, platform) {
     }
    */
   app.post('/api/chaincode', async (req, res) => {
-    let peer = req.body.peer;
-    let name = req.body.name;
-    let zip = req.files.file;
-    let version = req.body.version;
-    let type = req.body.type;
-    let channel = req.body.channel;
+    const { peer, name, version, type } = req.body;
+    const zip = req.files.zip;
 
     logger.info(
       'Install chaincode api params: %s, %s, %s, %s, %s, %s',
@@ -237,8 +233,7 @@ const platformroutes = async function(app, platform) {
         name,
         zip,
         version,
-        type,
-        channel
+        type
       );
       res.send(message);
     } else {

@@ -13,18 +13,15 @@ export const post = (uri, payload) =>
       .end(withPromiseCallback(resolve, reject));
   });
 
-export const postForm = (uri, form, file) =>
-  new Promise((resolve, reject) => {
-    agent
-      .post(uri)
-      .field('name', form.name)
-      .field('version', form.version)
-      .field('type', form.type)
-      .field('peer', form.peer)
-      .field('channel', form.channel)
-      .attach('file', file)
-      .end(withPromiseCallback(resolve, reject));
+export const postForm = (uri, form) => {
+  return new Promise((resolve, reject) => {
+    const request = agent.post(uri);
+    Object.keys(form).forEach(key => {
+      request.field(key, form[key]);
+    });
+    request.end(withPromiseCallback(resolve, reject));
   });
+};
 
 export const get = uri =>
   new Promise((resolve, reject) => {
