@@ -115,7 +115,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const client = fabricClient.hfc_client;
   const targets = [peer]; // build the list of peers that will require this chaincode
   //todo change file name - nameCode + versionCode
-  const chaincodePath = path.join('tmp', `${Date.now()}`);
+  const chaincodePath = path.join('tmp', `${name}${version}`);
   try {
     extractChaincodeZipArchive(zip, chaincodePath);
   } catch (error) {
@@ -210,13 +210,17 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
   } = chaincodeRequest;
   let results;
   try {
+    const chaincodePath = path.join('tmp', `${name}${version}`);
+
     const fabricClient = await platform.getClient();
     const client = fabricClient.hfc_client;
     let channel = client.getChannel(channelName, true);
     let tx_id = client.newTransactionID(true);
 
     let request = {
-      // targets: peers,
+      targets: peers,
+      chaincodePath: chaincodePath,
+      metadataPath: chaincodePath,
       chaincodeId: name,
       chaincodeType: 'node',
       chaincodeVersion: version,
