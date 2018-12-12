@@ -6,7 +6,7 @@ import { post, postForm } from './request';
 
 const installChaincode = payload => {
   return new Promise(resolve => {
-    postForm(`/api/chaincode`, payload, payload.zip)
+    postForm(`/api/chaincode`, payload)
       .then(resp => {
         resolve(resp);
       })

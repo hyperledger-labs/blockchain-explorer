@@ -150,9 +150,10 @@ async function installChaincode(peer, name, zip, version, type, platform) {
         oneGood = true;
         logger.info('install proposal was good');
       } else {
+        errorMessage = proposalResponses[i].toString();
         logger.error(
           'install proposal was bad %s',
-          proposalResponses.toString()
+          proposalResponses[i].toString()
         );
       }
       allGood &= oneGood;
@@ -162,8 +163,10 @@ async function installChaincode(peer, name, zip, version, type, platform) {
         'Successfully sent install Proposal and received ProposalResponse'
       );
     } else {
-      errorMessage =
-        'Failed to send install Proposal or receive valid response. Response null or status is not 200';
+      if (!errorMessage) {
+        errorMessage =
+          'Failed to send install Proposal or receive valid response. Response null or status is not 200';
+      }
       logger.error(errorMessage);
     }
   } catch (error) {
@@ -175,7 +178,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     fs.removeSync(chaincodePath);
   }
 
-  if (errorMessage !== '') {
+  if (!errorMessage) {
     const message = 'Successfully installed chaincode';
     logger.debug(message);
     return {
