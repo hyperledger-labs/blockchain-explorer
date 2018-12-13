@@ -224,7 +224,16 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
       chaincodeId: name,
       chaincodeType: 'node',
       chaincodeVersion: version,
-      // args: args,
+      args: args,
+      'endorsement-policy': {
+        identities: [
+          { role: { name: 'member', mspId: 'Org1MSP' } },
+          { role: { name: 'member', mspId: 'Org2MSP' } }
+        ],
+        policy: {
+          '2-of': [{ 'signed-by': 0 }, { 'signed-by': 1 }]
+        }
+      },
       txId: tx_id
     };
 
