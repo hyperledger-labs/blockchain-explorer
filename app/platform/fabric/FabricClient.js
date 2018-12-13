@@ -304,7 +304,11 @@ class FabricClient {
   }
 
   async initializeChannelFromDiscover(channel_name) {
-    const channel = this.hfc_client.getChannel(channel_name);
+    let channel = this.hfc_client.getChannel(channel_name, false);
+    if (!channel) {
+      await this.initializeNewChannel(channel_name);
+      channel = this.getChannel(channel_name);
+    }
     const discover_results = await this.getChannelDiscover(channel);
     logger.debug(
       'Discover results for client [%s] >> %j',

@@ -1,6 +1,6 @@
 {
   "name": "hyperledger-explorer-client",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "private": true,
   "license": "Apache-2.0",
   "dependencies": {
@@ -37,7 +37,7 @@
     "react-refetch": "^1.0.4",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.5",
+    "react-scripts": "^2.1.1",
     "react-select": "^1.2.1",
     "react-slick": "^0.18.1",
     "react-swipeable-views": "^0.12.12",
@@ -64,10 +64,10 @@
   },
   "proxy": "http://localhost:8080/",
   "devDependencies": {
-    "babel-eslint": "^8.2.5",
+    "babel-eslint": "^9.0.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
-    "eslint": "^4.19.1",
+    "eslint": "5.6.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.0",
@@ -104,11 +104,14 @@
       "./src/components/": {
         "branches": 0,
         "statements": 0
-      },
-      "./src/store/reducers/**/*.js": {
-        "statements": 0
       }
     },
     "snapshotSerializers": []
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

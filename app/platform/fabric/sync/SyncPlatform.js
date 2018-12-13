@@ -43,6 +43,10 @@ class SyncPlatform {
       this.client_name
     );
 
+    setTimeout(() => {
+      this.initialize(args);
+    }, 60000);
+
     // loading the config.json
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
@@ -76,6 +80,7 @@ class SyncPlatform {
     logger.debug('Blocks synch interval time >> %s', this.blocksSyncTime);
     // update the discovery-cache-life as block synch interval time in global config
     global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
+    global.hfc.config.set('initialize-with-discovery', true);
 
     const client_configs = network_configs[this.network_name];
 
