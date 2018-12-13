@@ -126,7 +126,6 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     };
   }
 
-  console.log('extracted');
   // send proposal to install
   const request = {
     targets: targets,
@@ -139,7 +138,6 @@ async function installChaincode(peer, name, zip, version, type, platform) {
 
   try {
     const results = await client.installChaincode(request);
-    console.log('install');
     const proposalResponses = results[0];
     let allGood = true;
     for (const i in proposalResponses) {
@@ -177,7 +175,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     );
     errorMessage = error.toString();
   } finally {
-    // fs.removeSync(chaincodePath);
+    //fs.removeSync(chaincodePath);
   }
 
   if (!errorMessage) {
@@ -225,22 +223,17 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
       chaincodeType: 'node',
       chaincodeVersion: version,
       args: args,
-      'endorsement-policy': {
-        identities: [
-          { role: { name: 'member', mspId: 'Org1MSP' } },
-          { role: { name: 'member', mspId: 'Org2MSP' } }
-        ],
-        policy: {
-          '2-of': [{ 'signed-by': 0 }, { 'signed-by': 1 }]
-        }
-      },
       txId: tx_id
     };
 
+    if (policy) {
+      request['endorsement-policy'] = JSON.parse(policy.toString());
+    }
+
     if ('init' === txtype) {
-      results = await channel.sendInstantiateProposal(request, 60000); //instantiate takes much longer
+      results = await channel.sendInstantiateProposal(request, 60000);
     } else if ('upgrade' === txtype) {
-      results = await channel.sendUpgradeProposal(request, 60000); // upgrade takes much longer
+      results = await channel.sendUpgradeProposal(request, 60000);
     }
 
     let flag = true;

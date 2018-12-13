@@ -102,7 +102,7 @@ export class ChaincodeForm extends Component {
         <div className="card-body">
           <form className={classes.container1} onSubmit={this.handleSubmit}>
             <label for="file-path">
-              Chaincode ZIP archive file with node/go/java folder inside
+              Chaincode ZIP archive file with plain source code files inside
             </label>
             <input
               type="file"
@@ -156,7 +156,7 @@ export class ChaincodeForm extends Component {
               name="type"
               margin="normal"
             >
-              <MenuItem value={'go'}>Go</MenuItem>
+              <MenuItem value={'golang'}>Go</MenuItem>
               <MenuItem value={'node'}>Nodejs</MenuItem>
               <MenuItem value={'java'}>Java</MenuItem>
             </TextField>

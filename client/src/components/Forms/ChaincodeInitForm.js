@@ -200,7 +200,7 @@ class ChaincodeInitForm extends Component {
             </TextField>
             <TextField
               id="endorsement-policy"
-              label="Endorsement Policy"
+              label="Endorsement Policy in JSON"
               name="policy"
               rows="4"
               value={this.state.request.policy}
@@ -214,7 +214,7 @@ class ChaincodeInitForm extends Component {
                 <TextField
                   id="param"
                   className={classes.paramField}
-                  label={`${index}  Param`}
+                  label={`${index}  Param in JSON`}
                   name={param.id}
                   onChange={this.handleParamChange}
                   value={param.data}
