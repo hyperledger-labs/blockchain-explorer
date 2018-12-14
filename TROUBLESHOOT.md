@@ -324,7 +324,7 @@ Related Information:
 
 
 #### Possible cause:
-          Fabric network down, or unavailable, miss configuration
+    Fabric network down, or unavailable, miss configuration
 #### Possible solution:
 	Verify fabric network, and if properly configured in config.json
 
@@ -335,7 +335,7 @@ Related Information:
 
 #### Background Information:
 
-       **************************************************************************************
+    **************************************************************************************
     Error : Failed to connect client peer, please check the configuration and peer status
     Info :  Explorer will continue working with only DB data
     **************************************************************************************
@@ -356,7 +356,7 @@ Related Information:
 ### Problem Description:  UNIMPLEMENTED: unknown service discovery.Discovery
 
 #### Background Information:
-        <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
     { Error: 12 UNIMPLEMENTED: unknown service discovery.Discovery
         at new createStatusError (/Users/nfrunza/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:64:15)
         at /Users/nfrunza/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:583:15
@@ -394,7 +394,7 @@ Related Information:
 ### Problem Description:  Handshake failed with fatal error SSL_ERROR_SSL: error
 
 #### Background Information:
-        E1004 14:32:11.593740000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
+    E1004 14:32:11.593740000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
     E1004 14:32:11.595861000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
     E1004 14:32:12.594545000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
     E1004 14:32:12.596974000 140736003720064 ssl_transport_security.cc:989] Handshake failed with fatal error SSL_ERROR_SSL: error:14090086:SSL routines:ssl3_get_server_certificate:certificate verify failed.
@@ -415,6 +415,56 @@ Related Information:
 
 #### Related Information:
     HL Explorer support for HL Fabric 1.2
+
+### Problem Description: HL Explorer fails to start
+
+#### Background Information:
+    logs/console/console.log output:
+    
+    postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
+    (node:28473) DeprecationWarning: grpc.load: Use the @grpc/proto-loader module with grpc.loadPackageDefinition instead
+    
+    Please open web browser to access ：http://localhost:8080/
+    
+    pid is 28473
+    
+    postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
+    
+    Sync process is started for the network : [net_basic] and client : [org1]
+    (node:28493) DeprecationWarning: grpc.load: Use the @grpc/proto-loader module with grpc.loadPackageDefinition instead
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>
+    Error :  [ 'Failed to connect client peer, please check the configuration and peer status' ]
+    <<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
+    
+    
+    logs/app/app.log output:
+    
+    [2018-10-26 10:20:35.233] [DEBUG] FabricClient - Channel genesis hash for channel [mychannel] >> ac4b7048da8b35c7b740babcb4dd8f911c94a15e45f442d5f6291a66f9b5ec5d
+    [2018-10-26 10:20:35.233] [DEBUG] FabricClient - Initialized channel >> mychannel
+    [2018-10-26 10:20:35.244] [DEBUG] FabricClient - Set client [cli] default orderer as  >> grpc://localhost:7050
+    [2018-10-26 10:20:35.245] [DEBUG] FabricClient - Admin peer Not found for grpc://localhost:7051
+
+#### Possible cause:
+    peer node default can't access from out of fabric network
+#### Possible solution:
+
+    add environment CORE_PEER_GOSSIP_EXTERNALENDPOINT for peer services, For example：
+    
+    peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    image: hyperledger/fabric-peer
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_LOGGING_PEER=info
+      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+
+#### Related Information:
+    HL Explorer support for HL Fabric 1.3
 
 ### Docker Troubleshooting commands
     List your networks
