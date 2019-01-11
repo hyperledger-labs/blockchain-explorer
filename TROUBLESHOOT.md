@@ -420,25 +420,25 @@ Related Information:
 
 #### Background Information:
     logs/console/console.log output:
-    
+
     postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
     (node:28473) DeprecationWarning: grpc.load: Use the @grpc/proto-loader module with grpc.loadPackageDefinition instead
-    
+
     Please open web browser to access ：http://localhost:8080/
-    
+
     pid is 28473
-    
+
     postgres://hppoc:password@127.0.0.1:5432/fabricexplorer
-    
+
     Sync process is started for the network : [net_basic] and client : [org1]
     (node:28493) DeprecationWarning: grpc.load: Use the @grpc/proto-loader module with grpc.loadPackageDefinition instead
     <<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>
     Error :  [ 'Failed to connect client peer, please check the configuration and peer status' ]
     <<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
-    
-    
+
+
     logs/app/app.log output:
-    
+
     [2018-10-26 10:20:35.233] [DEBUG] FabricClient - Channel genesis hash for channel [mychannel] >> ac4b7048da8b35c7b740babcb4dd8f911c94a15e45f442d5f6291a66f9b5ec5d
     [2018-10-26 10:20:35.233] [DEBUG] FabricClient - Initialized channel >> mychannel
     [2018-10-26 10:20:35.244] [DEBUG] FabricClient - Set client [cli] default orderer as  >> grpc://localhost:7050
@@ -449,7 +449,7 @@ Related Information:
 #### Possible solution:
 
     add environment CORE_PEER_GOSSIP_EXTERNALENDPOINT for peer services, For example：
-    
+
     peer0.org1.example.com:
     container_name: peer0.org1.example.com
     image: hyperledger/fabric-peer
