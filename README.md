@@ -143,6 +143,28 @@ On another terminal.
 	- Final path for key "tlsCACerts" will be:  "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt".
 - Modify "network-id.clients.client-id.channel" to your default channel for each client
 
+### Configure to work with fabric-ca server
+
+- `cd blockchain-explorer/app/platform/fabric`
+- Modify config.json to add configurations related to CA server.
+  - Add "certificateAuthorities" to 2 sections
+    - The first one is for each organization to specify which CA server should be used
+      - network-configs > network-1 > organizations > Org* > certificateAuthorities
+    - The second one is for each network to access to CA  server
+      - network-configs > network-1 > certificateAuthorities
+    - Please refer [here](https://hyperledger-fabric.readthedocs.io/en/latest/developapps/connectionprofile.html#sample) about more detail
+    - If leave certificateAuthorities of each organization empty, system will not use fabric-ca (it'll run with admin user)
+- Modify config_ca.json to configure for your environment
+  - Configure admin ID and credential to register a new user to CA server
+  - Configure a user ID which is registered and enrolled as a user for managing blockchain explorer
+  - Another alternative to configure them is to use environment variables, example of setting:
+```
+export ENROLL_ID="hlbeuser"
+export ENROLL_AFFILIATION=".department1"
+export ADMIN_USERNAME="admin"
+export ADMIN_SECRET="adminpw"
+```
+
  **or**
 
 ## Hyperledger Composer Setup

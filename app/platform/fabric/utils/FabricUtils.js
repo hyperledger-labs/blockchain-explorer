@@ -53,6 +53,7 @@ function cloneConfig(client_configs, client_name) {
   client_config.organizations = client_configs.organizations;
   client_config.peers = client_configs.peers;
   client_config.orderers = client_configs.orderers;
+  client_config.certificateAuthorities = client_configs.certificateAuthorities;
 
   // modify url with respect to TLS enable
   client_config = processTLS_URL(client_config);

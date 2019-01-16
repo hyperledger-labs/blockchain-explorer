@@ -14,6 +14,9 @@ const User = require('fabric-client/lib/User.js');
 const client_utils = require('fabric-client/lib/client-utils.js');
 const channelService = require('./service/channelService.js');
 const FabricUtils = require('./utils/FabricUtils.js');
+const explorer_config = require('../../explorerconfig.json');
+const explorer_const = require('../../common/ExplorerConst.js').explorer.const;
+const path = require('path');
 
 const _commonProto = grpc.load(
   `${__dirname}/../../../node_modules/fabric-client/lib/protos/common/common.proto`
@@ -43,6 +46,10 @@ class FabricClient {
   }
 
   async initialize(client_config, persistence) {
+    // Loading configuration for fabric-ca if enabled.
+    // It might be overriden by environment variables
+    Fabric_Client.addConfigFile(path.join(__dirname, "config_ca.json"));
+
     this.client_config = client_config;
 
     // Loading client from network configuration file
@@ -55,6 +62,21 @@ class FabricClient {
       'Successfully loaded client [%s] from configuration',
       this.client_name
     );
+
+    let organization = client_config.client.organization;
+    logger.debug(
+      client_config.organizations[organization].certificateAuthorities
+    );
+
+    // Check if CA is configured or not
+    if (
+      client_config.organizations[organization].certificateAuthorities &&
+      client_config.organizations[organization].certificateAuthorities.length
+    ) {
+      // CA configured
+      logger.debug('CA configured in connection profile [%s]', organization);
+      await this.getRegisteredUser(client_config);
+    }
 
     // getting channels from queryChannels
     let channels;
@@ -209,7 +231,64 @@ class FabricClient {
     }
   }
 
-  async LoadClientFromConfig(client_config) {
+  async getRegisteredUser(client_config) {
+    try {
+      var username = Fabric_Client.getConfigSetting("enroll-id", "dflt_hlbeuser");
+      var userOrg = client_config.client.organization;
+      var client = await this.LoadClientFromConfig(client_config);
+      logger.debug('Successfully initialized the credential stores');
+      // client can now act as an agent for the specified organization
+      // first check to see if the user is already enrolled
+      var user = await this.hfc_client.getUserContext(username, true);
+      if (user && user.isEnrolled()) {
+        logger.info(
+          'Successfully loaded member from persistence [%s]',
+          username
+        );
+      } else {
+        // user was not enrolled, so we will need an admin user object to register
+        logger.info(
+          'User %s was not enrolled, so we will need an admin user object to register',
+          username
+        );
+
+        let adminUserObj = await this.hfc_client.setUserContext({
+          username: Fabric_Client.getConfigSetting("admin-username", "admin"),
+          password: Fabric_Client.getConfigSetting("admin-secret", "adminpw")
+        });
+        let caClient = this.hfc_client.getCertificateAuthority();
+        let secret = await caClient.register(
+          {
+            enrollmentID: username,
+            affiliation:
+              userOrg.toLowerCase() + Fabric_Client.getConfigSetting("enroll-affiliation", "")
+          },
+          adminUserObj
+        );
+        logger.debug('Successfully got the secret for user %s', username);
+        user = await this.hfc_client.setUserContext({
+          username: username,
+          password: secret
+        });
+        logger.debug(
+          'Successfully enrolled username %s  and setUserContext on the client object',
+          username
+        );
+      }
+      if (!user || !user.isEnrolled) {
+        throw new Error('User was not enrolled ');
+      }
+    } catch (error) {
+      logger.error(
+        'Failed to get registered user: %s with error: %s',
+        username,
+        error.toString()
+      );
+      return 'failed ' + error.toString();
+    }
+  }
+
+  async LoadClientFromConfig(client_config, username) {
     const _self = this;
     // load client through hfc client network configuration class
     await this.hfc_client.loadFromConfig(client_config);
@@ -249,9 +328,6 @@ class FabricClient {
 
     // Loading default Peer and channel
     const channel_name = client_config.client.channel;
-    const peer_name = Object.keys(
-      client_config.channels[channel_name].peers
-    )[0];
     this.defaultChannel = this.hfc_client.getChannel(channel_name);
     logger.debug(
       'Set client [%s] default channel as  >> %s',
@@ -259,9 +335,19 @@ class FabricClient {
       this.defaultChannel.getName()
     );
 
-    if (this.defaultChannel.getPeers().length > 0) {
-      this.defaultPeer = this.defaultChannel.getPeer(peer_name);
-    } else {
+    var peers = this.defaultChannel.getPeers();
+    this.defaultPeer = undefined;
+    if (peers.length > 0) {
+      for (const peer of peers) {
+        // Select a peer as default peer from ones within the same organization
+        if (peer.isInOrg(organization.getMspid())) {
+          logger.debug('%s is in %s', peer.getName(), organization.getName());
+          this.defaultPeer = this.defaultChannel.getPeer(peer.getName());
+          break;
+        }
+      }
+    }
+    if (peers.length == 0 || this.defaultPeer == undefined) {
       throw new ExplorerError(explorer_mess.error.ERROR_2006, this.client_name);
     }
     logger.debug(
