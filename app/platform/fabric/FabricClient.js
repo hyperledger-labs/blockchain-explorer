@@ -397,16 +397,14 @@ class FabricClient {
                 discover_results.msps
               );
               logger.debug(
-                'Successfully created peer [%s:%s] for client [%s]',
-                host,
-                peer.port,
+                'Successfully created peer [%s] for client [%s]',
+                peer.endpoint,
                 this.client_name
               );
             } else {
               logger.error(
-                'Peer configuration is not found in config.json for peer %s and url %s , so peer status not work for the peer',
-                host_port,
-                requesturl
+                'Peer configuration is not found in config.json for peer %s, so peer status not work for the peer',
+                peer.endpoint,
               );
               return;
             }
