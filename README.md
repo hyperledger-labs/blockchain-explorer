@@ -119,7 +119,7 @@ Connect to PostgreSQL database.
 
 #### macOS
 
- - `psql postgres`
+- `psql postgres`
 
 - `\l` view created fabricexplorer database
 - `\d` view created tables
@@ -128,7 +128,8 @@ Connect to PostgreSQL database.
 
 ## Fabric Network Setup
 
- Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+- Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+- Hyperledger Explorer defaults to [fabric-samples/first-network sample](https://github.com/hyperledger/fabric-samples).
 
 <a name="Fabric-Configure-Hyperledger-Explorer"/>
 
@@ -142,6 +143,7 @@ On another terminal.
 	example: "/home/user1/workspace/fabric-samples" for the following keys: "tlsCACerts", "adminPrivateKey", "signedCert".
 	- Final path for key "tlsCACerts" will be:  "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt".
 - Modify "network-id.clients.client-id.channel" to your default channel for each client
+- Sample configuration provided, see file: blockchain-explorer/app/platform/fabric/config-balance-transfer.json
 
 ### Configure to work with fabric-ca server
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if [ $(whoami) != 'postgres' ]; then
-  echo "You need to call as postgres user. sudo -u postgres $0"
-  exit 1
-fi
+#if [ $(whoami) != 'postgres' ]; then
+#  echo "You need to call as postgres user. sudo -u postgres $0"
+#  exit 1
+#fi
 
 echo "Copying ENV variables into temp file..."
 node processenv.js
