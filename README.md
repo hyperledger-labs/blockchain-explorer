@@ -335,6 +335,33 @@ To push the container to your registry, run:
 
     npm run docker_push
 
+
+## Run Hyperledger Explorer using Docker-Compose
+
+* Modify docker-compose.yaml to align with your environment
+  * networks > mynetwork.com > external > name
+  * services > explorer.mynetwork.com > volumes
+    * Connection profile path (ex. ./examples/net1/config.json)
+    * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
+* Run the following to start up explore and explorer-db services
+
+	```
+	cd /some/where/blockchain-explorer
+	docker-compose up -d
+	```
+
+* To stop services without removing persistent data, run the following:
+
+	```
+	docker-compose down
+	```
+
+* In this docker-compose.yaml, 2 named volumes are allocated for persistent data (for Postgres data and user credential provided by fabric-ca)
+  * If you would like to clear these named volumes, run the following:
+	```
+	docker-compose down -v
+	```
+
 ## Hyperledger Explorer Swagger
 
 - Once the Hyperledger Explorer has been launched go to http://localhost:8080/api-docs to view the Rust API description
