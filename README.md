@@ -27,6 +27,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
+- [Release Notes v0.3.9](release_notes/v0.3.9.md)
 - [Release Notes v0.3.8](release_notes/v0.3.8.md)
 - [Release Notes v0.3.7](release_notes/v0.3.7.md)
 - [Release Notes v0.3.6.1](release_notes/v0.3.6.1.md)
@@ -64,7 +65,7 @@ Following are the software dependencies required to install and run hyperledger 
 * PostgreSQL 9.5 or greater
 * Jq [https://stedolan.github.io/jq/]
 
-Hyperledger Explorer works with Hyperledger Fabric 1.3.  Install the following software dependencies to manage fabric network.
+Hyperledger Explorer works with Hyperledger Fabric 1.4.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
 * docker-compose 1.14.0 [https://docs.docker.com/compose/]
 

@@ -48,7 +48,7 @@ class FabricClient {
   async initialize(client_config, persistence) {
     // Loading configuration for fabric-ca if enabled.
     // It might be overriden by environment variables
-    Fabric_Client.addConfigFile(path.join(__dirname, "config_ca.json"));
+    Fabric_Client.addConfigFile(path.join(__dirname, 'config_ca.json'));
 
     this.client_config = client_config;
 
@@ -62,6 +62,12 @@ class FabricClient {
       'Successfully loaded client [%s] from configuration',
       this.client_name
     );
+
+    // enable discover
+    await this.defaultChannel.initialize({
+      discover: true,
+      target: this.defaultPeer
+    });
 
     let organization = client_config.client.organization;
     logger.debug(
@@ -233,7 +239,10 @@ class FabricClient {
 
   async getRegisteredUser(client_config) {
     try {
-      var username = Fabric_Client.getConfigSetting("enroll-id", "dflt_hlbeuser");
+      var username = Fabric_Client.getConfigSetting(
+        'enroll-id',
+        'dflt_hlbeuser'
+      );
       var userOrg = client_config.client.organization;
       var client = await this.LoadClientFromConfig(client_config);
       logger.debug('Successfully initialized the credential stores');
@@ -253,15 +262,16 @@ class FabricClient {
         );
 
         let adminUserObj = await this.hfc_client.setUserContext({
-          username: Fabric_Client.getConfigSetting("admin-username", "admin"),
-          password: Fabric_Client.getConfigSetting("admin-secret", "adminpw")
+          username: Fabric_Client.getConfigSetting('admin-username', 'admin'),
+          password: Fabric_Client.getConfigSetting('admin-secret', 'adminpw')
         });
         let caClient = this.hfc_client.getCertificateAuthority();
         let secret = await caClient.register(
           {
             enrollmentID: username,
             affiliation:
-              userOrg.toLowerCase() + Fabric_Client.getConfigSetting("enroll-affiliation", "")
+              userOrg.toLowerCase() +
+              Fabric_Client.getConfigSetting('enroll-affiliation', '')
           },
           adminUserObj
         );
@@ -442,9 +452,9 @@ class FabricClient {
           for (const endpoint of endpoints) {
             let requesturl = endpoint.host;
             if (
-              this.client_config.orderers
-              && this.client_config.orderers[requesturl]
-              && this.client_config.orderers[requesturl].url
+              this.client_config.orderers &&
+              this.client_config.orderers[requesturl] &&
+              this.client_config.orderers[requesturl].url
             ) {
               requesturl = this.client_config.orderers[requesturl].url;
               this.newOrderer(
@@ -471,9 +481,9 @@ class FabricClient {
           for (const peer of org.peers) {
             const host = peer.endpoint.split(':')[0];
             if (
-              this.client_config.peers
-              && this.client_config.peers[host]
-              && this.client_config.peers[host].url
+              this.client_config.peers &&
+              this.client_config.peers[host] &&
+              this.client_config.peers[host].url
             ) {
               const adminpeer = this.newAdminPeer(
                 channel,
@@ -518,9 +528,9 @@ class FabricClient {
     if (!this.adminpeers.get(url)) {
       let newpeer = this.newPeer(channel, url, msp_id, host, msps);
       if (
-        newpeer
-        && newpeer.constructor
-        && newpeer.constructor.name === 'ChannelPeer'
+        newpeer &&
+        newpeer.constructor &&
+        newpeer.constructor.name === 'ChannelPeer'
       ) {
         newpeer = newpeer.getPeer();
       }
@@ -537,7 +547,7 @@ class FabricClient {
 
   newOrderer(channel, url, msp_id, host, msps) {
     let newOrderer = null;
-    channel._orderers.forEach((orderer) => {
+    channel._orderers.forEach(orderer => {
       if (orderer.getUrl() === url) {
         logger.debug('Found existing orderer %s', url);
         newOrderer = orderer;
@@ -560,7 +570,7 @@ class FabricClient {
 
   newPeer(channel, url, msp_id, host, msps) {
     let newpeer = null;
-    channel._channel_peers.forEach((peer) => {
+    channel._channel_peers.forEach(peer => {
       if (peer.getUrl() === url) {
         logger.debug('Found existing peer %s', url);
         newpeer = peer;
