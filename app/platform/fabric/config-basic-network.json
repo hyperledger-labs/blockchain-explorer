@@ -4,7 +4,7 @@
       "version": "1.0",
       "clients": {
         "client-1": {
-          "tlsEnable": true,
+          "tlsEnable": false,
           "organization": "Org1MSP",
           "channel": "mychannel",
           "credentialStore": {
@@ -36,49 +36,34 @@
           "mspid": "Org1MSP",
           "fullpath": false,
           "adminPrivateKey": {
-            "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+            "path": "/fabric-path/fabric-samples/basic-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
           },
           "signedCert": {
-            "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
-          }
-        },
-        "Org2MSP": {
-          "mspid": "Org2MSP",
-          "adminPrivateKey": {
-            "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+            "path": "/fabric-path/fabric-samples/basic-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
           }
         },
         "OrdererMSP": {
           "mspid": "OrdererMSP",
           "adminPrivateKey": {
-            "path": "/fabric-path/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+            "path": "/fabric-path/fabric-samples/basic-network/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
           }
         }
       },
       "peers": {
         "peer0.org1.example.com": {
           "tlsCACerts": {
-            "path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+            "path": "/fabric-path/fabric-samples/basic-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
           },
-          "url": "grpcs://localhost:7051",
-          "eventUrl": "grpcs://localhost:7053",
+          "url": "grpcs://127.0.0.1:7051",
+          "eventUrl": "grpcs://127.0.0.1:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer0.org1.example.com"
           }
-        },
-        "peer1.org1.example.com": {
-          "url": "grpcs://localhost:8051"
-        },
-        "peer0.org2.example.com": {
-          "url": "grpcs://localhost:9051"
-        },
-        "peer1.org2.example.com": {
-          "url": "grpcs://localhost:10051"
         }
       },
       "orderers": {
         "orderer.example.com": {
-          "url": "grpcs://localhost:7050"
+          "url": "grpcs://127.0.0.1:7050"
         }
       }
     },

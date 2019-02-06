@@ -27,6 +27,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
+- [Release Notes v0.3.9](release_notes/v0.3.9.md)
 - [Release Notes v0.3.8](release_notes/v0.3.8.md)
 - [Release Notes v0.3.7](release_notes/v0.3.7.md)
 - [Release Notes v0.3.6.1](release_notes/v0.3.6.1.md)
@@ -64,7 +65,7 @@ Following are the software dependencies required to install and run hyperledger 
 * PostgreSQL 9.5 or greater
 * Jq [https://stedolan.github.io/jq/]
 
-Hyperledger Explorer works with Hyperledger Fabric 1.3.  Install the following software dependencies to manage fabric network.
+Hyperledger Explorer works with Hyperledger Fabric 1.4.  Install the following software dependencies to manage fabric network.
 * docker 17.06.2-ce [https://www.docker.com/community-edition]
 * docker-compose 1.14.0 [https://docs.docker.com/compose/]
 
@@ -74,8 +75,8 @@ Hyperledger Explorer works with Hyperledger Fabric 1.3.  Install the following s
 
 Clone this repository to get the latest using the following command.
 
-- `git clone https://github.com/hyperledger/blockchain-explorer.git`.
-- `cd blockchain-explorer`.
+- `git clone https://github.com/hyperledger/blockchain-explorer.git`
+- `cd blockchain-explorer`
 
 <a name="Database-Setup"/>
 
@@ -119,7 +120,7 @@ Connect to PostgreSQL database.
 
 #### macOS
 
- - `psql postgres`
+- `psql postgres`
 
 - `\l` view created fabricexplorer database
 - `\d` view created tables
@@ -128,7 +129,8 @@ Connect to PostgreSQL database.
 
 ## Fabric Network Setup
 
- Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+- Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
+- Hyperledger Explorer defaults to [fabric-samples/first-network sample](https://github.com/hyperledger/fabric-samples).
 
 <a name="Fabric-Configure-Hyperledger-Explorer"/>
 
@@ -142,6 +144,29 @@ On another terminal.
 	example: "/home/user1/workspace/fabric-samples" for the following keys: "tlsCACerts", "adminPrivateKey", "signedCert".
 	- Final path for key "tlsCACerts" will be:  "/home/user1/workspace/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt".
 - Modify "network-id.clients.client-id.channel" to your default channel for each client
+- Sample configuration provided, see file: blockchain-explorer/app/platform/fabric/config-balance-transfer.json
+
+### Configure to work with fabric-ca server
+
+- `cd blockchain-explorer/app/platform/fabric`
+- Modify config.json to add configurations related to CA server.
+  - Add "certificateAuthorities" to 2 sections
+    - The first one is for each organization to specify which CA server should be used
+      - network-configs > network-1 > organizations > Org* > certificateAuthorities
+    - The second one is for each network to access to CA  server
+      - network-configs > network-1 > certificateAuthorities
+    - Please refer [here](https://hyperledger-fabric.readthedocs.io/en/latest/developapps/connectionprofile.html#sample) about more detail
+    - If leave certificateAuthorities of each organization empty, system will not use fabric-ca (it'll run with admin user)
+- Modify config_ca.json to configure for your environment
+  - Configure admin ID and credential to register a new user to CA server
+  - Configure a user ID which is registered and enrolled as a user for managing blockchain explorer
+  - Another alternative to configure them is to use environment variables, example of setting:
+```
+export ENROLL_ID="hlbeuser"
+export ENROLL_AFFILIATION=".department1"
+export ADMIN_USERNAME="admin"
+export ADMIN_SECRET="adminpw"
+```
 
  **or**
 
@@ -312,6 +337,33 @@ To tag the container with your registry and the NPM package version, run:
 To push the container to your registry, run:
 
     npm run docker_push
+
+
+## Run Hyperledger Explorer using Docker-Compose
+
+* Modify docker-compose.yaml to align with your environment
+  * networks > mynetwork.com > external > name
+  * services > explorer.mynetwork.com > volumes
+    * Connection profile path (ex. ./examples/net1/config.json)
+    * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
+* Run the following to start up explore and explorer-db services
+
+	```
+	cd /some/where/blockchain-explorer
+	docker-compose up -d
+	```
+
+* To stop services without removing persistent data, run the following:
+
+	```
+	docker-compose down
+	```
+
+* In this docker-compose.yaml, 2 named volumes are allocated for persistent data (for Postgres data and user credential provided by fabric-ca)
+  * If you would like to clear these named volumes, run the following:
+	```
+	docker-compose down -v
+	```
 
 ## Hyperledger Explorer Swagger
 

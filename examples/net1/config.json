@@ -5,12 +5,12 @@
       "clients": {
         "client-1": {
           "tlsEnable": true,
-          "organization": "Org1MSP",
+          "organization": "Org2",
           "channel": "mychannel",
           "credentialStore": {
-            "path": "./tmp/credentialStore_Org1/credential",
+            "path": "./tmp/credentialStore_Org2/credential",
             "cryptoStore": {
-              "path": "./tmp/credentialStore_Org1/crypto"
+              "path": "./tmp/credentialStore_Org2/crypto"
             }
           }
         }
@@ -18,7 +18,10 @@
       "channels": {
         "mychannel": {
           "peers": {
-            "peer0.org1.example.com": {}
+            "peer0.org1.example.com": {},
+            "peer1.org1.example.com": {},
+            "peer0.org2.example.com": {},
+            "peer1.org2.example.com": {}
           },
           "connection": {
             "timeout": {
@@ -32,74 +35,73 @@
         }
       },
       "organizations": {
-        "Org1MSP": {
+        "Org1": {
           "mspid": "Org1MSP",
           "fullpath": false,
           "adminPrivateKey": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore"
           },
           "signedCert": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
-          }
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+          },
+          "certificateAuthorities": ["ca-org1"],
+          "peers": ["peer0.org1.example.com", "peer1.org1.example.com"]
         },
-        "Org2MSP": {
+        "Org2": {
           "mspid": "Org2MSP",
           "adminPrivateKey": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
-          }
+            "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore"
+          },
+          "signedCert": {
+            "path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
+          },
+          "certificateAuthorities": ["ca-org2"],
+          "peers": ["peer0.org2.example.com", "peer1.org2.example.com"]
         },
         "OrdererMSP": {
           "mspid": "OrdererMSP",
           "adminPrivateKey": {
-            "path":
-              "/tmp/crypto/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
+            "path": "/tmp/crypto/ordererOrganizations/example.com/users/Admin@example.com/msp/keystore"
           }
         }
       },
       "peers": {
         "peer0.org1.example.com": {
           "tlsCACerts": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
           },
-          "url": "grpcs://localhost:7051",
-          "eventUrl": "grpcs://localhost:7053",
+          "url": "grpcs://peer0.org1.example.com:7051",
+          "eventUrl": "grpcs://peer0.org1.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer0.org1.example.com"
           }
         },
         "peer1.org1.example.com": {
           "tlsCACerts": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
           },
-          "url": "grpcs://localhost:8051",
-          "eventUrl": "grpcs://localhost:8053",
+          "url": "grpcs://peer1.org1.example.com:7051",
+          "eventUrl": "grpcs://peer1.org1.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer1.org1.example.com"
           }
         },
         "peer0.org2.example.com": {
           "tlsCACerts": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+            "path": "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
           },
-          "url": "grpcs://localhost:9051",
-          "eventUrl": "grpcs://localhost:9053",
+          "url": "grpcs://peer0.org2.example.com:7051",
+          "eventUrl": "grpcs://peer0.org2.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer0.org2.example.com"
           }
         },
         "peer1.org2.example.com": {
           "tlsCACerts": {
-            "path":
-              "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+            "path": "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
           },
-          "url": "grpcs://localhost:10051",
-          "eventUrl": "grpcs://localhost:10053",
+          "url": "grpcs://peer1.org2.example.com:7051",
+          "eventUrl": "grpcs://peer1.org2.example.com:7053",
           "grpcOptions": {
             "ssl-target-name-override": "peer1.org2.example.com"
           }
@@ -107,11 +109,34 @@
       },
       "orderers": {
         "orderer.example.com": {
-          "url": "grpcs://localhost:7050"
+          "url": "grpcs://orderer.example.com:7050"
+        }
+      },
+      "certificateAuthorities": {
+        "ca-org1": {
+          "url": "https://ca.org1.example.com:7054",
+          "httpOptions": {
+            "verify": false
+          },
+          "tlsCACerts": {
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+          },
+          "caName": "ca-org1"
+        },
+        "ca-org2": {
+          "url": "https://ca.org2.example.com:7054",
+          "httpOptions": {
+            "verify": false
+          },
+          "tlsCACerts": {
+            "path": "/tmp/crypto/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
+          },
+          "caName": "ca-org2"
         }
       }
-    }
+    },
+    "network-2": {}
   },
-  "configtxgenToolPath": "/fabric-path/workspace/fabric-samples/bin",
+  "configtxgenToolPath": "fabric-path/fabric-samples/bin",
   "license": "Apache-2.0"
 }
