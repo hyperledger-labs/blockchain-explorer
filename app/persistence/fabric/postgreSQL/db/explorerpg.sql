@@ -2,10 +2,10 @@
 --    SPDX-License-Identifier: Apache-2.0
 --
 
-CREATE USER :user WITH PASSWORD :passwd;
-DROP DATABASE IF EXISTS :dbname;
-CREATE DATABASE :dbname owner :user;
-\c :dbname;
+CREATE USER user WITH PASSWORD passwd;
+DROP DATABASE IF EXISTS dbname;
+CREATE DATABASE dbname owner user;
+\c dbname;
 --
 
 -- ----------------------------
@@ -25,7 +25,7 @@ CREATE TABLE blocks (
   channel_genesis_hash character varying(256) DEFAULT NULL
 );
 
-ALTER table blocks owner to :user;
+ALTER table blocks owner to user;
 
 -- ----------------------------
 --  Table structure for `chaincodes`
@@ -42,7 +42,7 @@ CREATE TABLE chaincodes (
   createdt Timestamp DEFAULT NULL
 );
 
-ALTER table chaincodes owner to :user;
+ALTER table chaincodes owner to user;
 Alter sequence chaincodes_id_seq restart with 10;
 
 -- ---------------------------
@@ -58,7 +58,7 @@ CREATE TABLE peer_ref_chaincode (
   channelid character varying(256) DEFAULT NULL,
   createdt Timestamp DEFAULT NULL
 );
-ALTER table peer_ref_chaincode owner to :user;
+ALTER table peer_ref_chaincode owner to user;
 
 -- ----------------------------
 --  Table structure for `channel`
@@ -81,7 +81,7 @@ CREATE TABLE channel (
   channel_version character varying(128) DEFAULT NULL
 );
 
-ALTER table channel owner to :user;
+ALTER table channel owner to user;
 Alter sequence channel_id_seq restart with 3;
 -- ----------------------------
 --  Table structure for `peer`
@@ -101,7 +101,7 @@ CREATE TABLE peer (
   createdt timestamp DEFAULT NULL,
   peer_type character varying(64) DEFAULT NULL
 );
-ALTER table peer owner to :user;
+ALTER table peer owner to user;
 -- ---------------------------
 --  Table structure for `peer_ref_channel`
 -- ----------------------------
@@ -114,7 +114,7 @@ CREATE TABLE peer_ref_channel (
   channelid character varying(256),
   peer_type character varying(64) DEFAULT NULL
 );
-ALTER table peer_ref_channel owner to :user;
+ALTER table peer_ref_channel owner to user;
 
 -- ====================Orderer BE-303=====================================
 -- ----------------------------
@@ -130,7 +130,7 @@ CREATE TABLE orderer (
   server_hostname varchar(64) DEFAULT NULL,
   createdt timestamp DEFAULT NULL
 );
-ALTER table orderer owner to :user;
+ALTER table orderer owner to user;
 
 --// ====================Orderer BE-303=====================================
 -- ----------------------------
@@ -163,7 +163,7 @@ CREATE TABLE transactions (
   endorser_signature character varying DEFAULT NULL
   );
 
-ALTER table transactions owner to :user;
+ALTER table transactions owner to user;
 Alter sequence transactions_id_seq restart with 6;
 
 DROP TABLE IF EXISTS write_lock;
@@ -171,7 +171,7 @@ CREATE TABLE write_lock (
   write_lock SERIAl PRIMARY KEY
 );
 
-ALTER table write_lock owner to :user;
+ALTER table write_lock owner to user;
 Alter sequence write_lock_write_lock_seq restart with 2;
 
 DROP INDEX IF EXISTS blocks_blocknum_idx;
@@ -204,4 +204,4 @@ CREATE INDEX ON channel (channel_genesis_hash);
 DROP INDEX IF EXISTS channel_channel_hash_idx;
 CREATE INDEX ON channel (channel_hash);
 
-GRANT SELECT, INSERT, UPDATE,DELETE ON ALL TABLES IN SCHEMA PUBLIC to :user;
+GRANT SELECT, INSERT, UPDATE,DELETE ON ALL TABLES IN SCHEMA PUBLIC to user;
