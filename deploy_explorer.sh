@@ -194,7 +194,7 @@ function deploy_run_explorer(){
 		-e ADMIN_SECRET="adminpw" \
 		-v $network_config_file:/opt/explorer/app/platform/fabric/config.json \
 		-v $network_crypto_base_path:/tmp/crypto \
-		-p 8090:8080 \
+		-p 8080:8080 \
 		$fabric_explorer_tag
 }
 
