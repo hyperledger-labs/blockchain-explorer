@@ -49,8 +49,18 @@ class FabricClient {
     // Loading configuration for fabric-ca if enabled.
     // It might be overriden by environment variables
     Fabric_Client.addConfigFile(path.join(__dirname, 'config_ca.json'));
+    const asLocalhost =
+      String(
+        Fabric_Client.getConfigSetting('discovery-as-localhost', 'true')
+      ) === 'true';
 
     this.client_config = client_config;
+
+    // if disabled TLS, notify discovering component to use grpc protocol
+    // before initialising channel
+    if (this.client_config.client.tlsEnable === false) {
+      Fabric_Client.setConfigSetting('discovery-protocol', 'grpc');
+    }
 
     // Loading client from network configuration file
     logger.debug(
@@ -66,7 +76,8 @@ class FabricClient {
     // enable discover
     await this.defaultChannel.initialize({
       discover: true,
-      target: this.defaultPeer
+      target: this.defaultPeer,
+      asLocalhost: asLocalhost
     });
 
     let organization = client_config.client.organization;
@@ -500,7 +511,7 @@ class FabricClient {
             } else {
               logger.error(
                 'Peer configuration is not found in config.json for peer %s, so peer status not work for the peer',
-                peer.endpoint,
+                peer.endpoint
               );
               return;
             }

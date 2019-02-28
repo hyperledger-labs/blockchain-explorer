@@ -34,6 +34,7 @@ services:
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
       - ENROLL_ID=hlbeuser
+      - DISCOVERY_AS_LOCALHOST=false
     volumes:
       - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
       - ./examples/net1/crypto:/tmp/crypto

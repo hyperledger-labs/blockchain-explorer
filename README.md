@@ -27,6 +27,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, highly maintainable, op
 
 ## Release Notes
 
+- [Release Notes v0.3.9.1](release_notes/v0.3.9.1.md)
 - [Release Notes v0.3.9](release_notes/v0.3.9.md)
 - [Release Notes v0.3.8](release_notes/v0.3.8.md)
 - [Release Notes v0.3.7](release_notes/v0.3.7.md)
@@ -131,6 +132,7 @@ Connect to PostgreSQL database.
 
 - Setup your own network using [Build your network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Fabric. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
 - Hyperledger Explorer defaults to [fabric-samples/first-network sample](https://github.com/hyperledger/fabric-samples).
+- Make sure to set the environment variables ```CORE_PEER_GOSSIP_BOOTSTRAP``` and ```CORE_PEER_GOSSIP_EXTERNAL_ENDPOINT``` for each peer in the docker-compose.yaml file. These settings enable the Fabric discovery service, which is used by Hyperledger Explorer to discover the network topology.
 
 <a name="Fabric-Configure-Hyperledger-Explorer"/>
 
