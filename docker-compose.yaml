@@ -41,6 +41,6 @@ services:
       - credentialstore:/opt/tmp
     command: sh -c "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"
     ports:
-      - 8090:8080
+      - 8080:8080
     networks:
       - mynetwork.com
