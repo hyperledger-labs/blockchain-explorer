@@ -7,7 +7,7 @@ volumes:
 networks:
   mynetwork.com:
     external:
-      name: artifacts_default
+      name: net_byfn
 
 services:
 
@@ -19,6 +19,7 @@ services:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
+      - DOCKER_ENTRYPOINT_INIT=true
     volumes:
       - ./app/persistence/fabric/postgreSQL/db/createdb.sh:/docker-entrypoint-initdb.d/createdb.sh
       - pgdata:/var/lib/postgresql/data
