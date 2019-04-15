@@ -80,12 +80,12 @@ server.on('connection', (connection) => {
 
 // this function is called when you want the server to die gracefully
 // i.e. wait for existing connections
-const shutDown = function () {
+const shutDown = function (exitCode) {
   console.log('Received kill signal, shutting down gracefully');
   server.close(() => {
     explorer.close();
     console.log('Closed out connections');
-    process.exit(0);
+    process.exit(exitCode);
   });
 
   setTimeout(() => {
@@ -110,7 +110,7 @@ process.on('unhandledRejection', (up) => {
     console.log(up);
   }
   setTimeout(() => {
-    shutDown();
+    shutDown(1);
   }, 2000);
 });
 process.on('uncaughtException', (up) => {
@@ -123,7 +123,7 @@ process.on('uncaughtException', (up) => {
     console.log(up);
   }
   setTimeout(() => {
-    shutDown();
+    shutDown(1);
   }, 2000);
 });
 

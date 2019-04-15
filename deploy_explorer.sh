@@ -188,6 +188,10 @@ function deploy_run_explorer(){
 		-e DATABASE_HOST=$db_ip \
 		-e DATABASE_USERNAME=$explorer_db_user \
 		-e DATABASE_PASSWD=$explorer_db_pwd \
+		-e ENROLL_ID="hlbeuser" \
+		-e ENROLL_AFFILIATION=".department2" \
+		-e ADMIN_USERNAME="admin" \
+		-e ADMIN_SECRET="adminpw" \
 		-v $network_config_file:/opt/explorer/app/platform/fabric/config.json \
 		-v $network_crypto_base_path:/tmp/crypto \
 		-p 8090:8080 \
