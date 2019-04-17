@@ -114,8 +114,10 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const fabricClient = await platform.getClient();
   const client = fabricClient.hfc_client;
   const targets = [peer]; // build the list of peers that will require this chaincode
-  //todo change file name - nameCode + versionCode
-  const chaincodePath = path.join('tmp', `${name}${version}`);
+  // todo change file name - nameCode + versionCode
+  const chaincodePath = path.join('tmp', 'src', `${name}${version}`);
+  logger.debug('path', chaincodePath);
+  console.log('path', chaincodePath);
   try {
     extractChaincodeZipArchive(zip, chaincodePath);
   } catch (error) {
@@ -128,8 +130,8 @@ async function installChaincode(peer, name, zip, version, type, platform) {
 
   // send proposal to install
   const request = {
-    targets: targets,
-    chaincodePath: chaincodePath,
+    targets,
+    chaincodePath: `${name}${version}`,
     metadataPath: chaincodePath, // notice this is the new attribute of the request
     chaincodeId: name,
     chaincodeType: type,
@@ -175,7 +177,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     );
     errorMessage = error.toString();
   } finally {
-    //fs.removeSync(chaincodePath);
+    // fs.removeSync(chaincodePath);
   }
 
   if (!errorMessage) {
@@ -208,38 +210,39 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
   } = chaincodeRequest;
   let results;
   try {
-    const chaincodePath = path.join('tmp', `${name}${version}`);
+    const chaincodePath = path.join('tmp', 'src', `${name}${version}`);
 
     const fabricClient = await platform.getClient();
     const client = fabricClient.hfc_client;
-    let channel = client.getChannel(channelName, true);
-    let tx_id = client.newTransactionID(true);
+    const channel = client.getChannel(channelName, true);
+    const tx_id = client.newTransactionID(true);
 
-    let request = {
+    const request = {
       targets: peers,
-      chaincodePath: chaincodePath,
+      chaincodePath,
       metadataPath: chaincodePath,
       chaincodeId: name,
       chaincodeType: 'node',
       chaincodeVersion: version,
-      args: args,
+      args,
       txId: tx_id
     };
 
     if (policy) {
-      request['endorsement-policy'] = JSON.parse(policy.toString());
+      request['endorsement-policy'] =
+        typeof policy === 'string' ? JSON.parse(policy) : policy;
     }
 
-    if ('init' === txtype) {
+    if (txtype === 'init') {
       results = await channel.sendInstantiateProposal(request, 60000);
-    } else if ('upgrade' === txtype) {
+    } else if (txtype === 'upgrade') {
       results = await channel.sendUpgradeProposal(request, 60000);
     }
 
     let flag = true;
-    let proposalResponses = results[0];
-    let proposal = results[1];
-    for (let i in proposalResponses) {
+    const proposalResponses = results[0];
+    const proposal = results[1];
+    for (const i in proposalResponses) {
       if (
         proposalResponses &&
         proposalResponses[i].response &&
@@ -252,15 +255,16 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
     }
 
     if (flag) {
-      let orderer_request = {
+      const orderer_request = {
         txId: tx_id,
-        proposalResponses: proposalResponses,
-        proposal: proposal
+        proposalResponses,
+        proposal
       };
       results = await channel.sendTransaction(orderer_request);
-      results.status === 'SUCCESS'
-        ? (results.message = 'Successfully instantiate chaincode')
-        : (results.message = ' Instantiate chaincode is failed');
+      results.message =
+        results.status === 'SUCCESS'
+          ? 'Successfully instantiate chaincode'
+          : ' Instantiate chaincode is failed';
     } else {
       results = {
         ...results,

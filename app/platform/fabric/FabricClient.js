@@ -344,6 +344,10 @@ class FabricClient {
         username,
         this.client_name
       );
+      this.hfc_client.setTlsClientCertAndKey(
+        Buffer.from(admin_cert).toString(),
+        Buffer.from(admin_key).toString()
+      );
       this.adminusers.set(username, user);
     }
 
@@ -491,30 +495,18 @@ class FabricClient {
           const org = discover_results.peers_by_org[org_name];
           for (const peer of org.peers) {
             const host = peer.endpoint.split(':')[0];
-            if (
-              this.client_config.peers &&
-              this.client_config.peers[host] &&
-              this.client_config.peers[host].url
-            ) {
-              const adminpeer = this.newAdminPeer(
-                channel,
-                this.client_config.peers[host].url,
-                peer.mspid,
-                host,
-                discover_results.msps
-              );
-              logger.debug(
-                'Successfully created peer [%s] for client [%s]',
-                peer.endpoint,
-                this.client_name
-              );
-            } else {
-              logger.error(
-                'Peer configuration is not found in config.json for peer %s, so peer status not work for the peer',
-                peer.endpoint
-              );
-              return;
-            }
+            this.newAdminPeer(
+              channel,
+              `grpcs://${peer.endpoint}`,
+              peer.mspid,
+              host,
+              discover_results.msps
+            );
+            logger.debug(
+              'Successfully created peer [%s] for client [%s]',
+              peer.endpoint,
+              this.client_name
+            );
           }
         }
       }
@@ -668,7 +660,7 @@ class FabricClient {
   }
 
   async newUser(msp_name, username, msp_admin_cert) {
-    const organization = await this.hfc_client._network_config.getOrganization(
+    const organization = await this.hfc_client._network_config.getOrganizationByMspId(
       msp_name,
       true
     );

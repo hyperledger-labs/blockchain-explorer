@@ -1,6 +1,10 @@
 {
   "extends": "airbnb",
   "rules": {
-    "comma-dangle": ["error", "never"]
+    "comma-dangle": ["error", "never"],
+    "camelcase": "off",
+    "no-restricted-syntax": "off",
+    "no-await-in-loop": "off",
+    "no-underscore-dangle": "off"
   }
 }

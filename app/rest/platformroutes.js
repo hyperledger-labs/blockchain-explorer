@@ -207,16 +207,15 @@ const platformroutes = async function(app, platform) {
    POST /api/chaincode
    Request:
    {
-      "peers": ["peer0.org1.example.com"],
+      "peers": "peer0.org1.example.com",
       "chaincodename: "TEST",
-      "path": "github.com/TEST",
       "version": "0.0.1",
       "type": "Go"
     }
    */
   app.post('/api/chaincode', async (req, res) => {
     const { peer, name, version, type } = req.body;
-    const zip = req.files.zip;
+    const { zip } = req.files;
 
     logger.info(
       'Install chaincode api params: %s, %s, %s, %s, %s, %s',
@@ -226,9 +225,8 @@ const platformroutes = async function(app, platform) {
       version,
       type
     );
-    console.log(zip);
     if (peer && name && zip && version) {
-      let message = await proxy.installChaincode(
+      const message = await proxy.installChaincode(
         peer,
         name,
         zip,
