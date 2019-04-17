@@ -11,6 +11,7 @@ const ExplorerError = require('../../common/ExplorerError');
 
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
+const dockerUtils = require('./utils/dockerUtils');
 
 class Proxy {
   constructor(platform) {
@@ -266,6 +267,17 @@ class Proxy {
       txtype,
       this.platform
     );
+  }
+
+  generateDockerArtifacts(orgOptions) {
+    const networkOptions = {
+      commonDir: 'private',
+      scriptsDir: './../scripts',
+      logsDir: './../logs',
+      networkName: 'fabric-ca'
+    };
+
+    return dockerUtils.generteDockerfiles(orgOptions, networkOptions);
   }
 }
 

@@ -284,6 +284,23 @@ const platformroutes = async function(app, platform) {
       return requtil.invalidRequest(req, res);
     }
   });
+
+  /** *
+   Get docker artifact for new org
+   GET /api/orgs/docker
+   curl -i 'http://<host>:<port>/api/orgs/docker'
+   */
+  app.get('/api/orgs/docker', (req, res) => {
+    const { orderer, newOrg, numPeers, randomNumber } = req.query;
+    const archive = proxy.generateDockerArtifacts({
+      orderer,
+      newOrg,
+      numPeers,
+      randomNumber
+    });
+    res.attachment('docker-artifacts.zip');
+    res.send(archive.toBuffer());
+  });
 };
 
 module.exports = platformroutes;
