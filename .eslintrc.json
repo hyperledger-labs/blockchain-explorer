@@ -5,6 +5,13 @@
     "camelcase": "off",
     "no-restricted-syntax": "off",
     "no-await-in-loop": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "object-curly-newline": [
+      "error",
+      {
+        "ObjectExpression": "always",
+        "ObjectPattern": "never"
+      }
+    ]
   }
 }

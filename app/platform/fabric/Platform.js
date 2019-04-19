@@ -50,14 +50,28 @@ class Platform {
     await this.buildClients(network_configs);
 
     if (
-      this.networks.size == 0
-      && this.networks.get(this.defaultNetwork).size == 0
+      this.networks.size == 0 &&
+      this.networks.get(this.defaultNetwork).size == 0
     ) {
       logger.error(
         '************* There is no client found for Hyperledger fabric platform *************'
       );
       throw new ExplorerError(explorer_error.ERROR_2008);
     }
+  }
+
+  async reinitialize(newOrgConfig, name) {
+    const config = FabricUtils.setOrgEnrolmentPath(newOrgConfig);
+    const client = await FabricUtils.createFabricClient(
+      config,
+      name,
+      this.persistence
+    );
+
+    const clients = this.networks.get(this.defaultNetwork);
+    clients.set(name, client);
+
+    this.defaultClient = name;
   }
 
   async buildClients(network_configs) {

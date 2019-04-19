@@ -1,10 +1,17 @@
 const AdmZip = require('adm-zip');
 
 const generatePeerDockerfile = () => {
+  const fabricVersion = '1.4.0';
+  const os = 'linux-amd64';
+  const caBinaryFile = `hyperledger-fabric-ca-${os}-${fabricVersion}.tar.gz`;
+  const clientBinaryFile = `hyperledger-fabric-${os}-${fabricVersion}.tar.gz`;
+  const caURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${os}-${fabricVersion}/${caBinaryFile}`;
+  const clientURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/${os}-${fabricVersion}/${clientBinaryFile}`;
+
   return `FROM hyperledger/fabric-peer:1.4.0
 RUN apt-get update && apt-get install -y netcat jq && apt-get install -y curl && rm -rf /var/cache/apt
-RUN curl -o /tmp/fabric-ca-client.tar.gz https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/linux-amd64-1.4.0/hyperledger-fabric-ca-linux-amd64-1.4.0.tar.gz && tar -xzvf /tmp/fabric-ca-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
-RUN curl -o /tmp/fabric-client.tar.gz https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/linux-amd64-1.4.0/hyperledger-fabric-linux-amd64-1.4.0.tar.gz && tar -xzvf /tmp/fabric-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
+RUN curl -o /tmp/fabric-ca-client.tar.gz ${caURL} && tar -xzvf /tmp/fabric-ca-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
+RUN curl -o /tmp/fabric-client.tar.gz ${clientURL} && tar -xzvf /tmp/fabric-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
 RUN chmod +x -R /usr/local/bin/*
 ARG FABRIC_CA_DYNAMIC_LINK=true
 EXPOSE 7051
@@ -25,11 +32,11 @@ const getRootCA = (orgOptions, networkOptions) => {
       `ORDERER_ORGS=${orderer}`,
       `PEER_ORGS=${newOrg}`,
       `NUM_PEERS=${numPeers}`,
-      `FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca`,
-      `FABRIC_CA_SERVER_TLS_ENABLED=true`,
+      'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
+      'FABRIC_CA_SERVER_TLS_ENABLED=true',
       `FABRIC_CA_SERVER_CSR_CN=${rcaName}`,
       `FABRIC_CA_SERVER_CSR_HOSTS=${rcaName}`,
-      `FABRIC_CA_SERVER_DEBUG=false`,
+      'FABRIC_CA_SERVER_DEBUG=false',
       `BOOTSTRAP_USER_PASS=${rcaName}-admin:${rcaName}-adminpw`,
       `TARGET_CERTFILE=/${commonDir}/${newOrg}-ca-cert.pem`,
       `FABRIC_ORGS=${orderer} ${newOrg}`,
@@ -61,12 +68,12 @@ const getIntCA = (orgOptions, networkOptions) => {
       `ORDERER_ORGS=${orderer}`,
       `PEER_ORGS=${newOrg}`,
       `NUM_PEERS=${numPeers}`,
-      `FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca`,
+      'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
       `FABRIC_CA_SERVER_CA_NAME=${icaName}`,
       `FABRIC_CA_SERVER_INTERMEDIATE_TLS_CERTFILES=/${commonDir}/${newOrg}-ca-cert.pem`,
-      `FABRIC_CA_SERVER_TLS_ENABLED=true`,
+      'FABRIC_CA_SERVER_TLS_ENABLED=true',
       `FABRIC_CA_SERVER_CSR_HOSTS=${icaName}`,
-      `FABRIC_CA_SERVER_DEBUG=false`,
+      'FABRIC_CA_SERVER_DEBUG=false',
       `BOOTSTRAP_USER_PASS=${icaName}-admin:${icaName}-adminpw`,
       `PARENT_URL=https://${rcaName}-admin:${rcaName}-adminpw@rca-${newOrg}:7054`,
       `TARGET_CHAINFILE=/${commonDir}/${newOrg}-ca-chain.pem`,
@@ -119,19 +126,19 @@ const getPeers = (orgOptions, networkOptions) => {
         `CORE_PEER_ADDRESS=${peerName}:7051`,
         `CORE_PEER_LOCALMSPID=${newOrg}MSP`,
         `CORE_PEER_MSPCONFIGPATH=${peerHome}/msp`,
-        `CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock`,
+        'CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock',
         `CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_${networkName}`,
-        `FABRIC_LOGGING_SPEC=INFO`,
-        `CORE_PEER_TLS_ENABLED=true`,
+        'FABRIC_LOGGING_SPEC=INFO',
+        'CORE_PEER_TLS_ENABLED=true',
         `CORE_PEER_TLS_CERT_FILE=${peerHome}/tls/server.crt`,
         `CORE_PEER_TLS_KEY_FILE=${peerHome}/tls/server.key`,
         `CORE_PEER_TLS_ROOTCERT_FILE=${caChainFile}`,
-        `CORE_PEER_TLS_CLIENTAUTHREQUIRED=true`,
+        'CORE_PEER_TLS_CLIENTAUTHREQUIRED=true',
         `CORE_PEER_TLS_CLIENTROOTCAS_FILES=${caChainFile}`,
-        `CORE_PEER_GOSSIP_USELEADERELECTION=true`,
-        `CORE_PEER_GOSSIP_ORGLEADER=false`,
+        'CORE_PEER_GOSSIP_USELEADERELECTION=true',
+        'CORE_PEER_GOSSIP_ORGLEADER=false',
         `CORE_PEER_GOSSIP_EXTERNALENDPOINT=${peerName}:7051`,
-        `CORE_PEER_GOSSIP_SKIPHANDSHAKE=true`,
+        'CORE_PEER_GOSSIP_SKIPHANDSHAKE=true',
         `ORGANIZATION=${newOrg}`,
         `COUNT=${i}`,
         `ORG_ADMIN_CERT=/${commonDir}/orgs/${newOrg}/msp/admincerts/cert.pem`,
@@ -152,36 +159,34 @@ const getPeers = (orgOptions, networkOptions) => {
   return peers;
 };
 
-const generateDockerCompose = (orgOptions, networkOptions) => {
-  return {
-    version: '3.4',
-    networks: {
-      'fabric-ca': {
-        external: {
-          name: 'net_fabric-ca'
-        }
+const generateDockerCompose = (orgOptions, networkOptions) => ({
+  version: '3.4',
+  networks: {
+    'fabric-ca': {
+      external: {
+        name: 'net_fabric-ca'
       }
-    },
-    volumes: {
-      private: null
-    },
-    services: {
-      ...getRootCA(orgOptions, networkOptions),
-      ...getIntCA(orgOptions, networkOptions),
-      ...getPeers(orgOptions, networkOptions)
     }
-  };
-};
+  },
+  volumes: {
+    private: null
+  },
+  services: {
+    ...getRootCA(orgOptions, networkOptions),
+    ...getIntCA(orgOptions, networkOptions),
+    ...getPeers(orgOptions, networkOptions)
+  }
+});
 
 const generteDockerfiles = (orgOptions, networkOptions) => {
   const { newOrg } = orgOptions;
 
   const archive = new AdmZip();
 
-  const dockerComposeFile = generateDockerCompose(orgOptions, networkOptions);
+  const dockerCompose = generateDockerCompose(orgOptions, networkOptions);
   archive.addFile(
     `docker-compose-${newOrg}.json`,
-    Buffer.from(JSON.stringify(dockerComposeFile, null, 2))
+    Buffer.from(JSON.stringify(dockerCompose, null, 2))
   );
   archive.addFile(
     'fabric-ca-peer.dockerfile',

@@ -291,15 +291,44 @@ const platformroutes = async function(app, platform) {
    curl -i 'http://<host>:<port>/api/orgs/docker'
    */
   app.get('/api/orgs/docker', (req, res) => {
-    const { orderer, newOrg, numPeers, randomNumber } = req.query;
+    const { newOrg, numPeers } = req.query;
     const archive = proxy.generateDockerArtifacts({
-      orderer,
       newOrg,
-      numPeers,
-      randomNumber
+      numPeers
     });
     res.attachment('docker-artifacts.zip');
     res.send(archive.toBuffer());
+  });
+
+  /** *
+   Switch to different org
+   POST /api/orgs/switch
+   curl -i 'http://<host>:<port>/api/orgs/switch'
+   */
+  app.post('/api/orgs/switch', async (req, res) => {
+    try {
+      const { org } = req.body;
+      await proxy.switchOrg(org);
+      res.sendStatus(200);
+    } catch (err) {
+      return requtil.invalidRequest(req, res);
+    }
+  });
+
+  /** *
+   Add new org to channel
+   POST /api/orgs/addToChannel
+   curl -i 'http://<host>:<port>/api/orgs/addToChannel'
+   */
+  app.post('/api/orgs/addToChannel', async (req, res) => {
+    try {
+      const { org, numPeers } = req.body;
+      await proxy.addOrgToChannel(org, numPeers);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      return requtil.invalidRequest(req, res);
+    }
   });
 };
 

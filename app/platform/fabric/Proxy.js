@@ -1,6 +1,7 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
+const axios = require('axios');
 
 const chaincodeService = require('./service/chaincodeService.js');
 const helper = require('../../common/helper');
@@ -12,6 +13,8 @@ const ExplorerError = require('../../common/ExplorerError');
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 const dockerUtils = require('./utils/dockerUtils');
+
+const randomNumber = 21654; // either store in network config or get rid of it
 
 class Proxy {
   constructor(platform) {
@@ -26,7 +29,9 @@ class Proxy {
     const channel_genesis_hash = client.getChannelGenHash(channel.getName());
     let respose;
     if (channel_genesis_hash) {
-      respose = { currentChannel: channel_genesis_hash };
+      respose = {
+        currentChannel: channel_genesis_hash
+      };
     } else {
       respose = {
         status: 1,
@@ -123,7 +128,10 @@ class Proxy {
       }
     }
     for (const org_id of organizations) {
-      rows.push({ count: '0', creator_msp_id: org_id });
+      rows.push({
+        count: '0',
+        creator_msp_id: org_id
+      });
     }
     return rows;
   }
@@ -274,11 +282,114 @@ class Proxy {
       commonDir: 'private',
       scriptsDir: './../scripts',
       logsDir: './../logs',
-      networkName: 'fabric-ca'
+      networkName: this.platform.defaultNetwork
     };
+    const orderer = 'here'; // get this from network settings
+    return dockerUtils.generteDockerfiles(
+      {
+        ...orgOptions,
+        orderer,
+        randomNumber
+      },
+      networkOptions
+    );
+  }
 
-    return dockerUtils.generteDockerfiles(orgOptions, networkOptions);
+  addOrgToChannel(org, numPeers) {
+    const currentOrg = this.platform.defaultClient;
+    const orderer = 'here'; // get this from network settings
+    return axios.post('http://wrapper:3000/add-org', {
+      newOrg: org,
+      peersQuantity: numPeers,
+      peerOrgs: currentOrg,
+      orderer,
+      number: randomNumber
+    });
+  }
+
+  switchOrg(orgName) {
+    // TODO: query discovery service to check for given org
+    const config = generateConfig(orgName);
+    this.platform.reinitialize(config, orgName);
   }
 }
+
+const generateConfig = org => {
+  const channel = `channel${randomNumber}`;
+
+  const config = {
+    version: '1.0',
+    clients: {},
+    channels: {
+      channel21654: {
+        peers: {},
+        connection: {
+          timeout: {
+            peer: {
+              endorser: '60000',
+              eventHub: '60000',
+              eventReg: '60000'
+            }
+          }
+        }
+      }
+    },
+    orderers: {
+      '': {
+        url: 'grpcs://:7050'
+      }
+    },
+    organizations: {
+      here: {
+        mspid: 'hereMSP',
+        fullpath: false,
+        adminPrivateKey: {
+          path: '/private/orgs/here/admin/msp/keystore'
+        },
+        signedCert: {
+          path: '/private/orgs/here/admin/msp/signcerts'
+        }
+      }
+    },
+    peers: {}
+  };
+
+  config.clients[org] = {
+    tlsEnable: true,
+    organization: org,
+    channel,
+    credentialStore: {
+      path: `./tmp/fabric-client-kvs_${org}`,
+      cryptoStore: {
+        path: `./tmp/fabric-client-kvs_${org}`
+      }
+    }
+  };
+  config.channels[channel].peers[`peer1-${org}`] = {};
+  config.organizations[org] = {
+    name: org,
+    mspid: `${org}MSP`,
+    fullpath: false,
+    tlsEnable: true,
+    adminPrivateKey: {
+      path: `/private/orgs/${org}/admin/msp/keystore`
+    },
+    signedCert: {
+      path: `/private/orgs/${org}/admin/msp/signcerts`
+    }
+  };
+  config.peers[`peer1-${org}`] = {
+    url: `grpcs://peer1-${org}:7051`,
+    eventUrl: `grpcs://peer1-${org}:7053`,
+    grpcOptions: {
+      'ssl-target-name-override': `peer1-${org}`
+    },
+    tlsCACerts: {
+      path: `/private/${org}-ca-chain.pem`
+    }
+  };
+
+  return config;
+};
 
 module.exports = Proxy;
