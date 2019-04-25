@@ -17,6 +17,7 @@ ENV DATABASE_PORT 5432
 ENV DATABASE_NAME fabricexplorer
 ENV DATABASE_USERNAME hppoc
 ENV DATABASE_PASSWD password
+ENV NODE_ENV development
 
 ENV STARTUP_SCRIPT /opt
 
@@ -29,23 +30,19 @@ COPY . $EXPLORER_APP_PATH
 # install required dependencies by NPM packages:
 # current dependencies are: python, make, g++
 
-RUN apk add --no-cache --virtual npm-deps python make g++ && \
+RUN apk add --no-cache --virtual npm-deps python make g++ go mlocate && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \
 	rm -r /root/.cache
 
-# install NPM dependencies
-RUN cd $EXPLORER_APP_PATH && npm install && npm build
+ENV GOPATH $EXPLORER_APP_PATH/tmp
 
-# build explorer app
-RUN cd $EXPLORER_APP_PATH && cd client && npm install && yarn build
+# install NPM dependencies
+RUN cd $EXPLORER_APP_PATH && npm install
 
 # remove installed packages to free space
 RUN apk del npm-deps
-
-# expose default ports
-EXPOSE 8080
 
 # run blockchain explorer main app
 CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null

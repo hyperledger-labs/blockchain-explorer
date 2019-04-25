@@ -145,7 +145,7 @@ class SyncServices {
   // insert new peer and channel relation
   async insertNewPeer(peer, channel_genesis_hash, client) {
     let eventurl = '';
-    let requesturl = peer.endpoint;
+    let requesturl = `grpcs://${peer.endpoint}`;
     const host_port = peer.endpoint.split(':');
     if (
       client.client_config.peers &&

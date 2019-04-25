@@ -65,7 +65,8 @@ class FabricClient {
     // Loading client from network configuration file
     logger.debug(
       'Loading client  [%s] from configuration ...',
-      this.client_name
+      this.client_name,
+      client_config['organizations']
     );
     await this.LoadClientFromConfig(client_config);
     logger.debug(
@@ -392,6 +393,9 @@ class FabricClient {
     // get channel, if the channel is not exist in the hfc client context,
     // then it will create new channel from the netwrok configuration
     const channel = this.hfc_client.getChannel(channel_name);
+    if (channel.getOrderers().length === 0) {
+      channel.addOrderer(this.defaultChannel.getOrderers()[0]);
+    }
     await this.initializeChannelFromDiscover(channel_name);
 
     // get genesis block for the channel
@@ -421,11 +425,7 @@ class FabricClient {
       channel = this.getChannel(channel_name);
     }
     const discover_results = await this.getChannelDiscover(channel);
-    logger.debug(
-      'Discover results for client [%s] >> %j',
-      this.client_name,
-      discover_results
-    );
+    console.log('Discover results for client [%s] >> %j', this.client_name);
     // creating users for admin peers
     if (discover_results) {
       if (discover_results.msps) {
@@ -642,7 +642,8 @@ class FabricClient {
   async getChannelDiscover(channel) {
     const discover_request = {
       target: this.defaultPeer.getName(),
-      config: true
+      config: true,
+      local: true
     };
     const discover_results = await channel._discover(discover_request);
     return discover_results;

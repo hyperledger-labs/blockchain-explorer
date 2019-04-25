@@ -23,34 +23,33 @@ const getRootCA = (orgOptions, networkOptions) => {
   const { commonDir, scriptsDir, logsDir, networkName } = networkOptions;
   const rcaName = `rca-${newOrg}`;
 
-  const rootCA = {};
-  rootCA[rcaName] = {
-    container_name: rcaName,
-    image: 'hyperledger/fabric-ca',
-    command: `/bin/bash -c '/scripts/start-root-ca.sh 2>&1 | tee //logs/${rcaName}.log'`,
-    environment: [
-      `ORDERER_ORGS=${orderer}`,
-      `PEER_ORGS=${newOrg}`,
-      `NUM_PEERS=${numPeers}`,
-      'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
-      'FABRIC_CA_SERVER_TLS_ENABLED=true',
-      `FABRIC_CA_SERVER_CSR_CN=${rcaName}`,
-      `FABRIC_CA_SERVER_CSR_HOSTS=${rcaName}`,
-      'FABRIC_CA_SERVER_DEBUG=false',
-      `BOOTSTRAP_USER_PASS=${rcaName}-admin:${rcaName}-adminpw`,
-      `TARGET_CERTFILE=/${commonDir}/${newOrg}-ca-cert.pem`,
-      `FABRIC_ORGS=${orderer} ${newOrg}`,
-      `RANDOM_NUMBER=${randomNumber}`
-    ],
-    volumes: [
-      `${scriptsDir}:/scripts`,
-      `${logsDir}:/logs`,
-      `${commonDir}:/${commonDir}`
-    ],
-    networks: [networkName]
+  return {
+    [rcaName]: {
+      container_name: rcaName,
+      image: 'hyperledger/fabric-ca',
+      command: `/bin/bash -c '/scripts/start-root-ca.sh 2>&1 | tee //logs/${rcaName}.log'`,
+      environment: [
+        `ORDERER_ORGS=${orderer}`,
+        `PEER_ORGS=${newOrg}`,
+        `NUM_PEERS=${numPeers}`,
+        'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
+        'FABRIC_CA_SERVER_TLS_ENABLED=true',
+        `FABRIC_CA_SERVER_CSR_CN=${rcaName}`,
+        `FABRIC_CA_SERVER_CSR_HOSTS=${rcaName}`,
+        'FABRIC_CA_SERVER_DEBUG=false',
+        `BOOTSTRAP_USER_PASS=${rcaName}-admin:${rcaName}-adminpw`,
+        `TARGET_CERTFILE=/${commonDir}/${newOrg}-ca-cert.pem`,
+        `FABRIC_ORGS=${orderer} ${newOrg}`,
+        `RANDOM_NUMBER=${randomNumber}`
+      ],
+      volumes: [
+        `${scriptsDir}:/scripts`,
+        `${logsDir}:/logs`,
+        `${commonDir}:/${commonDir}`
+      ],
+      networks: [networkName]
+    }
   };
-
-  return rootCA;
 };
 
 const getIntCA = (orgOptions, networkOptions) => {
@@ -59,38 +58,37 @@ const getIntCA = (orgOptions, networkOptions) => {
   const rcaName = `rca-${newOrg}`;
   const icaName = `ica-${newOrg}`;
 
-  const ica = {};
-  ica[icaName] = {
-    container_name: icaName,
-    image: 'hyperledger/fabric-ca',
-    command: `/bin/bash -c '/scripts/start-intermediate-ca.sh 2>&1 | tee //logs/${icaName}.log'`,
-    environment: [
-      `ORDERER_ORGS=${orderer}`,
-      `PEER_ORGS=${newOrg}`,
-      `NUM_PEERS=${numPeers}`,
-      'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
-      `FABRIC_CA_SERVER_CA_NAME=${icaName}`,
-      `FABRIC_CA_SERVER_INTERMEDIATE_TLS_CERTFILES=/${commonDir}/${newOrg}-ca-cert.pem`,
-      'FABRIC_CA_SERVER_TLS_ENABLED=true',
-      `FABRIC_CA_SERVER_CSR_HOSTS=${icaName}`,
-      'FABRIC_CA_SERVER_DEBUG=false',
-      `BOOTSTRAP_USER_PASS=${icaName}-admin:${icaName}-adminpw`,
-      `PARENT_URL=https://${rcaName}-admin:${rcaName}-adminpw@rca-${newOrg}:7054`,
-      `TARGET_CHAINFILE=/${commonDir}/${newOrg}-ca-chain.pem`,
-      `ORGANIZATION=${newOrg}`,
-      `FABRIC_ORGS=${orderer} ${newOrg}`,
-      `RANDOM_NUMBER=${randomNumber}`
-    ],
-    volumes: [
-      `${scriptsDir}:/scripts`,
-      `${logsDir}:/logs`,
-      `${commonDir}:/${commonDir}`
-    ],
-    networks: [networkName],
-    depends_on: [rcaName]
+  return {
+    [icaName]: {
+      container_name: icaName,
+      image: 'hyperledger/fabric-ca',
+      command: `/bin/bash -c '/scripts/start-intermediate-ca.sh 2>&1 | tee //logs/${icaName}.log'`,
+      environment: [
+        `ORDERER_ORGS=${orderer}`,
+        `PEER_ORGS=${newOrg}`,
+        `NUM_PEERS=${numPeers}`,
+        'FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca',
+        `FABRIC_CA_SERVER_CA_NAME=${icaName}`,
+        `FABRIC_CA_SERVER_INTERMEDIATE_TLS_CERTFILES=/${commonDir}/${newOrg}-ca-cert.pem`,
+        'FABRIC_CA_SERVER_TLS_ENABLED=true',
+        `FABRIC_CA_SERVER_CSR_HOSTS=${icaName}`,
+        'FABRIC_CA_SERVER_DEBUG=false',
+        `BOOTSTRAP_USER_PASS=${icaName}-admin:${icaName}-adminpw`,
+        `PARENT_URL=https://${rcaName}-admin:${rcaName}-adminpw@rca-${newOrg}:7054`,
+        `TARGET_CHAINFILE=/${commonDir}/${newOrg}-ca-chain.pem`,
+        `ORGANIZATION=${newOrg}`,
+        `FABRIC_ORGS=${orderer} ${newOrg}`,
+        `RANDOM_NUMBER=${randomNumber}`
+      ],
+      volumes: [
+        `${scriptsDir}:/scripts`,
+        `${logsDir}:/logs`,
+        `${commonDir}:/${commonDir}`
+      ],
+      networks: [networkName],
+      depends_on: [rcaName]
+    }
   };
-
-  return ica;
 };
 
 const getPeers = (orgOptions, networkOptions) => {

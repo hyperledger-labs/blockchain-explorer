@@ -233,6 +233,12 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
         typeof policy === 'string' ? JSON.parse(policy) : policy;
     }
 
+    logger.debug(
+      'endorsement-policy',
+      request['endorsement-policy'].identities,
+      request['endorsement-policy'].policy
+    );
+
     if (txtype === 'init') {
       results = await channel.sendInstantiateProposal(request, 60000);
     } else if (txtype === 'upgrade') {

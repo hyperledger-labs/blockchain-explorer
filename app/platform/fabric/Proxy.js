@@ -70,11 +70,13 @@ class Proxy {
         node.status = res.status ? res.status : 'DOWN';
         if (discover_results && discover_results.peers_by_org) {
           const org = discover_results.peers_by_org[node.mspid];
-          for (const peer of org.peers) {
-            if (peer.endpoint.indexOf(node.server_hostname) > -1) {
-              node.ledger_height_low = peer.ledger_height.low;
-              node.ledger_height_high = peer.ledger_height.high;
-              node.ledger_height_unsigned = peer.ledger_height.unsigned;
+          if (org) {
+            for (const peer of org.peers) {
+              if (peer.endpoint.indexOf(node.server_hostname) > -1) {
+                node.ledger_height_low = peer.ledger_height.low;
+                node.ledger_height_high = peer.ledger_height.high;
+                node.ledger_height_unsigned = peer.ledger_height.unsigned;
+              }
             }
           }
         }
@@ -317,12 +319,26 @@ class Proxy {
 const generateConfig = org => {
   const channel = `channel${randomNumber}`;
 
-  const config = {
+  return {
     version: '1.0',
-    clients: {},
+    clients: {
+      [org]: {
+        tlsEnable: true,
+        organization: org,
+        channel,
+        credentialStore: {
+          path: `./tmp/fabric-client-kvs_${org}`,
+          cryptoStore: {
+            path: `./tmp/fabric-client-kvs_${org}`
+          }
+        }
+      }
+    },
     channels: {
-      channel21654: {
-        peers: {},
+      [channel]: {
+        peers: {
+          [`peer1-${org}`]: {}
+        },
         connection: {
           timeout: {
             peer: {
@@ -349,47 +365,33 @@ const generateConfig = org => {
         signedCert: {
           path: '/private/orgs/here/admin/msp/signcerts'
         }
+      },
+      [org]: {
+        name: org,
+        mspid: `${org}MSP`,
+        fullpath: false,
+        tlsEnable: true,
+        adminPrivateKey: {
+          path: `/private/orgs/${org}/admin/msp/keystore`
+        },
+        signedCert: {
+          path: `/private/orgs/${org}/admin/msp/signcerts`
+        }
       }
     },
-    peers: {}
-  };
-
-  config.clients[org] = {
-    tlsEnable: true,
-    organization: org,
-    channel,
-    credentialStore: {
-      path: `./tmp/fabric-client-kvs_${org}`,
-      cryptoStore: {
-        path: `./tmp/fabric-client-kvs_${org}`
+    peers: {
+      [`peer1-${org}`]: {
+        url: `grpcs://peer1-${org}:7051`,
+        eventUrl: `grpcs://peer1-${org}:7053`,
+        grpcOptions: {
+          'ssl-target-name-override': `peer1-${org}`
+        },
+        tlsCACerts: {
+          path: `/private/${org}-ca-chain.pem`
+        }
       }
     }
   };
-  config.channels[channel].peers[`peer1-${org}`] = {};
-  config.organizations[org] = {
-    name: org,
-    mspid: `${org}MSP`,
-    fullpath: false,
-    tlsEnable: true,
-    adminPrivateKey: {
-      path: `/private/orgs/${org}/admin/msp/keystore`
-    },
-    signedCert: {
-      path: `/private/orgs/${org}/admin/msp/signcerts`
-    }
-  };
-  config.peers[`peer1-${org}`] = {
-    url: `grpcs://peer1-${org}:7051`,
-    eventUrl: `grpcs://peer1-${org}:7053`,
-    grpcOptions: {
-      'ssl-target-name-override': `peer1-${org}`
-    },
-    tlsCACerts: {
-      path: `/private/${org}-ca-chain.pem`
-    }
-  };
-
-  return config;
 };
 
 module.exports = Proxy;

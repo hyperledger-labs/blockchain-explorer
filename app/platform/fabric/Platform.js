@@ -20,6 +20,7 @@ const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
+const explorerconfig = require('../../explorerconfig.json');
 
 class Platform {
   constructor(persistence, broadcaster) {
@@ -61,7 +62,9 @@ class Platform {
   }
 
   async reinitialize(newOrgConfig, name) {
-    const config = FabricUtils.setOrgEnrolmentPath(newOrgConfig);
+    const config = FabricUtils.setOrgEnrolmentPath(
+      JSON.parse(JSON.stringify(newOrgConfig))
+    );
     const client = await FabricUtils.createFabricClient(
       config,
       name,
@@ -72,6 +75,26 @@ class Platform {
     clients.set(name, client);
 
     this.defaultClient = name;
+    let explorerListener = this.explorerListeners.find(
+      listener => listener.client_name === name
+    );
+    if (!explorerListener) {
+      explorerListener = new ExplorerListener(this, explorerconfig.sync);
+      explorerListener.initialize([
+        this.defaultNetwork,
+        name,
+        '1',
+        JSON.stringify({
+          'network-configs': {
+            [this.defaultNetwork]: newOrgConfig
+          }
+        })
+      ]);
+      this.explorerListeners.push({
+        client_name: name,
+        explorerListener
+      });
+    }
   }
 
   async buildClients(network_configs) {
@@ -138,7 +161,10 @@ class Platform {
           const explorerListener = new ExplorerListener(this, syncconfig);
           explorerListener.initialize([network_name, client_name, '1']);
           explorerListener.send('Successfully send a message to child process');
-          this.explorerListeners.push(explorerListener);
+          this.explorerListeners.push({
+            client_name,
+            explorerListener
+          });
         }
       }
     }
@@ -212,7 +238,7 @@ class Platform {
       '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'
     );
     for (const explorerListener of this.explorerListeners) {
-      explorerListener.close();
+      explorerListener.explorerListener.close();
     }
   }
 }
