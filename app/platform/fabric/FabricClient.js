@@ -40,6 +40,7 @@ class FabricClient {
     this.adminusers = new Map();
     this.peerroles = {};
     this.status = false;
+    this.ordererOrg;
     for (const role of ROLES) {
       this.peerroles[role] = role;
     }
@@ -425,7 +426,10 @@ class FabricClient {
       channel = this.getChannel(channel_name);
     }
     const discover_results = await this.getChannelDiscover(channel);
-    console.log('Discover results for client [%s] >> %j', this.client_name);
+    console.log(
+      'Discover results for client [%j] >> %j',
+      discover_results.msps
+    );
     // creating users for admin peers
     if (discover_results) {
       if (discover_results.msps) {
@@ -463,6 +467,7 @@ class FabricClient {
       // creating orderers
       if (discover_results.orderers) {
         for (const msp_id in discover_results.orderers) {
+          this.ordererOrg = msp_id;
           const endpoints = discover_results.orderers[msp_id].endpoints;
           for (const endpoint of endpoints) {
             let requesturl = endpoint.host;
@@ -642,9 +647,9 @@ class FabricClient {
   async getChannelDiscover(channel) {
     const discover_request = {
       target: this.defaultPeer.getName(),
-      config: true,
-      local: true
+      config: true
     };
+
     const discover_results = await channel._discover(discover_request);
     return discover_results;
   }
@@ -812,6 +817,10 @@ class FabricClient {
 
   getStatus() {
     return this.status;
+  }
+
+  getOrdererOrg() {
+    return this.ordererOrg;
   }
 }
 

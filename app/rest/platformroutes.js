@@ -108,14 +108,9 @@ const platformroutes = async function(app, platform) {
     */
   app.post('/api/channel', async (req, res) => {
     try {
-      // upload channel config, and org config
-      const artifacts = await requtil.aSyncUpload(req, res);
-      const chCreate = await proxy.createChannel(artifacts);
-      const channelResponse = {
-        success: chCreate.success,
-        message: chCreate.message
-      };
-      return res.send(channelResponse);
+      const { randomNumber, autojoin } = req.body;
+      await proxy.createChannel(randomNumber, autojoin);
+      return res.sendStatus(200);
     } catch (err) {
       logger.error(err);
       const channelError = {
@@ -225,16 +220,22 @@ const platformroutes = async function(app, platform) {
       version,
       type
     );
-    if (peer && name && zip && version) {
-      const message = await proxy.installChaincode(
-        peer,
-        name,
-        zip,
-        version,
-        type
-      );
-      res.send(message);
-    } else {
+    try {
+      if (peer && name && zip && version) {
+        console.log('installChaincode');
+        const message = await proxy.installChaincode(
+          peer,
+          name,
+          zip,
+          version,
+          type
+        );
+        res.send(message);
+      } else {
+        return requtil.invalidRequest(req, res);
+      }
+    } catch (err) {
+      console.log(err);
       return requtil.invalidRequest(req, res);
     }
   });

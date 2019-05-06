@@ -163,6 +163,9 @@ let joinChannel = async function(
       logger.error(message);
       throw new ExplorerError(message);
     }
+    peers.forEach(peer => {
+      channel.addPeer(client.getPeer(peer), client.getMspid());
+    });
 
     // next step is to get the genesis_block from the orderer,
     // the starting point for the channel that we want to join
@@ -175,7 +178,7 @@ let joinChannel = async function(
     for (let peer_name of peers) {
       let peer_config = peers_config[peer_name];
       let pem = FabricUtils.getPEMfromConfig(peer_config.tlsCACerts);
-      let peer = this.hfc_client.newPeer(peer_config.url, {
+      let peer = client.newPeer(peer_config.url, {
         pem: pem,
         'ssl-target-name-override':
           peer_config.grpcOptions['ssl-target-name-override'],
@@ -192,10 +195,11 @@ let joinChannel = async function(
       block: genesis_block
     };
     let results = await channel.joinChannel(join_request);
+    logger.info('joinChannel res !!!!!!!!!!!!!!!!!!!!!', results);
 
     // lets check the results of sending to the peers which is
     // last in the results array
-    let peers_results = results.pop();
+    let peers_results = results;
     // then each peer results
     for (let i in peers_results) {
       let peer_result = peers_results[i];

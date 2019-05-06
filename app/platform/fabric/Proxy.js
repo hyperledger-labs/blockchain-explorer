@@ -2,6 +2,8 @@
     SPDX-License-Identifier: Apache-2.0
 */
 const axios = require('axios');
+const FabricCAClient = require('fabric-ca-client');
+const CryptoSuite = require('fabric-client/lib/impl/CryptoSuite_ECDSA_AES');
 
 const chaincodeService = require('./service/chaincodeService.js');
 const helper = require('../../common/helper');
@@ -155,14 +157,35 @@ class Proxy {
     return 'response_payloads is null';
   }
 
-  async createChannel(artifacts) {
+  async createChannel(id, autojoin) {
+    const channelName = `channel${id}`;
+    const currentOrg = this.platform.defaultClient;
     const client = this.platform.getClient();
-    const respose = await client.createChannel(artifacts);
-    return respose;
+    const orderer = this.platform
+      .getClient()
+      .getOrdererOrg()
+      .replace('MSP', '');
+    console.log('orderer', orderer, currentOrg);
+    await axios.post('http://wrapper:3000/create-channel', {
+      peerOrgs: currentOrg,
+      orderer,
+      randomNumber: id
+    });
+    console.log('initializeNewChannel', channelName);
+    const channel = client.hfc_client.newChannel(channelName);
+    if (channel.getOrderers().length === 0) {
+      channel.addOrderer(client.defaultChannel.getOrderers()[0]);
+    }
+    // implement autojoin
+    if (autojoin) {
+      await this.joinChannel(channelName, autojoin, currentOrg);
+      await client.initializeNewChannel(channelName);
+    }
   }
 
   async joinChannel(channelName, peers, orgName) {
     const client = this.platform.getClient();
+    console.log('join channel');
     const respose = await client.joinChannel(channelName, peers, orgName);
     return respose;
   }
@@ -286,7 +309,7 @@ class Proxy {
       logsDir: './../logs',
       networkName: this.platform.defaultNetwork
     };
-    const orderer = 'here'; // get this from network settings
+    const orderer = this.platform.getClient().getOrdererOrg();
     return dockerUtils.generteDockerfiles(
       {
         ...orgOptions,
@@ -299,7 +322,8 @@ class Proxy {
 
   addOrgToChannel(org, numPeers) {
     const currentOrg = this.platform.defaultClient;
-    const orderer = 'here'; // get this from network settings
+    const orderer = this.platform.getClient().getOrdererOrg();
+    // move wrapper address to network config
     return axios.post('http://wrapper:3000/add-org', {
       newOrg: org,
       peersQuantity: numPeers,
@@ -309,89 +333,94 @@ class Proxy {
     });
   }
 
-  switchOrg(orgName) {
-    // TODO: query discovery service to check for given org
-    const config = generateConfig(orgName);
+  async switchOrg(orgName) {
+    const channel = this.platform.getClient().getChannel();
+    const orderer = this.platform
+      .getClient()
+      .getOrdererOrg()
+      .replace('MSP', '');
+    const discoveryRes = await channel.getDiscoveryResults();
+    if (!discoveryRes.msps[`${orgName}MSP`]) {
+      throw new Error('No such org');
+    }
+    const channelName = channel.getName();
+    const config = generateConfig(orgName, channelName, orderer);
     this.platform.reinitialize(config, orgName);
   }
 }
 
-const generateConfig = org => {
-  const channel = `channel${randomNumber}`;
-
-  return {
-    version: '1.0',
-    clients: {
-      [org]: {
-        tlsEnable: true,
-        organization: org,
-        channel,
-        credentialStore: {
-          path: `./tmp/fabric-client-kvs_${org}`,
-          cryptoStore: {
-            path: `./tmp/fabric-client-kvs_${org}`
-          }
-        }
-      }
-    },
-    channels: {
-      [channel]: {
-        peers: {
-          [`peer1-${org}`]: {}
-        },
-        connection: {
-          timeout: {
-            peer: {
-              endorser: '60000',
-              eventHub: '60000',
-              eventReg: '60000'
-            }
-          }
-        }
-      }
-    },
-    orderers: {
-      '': {
-        url: 'grpcs://:7050'
-      }
-    },
-    organizations: {
-      here: {
-        mspid: 'hereMSP',
-        fullpath: false,
-        adminPrivateKey: {
-          path: '/private/orgs/here/admin/msp/keystore'
-        },
-        signedCert: {
-          path: '/private/orgs/here/admin/msp/signcerts'
-        }
-      },
-      [org]: {
-        name: org,
-        mspid: `${org}MSP`,
-        fullpath: false,
-        tlsEnable: true,
-        adminPrivateKey: {
-          path: `/private/orgs/${org}/admin/msp/keystore`
-        },
-        signedCert: {
-          path: `/private/orgs/${org}/admin/msp/signcerts`
-        }
-      }
-    },
-    peers: {
-      [`peer1-${org}`]: {
-        url: `grpcs://peer1-${org}:7051`,
-        eventUrl: `grpcs://peer1-${org}:7053`,
-        grpcOptions: {
-          'ssl-target-name-override': `peer1-${org}`
-        },
-        tlsCACerts: {
-          path: `/private/${org}-ca-chain.pem`
+const generateConfig = (org, channel, orderer) => ({
+  version: '1.0',
+  clients: {
+    [org]: {
+      tlsEnable: true,
+      organization: org,
+      channel,
+      credentialStore: {
+        path: `./tmp/fabric-client-kvs_${org}`,
+        cryptoStore: {
+          path: `./tmp/fabric-client-kvs_${org}`
         }
       }
     }
-  };
-};
+  },
+  channels: {
+    [channel]: {
+      peers: {
+        [`peer1-${org}`]: {}
+      },
+      connection: {
+        timeout: {
+          peer: {
+            endorser: '60000',
+            eventHub: '60000',
+            eventReg: '60000'
+          }
+        }
+      }
+    }
+  },
+  orderers: {
+    '': {
+      url: 'grpcs://:7050'
+    }
+  },
+  organizations: {
+    [orderer]: {
+      mspid: `${orderer}MSP`,
+      fullpath: false,
+      adminPrivateKey: {
+        path: `/private/orgs/${orderer}/admin/msp/keystore`
+      },
+      signedCert: {
+        path: `/private/orgs/${orderer}/admin/msp/signcerts`
+      }
+    },
+    [org]: {
+      name: org,
+      mspid: `${org}MSP`,
+      fullpath: false,
+      tlsEnable: true,
+      adminPrivateKey: {
+        path: `/private/orgs/${org}/admin/msp/keystore`
+      },
+      signedCert: {
+        path: `/private/orgs/${org}/admin/msp/signcerts`
+      }
+    }
+  },
+  peers: {
+    [`peer1-${org}`]: {
+      url: `grpcs://peer1-${org}:7051`,
+      eventUrl: `grpcs://peer1-${org}:7053`,
+      grpcOptions: {
+        'ssl-target-name-override': `peer1-${org}`
+      },
+      tlsCACerts: {
+        path: `/private/${org}-ca-chain.pem`
+      }
+    }
+  }
+});
 
 module.exports = Proxy;
