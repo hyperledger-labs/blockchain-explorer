@@ -16,8 +16,6 @@ const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 const dockerUtils = require('./utils/dockerUtils');
 
-const randomNumber = 21654; // either store in network config or get rid of it
-
 class Proxy {
   constructor(platform) {
     this.platform = platform;
@@ -302,7 +300,7 @@ class Proxy {
     );
   }
 
-  generateDockerArtifacts(orgOptions) {
+  generateDockerArtifacts(orgOptions, randomNumber) {
     const networkOptions = {
       commonDir: 'private',
       scriptsDir: './../scripts',
@@ -320,7 +318,7 @@ class Proxy {
     );
   }
 
-  addOrgToChannel(org, numPeers) {
+  addOrgToChannel(org, numPeers, randomNumber) {
     const currentOrg = this.platform.defaultClient;
     const orderer = this.platform.getClient().getOrdererOrg();
     // move wrapper address to network config

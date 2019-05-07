@@ -292,11 +292,14 @@ const platformroutes = async function(app, platform) {
    curl -i 'http://<host>:<port>/api/orgs/docker'
    */
   app.get('/api/orgs/docker', (req, res) => {
-    const { newOrg, numPeers } = req.query;
-    const archive = proxy.generateDockerArtifacts({
-      newOrg,
-      numPeers
-    });
+    const { newOrg, numPeers, randomNumber } = req.query;
+    const archive = proxy.generateDockerArtifacts(
+      {
+        newOrg,
+        numPeers
+      },
+      randomNumber
+    );
     res.attachment('docker-artifacts.zip');
     res.send(archive.toBuffer());
   });
@@ -323,8 +326,8 @@ const platformroutes = async function(app, platform) {
    */
   app.post('/api/orgs/addToChannel', async (req, res) => {
     try {
-      const { org, numPeers } = req.body;
-      await proxy.addOrgToChannel(org, numPeers);
+      const { org, numPeers, randomNumber } = req.body;
+      await proxy.addOrgToChannel(org, numPeers, randomNumber);
       res.sendStatus(200);
     } catch (err) {
       console.log(err);
