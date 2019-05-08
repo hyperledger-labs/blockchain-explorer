@@ -20,9 +20,8 @@ echo "**************************************************************************
 echo "***** Please check the log [$LOG_CONSOLE_PATH] for any error *****"
 echo "************************************************************************************"
 
-node main.js >>$LOG_CONSOLE_PATH 2>&1 &
-
 find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
 
+# node --inspect-brk=0.0.0.0 main.js --watch >> $LOG_CONSOLE_PATH
 
-
+./node_modules/.bin/nodemon main.js --ignore ./tmp/ >> $LOG_CONSOLE_PATH

@@ -30,7 +30,7 @@ COPY . $EXPLORER_APP_PATH
 # install required dependencies by NPM packages:
 # current dependencies are: python, make, g++
 
-RUN apk add --no-cache --virtual npm-deps python make g++ go mlocate && \
+RUN apk add --no-cache --virtual npm-deps python make g++ go && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \

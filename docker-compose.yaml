@@ -1,20 +1,14 @@
-version: '3.4'
-
-networks:
-  fabric-ca:
-    external:
-      name: net_fabric-ca
+version: '2.4'
 
 services:
-  explorer.mynetwork.com:
+  blockchain-explorer:
     build: .
     container_name: explorer.mynetwork.com
     hostname: explorer.mynetwork.com
     environment:
-      - DATABASE_HOST=explorerdb.mynetwork.com
+      - DATABASE_HOST=blockchain-explorer-db
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWD=password
-      - ENROLL_ID=hlbeuser
       - DISCOVERY_AS_LOCALHOST=false
       - GOPATH=/opt/explorer/tmp
     volumes:
