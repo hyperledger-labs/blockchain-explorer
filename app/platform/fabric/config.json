@@ -2,12 +2,11 @@
   "network-configs": {
     "fabric-ca": {
       "version": "1.0",
-      "configType": "CA",
       "clients": {
         "governor": {
           "tlsEnable": true,
           "organization": "governor",
-          "channel": "channel41",
+          "channel": "channel30852",
           "credentialStore": {
             "path": "./tmp/fabric-client-kvs_governor",
             "cryptoStore": {
@@ -17,7 +16,7 @@
         }
       },
       "channels": {
-        "channel41": {
+        "channel30852": {
           "peers": {
             "peer1-governor": {}
           },
@@ -33,8 +32,8 @@
         }
       },
       "orderers": {
-        "": {
-          "url": "grpcs://:7050"
+        "orderer1-blockchain-technology": {
+          "url": "grpcs://orderer1-blockchain-technology:7050"
         }
       },
       "organizations": {

@@ -164,7 +164,7 @@ class Proxy {
       .getOrdererOrg()
       .replace('MSP', '');
     console.log('orderer', orderer, currentOrg);
-    await axios.post('http://wrapper:3000/create-channel', {
+    await axios.post('http://setup:3000/create-channel', {
       peerOrgs: currentOrg,
       orderer,
       randomNumber: id
@@ -322,7 +322,7 @@ class Proxy {
     const currentOrg = this.platform.defaultClient;
     const orderer = this.platform.getClient().getOrdererOrg();
     // move wrapper address to network config
-    return axios.post('http://wrapper:3000/add-org', {
+    return axios.post('http://setup:3000/add-org', {
       newOrg: org,
       peersQuantity: numPeers,
       peerOrgs: currentOrg,

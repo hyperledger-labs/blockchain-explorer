@@ -4,6 +4,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
+const axios = require('axios');
 
 const Proxy = require('./Proxy');
 const helper = require('../../common/helper');
@@ -42,6 +43,32 @@ class Platform {
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
     this.syncType = all_config.syncType;
+
+    const channels = Object.values(network_configs).reduce((acc, val) => {
+      return acc.concat(Object.keys(val.channels));
+    }, []);
+
+    for (let channel of channels) {
+      const rn = channel.replace('channel', '');
+      try {
+        console.log('test channel ', rn);
+        const resp = await axios.get(
+          `http://setup:3000/channel?orderer=blockchain-technology&peerOrgs=governor&randomNumber=${rn}`
+        );
+        console.log('test channel get', resp.data);
+        if (resp.data && !resp.data.success) {
+          console.log('creating channel', rn);
+          await axios.post('http://setup:3000/channel', {
+            orderer: 'blockchain-technology',
+            peerOrgs: 'governor',
+            randomNumber: rn,
+            autojoin: true
+          });
+        }
+      } catch (err) {
+        logger.debug('create channel fail');
+      }
+    }
 
     // build client context
     logger.debug(

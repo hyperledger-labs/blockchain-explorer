@@ -477,7 +477,7 @@ class FabricClient {
               this.client_config.orderers[requesturl].url
             ) {
               requesturl = this.client_config.orderers[requesturl].url;
-              this.newOrderer(
+              this.defaultOrderer = this.newOrderer(
                 channel,
                 requesturl,
                 msp_id,

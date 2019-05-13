@@ -1,29 +1,29 @@
-version: '2.4'
+version: '3.4'
+
+networks:
+  fabric-ca:
+    external:
+      name: net_fabric-ca
 
 services:
   blockchain-explorer:
+    restart: on-failure:10
+    container_name: blockchain-explorer
     build: .
-    container_name: explorer.mynetwork.com
-    hostname: explorer.mynetwork.com
+    working_dir: /opt/explorer
+    command: sh -c "./start.sh && tail -f /dev/null"
     environment:
       - DATABASE_HOST=blockchain-explorer-db
       - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWD=password
-      - DISCOVERY_AS_LOCALHOST=false
+      - DATABASE_PASSWORD=password
       - GOPATH=/opt/explorer/tmp
+      - DISCOVERY_AS_LOCALHOST=false
     volumes:
-      - ./app:/opt/explorer/app
-      - ./start.sh:/opt/explorer/start.sh
-      - ./syncstart.sh:/opt/explorer/syncstart.sh
       - /var/lib/docker/volumes/net_private/_data:/private
-      - ./tmp:/opt/explorer/tmp
+      - ./app:/opt/explorer/app
+      - ../hyperledger/docker/config.json:/opt/explorer/app/platform/fabric/config.json
       - ./logs:/opt/explorer/logs
-      - ./swagger.json:/opt/explorer/swagger.json
-      - ./client:/opt/explorer/client
-    working_dir: /opt/explorer
-    command: sh -c "./start.sh && tail -f /dev/null"
     ports:
       - 8080:8080
-      - 9229:9229
     networks:
       - fabric-ca
