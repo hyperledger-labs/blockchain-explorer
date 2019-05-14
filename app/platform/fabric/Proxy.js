@@ -164,7 +164,7 @@ class Proxy {
       .getOrdererOrg()
       .replace('MSP', '');
     console.log('orderer', orderer, currentOrg);
-    await axios.post('http://setup:3000/create-channel', {
+    await axios.post('http://setup:3000/channel', {
       peerOrgs: currentOrg,
       orderer,
       randomNumber: id
