@@ -2,7 +2,7 @@
   "persistence": "postgreSQL",
   "platforms": ["fabric"],
   "postgreSQL": {
-    "host": "127.0.0.1",
+    "host": "blockchain-explorer-db",
     "port": "5432",
     "database": "fabricexplorer",
     "username": "postgres",

@@ -108,14 +108,9 @@ const platformroutes = async function(app, platform) {
     */
   app.post('/api/channel', async (req, res) => {
     try {
-      // upload channel config, and org config
-      const artifacts = await requtil.aSyncUpload(req, res);
-      const chCreate = await proxy.createChannel(artifacts);
-      const channelResponse = {
-        success: chCreate.success,
-        message: chCreate.message
-      };
-      return res.send(channelResponse);
+      const { randomNumber, autojoin } = req.body;
+      await proxy.createChannel(randomNumber, autojoin);
+      return res.sendStatus(200);
     } catch (err) {
       logger.error(err);
       const channelError = {
@@ -207,16 +202,15 @@ const platformroutes = async function(app, platform) {
    POST /api/chaincode
    Request:
    {
-      "peers": ["peer0.org1.example.com"],
+      "peers": "peer0.org1.example.com",
       "chaincodename: "TEST",
-      "path": "github.com/TEST",
       "version": "0.0.1",
       "type": "Go"
     }
    */
   app.post('/api/chaincode', async (req, res) => {
     const { peer, name, version, type } = req.body;
-    const zip = req.files.zip;
+    const { zip } = req.files;
 
     logger.info(
       'Install chaincode api params: %s, %s, %s, %s, %s, %s',
@@ -226,17 +220,22 @@ const platformroutes = async function(app, platform) {
       version,
       type
     );
-    console.log(zip);
-    if (peer && name && zip && version) {
-      let message = await proxy.installChaincode(
-        peer,
-        name,
-        zip,
-        version,
-        type
-      );
-      res.send(message);
-    } else {
+    try {
+      if (peer && name && zip && version) {
+        console.log('installChaincode');
+        const message = await proxy.installChaincode(
+          peer,
+          name,
+          zip,
+          version,
+          type
+        );
+        res.send(message);
+      } else {
+        return requtil.invalidRequest(req, res);
+      }
+    } catch (err) {
+      console.log(err);
       return requtil.invalidRequest(req, res);
     }
   });
@@ -283,6 +282,55 @@ const platformroutes = async function(app, platform) {
       );
       res.send(message);
     } else {
+      return requtil.invalidRequest(req, res);
+    }
+  });
+
+  /** *
+   Get docker artifact for new org
+   GET /api/orgs/docker
+   curl -i 'http://<host>:<port>/api/orgs/docker'
+   */
+  app.get('/api/orgs/docker', (req, res) => {
+    const { newOrg, numPeers, randomNumber } = req.query;
+    const archive = proxy.generateDockerArtifacts(
+      {
+        newOrg,
+        numPeers
+      },
+      randomNumber
+    );
+    res.attachment('docker-artifacts.zip');
+    res.send(archive.toBuffer());
+  });
+
+  /** *
+   Switch to different org
+   POST /api/orgs/switch
+   curl -i 'http://<host>:<port>/api/orgs/switch'
+   */
+  app.post('/api/orgs/switch', async (req, res) => {
+    try {
+      const { org } = req.body;
+      await proxy.switchOrg(org);
+      res.sendStatus(200);
+    } catch (err) {
+      return requtil.invalidRequest(req, res);
+    }
+  });
+
+  /** *
+   Add new org to channel
+   POST /api/orgs/addToChannel
+   curl -i 'http://<host>:<port>/api/orgs/addToChannel'
+   */
+  app.post('/api/orgs/addToChannel', async (req, res) => {
+    try {
+      const { org, numPeers, randomNumber } = req.body;
+      await proxy.addOrgToChannel(org, numPeers, randomNumber);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
       return requtil.invalidRequest(req, res);
     }
   });

@@ -14,6 +14,7 @@ import ChaincodeModal from '../View/ChaincodeModal';
 import { chaincodeListType } from '../types';
 import ChaincodeInitForm from '../Forms/ChaincodeInitForm';
 import ChannelForm from '../Forms/ChannelForm';
+import DockerForm from '../Forms/DockerForm';
 import ChaincodeAlert from '../Alert/ChaincodeAlert';
 
 const styles = theme => ({
@@ -38,12 +39,21 @@ export class Chaincodes extends Component {
       respPopup: false,
       installedChaincode: {},
       payload: {},
-      reqType: {}
+      reqType: {},
+      dockerDialog: false
     };
   }
 
   handleInstallDialogOpen = () => {
     this.setState({ installDialog: true });
+  };
+
+  handleDockerlDialogOpen = () => {
+    this.setState({ dockerDialog: true });
+  };
+
+  handleDockerDialogClose = () => {
+    this.setState({ dockerDialog: false });
   };
 
   handleInstallDialogClose = () => {
@@ -198,6 +208,22 @@ export class Chaincodes extends Component {
             handleDialog={this.handleChannelRequest}
           />
         </Dialog>
+
+        <Button
+          className="button"
+          onClick={() => this.handleDockerlDialogOpen()}
+        >
+          Download artifacts
+        </Button>
+        <Dialog
+          open={this.state.dockerDialog}
+          onClose={this.handleDockerDialogClose}
+          fullWidth={true}
+          maxWidth={'md'}
+        >
+          <DockerForm />
+        </Dialog>
+
         <ReactTable
           data={chaincodeList}
           columns={this.reactTableSetup(classes)}
@@ -212,7 +238,10 @@ export class Chaincodes extends Component {
           fullWidth
           maxWidth="md"
         >
-          <ChaincodeModal chaincode={this.state.chaincode} />
+          <ChaincodeModal
+            chaincode={this.state.chaincode}
+            onClose={this.sourceDialogClose}
+          />
         </Dialog>
         <Dialog
           open={this.state.initDialog}

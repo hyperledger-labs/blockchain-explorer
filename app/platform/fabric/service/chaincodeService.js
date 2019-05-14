@@ -36,37 +36,31 @@ function extractChaincodeZipArchive(fileContent, folderName) {
   zip.extractAllTo(folderName, true);
 }
 
-async function loadChaincodeSrc(path) {
-  if (path.substring(0, 10) === 'github.com') {
-    path = path.slice(10);
+async function loadChaincodeSrc(_path) {
+  if (_path.substring(0, 10) === 'github.com') {
+    _path = _path.slice(10);
   }
+
   try {
-    if (CURRENT_OS === 'darwin') {
-      location = await child_process.execSync(locate_cmd).toString();
-    }
-    {
-      location = await child_process
-        .execSync(locate_cmd + path + regXgo)
-        .toString();
-    }
+    console.log('path', _path);
+    // try to get go chaincodes
+    location = (await fs.readdir(path.join(process.env.GOPATH, 'src', _path)))
+      .filter(ccPath => new RegExp(regXgo).test(ccPath))
+      .map(ccPath => path.join(process.env.GOPATH, 'src', _path, ccPath));
   } catch (error) {
+    location = errors.lnf;
+  }
+
+  if (location === errors.lnf) {
     try {
-      if (CURRENT_OS === 'darwin') {
-        location = await child_process.execSync(locate_cmd).toString();
-      }
-      {
-        location = await child_process
-          .execSync(locate_cmd + path + regXjs)
-          .toString();
-      }
+      location = (await fs.readdir(_path))
+        .filter(ccPath => new RegExp(regXjs).test(ccPath))
+        .map(ccPath => path.join(_path, ccPath));
     } catch (error) {
-      try {
-        location = await child_process.execSync(locate_cmd + path).toString();
-      } catch (error) {
-        location = errors.lnf;
-      }
+      location = errors.lnf;
     }
   }
+
   if (location === errors.lnf) {
     return errors.lnf;
   }
@@ -84,21 +78,11 @@ async function loadChaincodeSrc(path) {
       chaincodePath = chaincodePath[0];
       chaincodePath = chaincodePath.trim();
     }
-
-    let locationDirectory = chaincodePath.split('/');
-    locationDirectory = locationDirectory
-      .slice(0, locationDirectory.length - 1)
-      .join('/');
-    if (locationDirectory) {
-      fs.chmodSync(locationDirectory.trim(), '775');
-    } else {
-      return errors.lnf;
-    }
   } catch (error) {
     return errors.lnf;
   }
   try {
-    ccSource = await child_process.execSync(`cat ${chaincodePath}`);
+    ccSource = await fs.readFile(chaincodePath);
   } catch (error) {
     return errors.erf;
   }
@@ -114,22 +98,27 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const fabricClient = await platform.getClient();
   const client = fabricClient.hfc_client;
   const targets = [peer]; // build the list of peers that will require this chaincode
-  //todo change file name - nameCode + versionCode
-  const chaincodePath = path.join('tmp', `${name}${version}`);
+  // todo change file name - nameCode + versionCode
+  const chaincodePath = path.join('tmp', 'src', `${name}${version}`);
+  logger.debug('path', chaincodePath);
+  console.log('path', chaincodePath);
   try {
+    console.log('extractChaincodeZipArchive');
     extractChaincodeZipArchive(zip, chaincodePath);
   } catch (error) {
+    console.log('unzip failed', error);
     fs.removeSync(chaincodePath);
     return {
       success: false,
       message: 'Failed to extract chaincode from zip archive'
     };
   }
-
+  console.log('request');
   // send proposal to install
+  // TODO: update path based on language
   const request = {
-    targets: targets,
-    chaincodePath: chaincodePath,
+    targets,
+    chaincodePath: type === 'golang' ? `${name}${version}` : chaincodePath,
     metadataPath: chaincodePath, // notice this is the new attribute of the request
     chaincodeId: name,
     chaincodeType: type,
@@ -137,6 +126,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   };
 
   try {
+    console.log('client.installChaincode');
     const results = await client.installChaincode(request);
     const proposalResponses = results[0];
     let allGood = true;
@@ -175,7 +165,7 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     );
     errorMessage = error.toString();
   } finally {
-    //fs.removeSync(chaincodePath);
+    // fs.removeSync(chaincodePath);
   }
 
   if (!errorMessage) {
@@ -208,38 +198,45 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
   } = chaincodeRequest;
   let results;
   try {
-    const chaincodePath = path.join('tmp', `${name}${version}`);
+    const chaincodePath = path.join('tmp', 'src', `${name}${version}`);
 
     const fabricClient = await platform.getClient();
     const client = fabricClient.hfc_client;
-    let channel = client.getChannel(channelName, true);
-    let tx_id = client.newTransactionID(true);
+    const channel = client.getChannel(channelName, true);
+    const tx_id = client.newTransactionID(true);
 
-    let request = {
+    const request = {
       targets: peers,
-      chaincodePath: chaincodePath,
+      chaincodePath,
       metadataPath: chaincodePath,
       chaincodeId: name,
       chaincodeType: 'node',
       chaincodeVersion: version,
-      args: args,
+      args,
       txId: tx_id
     };
 
     if (policy) {
-      request['endorsement-policy'] = JSON.parse(policy.toString());
+      request['endorsement-policy'] =
+        typeof policy === 'string' ? JSON.parse(policy) : policy;
     }
 
-    if ('init' === txtype) {
+    logger.debug(
+      'endorsement-policy',
+      request['endorsement-policy'].identities,
+      request['endorsement-policy'].policy
+    );
+
+    if (txtype === 'init') {
       results = await channel.sendInstantiateProposal(request, 60000);
-    } else if ('upgrade' === txtype) {
+    } else if (txtype === 'upgrade') {
       results = await channel.sendUpgradeProposal(request, 60000);
     }
 
     let flag = true;
-    let proposalResponses = results[0];
-    let proposal = results[1];
-    for (let i in proposalResponses) {
+    const proposalResponses = results[0];
+    const proposal = results[1];
+    for (const i in proposalResponses) {
       if (
         proposalResponses &&
         proposalResponses[i].response &&
@@ -252,15 +249,16 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
     }
 
     if (flag) {
-      let orderer_request = {
+      const orderer_request = {
         txId: tx_id,
-        proposalResponses: proposalResponses,
-        proposal: proposal
+        proposalResponses,
+        proposal
       };
       results = await channel.sendTransaction(orderer_request);
-      results.status === 'SUCCESS'
-        ? (results.message = 'Successfully instantiate chaincode')
-        : (results.message = ' Instantiate chaincode is failed');
+      results.message =
+        results.status === 'SUCCESS'
+          ? 'Successfully instantiate chaincode'
+          : ' Instantiate chaincode is failed';
     } else {
       results = {
         ...results,

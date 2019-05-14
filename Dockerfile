@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:8.12-alpine
+FROM node:8.15.0-alpine
 
 # default values pf environment variables
 # that are used inside container
@@ -17,35 +17,33 @@ ENV DATABASE_PORT 5432
 ENV DATABASE_NAME fabricexplorer
 ENV DATABASE_USERNAME hppoc
 ENV DATABASE_PASSWD password
+ENV NODE_ENV development
 
 ENV STARTUP_SCRIPT /opt
 
 # set default working dir inside container
 WORKDIR $DEFAULT_WORKDIR
 
-# copy external data to container
-COPY . $EXPLORER_APP_PATH
-
 # install required dependencies by NPM packages:
 # current dependencies are: python, make, g++
 
-RUN apk add --no-cache --virtual npm-deps python make g++ && \
+RUN apk add --virtual npm-deps python make g++ go && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \
-	  rm -r /root/.cache
+	rm -r /root/.cache
+
+ENV GOPATH $EXPLORER_APP_PATH/tmp
+
+# copy external data to container
+COPY . $EXPLORER_APP_PATH
 
 # install NPM dependencies
-RUN cd $EXPLORER_APP_PATH && npm install && npm build
-
-# build explorer app
-RUN cd $EXPLORER_APP_PATH && cd client && npm install && yarn build
+RUN cd $EXPLORER_APP_PATH && npm install
+RUN cd $EXPLORER_APP_PATH/client && npm install && npm run build
 
 # remove installed packages to free space
 RUN apk del npm-deps
-
-# expose default ports
-EXPOSE 8080
-
+WORKDIR $EXPLORER_APP_PATH
 # run blockchain explorer main app
-#CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null
+CMD $EXPLORER_APP_PATH/start.sh && tail -f /dev/null

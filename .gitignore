@@ -22,4 +22,7 @@ fabric-docker-compose-svt/channel-artifacts
 fabric-docker-compose-svt/crypto-config
 first-network/channel-artifacts/*
 examples/*
+app/platform/fabric/gateway/wallet/*
 
+*.swp
+package-lock.json

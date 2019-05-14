@@ -31,6 +31,51 @@
     }
   ],
   "paths": {
+    "/orgs/docker": {
+      "get": {
+        "tags": ["Channel"],
+        "summary": "Get docker artifact for new org",
+        "description": "Get docker artifact for new org",
+        "parameters": [
+          {
+            "name": "orderer",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "newOrg",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "numPeers",
+            "in": "query",
+            "required": true,
+            "type": "number"
+          },
+          {
+            "name": "randomNumber",
+            "in": "query",
+            "required": true,
+            "type": "number"
+          }
+        ],
+        "produces": ["application/zip"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/channels": {
       "get": {
         "tags": ["Channel"],

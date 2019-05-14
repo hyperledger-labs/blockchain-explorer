@@ -48,7 +48,13 @@ class SyncPlatform {
     }, 60000);
 
     // loading the config.json
-    const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+    // added ability to start sync process with custom config
+    let all_config;
+    if (args[3]) {
+      all_config = JSON.parse(args[3]);
+    } else {
+      all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+    }
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
     if (args.length == 0) {
@@ -125,6 +131,21 @@ class SyncPlatform {
     } else {
       throw new ExplorerError(explorer_mess.error.ERROR_1009);
     }
+  }
+
+  async reinitialize(config) {
+    this.client_configs = await FabricUtils.setOrgEnrolmentPath(config);
+
+    this.client = await FabricUtils.createFabricClient(
+      this.client_configs,
+      this.client_name
+    );
+
+    // start event
+    this.eventHub = new FabricEvent(this.client, this.syncService);
+    await this.eventHub.initialize();
+
+    await this.syncService.synchNetworkConfigToDB(this.client);
   }
 
   async isChannelEventHubConnected() {

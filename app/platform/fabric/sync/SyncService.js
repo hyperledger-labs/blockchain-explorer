@@ -145,7 +145,7 @@ class SyncServices {
   // insert new peer and channel relation
   async insertNewPeer(peer, channel_genesis_hash, client) {
     let eventurl = '';
-    let requesturl = peer.endpoint;
+    let requesturl = `grpcs://${peer.endpoint}`;
     const host_port = peer.endpoint.split(':');
     if (
       client.client_config.peers &&
@@ -218,6 +218,7 @@ class SyncServices {
       client.getDefaultPeer(),
       true
     );
+    console.log('queryInstantiatedChaincodes', chaincodes.chaincodes);
     for (const chaincode of chaincodes.chaincodes) {
       const chaincode_row = {
         name: chaincode.name,

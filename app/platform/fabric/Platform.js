@@ -4,6 +4,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
+const axios = require('axios');
 
 const Proxy = require('./Proxy');
 const helper = require('../../common/helper');
@@ -20,6 +21,7 @@ const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
+const explorerconfig = require('../../explorerconfig.json');
 
 class Platform {
   constructor(persistence, broadcaster) {
@@ -42,6 +44,32 @@ class Platform {
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
     this.syncType = all_config.syncType;
 
+    const channels = Object.values(network_configs).reduce((acc, val) => {
+      return acc.concat(Object.keys(val.channels));
+    }, []);
+
+    for (let channel of channels) {
+      const rn = channel.replace('channel', '');
+      try {
+        console.log('test channel ', rn);
+        const resp = await axios.get(
+          `http://setup:3000/channel?orderer=blockchain-technology&peerOrgs=governor&randomNumber=${rn}`
+        );
+        console.log('test channel get', resp.data);
+        if (resp.data && !resp.data.success) {
+          console.log('creating channel', rn);
+          await axios.post('http://setup:3000/channel', {
+            orderer: 'blockchain-technology',
+            peerOrgs: 'governor',
+            randomNumber: rn,
+            autojoin: true
+          });
+        }
+      } catch (err) {
+        logger.debug('create channel fail');
+      }
+    }
+
     // build client context
     logger.debug(
       '******* Initialization started for hyperledger fabric platform ******'
@@ -50,13 +78,49 @@ class Platform {
     await this.buildClients(network_configs);
 
     if (
-      this.networks.size == 0
-      && this.networks.get(this.defaultNetwork).size == 0
+      this.networks.size == 0 &&
+      this.networks.get(this.defaultNetwork).size == 0
     ) {
       logger.error(
         '************* There is no client found for Hyperledger fabric platform *************'
       );
       throw new ExplorerError(explorer_error.ERROR_2008);
+    }
+  }
+
+  async reinitialize(newOrgConfig, name) {
+    const config = FabricUtils.setOrgEnrolmentPath(
+      JSON.parse(JSON.stringify(newOrgConfig))
+    );
+    const client = await FabricUtils.createFabricClient(
+      config,
+      name,
+      this.persistence
+    );
+
+    const clients = this.networks.get(this.defaultNetwork);
+    clients.set(name, client);
+
+    this.defaultClient = name;
+    let explorerListener = this.explorerListeners.find(
+      listener => listener.client_name === name
+    );
+    if (!explorerListener) {
+      explorerListener = new ExplorerListener(this, explorerconfig.sync);
+      explorerListener.initialize([
+        this.defaultNetwork,
+        name,
+        '1',
+        JSON.stringify({
+          'network-configs': {
+            [this.defaultNetwork]: newOrgConfig
+          }
+        })
+      ]);
+      this.explorerListeners.push({
+        client_name: name,
+        explorerListener
+      });
     }
   }
 
@@ -124,7 +188,10 @@ class Platform {
           const explorerListener = new ExplorerListener(this, syncconfig);
           explorerListener.initialize([network_name, client_name, '1']);
           explorerListener.send('Successfully send a message to child process');
-          this.explorerListeners.push(explorerListener);
+          this.explorerListeners.push({
+            client_name,
+            explorerListener
+          });
         }
       }
     }
@@ -198,7 +265,7 @@ class Platform {
       '<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'
     );
     for (const explorerListener of this.explorerListeners) {
-      explorerListener.close();
+      explorerListener.explorerListener.close();
     }
   }
 }
