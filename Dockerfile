@@ -40,7 +40,7 @@ COPY . $EXPLORER_APP_PATH
 
 # install NPM dependencies
 RUN cd $EXPLORER_APP_PATH && npm install
-RUN cd $EXPLORER_APP_PATH/client && npm install && npm build
+RUN cd $EXPLORER_APP_PATH/client && npm install && npm run build
 
 # remove installed packages to free space
 RUN apk del npm-deps

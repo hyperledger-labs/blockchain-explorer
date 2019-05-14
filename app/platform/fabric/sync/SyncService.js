@@ -218,6 +218,7 @@ class SyncServices {
       client.getDefaultPeer(),
       true
     );
+    console.log('queryInstantiatedChaincodes', chaincodes.chaincodes);
     for (const chaincode of chaincodes.chaincodes) {
       const chaincode_row = {
         name: chaincode.name,

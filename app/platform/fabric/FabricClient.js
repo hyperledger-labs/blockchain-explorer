@@ -401,11 +401,7 @@ class FabricClient {
 
     // get genesis block for the channel
     const block = await this.getGenesisBlock(channel);
-    logger.debug(
-      'Genesis Block for client [%s] >> %j',
-      this.client_name,
-      block
-    );
+    logger.debug('Genesis Block for client [%s] >> %j', this.client_name);
     const channel_genesis_hash = await FabricUtils.generateBlockHash(
       block.header
     );
@@ -426,10 +422,6 @@ class FabricClient {
       channel = this.getChannel(channel_name);
     }
     const discover_results = await this.getChannelDiscover(channel);
-    console.log(
-      'Discover results for client [%j] >> %j',
-      discover_results.msps
-    );
     // creating users for admin peers
     if (discover_results) {
       if (discover_results.msps) {
