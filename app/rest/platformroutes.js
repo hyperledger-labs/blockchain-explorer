@@ -112,7 +112,7 @@ const platformroutes = async function(app, platform) {
       await proxy.createChannel(randomNumber, autojoin);
       return res.sendStatus(200);
     } catch (err) {
-      logger.error(err);
+      console.error(err);
       const channelError = {
         success: false,
         message: 'Invalid request, payload'
@@ -292,11 +292,17 @@ const platformroutes = async function(app, platform) {
    curl -i 'http://<host>:<port>/api/orgs/docker'
    */
   app.get('/api/orgs/docker', (req, res) => {
-    const { newOrg, numPeers, randomNumber } = req.query;
+    const { newOrg, numPeers, randomNumber, startPeer = 1 } = req.query;
+    let { services = ['peers', 'ica', 'rca'] } = req.query;
+    if (!Array.isArray(services)) {
+      services = [services];
+    }
     const archive = proxy.generateDockerArtifacts(
       {
         newOrg,
-        numPeers
+        numPeers: Number(numPeers),
+        startPeer: Number(startPeer),
+        services
       },
       randomNumber
     );
@@ -328,6 +334,22 @@ const platformroutes = async function(app, platform) {
     try {
       const { org, numPeers, randomNumber } = req.body;
       await proxy.addOrgToChannel(org, numPeers, randomNumber);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      return requtil.invalidRequest(req, res);
+    }
+  });
+
+  /** *
+   Add new org to consortium
+   POST /api/orgs/addToConsortium
+   curl -i 'http://<host>:<port>/api/orgs/addToConsortium'
+   */
+  app.post('/api/orgs/addToConsortium', async (req, res) => {
+    try {
+      const { org, numPeers, randomNumber } = req.body;
+      await proxy.addOrgToConsortium(org, numPeers, randomNumber);
       res.sendStatus(200);
     } catch (err) {
       console.log(err);

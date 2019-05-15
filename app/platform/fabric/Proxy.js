@@ -1,11 +1,12 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
-const axios = require('axios');
-const FabricCAClient = require('fabric-ca-client');
-const CryptoSuite = require('fabric-client/lib/impl/CryptoSuite_ECDSA_AES');
-
 const chaincodeService = require('./service/chaincodeService.js');
+const {
+  createChannel,
+  addOrgToChannel,
+  addOrgToConsortium
+} = require('./service/cliWrapperService');
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('Proxy');
@@ -164,7 +165,7 @@ class Proxy {
       .getOrdererOrg()
       .replace('MSP', '');
     console.log('orderer', orderer, currentOrg);
-    await axios.post('http://wrapper:3000/create-channel', {
+    await createChannel({
       peerOrgs: currentOrg,
       orderer,
       randomNumber: id
@@ -307,7 +308,10 @@ class Proxy {
       logsDir: './../logs',
       networkName: this.platform.defaultNetwork
     };
-    const orderer = this.platform.getClient().getOrdererOrg();
+    const orderer = this.platform
+      .getClient()
+      .getOrdererOrg()
+      .replace('MSP', '');
     return dockerUtils.generteDockerfiles(
       {
         ...orgOptions,
@@ -320,14 +324,31 @@ class Proxy {
 
   addOrgToChannel(org, numPeers, randomNumber) {
     const currentOrg = this.platform.defaultClient;
-    const orderer = this.platform.getClient().getOrdererOrg();
+    const orderer = this.platform
+      .getClient()
+      .getOrdererOrg()
+      .replace('MSP', '');
     // move wrapper address to network config
-    return axios.post('http://wrapper:3000/add-org', {
+    return addOrgToChannel({
       newOrg: org,
       peersQuantity: numPeers,
       peerOrgs: currentOrg,
       orderer,
       number: randomNumber
+    });
+  }
+
+  addOrgToConsortium(org, numPeers) {
+    const currentOrg = this.platform.defaultClient;
+    const orderer = this.platform
+      .getClient()
+      .getOrdererOrg()
+      .replace('MSP', '');
+
+    return addOrgToConsortium({
+      peers: numPeers,
+      org: currentOrg,
+      orderer
     });
   }
 
@@ -365,7 +386,7 @@ const generateConfig = (org, channel, orderer) => ({
   channels: {
     [channel]: {
       peers: {
-        [`peer1-${org}`]: {}
+        [`peer1.${org}.com`]: {}
       },
       connection: {
         timeout: {
@@ -408,11 +429,11 @@ const generateConfig = (org, channel, orderer) => ({
     }
   },
   peers: {
-    [`peer1-${org}`]: {
-      url: `grpcs://peer1-${org}:7051`,
-      eventUrl: `grpcs://peer1-${org}:7053`,
+    [`peer1.${org}.com`]: {
+      url: `grpcs://peer1.${org}.com:7051`,
+      eventUrl: `grpcs://peer1.${org}.com:7053`,
       grpcOptions: {
-        'ssl-target-name-override': `peer1-${org}`
+        'ssl-target-name-override': `peer1.${org}.com`
       },
       tlsCACerts: {
         path: `/private/${org}-ca-chain.pem`

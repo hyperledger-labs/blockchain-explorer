@@ -21,7 +21,7 @@ RUN if [ "\\$FABRIC_CA_DYNAMIC_LINK" = "true" ]; then apt-get install -y libltdl
 const getRootCA = (orgOptions, networkOptions) => {
   const { orderer, newOrg, numPeers, randomNumber } = orgOptions;
   const { commonDir, scriptsDir, logsDir, networkName } = networkOptions;
-  const rcaName = `rca-${newOrg}`;
+  const rcaName = `rca.${newOrg}.com`;
 
   return {
     [rcaName]: {
@@ -37,7 +37,7 @@ const getRootCA = (orgOptions, networkOptions) => {
         `FABRIC_CA_SERVER_CSR_CN=${rcaName}`,
         `FABRIC_CA_SERVER_CSR_HOSTS=${rcaName}`,
         'FABRIC_CA_SERVER_DEBUG=false',
-        `BOOTSTRAP_USER_PASS=${rcaName}-admin:${rcaName}-adminpw`,
+        `BOOTSTRAP_USER_PASS=rca-${newOrg}-admin:rca-${newOrg}-adminpw`,
         `TARGET_CERTFILE=/${commonDir}/${newOrg}-ca-cert.pem`,
         `FABRIC_ORGS=${orderer} ${newOrg}`,
         `RANDOM_NUMBER=${randomNumber}`
@@ -55,8 +55,8 @@ const getRootCA = (orgOptions, networkOptions) => {
 const getIntCA = (orgOptions, networkOptions) => {
   const { orderer, newOrg, numPeers, randomNumber } = orgOptions;
   const { commonDir, scriptsDir, logsDir, networkName } = networkOptions;
-  const rcaName = `rca-${newOrg}`;
-  const icaName = `ica-${newOrg}`;
+  const rcaName = `rca.${newOrg}.com`;
+  const icaName = `ica.${newOrg}.com`;
 
   return {
     [icaName]: {
@@ -73,8 +73,8 @@ const getIntCA = (orgOptions, networkOptions) => {
         'FABRIC_CA_SERVER_TLS_ENABLED=true',
         `FABRIC_CA_SERVER_CSR_HOSTS=${icaName}`,
         'FABRIC_CA_SERVER_DEBUG=false',
-        `BOOTSTRAP_USER_PASS=${icaName}-admin:${icaName}-adminpw`,
-        `PARENT_URL=https://${rcaName}-admin:${rcaName}-adminpw@rca-${newOrg}:7054`,
+        `BOOTSTRAP_USER_PASS=ica-${newOrg}-admin:ica-${newOrg}-adminpw`,
+        `PARENT_URL=https://rca-${newOrg}-admin:rca-${newOrg}-adminpw@${rcaName}:7054`,
         `TARGET_CHAINFILE=/${commonDir}/${newOrg}-ca-chain.pem`,
         `ORGANIZATION=${newOrg}`,
         `FABRIC_ORGS=${orderer} ${newOrg}`,
@@ -92,15 +92,15 @@ const getIntCA = (orgOptions, networkOptions) => {
 };
 
 const getPeers = (orgOptions, networkOptions) => {
-  const { orderer, newOrg, numPeers, randomNumber } = orgOptions;
+  const { orderer, newOrg, numPeers, randomNumber, startPeer } = orgOptions;
   const { commonDir, scriptsDir, logsDir, networkName } = networkOptions;
   const peerHome = '/opt/gopath/src/github.com/hyperledger/fabric/peer';
   const caChainFile = `/${commonDir}/${newOrg}-ca-chain.pem`;
-  const caHost = `ica-${newOrg}`;
+  const caHost = `ica.${newOrg}.com`;
 
   const peers = {};
-  for (let i = 1; i <= numPeers; i++) {
-    const peerName = `peer${i}-${newOrg}`;
+  for (let i = startPeer; i < startPeer + numPeers; i++) {
+    const peerName = `peer${i}.${newOrg}.com`;
     peers[peerName] = {
       container_name: peerName,
       build: {
@@ -142,7 +142,7 @@ const getPeers = (orgOptions, networkOptions) => {
         `ORG_ADMIN_CERT=/${commonDir}/orgs/${newOrg}/msp/admincerts/cert.pem`,
         `RANDOM_NUMBER=${randomNumber}`
       ].concat(
-        i > 1 ? [`CORE_PEER_GOSSIP_BOOTSTRAP=peer1-${newOrg}:7051`] : []
+        i > 1 ? [`CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${newOrg}.com:7051`] : []
       ),
       volumes: [
         `${scriptsDir}:/scripts`,
@@ -157,6 +157,12 @@ const getPeers = (orgOptions, networkOptions) => {
   return peers;
 };
 
+const services = {
+  peers: getPeers,
+  rca: getRootCA,
+  ica: getIntCA
+};
+
 const generateDockerCompose = (orgOptions, networkOptions) => ({
   version: '3.4',
   networks: {
@@ -169,11 +175,12 @@ const generateDockerCompose = (orgOptions, networkOptions) => ({
   volumes: {
     private: null
   },
-  services: {
-    ...getRootCA(orgOptions, networkOptions),
-    ...getIntCA(orgOptions, networkOptions),
-    ...getPeers(orgOptions, networkOptions)
-  }
+  services: orgOptions.services.reduce((acc, service) => {
+    return {
+      ...acc,
+      ...services[service](orgOptions, networkOptions)
+    };
+  }, {})
 });
 
 const generteDockerfiles = (orgOptions, networkOptions) => {
