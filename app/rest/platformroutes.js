@@ -317,10 +317,11 @@ const platformroutes = async function(app, platform) {
    */
   app.post('/api/orgs/switch', async (req, res) => {
     try {
-      const { org } = req.body;
-      await proxy.switchOrg(org);
+      const { org, peers = 1 } = req.body;
+      await proxy.switchOrg(org, Number(peers));
       res.sendStatus(200);
     } catch (err) {
+      console.error(err);
       return requtil.invalidRequest(req, res);
     }
   });

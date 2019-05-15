@@ -9,8 +9,7 @@
     "object-curly-newline": [
       "error",
       {
-        "ObjectExpression": "always",
-        "ObjectPattern": "never"
+        "minProperties": 2
       }
     ]
   }

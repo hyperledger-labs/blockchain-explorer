@@ -23,6 +23,7 @@ services:
       - ./app:/opt/explorer/app
       - ../hyperledger/docker/config.json:/opt/explorer/app/platform/fabric/config.json
       - ./logs:/opt/explorer/logs
+      - ./start.sh:/opt/explorer/start.sh
     ports:
       - 8080:8080
     networks:

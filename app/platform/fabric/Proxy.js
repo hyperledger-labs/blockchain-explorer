@@ -352,7 +352,7 @@ class Proxy {
     });
   }
 
-  async switchOrg(orgName) {
+  async switchOrg(orgName, peers) {
     const channel = this.platform.getClient().getChannel();
     const orderer = this.platform
       .getClient()
@@ -363,12 +363,12 @@ class Proxy {
       throw new Error('No such org');
     }
     const channelName = channel.getName();
-    const config = generateConfig(orgName, channelName, orderer);
+    const config = generateConfig(orgName, channelName, orderer, peers);
     this.platform.reinitialize(config, orgName);
   }
 }
 
-const generateConfig = (org, channel, orderer) => ({
+const generateConfig = (org, channel, orderer, peers) => ({
   version: '1.0',
   clients: {
     [org]: {
@@ -428,18 +428,22 @@ const generateConfig = (org, channel, orderer) => ({
       }
     }
   },
-  peers: {
-    [`peer1.${org}.com`]: {
-      url: `grpcs://peer1.${org}.com:7051`,
-      eventUrl: `grpcs://peer1.${org}.com:7053`,
-      grpcOptions: {
-        'ssl-target-name-override': `peer1.${org}.com`
-      },
-      tlsCACerts: {
-        path: `/private/${org}-ca-chain.pem`
+  peers: new Array(peers).fill(0).reduce((acc, val, key) => {
+    const peerName = `peer${key + 1}.${org}.com`;
+    return {
+      ...acc,
+      [peerName]: {
+        url: `grpcs://${peerName}:7051`,
+        eventUrl: `grpcs://${peerName}:7053`,
+        grpcOptions: {
+          'ssl-target-name-override': peerName
+        },
+        tlsCACerts: {
+          path: `/private/${org}-ca-chain.pem`
+        }
       }
-    }
-  }
+    };
+  }, {})
 });
 
 module.exports = Proxy;
