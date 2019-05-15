@@ -16,6 +16,8 @@ const ExplorerListener = require('../../sync/listener/ExplorerListener');
 const CRUDService = require('../../persistence/fabric/CRUDService');
 const MetricService = require('../../persistence/fabric/MetricService');
 
+const { createChannel, getChannel } = require('./service/cliWrapperService');
+
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
@@ -42,6 +44,40 @@ class Platform {
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
     this.syncType = all_config.syncType;
+
+    const channels = Object.values(network_configs).reduce((acc, val) => {
+      return acc.concat(Object.keys(val.channels));
+    }, []);
+
+    for (let channel of channels) {
+      const rn = channel.replace('channel', '');
+      try {
+        const peerOrgs = Object.keys(
+          Object.values(network_configs)[0].clients
+        )[0];
+        const orderer = Object.values(
+          Object.values(network_configs)[0].orderers
+        )[0].organization;
+        console.log('test channel ', rn, peerOrgs, orderer);
+        const resp = await getChannel({
+          peerOrgs,
+          orderer,
+          randomNumber: rn
+        });
+        console.log('test channel get', resp.data);
+        if (resp.data && !resp.data.success) {
+          console.log('creating channel', rn);
+          await createChannel({
+            orderer,
+            peerOrgs,
+            randomNumber: rn,
+            autojoin: true
+          });
+        }
+      } catch (err) {
+        logger.debug('create channel fail');
+      }
+    }
 
     // build client context
     logger.debug(
@@ -242,4 +278,5 @@ class Platform {
     }
   }
 }
+
 module.exports = Platform;

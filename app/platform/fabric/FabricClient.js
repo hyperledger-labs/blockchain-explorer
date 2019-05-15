@@ -401,11 +401,7 @@ class FabricClient {
 
     // get genesis block for the channel
     const block = await this.getGenesisBlock(channel);
-    logger.debug(
-      'Genesis Block for client [%s] >> %j',
-      this.client_name,
-      block
-    );
+    logger.debug('Genesis Block for client [%s] >> %j', this.client_name);
     const channel_genesis_hash = await FabricUtils.generateBlockHash(
       block.header
     );
@@ -426,10 +422,6 @@ class FabricClient {
       channel = this.getChannel(channel_name);
     }
     const discover_results = await this.getChannelDiscover(channel);
-    console.log(
-      'Discover results for client [%j] >> %j',
-      discover_results.msps
-    );
     // creating users for admin peers
     if (discover_results) {
       if (discover_results.msps) {
@@ -477,7 +469,7 @@ class FabricClient {
               this.client_config.orderers[requesturl].url
             ) {
               requesturl = this.client_config.orderers[requesturl].url;
-              this.newOrderer(
+              this.defaultOrderer = this.newOrderer(
                 channel,
                 requesturl,
                 msp_id,
@@ -717,10 +709,8 @@ class FabricClient {
         });
     }
     const signedCertPEM = opts.cryptoContent.signedCertPEM;
-    logger.debug('then signedCertPEM data');
     user.setCryptoSuite(this.hfc_client.getCryptoSuite());
     await user.setEnrollment(importedKey, signedCertPEM.toString(), opts.mspid);
-    logger.debug('then user');
     return user;
   }
 

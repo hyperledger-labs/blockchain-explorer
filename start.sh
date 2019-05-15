@@ -9,7 +9,7 @@
 # Log rotating for every 7 days.
 
 rm -rf /tmp/fabric-client-kvs_peerOrg*
-rm -rf ./logs/*
+rm -rf ./logs/app & rm -rf ./logs/db & rm -rf ./logs/console
 mkdir -p ./logs/app & mkdir -p ./logs/db & mkdir -p ./logs/console
 
 LOG_CONSOLE_PATH="logs/console/console-$(date +%Y-%m-%d).log"
@@ -22,6 +22,6 @@ echo "**************************************************************************
 
 find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
 
-# node --inspect-brk=0.0.0.0 main.js --watch >> $LOG_CONSOLE_PATH
+node main.js --watch >> $LOG_CONSOLE_PATH
 
-./node_modules/.bin/nodemon main.js --ignore ./tmp/ >> $LOG_CONSOLE_PATH
+# ./node_modules/.bin/nodemon main.js --ignore ./tmp/ >> $LOG_CONSOLE_PATH

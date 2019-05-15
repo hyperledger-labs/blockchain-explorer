@@ -24,13 +24,10 @@ ENV STARTUP_SCRIPT /opt
 # set default working dir inside container
 WORKDIR $DEFAULT_WORKDIR
 
-# copy external data to container
-COPY . $EXPLORER_APP_PATH
-
 # install required dependencies by NPM packages:
 # current dependencies are: python, make, g++
 
-RUN apk add --no-cache --virtual npm-deps python make g++ go && \
+RUN apk add --virtual npm-deps python make g++ go && \
     python -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip install --upgrade pip setuptools && \
@@ -38,11 +35,15 @@ RUN apk add --no-cache --virtual npm-deps python make g++ go && \
 
 ENV GOPATH $EXPLORER_APP_PATH/tmp
 
+# copy external data to container
+COPY . $EXPLORER_APP_PATH
+
 # install NPM dependencies
 RUN cd $EXPLORER_APP_PATH && npm install
+RUN cd $EXPLORER_APP_PATH/client && npm install && npm run build
 
 # remove installed packages to free space
 RUN apk del npm-deps
-
+WORKDIR $EXPLORER_APP_PATH
 # run blockchain explorer main app
-CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null
+CMD $EXPLORER_APP_PATH/start.sh && tail -f /dev/null
