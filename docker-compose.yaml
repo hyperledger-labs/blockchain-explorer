@@ -18,6 +18,7 @@ services:
       - DATABASE_PASSWORD=password
       - GOPATH=/opt/explorer/tmp
       - DISCOVERY_AS_LOCALHOST=false
+      - LOG_LEVEL=ERROR
     volumes:
       - /var/lib/docker/volumes/net_private/_data:/private
       - ./app:/opt/explorer/app
@@ -26,5 +27,6 @@ services:
       - ./start.sh:/opt/explorer/start.sh
     ports:
       - 8080:8080
+      - 9229:9229
     networks:
       - fabric-ca

@@ -27,7 +27,7 @@ exports.readAllFiles = readAllFiles;
 function readAllFiles(dir) {
   const files = fs.readdirSync(dir);
   const certs = [];
-  files.forEach((file_name) => {
+  files.forEach(file_name => {
     const file_path = path.join(dir, file_name);
     const data = fs.readFileSync(file_path);
     certs.push(data);
@@ -48,7 +48,7 @@ logger.setLevel('INFO');
 
 */
 
-var getLogger = function (moduleName) {
+var getLogger = function(moduleName) {
   if (moduleName == 'pgservice') {
     var logger = log4js.getLogger('pgservice');
   } else {
@@ -79,7 +79,7 @@ var getLogger = function (moduleName) {
       }
     ]
   });
-  logger.setLevel('DEBUG');
+  logger.setLevel(process.env.LOG_LEVEL || 'DEBUG');
   return logger;
 };
 
