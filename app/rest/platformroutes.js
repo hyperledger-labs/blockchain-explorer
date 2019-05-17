@@ -349,8 +349,8 @@ const platformroutes = async function(app, platform) {
    */
   app.post('/api/orgs/addToConsortium', async (req, res) => {
     try {
-      const { org, numPeers, randomNumber } = req.body;
-      await proxy.addOrgToConsortium(org, numPeers, randomNumber);
+      const { org, peers } = req.body;
+      await proxy.addOrgToConsortium(org, peers);
       res.sendStatus(200);
     } catch (err) {
       console.log(err);

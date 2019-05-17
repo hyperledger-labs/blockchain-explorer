@@ -7,11 +7,11 @@ async function createChannel(params) {
 }
 
 async function addOrgToChannel(params) {
-  return axios.post(`${setupServerURL}/add-org`, params);
+  return axios.put(`${setupServerURL}/channel`, params);
 }
 
 async function addOrgToConsortium(params) {
-  return axios.post(`${setupServerURL}/add-org-to-consortium`, params);
+  return axios.put(`${setupServerURL}/consortium`, params);
 }
 
 async function getChannel(params) {

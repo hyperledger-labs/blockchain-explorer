@@ -168,7 +168,8 @@ class Proxy {
     await createChannel({
       peerOrgs: currentOrg,
       orderer,
-      randomNumber: id
+      randomNumber: id,
+      autojoin: !!autojoin
     });
     console.log('initializeNewChannel', channelName);
     const channel = client.hfc_client.newChannel(channelName);
@@ -331,15 +332,14 @@ class Proxy {
     // move wrapper address to network config
     return addOrgToChannel({
       newOrg: org,
-      peersQuantity: numPeers,
+      peers: numPeers,
       peerOrgs: currentOrg,
       orderer,
-      number: randomNumber
+      randomNumber
     });
   }
 
   addOrgToConsortium(org, numPeers) {
-    const currentOrg = this.platform.defaultClient;
     const orderer = this.platform
       .getClient()
       .getOrdererOrg()
@@ -347,7 +347,7 @@ class Proxy {
 
     return addOrgToConsortium({
       peers: numPeers,
-      org: currentOrg,
+      org,
       orderer
     });
   }

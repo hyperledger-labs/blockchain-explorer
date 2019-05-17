@@ -45,9 +45,8 @@ class pgservice {
   }
 
   async handleDisconnect() {
-    const port = this.pgconfig.port ? this.pgconfig.port : '5432';
     try {
-      this.client.on('error', (err) => {
+      this.client.on('error', err => {
         console.log('db error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
           handleDisconnect();
@@ -84,7 +83,7 @@ class pgservice {
       const updatesqlcolumn = [];
       const updatesqlflag = [];
       let i = 1;
-      Object.keys(columnValues).forEach((k) => {
+      Object.keys(columnValues).forEach(k => {
         const v = columnValues[k];
         addSqlParams.push(v);
         updatesqlcolumn.push(JSON.stringify(k));
@@ -138,7 +137,7 @@ class pgservice {
 
       const updateparm = ' set 1=1 ';
 
-      Object.keys(columnAndValue).forEach((k) => {
+      Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
 
         addSqlParams.push(v);
@@ -149,7 +148,7 @@ class pgservice {
       let updatewhereparm = ' (1=1)  ';
       const searchparm = { pkName: pkValue };
 
-      Object.keys(searchparm).forEach((k) => {
+      Object.keys(searchparm).forEach(k => {
         const v = searchparm[k];
 
         addSqlParams.push(v);
@@ -203,7 +202,7 @@ class pgservice {
 
       const updateparm = ' set 1=1 ';
 
-      Object.keys(columnAndValue).forEach((k) => {
+      Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
 
         addSqlParams.push(v);
@@ -213,7 +212,7 @@ class pgservice {
 
       let updatewhereparm = ' (1=1)  ';
 
-      Object.keys(condition).forEach((k) => {
+      Object.keys(condition).forEach(k => {
         const v = condition[k];
 
         addSqlParams.push(v);
@@ -351,7 +350,7 @@ class pgservice {
       const searchparm = { pkName: pkValue };
       const addSqlParams = [];
 
-      Object.keys(condtion).forEach((k) => {
+      Object.keys(condtion).forEach(k => {
         const v = condtion[k];
 
         addSqlParams.push(v);
@@ -389,7 +388,7 @@ class pgservice {
       let updatewhereparm = ' (1=1)  ';
       const addSqlParams = [];
 
-      Object.keys(condition).forEach((k) => {
+      Object.keys(condition).forEach(k => {
         const v = condition[k];
 
         addSqlParams.push(v);
