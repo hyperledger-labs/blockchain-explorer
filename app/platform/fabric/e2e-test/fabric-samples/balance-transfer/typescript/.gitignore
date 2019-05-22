@@ -1,0 +1,7 @@
+#
+#    SPDX-License-Identifier: Apache-2.0
+#
+node_modules
+package-lock.json
+dist
+types/fabric-client

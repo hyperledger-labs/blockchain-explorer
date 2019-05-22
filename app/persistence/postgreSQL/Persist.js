@@ -1,38 +1,75 @@
 /**
- *    SPDX-License-Identifier: Apache-2.0
+ * SPDX-License-Identifier: Apache-2.0
  */
-const pgservice = require('./pgservice');
+const PgService = require('./PgService');
 
+/**
+ *
+ *
+ * @class Persist
+ */
 class Persist {
-  constructor(pgconfig) {
-    this.pgservice = new pgservice(pgconfig);
-    this.metricservice;
-    this.crudService;
-  }
+	constructor(pgconfig) {
+		this.pgservice = new PgService(pgconfig);
+		this.metricservice = null;
+		this.crudService = null;
+	}
 
-  setMetricService(metricservice) {
-    this.metricservice = metricservice;
-  }
+	/**
+	 *
+	 *
+	 * @param {*} metricservice
+	 * @memberof Persist
+	 */
+	setMetricService(metricservice) {
+		this.metricservice = metricservice;
+	}
 
-  setCrudService(crudService) {
-    this.crudService = crudService;
-  }
+	/**
+	 *
+	 *
+	 * @param {*} crudService
+	 * @memberof Persist
+	 */
+	setCrudService(crudService) {
+		this.crudService = crudService;
+	}
 
-  getMetricService() {
-    return this.metricservice;
-  }
+	/**
+	 *
+	 */
+	getMetricService() {
+		return this.metricservice;
+	}
 
-  getCrudService() {
-    return this.crudService;
-  }
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Persist
+	 */
+	getCrudService() {
+		return this.crudService;
+	}
 
-  getPGService() {
-    return this.pgservice;
-  }
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Persist
+	 */
+	getPGService() {
+		return this.pgservice;
+	}
 
-  closeconnection() {
-    this.pgservice.closeconnection();
-  }
+	/**
+	 *
+	 *
+	 * @memberof Persist
+	 */
+	closeconnection() {
+		this.pgservice.closeconnection();
+	}
 }
 
 module.exports = Persist;

@@ -1,2 +1,6 @@
+
+#SPDX-License-Identifier: Apache-2.0
 node_modules
 client/node_modules
+app/platform/fabric/e2e-test
+wallet/

@@ -1,0 +1,222 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+    behave:
+
+services:
+
+    ca.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.example.com
+            - FABRIC_CA_SERVER_CA_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_EXAMPLE_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem --tls.certfile /var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    ca.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.org1.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.org1.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.org1.example.com
+            - FABRIC_CA_SERVER_TLS_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_ORG1_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --tls.certfile  /var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    ca.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.org2.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.org2.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.org2.example.com
+            - FABRIC_CA_SERVER_CA_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_ORG2_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --tls.certfile /var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    orderer0.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: orderer
+        container_name: orderer0.example.com
+        environment:
+            - ORDERER_GENERAL_GENESISPROFILE=SampleSingleMSPSolo
+            - ORDERER_HOST=orderer0.example.com
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer0.example.com/tls:/var/hyperledger/tls
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 7050:7050
+
+    peer0.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer0.org1.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7052
+            - CORE_PEER_ID=peer0.org1.example.com
+            - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:7051
+            # Set this peer as an anchor peer in configtx.yaml
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG1}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG1}
+            - CORE_PEER_LOCALMSPID=org1.example.com
+            - FABRIC_CA_CLIENT_TLS_CERTFILES=/var/hyperledger/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 7051:7051
+          - 7053:7053
+
+    peer0.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer0.org2.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
+            - CORE_PEER_ID=peer0.org2.example.com
+            - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051
+            # Set this peer as an anchor peer in configtx.yaml
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2}
+            - CORE_PEER_LOCALMSPID=org2.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - peer0.org1.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 9051:7051
+          - 9053:7053
+
+    peer1.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer1.org1.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.example.com:7052
+            - CORE_PEER_ID=peer1.org1.example.com
+            - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG1}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG1}
+            - CORE_PEER_LOCALMSPID=org1.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - peer0.org1.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 8051:7051
+          - 8053:7053
+
+    peer1.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer1.org2.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:7052
+            - CORE_PEER_ID=peer1.org2.example.com
+            - CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG2}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG2}
+            - CORE_PEER_LOCALMSPID=org2.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - peer0.org2.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 10051:7051
+          - 10053:7053

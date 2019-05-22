@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 #Fabric Cluster started using Hyperledger Cello and configure to Explorer
 
 ##Master Node (  172.24.200.218)

@@ -1,0 +1,68 @@
+{
+	"name": "balance-transfer-network",
+	"version": "1.0.0",
+	"license": "Apache-2.0",
+	"client": {
+		"tlsEnable": true,
+		"adminUser": "admin",
+		"adminPassword": "adminpw",
+		"enableAuthentication": true,
+		"organization": "Org1",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"mychannel": {
+			"orderers": ["orderer.example.com"],
+			"peers": {
+				"peer0.org1.example.com": {
+					"ledgerQuery": true
+				}
+			}
+		}
+	},
+	"organizations": {
+		"Org1": {
+			"mspid": "Org1MSP",
+			"peers": ["peer0.org1.example.com", "peer1.org1.example.com"],
+			"certificateAuthorities": ["ca-org1"],
+			"adminPrivateKey": {
+				"path": "/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/5890f0061619c06fb29dea8cb304edecc020fe63f41a6db109f1e227cc1cb2a8_sk"
+			},
+			"signedCert": {
+				"path": "/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+			}
+		}
+	},
+
+	"peers": {
+		"peer0.org1.example.com": {
+			"url": "grpcs://localhost:7051",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0.org1.example.com"
+			},
+			"tlsCACerts": {
+				"path": "/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
+			}
+		}
+	},
+	"certificateAuthorities": {
+		"ca-org1": {
+			"url": "https://localhost:7054",
+			"httpOptions": {
+				"verify": false
+			},
+			"tlsCACerts": {
+				"path": "/fabric-path/fabric-samples/balance-transfer/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+			},
+
+			"caName": "ca-org1"
+		}
+	}
+}

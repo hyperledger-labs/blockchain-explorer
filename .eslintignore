@@ -1,1 +1,17 @@
+#SPDX-License-Identifier: Apache-2.0
 **/node_modules/**
+**/client/build/**
+**/client/coverage/**
+**/client/src/services/__mocks__/**
+**/app/test//node_modules/**
+**/app/persistence/fabric/postgreSQL/db/**
+**/app/test/**
+**/app/platform/fabric/e2e-test/**
+*.css
+**/client/src/components/View/*.spec.js
+**/client/src/components/Panels/*.spec.js
+**/client/src/components/*.spec.js
+**/client/src/components/Lists/*.spec.js
+**/client/src/components/Header/*.spec.js
+**/client/src/components/App/*.spec.js
+

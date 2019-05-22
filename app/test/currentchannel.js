@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 const expect = require('chai').expect;
 const assert = require('assert');
 const chai = require('chai');
@@ -16,27 +17,27 @@ const base = 'http://localhost:1337';
 const currentchannel = require('./fixtures/currentchannel.json');
 
 describe('GET /api/curChannel', () => {
-  before(() => {
-    this.get = sinon.stub(request, 'get');
-    this.post = sinon.stub(request, 'post');
-    this.put = sinon.stub(request, 'put');
-    this.delete = sinon.stub(request, 'delete');
-  });
+	before(() => {
+		this.get = sinon.stub(request, 'get');
+		this.post = sinon.stub(request, 'post');
+		this.put = sinon.stub(request, 'put');
+		this.delete = sinon.stub(request, 'delete');
+	});
 
-  after(() => {
-    request.get.restore();
-    request.post.restore();
-    request.put.restore();
-    request.delete.restore();
-  });
-  it('should return currentchannel ', (done) => {
-    const obj = currentchannel;
-    this.get.yields(null, JSON.stringify(obj));
-    request.get(`${base}` + '/api/curChannel/', (err, body) => {
-      body = JSON.parse(body);
-      body.should.include.keys('currentChannel');
-      body.currentChannel.should.eql('mychannel');
-      done();
-    });
-  });
+	after(() => {
+		request.get.restore();
+		request.post.restore();
+		request.put.restore();
+		request.delete.restore();
+	});
+	it('should return currentchannel ', done => {
+		const obj = currentchannel;
+		this.get.yields(null, JSON.stringify(obj));
+		request.get(`${base}` + '/api/curChannel/', (err, body) => {
+			body = JSON.parse(body);
+			body.should.include.keys('currentChannel');
+			body.currentChannel.should.eql('mychannel');
+			done();
+		});
+	});
 });

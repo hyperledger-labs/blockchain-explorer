@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 # Hyperledger Explorer configuration for Docker
 
 This folder contains the configuration settings of **Hyperledger Explorer**.

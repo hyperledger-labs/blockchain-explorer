@@ -1,13 +1,17 @@
+
+# SPDX-License-Identifier: Apache-2.0
 version: '2.1'
 
 volumes:
   pgdata:
-  credentialstore:
+  walletstore:
+  grafana-storage:
+  prometheus-storage:
 
 networks:
   mynetwork.com:
     external:
-      name: artifacts_default
+      name: net_byfn
 
 services:
 
@@ -33,14 +37,37 @@ services:
       - DATABASE_HOST=explorerdb.mynetwork.com
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
-      - ENROLL_ID=hlbeuser
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
       - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
       - ./examples/net1/crypto:/tmp/crypto
-      - credentialstore:/opt/tmp
+      - walletstore:/opt/wallet
     command: sh -c "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"
     ports:
-      - 8080:8080
+      - 8090:8080
+    networks:
+      - mynetwork.com
+
+  proms:
+    container_name: proms
+    image: prom/prometheus:latest
+    volumes:
+      - ./app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-storage:/prometheus
+    ports:
+      - '9090:9090'
+    networks:
+      - mynetwork.com
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes:
+      - ./app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json:/var/lib/grafana/dashboards/mydashboard.json
+      - ./app/platform/fabric/artifacts/operations/grafana_conf/provisioning:/etc/grafana/provisioning
+      - grafana-storage:/var/lib/grafana
+    ports:
+      - '3000:3000'
     networks:
       - mynetwork.com

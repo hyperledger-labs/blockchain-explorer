@@ -1,0 +1,69 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+    behave:
+
+services:
+    peer0.org3.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer0.org3.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org3.example.com:7052
+            - CORE_PEER_ID=peer0.org3.example.com
+            - CORE_PEER_ADDRESS=peer0.org3.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org3.example.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG3}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG3}
+            - CORE_PEER_LOCALMSPID=org3.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org3.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org3.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org3.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/users:/var/hyperledger/users
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 11051:7051
+          - 11053:7053
+
+    peer1.org3.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer1.org3.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org3.example.com:7052
+            - CORE_PEER_ID=peer1.org3.example.com
+            - CORE_PEER_ADDRESS=peer1.org3.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG3}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG3}
+            - CORE_PEER_LOCALMSPID=org3.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org3.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org3.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org3.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/peers/peer1.org3.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org3.example.com/users:/var/hyperledger/users
+        depends_on:
+            - peer0.org3.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 12051:7051
+          - 12053:7053

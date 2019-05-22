@@ -1,0 +1,16 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: 'Prometheus'
+    orgId: 1
+
+datasources:
+  - name: 'Prometheus'
+    type: 'prometheus'
+    access: 'direct'
+    orgId: 1
+    url: 'http://localhost:9090'
+    isDefault: true
+    version: 1
+    editable: false
+

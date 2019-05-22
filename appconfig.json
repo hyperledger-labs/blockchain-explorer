@@ -1,5 +1,7 @@
 {
-  "host": "localhost",
-  "port": "8080",
-  "license": "Apache-2.0"
+	"sslEnabled": false,
+	"sslCertsPath": "ssl-certs",
+	"host": "localhost",
+	"port": "8080",
+	"license": "Apache-2.0"
 }

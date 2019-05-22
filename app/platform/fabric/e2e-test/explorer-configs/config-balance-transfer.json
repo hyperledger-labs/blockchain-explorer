@@ -1,0 +1,9 @@
+{
+	"network-configs": {
+		"balance-transfer": {
+			"name": "balance-transfer",
+			"profile": "./connection-profile/balance-transfer.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

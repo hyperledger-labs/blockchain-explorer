@@ -1,0 +1,9 @@
+#
+#    SPDX-License-Identifier: Apache-2.0
+#
+
+**/**/*.pyc
+node_modules
+package-lock.json
+configs/*/
+e2e-test/

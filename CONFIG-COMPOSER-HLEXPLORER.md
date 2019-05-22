@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 ## Configure to Hyperledger Explorer
 
 Before Configure the Explorer config.json
@@ -18,4 +21,4 @@ based on that above file configuration we need to configure in Hyperledger Explo
 
 **./start.sh (It will have the backend up)**
 
-Launch the Blockchain explorer URL
+Launch the Hyperledger explorer URL

@@ -6,7 +6,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createStore from './state/store';
-import chartsOperations from './state/redux/charts/operations';
+import authOperations from './state/redux/auth/operations';
 import Theme from './components/Theme';
 import App from './components/App';
 import { unregister } from './registerServiceWorker';
@@ -17,26 +17,25 @@ const store = createStore({ theme: { mode } });
 store.subscribe(themeSideEffect(store));
 
 function themeSideEffect(store) {
-  let theme;
-  return () => {
-    const state = store.getState();
-    if (theme !== state.theme) {
-      theme = state.theme;
-      localStorage.setItem('theme-mode', theme.mode);
-    }
-  };
+	let theme;
+	return () => {
+		const state = store.getState();
+		if (theme !== state.theme) {
+			theme = state.theme;
+			localStorage.setItem('theme-mode', theme.mode);
+		}
+	};
 }
 
-store.dispatch(chartsOperations.channel());
-store.dispatch(chartsOperations.channelList());
+store.dispatch(authOperations.network());
 
 unregister();
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Theme>
-      <App />
-    </Theme>
-  </Provider>,
-  document.getElementById('root'),
+	<Provider store={store}>
+		<Theme>
+			<App />
+		</Theme>
+	</Provider>,
+	document.getElementById('root')
 );

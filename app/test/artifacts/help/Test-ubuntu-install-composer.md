@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 **How to install Composer on a Ubuntu 16.04**
 
 **Create Another User**
@@ -202,4 +205,4 @@ you can open the ~/fabric-tools/DevServer\_connectio.json and check , channels ,
 
         code : ./start.sh (It will have the backend up)
 
-Launch the Blockchain explorer URL
+Launch the Hyperledger explorer URL

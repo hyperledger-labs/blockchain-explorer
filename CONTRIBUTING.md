@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 # Contributing to Hyperledger Explorer
 
 We welcome contributions to the Hyperledger Explorer Project in many forms like bug reports, feature requests,  documentation updates, code.

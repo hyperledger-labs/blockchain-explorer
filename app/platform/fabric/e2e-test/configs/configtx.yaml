@@ -1,0 +1,465 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+################################################################################
+#
+#   SECTION: Capabilities
+#
+#   - This section defines the capabilities of fabric network. This is a new
+#   concept as of v1.1.0 and should not be utilized in mixed networks with
+#   v1.0.x peers and orderers.  Capabilities define features which must be
+#   present in a fabric binary for that binary to safely participate in the
+#   fabric network.  For instance, if a new MSP type is added, newer binaries
+#   might recognize and validate the signatures from this type, while older
+#   binaries without this support would be unable to validate those
+#   transactions.  This could lead to different versions of the fabric binaries
+#   having different world states.  Instead, defining a capability for a channel
+#   informs those binaries without this capability that they must cease
+#   processing transactions until they have been upgraded.  For v1.0.x if any
+#   capabilities are defined (including a map with all capabilities turned off)
+#   then the v1.0.x peer will deliberately crash.
+#
+################################################################################
+Capabilities:
+    # Channel capabilities apply to both the orderers and the peers and must be
+    # supported by both.  Set the value of the capability to true to require it.
+    Global: &ChannelCapabilities
+        V1_3: true
+        # (V1_2 not defined in fabric)
+        # Note: older ones are superceded, e.g. V1_3 capabilities include V1_1.
+        # Thus, those like V1_1 need not be set if V1_3 or later is set true.
+        # But keep them, to allow disabling V1_3 when bringing up a new test
+        # network, if desired, possibly in anticipation of an upgrade test.
+        V1_1: true
+
+    # Orderer capabilities apply only to the orderers, and may be safely
+    # manipulated without concern for upgrading peers.  Set the value of the
+    # capability to true to require it.
+    Orderer: &OrdererCapabilities
+        # (V1_3 not defined in fabric)
+        # (V1_2 not defined in fabric)
+        V1_1: true
+
+    # Application capabilities apply only to the peer network, and may be safely
+    # manipulated without concern for upgrading orderers.  Set the value of the
+    # capability to true to require it.
+    Application: &ApplicationCapabilities
+        V1_3: true
+        V1_2: true
+        # Note: older ones are superceded, e.g. V1_2 capabilities include V1_1.
+        # Thus, older ones like V1_1 need not be set if we set V1_2 or later.
+        # But keep them all; that would allow tester to override and disable
+        # newer ones like Capabilities.Global.V1_3 and
+        # Capabilities.Application.V1_3 when bringing up a new test network,
+        # if desired, possibly in anticipation of an upgrade test.
+        V1_1: true
+
+################################################################################
+#
+#   Section: Organizations
+#
+#   - This section defines the different organizational identities which will
+#   be referenced later in the configuration.
+#
+################################################################################
+Organizations:
+
+    - &ExampleCom
+        Name: ExampleCom
+        ID: example.com
+        AdminPrincipal: Role.ADMIN
+        MSPDir: ./ordererOrganizations/example.com/msp
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('example.com.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('example.com.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('example.com.admin')"
+
+    - &Org1ExampleCom
+        Name: Org1ExampleCom
+        ID: org1.example.com
+        MSPDir: ./peerOrganizations/org1.example.com/msp
+        AdminPrincipal: Role.ADMIN
+        AnchorPeers:
+            - Host: peer0.org1.example.com
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('org1.example.com.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('org1.example.com.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('org1.example.com.admin')"
+
+    - &Org2ExampleCom
+        Name: Org2ExampleCom
+        ID: org2.example.com
+        MSPDir: ./peerOrganizations/org2.example.com/msp
+        AdminPrincipal: Role.ADMIN
+        AnchorPeers:
+            - Host: peer0.org2.example.com
+              Port: 7051
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('org2.example.com.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('org2.example.com.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('org2.example.com.admin')"
+
+################################################################################
+#
+#   SECTION: Orderer
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for orderer related parameters.
+#
+################################################################################
+Orderer: &OrdererDefaults
+
+    # Orderer Type: The orderer implementation to start.
+    # Available types are "solo" and "kafka".
+    OrdererType: solo
+
+    Addresses:
+        - orderer0.example.com:7050
+
+    # Batch Timeout: The amount of time to wait before creating a batch.
+    BatchTimeout: 2s
+
+    # Batch Size: Controls the number of messages batched into a block.
+    BatchSize:
+
+        # Max Message Count: The maximum number of messages to permit in a
+        # batch.
+        MaxMessageCount: 10
+
+        # Absolute Max Bytes: The absolute maximum number of bytes allowed for
+        # the serialized messages in a batch. If the "kafka" OrdererType is
+        # selected, set 'message.max.bytes' and 'replica.fetch.max.bytes' on the
+        # Kafka brokers to a value that is larger than this one.
+        AbsoluteMaxBytes: 98 MB
+
+        # Preferred Max Bytes: The preferred maximum number of bytes allowed for
+        # the serialized messages in a batch. A message larger than the
+        # preferred max bytes will result in a batch larger than preferred max
+        # bytes.
+        PreferredMaxBytes: 512 KB
+
+    # Max Channels is the maximum number of channels to allow on the ordering
+    # network. When set to 0, this implies no maximum number of channels.
+    MaxChannels: 0
+
+    Kafka:
+        # Brokers: A list of Kafka brokers to which the orderer connects. Edit
+        # this list to identify the brokers of the ordering service.
+        # NOTE: Use IP:port notation.
+        Brokers:
+            - kafka0:9092
+            - kafka1:9092
+            - kafka2:9092
+            - kafka3:9092
+
+    # Organizations is the list of orgs which are defined as participants on
+    # the orderer side of the network.
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Orderer policies, their canonical path is
+    #   /Channel/Orderer/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+        # BlockValidation specifies what signatures must be included in the block
+        # from the orderer for the peer to validate it.
+        BlockValidation:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+    # Capabilities describes the orderer level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *OrdererCapabilities
+
+################################################################################
+#
+#   CHANNEL
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for channel related parameters.
+#
+################################################################################
+Channel: &ChannelDefaults
+    # Policies defines the set of policies at this level of the config tree
+    # For Channel policies, their canonical path is
+    #   /Channel/<PolicyName>
+    Policies:
+        # Who may invoke the 'Deliver' API
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        # Who may invoke the 'Broadcast' API
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        # By default, who may modify elements at this config level
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+
+    # Capabilities describes the channel level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ChannelCapabilities
+
+################################################################################
+#
+#   SECTION: Application
+#
+#   - This section defines the values to encode into a config transaction or
+#   genesis block for application related parameters.
+#
+################################################################################
+Application: &ApplicationDefaults
+    ACLs: &ACLsDefault
+        # This section provides defaults for policies for various resources
+        # in the system. These "resources" could be functions on system chaincodes
+        # (e.g., "GetBlockByNumber" on the "qscc" system chaincode) or other resources
+        # (e.g.,who can receive Block events). This section does NOT specify the resource's
+        # definition or API, but just the ACL policy for it.
+        #
+        # User's can override these defaults with their own policy mapping by defining the
+        # mapping under ACLs in their channel definition
+
+        #---Lifecycle System Chaincode (lscc) function to policy mapping for access control---#
+
+        # ACL policy for lscc's "getid" function
+        lscc/ChaincodeExists: /Channel/Application/Readers
+
+        # ACL policy for lscc's "getdepspec" function
+        lscc/GetDeploymentSpec: /Channel/Application/Readers
+
+        # ACL policy for lscc's "getccdata" function
+        lscc/GetChaincodeData: /Channel/Application/Readers
+
+        # ACL Policy for lscc's "getchaincodes" function
+        lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+
+        #---Query System Chaincode (qscc) function to policy mapping for access control---#
+
+        # ACL policy for qscc's "GetChainInfo" function
+        qscc/GetChainInfo: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetBlockByNumber" function
+        qscc/GetBlockByNumber: /Channel/Application/Readers
+
+        # ACL policy for qscc's  "GetBlockByHash" function
+        qscc/GetBlockByHash: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetTransactionByID" function
+        qscc/GetTransactionByID: /Channel/Application/Readers
+
+        # ACL policy for qscc's "GetBlockByTxID" function
+        qscc/GetBlockByTxID: /Channel/Application/Readers
+
+        #---Configuration System Chaincode (cscc) function to policy mapping for access control---#
+
+        # ACL policy for cscc's "GetConfigBlock" function
+        cscc/GetConfigBlock: /Channel/Application/Readers
+
+        # ACL policy for cscc's "GetConfigTree" function
+        cscc/GetConfigTree: /Channel/Application/Readers
+
+        # ACL policy for cscc's "SimulateConfigTreeUpdate" function
+        cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+
+        #---Miscellanesous peer function to policy mapping for access control---#
+
+        # ACL policy for invoking chaincodes on peer
+        peer/Propose: /Channel/Application/Writers
+
+        # ACL policy for chaincode to chaincode invocation
+        peer/ChaincodeToChaincode: /Channel/Application/Readers
+
+        #---Events resource to policy mapping for access control###---#
+
+        # ACL policy for sending block events
+        event/Block: /Channel/Application/Readers
+
+        # ACL policy for sending filtered block events
+        event/FilteredBlock: /Channel/Application/Readers
+
+    # Organizations is the list of orgs which are defined as participants on
+    # the application side of the network.
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies: &ApplicationDefaultPolicies
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    # Capabilities describes the application level capabilities, see the
+    # dedicated Capabilities section elsewhere in this file for a full
+    # description
+    Capabilities:
+        <<: *ApplicationCapabilities
+
+################################################################################
+#
+#   Profiles
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool. The profiles which specify consortiums
+#   are to be used for generating the orderer genesis block.  With the correct
+#   consortium members defined in the orderer genesis block, channel creation
+#   requests may be generated with only the org member names and a consortium name
+#
+################################################################################
+Profiles:
+
+    # SampleInsecureSolo defines a configuration which uses the Solo orderer,
+    # contains no MSP definitions, and allows all transactions and channel
+    # creation requests for the consortium SampleConsortium.
+    SampleInsecureSolo:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1ExampleCom
+                    - *Org2ExampleCom
+
+    # SampleInsecureKafka defines a configuration that differs from the
+    # SampleInsecureSolo one only in that is uses the Kafka-based orderer.
+    SampleInsecureKafka:
+        <<: *ChannelDefaults
+        Orderer:
+            <<: *OrdererDefaults
+            OrdererType: kafka
+            Addresses:
+                - orderer0.example.com:7050
+                - orderer1.example.com:7050
+                - orderer2.example.com:7050
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *ExampleCom
+                    - *Org1ExampleCom
+                    - *Org2ExampleCom
+
+    # SampleSingleMSPSolo defines a configuration which uses the Solo orderer,
+    # and contains a single MSP definition (the MSP sampleconfig).
+    # The Consortium SampleConsortium has only a single member, SampleOrg
+    SampleSingleMSPSolo:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *OrdererCapabilities
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *ExampleCom
+                    - *Org1ExampleCom
+                    - *Org2ExampleCom
+
+    # SampleEmptyInsecureChannel defines a channel with no members
+    # and therefore no access control
+    SampleEmptyInsecureChannel:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Consortium: SampleConsortium
+        Application:
+            Organizations:
+                - *ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    # SysTestChannel defines a channel for use with the System Test Orgs
+    SysTestChannel:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1ExampleCom
+                - *Org2ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+
+    # SampleSingleMSPChannel defines a channel with only the sample org as a
+    # member.  It is designed to be used in conjunction with SampleSingleMSPSolo
+    # and SampleSingleMSPKafka orderer profiles
+    SampleSingleMSPChannel:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1ExampleCom
+                - *Org2ExampleCom
+            Capabilities:
+                <<: *ApplicationCapabilities
+

@@ -1,8 +1,6 @@
-#
-#    SPDX-License-Identifier: Apache-2.0
-#
-
 #!/bin/bash
+
+#SPDX-License-Identifier: Apache-2.0
 
 FABRIC_EXPLORER_DB_TAG="hyperledger/explorer-db"
 FABRIC_EXPLORER_TAG="hyperledger/explorer"

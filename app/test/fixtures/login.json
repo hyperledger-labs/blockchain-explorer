@@ -1,0 +1,10 @@
+{
+	"status": 200,
+	"success": "true",
+	"message": "You have successfully logged in!",
+	"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTU1MzI1MjQzNn0.MBIm7hFDAQ_jJaMNqX94V0I2uCsQxKqOZ5b0PoWMOnk",
+	"user": {
+		"message": "logged in",
+		"name": "admin"
+	}
+}

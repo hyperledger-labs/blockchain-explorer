@@ -1,3 +1,6 @@
+
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
+
 #Fabric Cluster started using Hyperledger Cello and configure to Explorer
 
 ##Verify docker is running from Master Node
@@ -25,4 +28,3 @@ ed09a52dba0e hyperledger/fabric-orderer:1.1.0 "orderer" About an hour ago Up Abo
 /app/platform/fabric/config.json (change the configuration , request,event,server-hostname,tls_cacerts,admin(key,value), channelname,mspid,server-hostname,requests,tls_cacerts)
 
 - Sample configuration provided, see file: blockchain-explorer/app/platform/fabric/config-cello.json.
-

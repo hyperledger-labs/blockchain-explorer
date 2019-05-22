@@ -1,9 +1,6 @@
 #!/bin/bash
 
-#if [ $(whoami) != 'postgres' ]; then
-#  echo "You need to call as postgres user. sudo -u postgres $0"
-#  exit 1
-#fi
+# SPDX-License-Identifier: Apache-2.0
 
 echo "Copying ENV variables into temp file..."
 node processenv.js
@@ -28,12 +25,20 @@ echo "PASSWD=${PASSWD}"
 if [ -f /tmp/process.env.json ] ; then
     rm /tmp/process.env.json
 fi
-echo "Executing SQL scripts..."
+echo "Executing SQL scripts, OS="$OSTYPE
+
+#support for OS
 case $OSTYPE in
 darwin*) psql postgres -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./explorerpg.sql ;
 psql postgres -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./updatepg.sql ;;
-linux*) psql -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./explorerpg.sql ;
-psql -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./updatepg.sql ;;
+linux*)
+if [ $(id -un) = 'postgres' ]; then
+  PSQL="psql"
+else
+  PSQL="sudo -u postgres psql"
+fi;
+${PSQL} -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./explorerpg.sql ;
+${PSQL} -v dbname=$DATABASE -v user=$USER -v passwd=$PASSWD -f ./updatepg.sql ;;
 esac
 
 

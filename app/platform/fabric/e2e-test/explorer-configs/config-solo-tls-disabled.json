@@ -1,0 +1,9 @@
+{
+	"network-configs": {
+		"first-network": {
+			"name": "solo-tls-disabled",
+			"profile": "./connection-profile/solo-tls-disabled.json"
+		}
+	},
+	"license": "Apache-2.0"
+}

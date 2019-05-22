@@ -1,0 +1,53 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+    behave:
+
+services:
+    cli:
+        container_name: cli
+        image: hyperledger/fabric-tools
+        tty: true
+        environment:
+            - GOPATH=/opt/gopath
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - FABRIC_LOGGING_SPEC=DEBUG
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=${CORE_PEER_TLS_ENABLED}
+            - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=${CORE_PEER_TLS_CLIENTAUTHREQUIRED}
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        command: /bin/bash -c 'sleep 6000000000000000000'
+        volumes:
+            - /var/run/:/host/var/run/
+            - ../../fabric/examples/chaincode:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode
+            - ../../fabric-samples/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+            - ../../fabric-sdk-java/src/test/fixture/sdkintegration:/opt/gopath/src/github.com/hyperledger/fabric-sdk-java/chaincode
+            - ../../chaincodes:/opt/gopath/src/github.com/hyperledger/fabric-test/chaincodes
+            - ../../fabric/common:/opt/gopath/src/github.com/hyperledger/fabric/common
+            - ../../fabric/vendor:/opt/gopath/src/github.com/hyperledger/fabric/vendor
+            - ../configs:/var/hyperledger/configs
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/users:/var/hyperledger/users
+        ports:
+            - '9092'
+        depends_on:
+          - orderer0.example.com
+          - peer0.org1.example.com
+          - peer1.org1.example.com
+          - peer0.org2.example.com
+          - peer1.org2.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}

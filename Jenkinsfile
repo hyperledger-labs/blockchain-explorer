@@ -74,7 +74,7 @@ node ('hyp-x') { // trigger build on x86_64 node
                     npm run test
                     cd ../../client && npm install
                     echo "--------> npm tests with code coverage"
-                    npm test -- -u --coverage && npm run build
+                    npm run test:ci -- -u --coverage && npm run build
                 '''
                  }
                }

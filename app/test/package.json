@@ -1,25 +1,54 @@
 {
-  "name": "hyperledger-explorer-test",
-  "version": "0.3.9",
-  "description": "hyperledger-explorer-test",
-  "main": "test.js",
-  "scripts": {
-    "test": "mocha *.js  --exit",
-    "coverage": "nyc mocha --timeout=3000"
-  },
-  "author": "",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "arraylist": "^0.1.0",
-    "chai": "^4.1.2",
-    "chai-http": "^4.0.0",
-    "mocha": "^5.0.0",
-    "nyc": "^13.3.0",
-    "pg-testdb": "^1.0.4",
-    "request": "^2.83.0",
-    "sinon": "^5.1.0",
-    "string-builder": "^0.1.6",
-    "tape": "^4.9.1"
-  },
-  "dependencies": {}
+	"name": "hyperledger-explorer-test",
+	"version": "0.3.9",
+	"description": "hyperledger-explorer-test",
+	"main": "test.js",
+	"scripts": {
+		"test": "nyc mocha *.js  --exit",
+		"coverage": "nyc report"
+	},
+	"author": "",
+	"license": "Apache-2.0",
+	"devDependencies": {
+		"arraylist": "^0.1.0",
+		"chai": "^4.1.2",
+		"chai-http": "^4.0.0",
+		"mocha": "^5.0.0",
+		"nyc": "^14.0.0",
+		"pg-testdb": "^1.0.4",
+		"request": "^2.83.0",
+		"sinon": "^5.1.0",
+		"string-builder": "^0.1.6",
+		"tape": "^4.9.1"
+	},
+	"nyc": {
+		"check-coverage": true,
+		"per-file": true,
+		"extension": [
+			".js"
+		],
+		"lines": 80,
+		"functions": 80,
+		"statements": 80,
+		"branches": 80,
+		"watermarks": {
+			"lines": [
+				80,
+				80
+			],
+			"functions": [
+				80,
+				80
+			],
+			"branches": [
+				80,
+				80
+			],
+			"statements": [
+				80,
+				80
+			]
+		}
+	},
+	"dependencies": {}
 }

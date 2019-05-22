@@ -20,7 +20,7 @@ echo "**************************************************************************
 echo "***** Please check the log [$LOG_CONSOLE_PATH] for any error *****"
 echo "************************************************************************************"
 
-node main.js >>$LOG_CONSOLE_PATH 2>&1 &
+node main.js name - hyperledger-explorer >>$LOG_CONSOLE_PATH 2>&1 &
 
 find ./logs/app -mtime +7 -type f -delete & find ./logs/db -mtime +7 -type f -delete & find ./logs/console -mtime +7 -type f -delete
 

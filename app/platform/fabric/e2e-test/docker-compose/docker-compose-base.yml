@@ -1,0 +1,111 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+    zookeeper:
+        image: hyperledger/fabric-zookeeper
+        ports:
+            - 2181
+            - 2888
+            - 3888
+
+    kafka:
+        image: hyperledger/fabric-kafka
+        environment:
+            - KAFKA_LOG_RETENTION_MS=-1
+            - KAFKA_MESSAGE_MAX_BYTES=103809024
+            - KAFKA_REPLICA_FETCH_MAX_BYTES=103809024
+            - KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false
+            - KAFKA_DEFAULT_REPLICATION_FACTOR=${KAFKA_DEFAULT_REPLICATION_FACTOR}
+            - KAFKA_MIN_INSYNC_REPLICAS=2
+        ports:
+            - 9092
+
+    ca:
+        image: hyperledger/fabric-ca
+        environment:
+            - FABRIC_CA_HOME=/var/hyperledger/fabric-ca-server
+            - FABRIC_CA_SERVER_HOME=/var/hyperledger/fabric-ca-server
+            - FABRIC_CA_SERVER_TLS_ENABLED=${FABRIC_CA_SERVER_TLS_ENABLED}
+            - FABRIC_CA_SERVER_DEBUG=true
+        ports:
+            - 7054
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}:/var/hyperledger/fabric-ca-server-config
+
+    orderer:
+        image: hyperledger/fabric-orderer
+        environment:
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${CORE_PEER_NETWORKID}_behave
+            - ORDERER_HOME=/var/hyperledger/orderer
+            - ORDERER_GENERAL_LOGLEVEL=debug
+            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/msp
+            - ORDERER_GENERAL_LOCALMSPID=example.com
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+            - ORDERER_GENERAL_LISTENPORT=7050
+            - ORDERER_GENERAL_LEDGERTYPE=ram
+            - ORDERER_GENERAL_GENESISMETHOD=file
+            - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/configs/orderer.block
+            - CONFIGTX_ORDERER_ORDERERTYPE=solo
+            - CONFIGTX_ORDERER_BATCHSIZE_MAXMESSAGECOUNT=${CONFIGTX_ORDERER_BATCHSIZE_MAXMESSAGECOUNT}
+            - CONFIGTX_ORDERER_BATCHTIMEOUT=${CONFIGTX_ORDERER_BATCHTIMEOUT}
+            - CONFIGTX_ORDERER_ADDRESSES=[127.0.0.1:7050]
+            # TLS settings
+            - ORDERER_GENERAL_TLS_ENABLED=${ORDERER_GENERAL_TLS_ENABLED}
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=${ORDERER_GENERAL_TLS_PRIVATEKEY}
+            - ORDERER_GENERAL_TLS_CERTIFICATE=${ORDERER_GENERAL_TLS_CERTIFICATE}
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/tls/ca.crt]
+            - ORDERER_TLS_CLIENTAUTHREQUIRED=${ORDERER_TLS_CLIENTAUTHREQUIRED}
+            - ORDERER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@example.com/tls/ca.crt
+            - ORDERER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@example.com/tls/client.crt
+            - ORDERER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}:/var/hyperledger/configs
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/users:/var/hyperledger/users
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/ca:/var/hyperledger/ca
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
+        command: orderer
+        ports:
+          - '7050'
+
+    couchdb:
+        image: hyperledger/fabric-couchdb
+
+    peer:
+        image: hyperledger/fabric-peer
+        environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_PEER_NETWORKID=${CORE_PEER_NETWORKID}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${CORE_PEER_NETWORKID}_behave
+            - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
+            - FABRIC_CA_HOME=/var/hyperledger
+            - FABRIC_CA_CLIENT_HOME=/var/hyperledger
+            - FABRIC_CA_CLIENT_TLS_CERTFILES=/var/hyperledger/tls/ca.crt
+            #- FABRIC_LOGGING_SPEC=peer=DEBUG:endorser=DEBUG:nodeCmd=DEBUG:committer=DEBUG
+            #- FABRIC_LOGGING_SPEC=peer=DEBUG
+            - FABRIC_LOGGING_SPEC=${FABRIC_LOGGING_SPEC}
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=${CORE_PEER_TLS_ENABLED}
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=${CORE_PEER_TLS_CLIENTAUTHREQUIRED}
+            - CORE_PEER_TLS_CERT_FILE=${CORE_PEER_TLS_CERT_FILE}
+            - CORE_PEER_TLS_KEY_FILE=${CORE_PEER_TLS_KEY_FILE}
+            - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/tls/ca.crt
+        volumes:
+            - /var/run/:/host/var/run/
+            - ../../../common:/opt/gopath/src/github.com/hyperledger/fabric/common
+            - ../../../vendor:/opt/gopath/src/github.com/hyperledger/fabric/vendor
+            - ../configs:/var/hyperledger/configs
+        command: peer node start
+        ports:
+            - '7051'
+            - '7053'
+

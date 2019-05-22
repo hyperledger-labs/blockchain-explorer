@@ -1,0 +1,319 @@
+{
+	"name": "%(networkId)s",
+	"version": "1.x",
+	"license": "Apache-2.0",
+	"networkID": "%(networkId)s",
+	"tls": "%(tls)s",
+	"environment": "dev",
+	"headers": { "Content-Type": "application/json" },
+	"client": {
+		"organization": "Org1ExampleCom"
+	},
+	"organizations": {
+		"Org1ExampleCom": {
+			"mspid": "org1.example.com",
+			"peers": ["peer0.org1.example.com", "peer1.org1.example.com"],
+			"certificateAuthorities": ["ca.org1.example.com"]
+		},
+		"Org2ExampleCom": {
+			"mspid": "org2.example.com",
+			"peers": ["peer0.org2.example.com", "peer1.org2.example.com"],
+			"certificateAuthorities": ["ca.org2.example.com"]
+		}
+	},
+	"orderers": {
+		"orderer0.example.com": {
+			"url": "%(grpcType)s://localhost:7050",
+			"grpcOptions": {
+				"grpc.http2.keepalive_time": 360,
+				"grpc.keepalive_time_ms": 360000,
+				"grpc.http2.keepalive_timeout": 180,
+				"grpc.keepalive_timeout_ms": 180000
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			}
+		}
+	},
+	"peers": {
+		"peer0.org1.example.com": {
+			"url": "%(grpcType)s://localhost:7051",
+			"eventUrl": "%(grpcType)s://localhost:7053",
+			"grpcOptions": {
+				"grpc.http2.keepalive_time": 360,
+				"grpc.keepalive_time_ms": 360000,
+				"grpc.http2.keepalive_timeout": 180,
+				"grpc.keepalive_timeout_ms": 180000
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"x-mspid": "Org1ExampleCom"
+		},
+		"peer1.org1.example.com": {
+			"url": "%(grpcType)s://localhost:8051",
+			"eventUrl": "%(grpcType)s://localhost:8053",
+			"grpcOptions": {
+				"grpc.http2.keepalive_time": 360,
+				"grpc.keepalive_time_ms": 360000,
+				"grpc.http2.keepalive_timeout": 180,
+				"grpc.keepalive_timeout_ms": 180000
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"x-mspid": "Org1ExampleCom"
+		},
+		"peer0.org2.example.com": {
+			"url": "%(grpcType)s://localhost:9051",
+			"eventUrl": "%(grpcType)s://localhost:9053",
+			"grpcOptions": {
+				"grpc.http2.keepalive_time": 360,
+				"grpc.keepalive_time_ms": 360000,
+				"grpc.http2.keepalive_timeout": 180,
+				"grpc.keepalive_timeout_ms": 180000
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"x-mspid": "Org2ExampleCom"
+		},
+		"peer1.org2.example.com": {
+			"url": "%(grpcType)s://localhost:10051",
+			"eventUrl": "%(grpcType)s://localhost:10053",
+			"grpcOptions": {
+				"grpc.http2.keepalive_time": 360,
+				"grpc.keepalive_time_ms": 360000,
+				"grpc.http2.keepalive_timeout": 180,
+				"grpc.keepalive_timeout_ms": 180000
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"x-mspid": "Org2ExampleCom"
+		}
+	},
+	"channels": {
+		"behavesystest": {
+			"orderers": ["orderer0.example.com"],
+			"peers": {
+				"peer0.org1.example.com": {
+					"x-chaincode": {}
+				},
+				"peer1.org1.example.com": {
+					"x-chaincode": {}
+				}
+			},
+			"chaincodes": [],
+			"x-members": ["Org1ExampleCom", "Org2ExampleCom"]
+		}
+	},
+	"certificateAuthorities": {
+		"ca.example.com": {
+			"url": "%(proto)s://localhost:7054",
+			"httpOptions": {
+				"verify": true
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"registrar": [
+				{
+					"enrollId": "Admin",
+					"enrollSecret": "adminpw"
+				}
+			],
+			"caName": "ca.example.com",
+			"x-mspid": "ExampleCom"
+		},
+		"ca.org1.example.com": {
+			"url": "%(proto)s://localhost:8054",
+			"httpOptions": {
+				"verify": true
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"registrar": [
+				{
+					"enrollId": "Admin",
+					"enrollSecret": "adminpw"
+				}
+			],
+			"caName": "ca.org1.example.com",
+			"x-mspid": "Org1ExampleCom"
+		},
+		"ca.org2.example.com": {
+			"url": "%(proto)s://localhost:9054",
+			"httpOptions": {
+				"verify": true
+			},
+			"tlsCACerts": {
+				"pem": "%(cacerts)s"
+			},
+			"registrar": [
+				{
+					"enrollId": "Admin",
+					"enrollSecret": "adminpw"
+				}
+			],
+			"caName": "ca.org2.example.com",
+			"x-mspid": "Org2ExampleCom"
+		}
+	},
+	"network-config": {
+		"orderer": {
+			"url": "%(grpcType)s://localhost:7050",
+			"server-hostname": "orderer0.example.com",
+			"tls_cacerts": "%(config)s/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/ca.crt",
+			"ca": "%(proto)s://localhost:7054"
+		},
+		"Org1ExampleCom": {
+			"name": "Org1ExampleCom",
+			"mspid": "org1.example.com",
+			"ca": "%(proto)s://localhost:8054",
+			"peers": {
+				"peer0.org1.example.com": {
+					"requests": "%(grpcType)s://localhost:7051",
+					"events": "%(grpcType)s://localhost:7053",
+					"server-hostname": "peer0.org1.example.com",
+					"tls_cacerts": "%(config)s/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				},
+				"peer1.org1.example.com": {
+					"requests": "%(grpcType)s://localhost:8051",
+					"events": "%(grpcType)s://localhost:8053",
+					"server-hostname": "peer1.org1.example.com",
+					"tls_cacerts": "%(config)s/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+				}
+			},
+			"admin": {
+				"key": "%(config)s/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"cert": "%(config)s/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+			},
+			"user1": {
+				"key": "%(config)s/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore",
+				"cert": "%(config)s/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts"
+			}
+		},
+		"Org2ExampleCom": {
+			"name": "Org2ExampleCom",
+			"mspid": "org2.example.com",
+			"ca": "%(proto)s://localhost:9054",
+			"peers": {
+				"peer0.org2.example.com": {
+					"requests": "%(grpcType)s://localhost:9051",
+					"events": "%(grpcType)s://localhost:9053",
+					"server-hostname": "peer0.org2.example.com",
+					"tls_cacerts": "%(config)s/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+				},
+				"peer1.org2.example.com": {
+					"requests": "%(grpcType)s://localhost:10051",
+					"events": "%(grpcType)s://localhost:10053",
+					"server-hostname": "peer1.org2.example.com",
+					"tls_cacerts": "%(config)s/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+				}
+			},
+			"admin": {
+				"key": "%(config)s/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore",
+				"cert": "%(config)s/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts"
+			},
+			"user1": {
+				"key": "%(config)s/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/keystore",
+				"cert": "%(config)s/peerOrganizations/org2.example.com/users/User1@org2.example.com/msp/signcerts"
+			}
+		}
+	},
+	"common-connection-profile": {
+		"version": "1.0",
+		"channels": {
+			"behavesystest": {
+				"orderers": ["orderer0.example.com"],
+				"peers": {
+					"peer0.org1.example.com": {
+						"endorsingPeer": true,
+						"chaincodeQuery": true,
+						"ledgerQuery": true,
+						"eventSource": true
+					},
+					"peer1.org1.example.com": {
+						"endorsingPeer": false,
+						"chaincodeQuery": false,
+						"ledgerQuery": true,
+						"eventSource": false
+					},
+					"peer0.org2.example.com": {
+						"endorsingPeer": true,
+						"chaincodeQuery": true,
+						"ledgerQuery": true,
+						"eventSource": true
+					},
+					"peer1.org2.example.com": {
+						"endorsingPeer": false,
+						"chaincodeQuery": false,
+						"ledgerQuery": true,
+						"eventSource": false
+					}
+				}
+			}
+		},
+		"orderers": {
+			"orderer0.example.com": {
+				"url": "%(grpcType)s://localhost:7050",
+				"grpcOptions": {
+					"ssl-target-name-override": "orderer0.example.com"
+				},
+				"tlsCACerts": {
+					"path": "%(config)s/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/ca.crt"
+				}
+			}
+		},
+		"organizations": {
+			"Org1ExampleCom": {
+				"name": "Org1ExampleCom",
+				"mspid": "org1.example.com",
+				"ca": "https://localhost:7054",
+				"peers": ["peer0.org1.example.com", "peer1.org1.example.com"],
+				"adminPrivateKeyPEM": "%(config)s/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore",
+				"signedCertPEM": "%(config)s/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts"
+			}
+		},
+		"peers": {
+			"peer0.org1.example.com": {
+				"url": "%(grpcType)s://localhost:7051",
+				"grpcOptions": {
+					"ssl-target-name-override": "peer0.org1.example.com"
+				},
+				"tlsCACerts": {
+					"path": "%(config)s/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				}
+			},
+			"peer1.org1.example.com": {
+				"url": "%(grpcType)s://localhost:8051",
+				"grpcOptions": {
+					"ssl-target-name-override": "peer1.org1.example.com"
+				},
+				"tlsCACerts": {
+					"path": "%(config)s/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+				}
+			},
+			"peer0.org2.example.com": {
+				"url": "%(grpcType)s://localhost:9051",
+				"grpcOptions": {
+					"ssl-target-name-override": "peer0.org2.example.com"
+				},
+				"tlsCACerts": {
+					"path": "%(config)s/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+				}
+			},
+			"peer1.org2.example.com": {
+				"url": "%(grpcType)s://localhost:10051",
+				"grpcOptions": {
+					"ssl-target-name-override": "peer1.org2.example.com"
+				},
+				"tlsCACerts": {
+					"path": "%(config)s/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+				}
+			}
+		}
+	}
+}

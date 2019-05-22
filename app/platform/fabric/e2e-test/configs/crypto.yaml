@@ -1,0 +1,43 @@
+#
+# Copyright IBM Corp All Rights Reserved
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+OrdererOrgs:
+  - Name: ExampleCom
+    Domain: example.com
+    CA:
+      SANS:
+        - localhost
+    Specs:
+      - Hostname: orderer0
+      - Hostname: orderer1
+      - Hostname: orderer2
+
+PeerOrgs:
+  - Name: Org1ExampleCom
+    Domain: org1.example.com
+    EnableNodeOUs: false
+    CA:
+      SANS:
+        - localhost
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+    Users:
+      Count: 1
+
+  - Name: Org2ExampleCom
+    Domain: org2.example.com
+    EnableNodeOUs: false
+    CA:
+      SANS:
+        - localhost
+    Template:
+      Count: 2
+      SANS:
+        - localhost
+    Users:
+      Count: 1

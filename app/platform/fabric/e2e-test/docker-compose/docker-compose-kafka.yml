@@ -1,0 +1,416 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+    behave:
+
+services:
+
+    ca.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.example.com
+            - FABRIC_CA_SERVER_CA_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_EXAMPLE_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem --tls.certfile /var/hyperledger/fabric-ca-server-config/ca.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    ca.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.org1.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.org1.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.org1.example.com
+            - FABRIC_CA_SERVER_TLS_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_ORG1_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --tls.certfile  /var/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    ca.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: ca
+        container_name: ca.org2.example.com
+        environment:
+            - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
+            - BOOTSTRAP_USER_PASS=Admin:adminpw
+            - FABRIC_CA_SERVER_CSR_CN=ca.org2.example.com
+            - FABRIC_CA_SERVER_CSR_HOSTS=ca.org2.example.com
+            - FABRIC_CA_SERVER_CA_CERTFILE=/var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
+            - FABRIC_CA_SERVER_CA_KEYFILE=${FABRIC_CA_SERVER_ORG2_TLS_KEYFILE}
+        command: /bin/bash -c 'fabric-ca-server start --ca.certfile /var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --tls.certfile /var/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem --ca.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} --tls.keyfile $${FABRIC_CA_SERVER_CA_KEYFILE} -b $${BOOTSTRAP_USER_PASS} -d'
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/ca:/var/hyperledger/fabric-ca-server-config
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com:/var/hyperledger/fabric-ca-server
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    zookeeper0:
+        extends:
+            file: docker-compose-base.yml
+            service: zookeeper
+        container_name: zookeeper0
+        environment:
+            - ZOO_MY_ID=1
+            - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    zookeeper1:
+        extends:
+            file: docker-compose-base.yml
+            service: zookeeper
+        container_name: zookeeper1
+        environment:
+            - ZOO_MY_ID=2
+            - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    zookeeper2:
+        extends:
+            file: docker-compose-base.yml
+            service: zookeeper
+        container_name: zookeeper2
+        environment:
+            - ZOO_MY_ID=3
+            - ZOO_SERVERS=server.1=zookeeper0:2888:3888 server.2=zookeeper1:2888:3888 server.3=zookeeper2:2888:3888
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    kafka0:
+        extends:
+            file: docker-compose-base.yml
+            service: kafka
+        container_name: kafka0
+        environment:
+            - KAFKA_BROKER_ID=0
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+            - KAFKA_MESSAGE_MAX_BYTES=${KAFKA_MESSAGE_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_MAX_BYTES=${KAFKA_REPLICA_FETCH_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=${KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES}
+        depends_on:
+            - zookeeper0
+            - zookeeper1
+            - zookeeper2
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    kafka1:
+        extends:
+            file: docker-compose-base.yml
+            service: kafka
+        container_name: kafka1
+        environment:
+            - KAFKA_BROKER_ID=1
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+            - KAFKA_MESSAGE_MAX_BYTES=${KAFKA_MESSAGE_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_MAX_BYTES=${KAFKA_REPLICA_FETCH_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=${KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES}
+        depends_on:
+            - zookeeper0
+            - zookeeper1
+            - zookeeper2
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    kafka2:
+        extends:
+            file: docker-compose-base.yml
+            service: kafka
+        container_name: kafka2
+        environment:
+            - KAFKA_BROKER_ID=2
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+            - KAFKA_MESSAGE_MAX_BYTES=${KAFKA_MESSAGE_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_MAX_BYTES=${KAFKA_REPLICA_FETCH_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=${KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES}
+        depends_on:
+            - zookeeper0
+            - zookeeper1
+            - zookeeper2
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    kafka3:
+        extends:
+            file: docker-compose-base.yml
+            service: kafka
+        container_name: kafka3
+        environment:
+            - KAFKA_BROKER_ID=3
+            - KAFKA_ZOOKEEPER_CONNECT=zookeeper0:2181,zookeeper1:2181,zookeeper2:2181
+            - KAFKA_MESSAGE_MAX_BYTES=${KAFKA_MESSAGE_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_MAX_BYTES=${KAFKA_REPLICA_FETCH_MAX_BYTES}
+            - KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=${KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES}
+        depends_on:
+            - zookeeper0
+            - zookeeper1
+            - zookeeper2
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+
+    orderer0.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: orderer
+        container_name: orderer0.example.com
+        environment:
+            - ORDERER_HOST=orderer0.example.com
+            - CONFIGTX_ORDERER_ORDERERTYPE=kafka
+            - CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]
+            - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+            - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+            - ORDERER_KAFKA_VERBOSE=true
+            - ORDERER_GENERAL_GENESISPROFILE=SampleInsecureKafka
+            - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
+            - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer0.example.com/tls:/var/hyperledger/tls
+        depends_on:
+            - kafka0
+            - kafka1
+            - kafka2
+            - kafka3
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 7050:7050
+
+    orderer1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: orderer
+        container_name: orderer1.example.com
+        environment:
+            - ORDERER_HOST=orderer1.example.com
+            - CONFIGTX_ORDERER_ORDERERTYPE=kafka
+            - CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]
+            - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+            - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+            - ORDERER_KAFKA_VERBOSE=true
+            - ORDERER_GENERAL_GENESISPROFILE=SampleInsecureKafka
+            - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
+            - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer1.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer1.example.com/tls:/var/hyperledger/tls
+        depends_on:
+            - kafka0
+            - kafka1
+            - kafka2
+            - kafka3
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 8050:7050
+
+    orderer2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: orderer
+        container_name: orderer2.example.com
+        environment:
+            - ORDERER_HOST=orderer2.example.com
+            - CONFIGTX_ORDERER_ORDERERTYPE=kafka
+            - CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]
+            - ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s
+            - ORDERER_KAFKA_RETRY_SHORTTOTAL=30s
+            - ORDERER_KAFKA_VERBOSE=true
+            - ORDERER_GENERAL_GENESISPROFILE=SampleInsecureKafka
+            - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
+            - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/ordererOrganizations/example.com/orderers/orderer2.example.com/tls:/var/hyperledger/tls
+        depends_on:
+            - kafka0
+            - kafka1
+            - kafka2
+            - kafka3
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 9050:7050
+
+    peer0.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer0.org1.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org1.example.com:7052
+            - CORE_PEER_ID=peer0.org1.example.com
+            - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG1}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG1}
+            - CORE_PEER_LOCALMSPID=org1.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/users:/var/hyperledger/users
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/ca:/var/hyperledger/ca
+        depends_on:
+            - orderer0.example.com
+            - orderer1.example.com
+            - orderer2.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 7051:7051
+          - 7053:7053
+
+    peer0.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer0.org2.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
+            - CORE_PEER_ID=peer0.org2.example.com
+            - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2}
+            - CORE_PEER_LOCALMSPID=org2.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - orderer1.example.com
+            - orderer2.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 9051:7051
+          - 9053:7053
+
+    peer1.org1.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer1.org1.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org1.example.com:7052
+            - CORE_PEER_ID=peer1.org1.example.com
+            - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG1}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG1}
+            - CORE_PEER_LOCALMSPID=org1.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org1.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - orderer1.example.com
+            - orderer2.example.com
+            - peer0.org1.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 8051:7051
+          - 8053:7053
+
+    peer1.org2.example.com:
+        extends:
+            file: docker-compose-base.yml
+            service: peer
+        container_name: peer1.org2.example.com
+        environment:
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:7052
+            - CORE_PEER_ID=peer1.org2.example.com
+            - CORE_PEER_ADDRESS=peer1.org2.example.com:7051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
+            - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER1_ORG2}
+            - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER1_ORG2}
+            - CORE_PEER_LOCALMSPID=org2.example.com
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
+        volumes:
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/var/hyperledger/msp
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/tls
+            - ../configs/${CORE_PEER_NETWORKID}/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+        depends_on:
+            - orderer0.example.com
+            - orderer1.example.com
+            - orderer2.example.com
+            - peer0.org2.example.com
+        networks:
+          behave:
+             aliases:
+               - ${CORE_PEER_NETWORKID}
+        ports:
+          - 10051:7051
+          - 10053:7053
