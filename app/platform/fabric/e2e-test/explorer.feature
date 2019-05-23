@@ -32,6 +32,7 @@ Feature: Bootstrapping Hyperledger Explorer
 #     Then JSON at path ".channels" should equal ["mychannel"]
 
 @basic
+@sanitycheck
 # @doNotDecompose
 Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<network-type> and send requests to the basic REST API functions successfully
     # Start a fabric network by using fabric-samples/<network-type>
