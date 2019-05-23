@@ -144,7 +144,7 @@ Scenario: [balance-transfer] Register a new user successfully
     Then the response status code should equal 200
     Then the response structure should equal "registerResp"
     Then the response parameter "status" should equal 400
-    Then the response parameter "message" should equal "failed to register with Error: Username already exist"
+    Then the response parameter "message" should equal "Error: already exists"
 
 @basic
 # @doNotDecompose
@@ -175,7 +175,7 @@ Scenario: [first-network] Not supported to register a new user
     Then the response status code should equal 200
     Then the response structure should equal "registerResp"
     Then the response parameter "status" should equal 400
-    Then the response parameter "message" should equal "failed to register with Error: Not supported user registration without CA"
+    Then the response parameter "message" should equal "Error: did not register with CA"
 
 @bugfix
 # @doNotDecompose

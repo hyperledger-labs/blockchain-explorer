@@ -3,14 +3,14 @@
 #
 behave
 nose
-flask==0.10.1
+flask==1.0.3
 python-dateutil==2.2
 pytz==2014.3
-pyyaml==3.10
+pyyaml==5.1
 couchdb==1.0
 flask-cors==2.0.1
 requests
-pyOpenSSL==16.2.0
+pyOpenSSL==19.0.0
 pysha3==1.0b1
 six
 grpcio==0.13.1
