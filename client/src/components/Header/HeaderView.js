@@ -38,8 +38,8 @@ import {
 	getBlocksPerHourType,
 	getBlocksPerMinType,
 	getChaincodeListType,
-	getChangeChannelType,
 	getChannelsType,
+	getChangeChannelType,
 	getDashStatsType,
 	getPeerListType,
 	getPeerStatusType,
@@ -245,6 +245,7 @@ export class HeaderView extends Component {
 		});
 
 		this.setState({
+			currentChannel: currentChannel,
 			channels: arr,
 			isLoading: false,
 			selectedChannel: selectedValue
@@ -404,11 +405,12 @@ export class HeaderView extends Component {
 
 	handleData(notification) {
 		// this.props.getNotification(notification);
-		const { notifications, notifyCount } = this.state;
+		const { notifications, notifyCount, currentChannel } = this.state;
 		const notifyArr = notifications;
 		notifyArr.unshift(JSON.parse(notification));
 		this.setState({ notifications: notifyArr });
 		this.setState({ notifyCount: notifyCount + 1 });
+		this.syncData(currentChannel);
 	}
 
 	async reloadChannels() {
@@ -422,6 +424,7 @@ export class HeaderView extends Component {
 			getBlocksPerHour,
 			getBlocksPerMin,
 			getChaincodeList,
+			getChannels,
 			getDashStats,
 			getPeerList,
 			getPeerStatus,
@@ -437,6 +440,7 @@ export class HeaderView extends Component {
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
+			getChannels(),
 			getDashStats(currentChannel),
 			getBlockActivity(currentChannel),
 			getPeerList(currentChannel),

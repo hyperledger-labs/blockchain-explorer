@@ -11,12 +11,12 @@
 	"license": "Apache-2.0",
 	"devDependencies": {
 		"arraylist": "^0.1.0",
-		"chai": "^4.1.2",
-		"chai-http": "^4.0.0",
+		"chai": "^4.2.0",
+		"chai-http": "^4.3.0",
 		"mocha": "^5.0.0",
 		"nyc": "^14.0.0",
 		"pg-testdb": "^1.0.4",
-		"request": "^2.83.0",
+		"request": "^2.88.0",
 		"sinon": "^5.1.0",
 		"string-builder": "^0.1.6",
 		"tape": "^4.9.1"

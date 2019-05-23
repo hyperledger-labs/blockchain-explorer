@@ -52,7 +52,7 @@
 		"redux-actions": "^0.9.1",
 		"redux-thunk": "^2.2.0",
 		"slick-carousel": "^1.8.1",
-		"superagent": "^3.8.2",
+		"superagent": "^5.0.5",
 		"typeface-roboto": "0.0.50"
 	},
 	"scripts": {
