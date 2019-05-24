@@ -21,7 +21,7 @@ log.log
 fabric-docker-compose-svt/channel-artifacts
 fabric-docker-compose-svt/crypto-config
 first-network/channel-artifacts/*
-examples/*
+# examples/*
 tmp/wallet/*
 wallet/*
 *.swp
