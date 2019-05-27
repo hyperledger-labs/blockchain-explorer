@@ -12,7 +12,7 @@ const dbroutes = (app, platform) => {
   app.get('/api/status/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      statusMetrics.getStatus(channel_genesis_hash, (data) => {
+      statusMetrics.getStatus(channel_genesis_hash, data => {
         if (data && (data.chaincodeCount && data.txCount && data.peerCount)) {
           return res.send(data);
         }
@@ -74,10 +74,13 @@ const dbroutes = (app, platform) => {
     const txid = req.params.txid;
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (txid && txid != '0' && channel_genesis_hash) {
-      crudService.getTransactionByID(channel_genesis_hash, txid).then((row) => {
+      crudService.getTransactionByID(channel_genesis_hash, txid).then(row => {
         if (row) {
           row.createdt = new Date(row.createdt).toISOString();
-          return res.send({ status: 200, row });
+          return res.send({
+            status: 200,
+            row
+          });
         }
       });
     } else {
@@ -88,9 +91,12 @@ const dbroutes = (app, platform) => {
   app.get('/api/blockActivity/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      crudService.getBlockActivityList(channel_genesis_hash).then((row) => {
+      crudService.getBlockActivityList(channel_genesis_hash).then(row => {
         if (row) {
-          return res.send({ status: 200, row });
+          return res.send({
+            status: 200,
+            row
+          });
         }
       });
     } else {
@@ -124,9 +130,12 @@ const dbroutes = (app, platform) => {
       if (channel_genesis_hash) {
         crudService
           .getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs)
-          .then((rows) => {
+          .then(rows => {
             if (rows) {
-              return res.send({ status: 200, rows });
+              return res.send({
+                status: 200,
+                rows
+              });
             }
           });
       } else {
@@ -149,8 +158,11 @@ const dbroutes = (app, platform) => {
   app.get('/api/peers/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     if (channel_genesis_hash) {
-      statusMetrics.getPeerList(channel_genesis_hash, (data) => {
-        res.send({ status: 200, peers: data });
+      statusMetrics.getPeerList(channel_genesis_hash, data => {
+        res.send({
+          status: 200,
+          peers: data
+        });
       });
     } else {
       return requtil.invalidRequest(req, res);
@@ -181,9 +193,12 @@ const dbroutes = (app, platform) => {
       if (channel_genesis_hash && !isNaN(blockNum)) {
         crudService
           .getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs)
-          .then((rows) => {
+          .then(rows => {
             if (rows) {
-              return res.send({ status: 200, rows });
+              return res.send({
+                status: 200,
+                rows
+              });
             }
             return requtil.notFound(req, res);
           });
@@ -210,9 +225,12 @@ const dbroutes = (app, platform) => {
     const hours = parseInt(req.params.hours);
 
     if (channel_genesis_hash && !isNaN(hours)) {
-      statusMetrics.getTxByMinute(channel_genesis_hash, hours).then((rows) => {
+      statusMetrics.getTxByMinute(channel_genesis_hash, hours).then(rows => {
         if (rows) {
-          return res.send({ status: 200, rows });
+          return res.send({
+            status: 200,
+            rows
+          });
         }
         return requtil.notFound(req, res);
       });
@@ -235,9 +253,12 @@ const dbroutes = (app, platform) => {
     const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
-      statusMetrics.getTxByHour(channel_genesis_hash, days).then((rows) => {
+      statusMetrics.getTxByHour(channel_genesis_hash, days).then(rows => {
         if (rows) {
-          return res.send({ status: 200, rows });
+          return res.send({
+            status: 200,
+            rows
+          });
         }
         return requtil.notFound(req, res);
       });
@@ -264,9 +285,12 @@ const dbroutes = (app, platform) => {
     if (channel_genesis_hash && !isNaN(hours)) {
       statusMetrics
         .getBlocksByMinute(channel_genesis_hash, hours)
-        .then((rows) => {
+        .then(rows => {
           if (rows) {
-            return res.send({ status: 200, rows });
+            return res.send({
+              status: 200,
+              rows
+            });
           }
           return requtil.notFound(req, res);
         });
@@ -289,9 +313,12 @@ const dbroutes = (app, platform) => {
     const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
-      statusMetrics.getBlocksByHour(channel_genesis_hash, days).then((rows) => {
+      statusMetrics.getBlocksByHour(channel_genesis_hash, days).then(rows => {
         if (rows) {
-          return res.send({ status: 200, rows });
+          return res.send({
+            status: 200,
+            rows
+          });
         }
         return requtil.notFound(req, res);
       });
@@ -312,9 +339,12 @@ const dbroutes = (app, platform) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
 
     if (channel_genesis_hash) {
-      proxy
-        .getTxByOrgs(channel_genesis_hash)
-        .then(rows => res.send({ status: 200, rows }));
+      proxy.getTxByOrgs(channel_genesis_hash).then(rows =>
+        res.send({
+          status: 200,
+          rows
+        })
+      );
     } else {
       return requtil.invalidRequest(req, res);
     }
@@ -337,11 +367,14 @@ const dbroutes = (app, platform) => {
   app.get('/api/channels/info', (req, res) => {
     proxy
       .getChannelsInfo()
-      .then((data) => {
-        data.forEach((element) => {
+      .then(data => {
+        data.forEach(element => {
           element.createdat = new Date(element.createdat).toISOString();
         });
-        res.send({ status: 200, channels: data });
+        res.send({
+          status: 200,
+          channels: data
+        });
       })
       .catch(err => res.send({ status: 500 }));
   });

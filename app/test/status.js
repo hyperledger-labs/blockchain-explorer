@@ -29,7 +29,7 @@ describe('GET /api/status', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return channel status', (done) => {
+  it('should return channel status', done => {
     const obj = status;
     this.get.yields(null, JSON.stringify(obj));
     request.get(

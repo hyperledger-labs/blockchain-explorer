@@ -45,11 +45,12 @@ class Platform {
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
     this.syncType = all_config.syncType;
 
-    const channels = Object.values(network_configs).reduce((acc, val) => {
-      return acc.concat(Object.keys(val.channels));
-    }, []);
+    const channels = Object.values(network_configs).reduce(
+      (acc, val) => acc.concat(Object.keys(val.channels)),
+      []
+    );
 
-    for (let channel of channels) {
+    for (const channel of channels) {
       const rn = channel.replace('channel', '');
       try {
         const peerOrgs = Object.keys(
@@ -121,9 +122,7 @@ class Platform {
         name,
         '1',
         JSON.stringify({
-          'network-configs': {
-            [this.defaultNetwork]: newOrgConfig
-          }
+          'network-configs': { [this.defaultNetwork]: newOrgConfig }
         })
       ]);
       this.explorerListeners.push({

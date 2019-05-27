@@ -15,9 +15,7 @@ async function addOrgToConsortium(params) {
 }
 
 async function getChannel(params) {
-  return axios.get(`${setupServerURL}/channel`, {
-    params
-  });
+  return axios.get(`${setupServerURL}/channel`, { params });
 }
 
 module.exports = {

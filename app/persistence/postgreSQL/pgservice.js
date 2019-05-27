@@ -35,9 +35,7 @@ class pgservice {
 
     console.log(this.connectionString);
 
-    this.client = new Client({
-      connectionString: this.connectionString
-    });
+    this.client = new Client({ connectionString: this.connectionString });
 
     logger.info(
       'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'

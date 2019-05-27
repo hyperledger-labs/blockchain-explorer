@@ -30,9 +30,7 @@ class Proxy {
     const channel_genesis_hash = client.getChannelGenHash(channel.getName());
     let respose;
     if (channel_genesis_hash) {
-      respose = {
-        currentChannel: channel_genesis_hash
-      };
+      respose = { currentChannel: channel_genesis_hash };
     } else {
       respose = {
         status: 1,
@@ -369,7 +367,7 @@ class Proxy {
       }
       const txId = client.newTransactionID(true);
       // send proposal to endorser
-      var request = {
+      const request = {
         txId,
         targets,
         chaincodeId: ccId,
@@ -454,17 +452,13 @@ const generateConfig = (org, channel, orderer, peers) => ({
       channel,
       credentialStore: {
         path: `./tmp/fabric-client-kvs_${org}`,
-        cryptoStore: {
-          path: `./tmp/fabric-client-kvs_${org}`
-        }
+        cryptoStore: { path: `./tmp/fabric-client-kvs_${org}` }
       }
     }
   },
   channels: {
     [channel]: {
-      peers: {
-        [`peer1.${org}.com`]: {}
-      },
+      peers: { [`peer1.${org}.com`]: {} },
       connection: {
         timeout: {
           peer: {
@@ -476,33 +470,21 @@ const generateConfig = (org, channel, orderer, peers) => ({
       }
     }
   },
-  orderers: {
-    '': {
-      url: 'grpcs://:7050'
-    }
-  },
+  orderers: { '': { url: 'grpcs://:7050' } },
   organizations: {
     [orderer]: {
       mspid: `${orderer}MSP`,
       fullpath: false,
-      adminPrivateKey: {
-        path: `/private/orgs/${orderer}/admin/msp/keystore`
-      },
-      signedCert: {
-        path: `/private/orgs/${orderer}/admin/msp/signcerts`
-      }
+      adminPrivateKey: { path: `/private/orgs/${orderer}/admin/msp/keystore` },
+      signedCert: { path: `/private/orgs/${orderer}/admin/msp/signcerts` }
     },
     [org]: {
       name: org,
       mspid: `${org}MSP`,
       fullpath: false,
       tlsEnable: true,
-      adminPrivateKey: {
-        path: `/private/orgs/${org}/admin/msp/keystore`
-      },
-      signedCert: {
-        path: `/private/orgs/${org}/admin/msp/signcerts`
-      }
+      adminPrivateKey: { path: `/private/orgs/${org}/admin/msp/keystore` },
+      signedCert: { path: `/private/orgs/${org}/admin/msp/signcerts` }
     }
   },
   peers: new Array(peers).fill(0).reduce((acc, val, key) => {
@@ -512,12 +494,8 @@ const generateConfig = (org, channel, orderer, peers) => ({
       [peerName]: {
         url: `grpcs://${peerName}:7051`,
         eventUrl: `grpcs://${peerName}:7053`,
-        grpcOptions: {
-          'ssl-target-name-override': peerName
-        },
-        tlsCACerts: {
-          path: `/private/${org}-ca-chain.pem`
-        }
+        grpcOptions: { 'ssl-target-name-override': peerName },
+        tlsCACerts: { path: `/private/${org}-ca-chain.pem` }
       }
     };
   }, {})

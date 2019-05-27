@@ -29,7 +29,7 @@ describe('GET /api/txByOrg/:channe', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return blockandtx ', (done) => {
+  it('should return blockandtx ', done => {
     const obj = txbyorg;
     this.get.yields(null, JSON.stringify(obj));
     request.get(

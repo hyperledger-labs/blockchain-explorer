@@ -29,7 +29,7 @@ describe('GET /api/peer/channel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return peers ', (done) => {
+  it('should return peers ', done => {
     const obj = peers;
     this.get.yields(null, JSON.stringify(obj));
     request.get(

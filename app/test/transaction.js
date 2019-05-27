@@ -29,12 +29,12 @@ describe('GET /api/transaction/:channel/:id', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', (done) => {
+  it('should return currentchannel ', done => {
     const obj = transaction;
     this.get.yields(null, JSON.stringify(obj));
     request.get(
-      `${base}`
-        + '/api/transaction/mychannel/1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840',
+      `${base}` +
+        '/api/transaction/mychannel/1752ce850935e0547e78b5396f64162a09c595f9ecc514f25afe48b52fa4d840',
       (err, body) => {
         body = JSON.parse(body);
         body.should.include.keys('status', 'row');

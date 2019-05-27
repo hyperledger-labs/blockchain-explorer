@@ -29,7 +29,7 @@ describe('GET /api/channels/info', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return channelsinfo ', (done) => {
+  it('should return channelsinfo ', done => {
     const obj = channelsinfo;
     this.get.yields(null, JSON.stringify(obj));
     request.get(`${base}` + '/api/channels/info', (err, body) => {

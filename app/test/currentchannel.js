@@ -29,7 +29,7 @@ describe('GET /api/curChannel', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', (done) => {
+  it('should return currentchannel ', done => {
     const obj = currentchannel;
     this.get.yields(null, JSON.stringify(obj));
     request.get(`${base}` + '/api/curChannel/', (err, body) => {

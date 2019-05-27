@@ -22,9 +22,7 @@ class ExplorerListener {
 
   send(message) {
     if (this.syncListenerHandler) {
-      this.syncListenerHandler.send({
-        message
-      });
+      this.syncListenerHandler.send({ message });
     }
   }
 

@@ -51,9 +51,7 @@ const platformroutes = async function(app, platform) {
     */
   app.get('/api/channels', (req, res) => {
     proxy.getChannels().then(channels => {
-      const response = {
-        status: 200
-      };
+      const response = { status: 200 };
       response.channels = channels;
       res.send(response);
     });
@@ -78,9 +76,7 @@ const platformroutes = async function(app, platform) {
   app.get('/api/changeChannel/:channel_genesis_hash', (req, res) => {
     const channel_genesis_hash = req.params.channel_genesis_hash;
     proxy.changeChannel(channel_genesis_hash).then(data => {
-      res.send({
-        currentChannel: data
-      });
+      res.send({ currentChannel: data });
     });
   });
 
@@ -190,7 +186,10 @@ const platformroutes = async function(app, platform) {
     const channelName = req.params.channel;
     if (channelName) {
       proxy.getPeersStatus(channelName).then(data => {
-        res.send({ status: 200, peers: data });
+        res.send({
+          status: 200,
+          peers: data
+        });
       });
     } else {
       return requtil.invalidRequest(req, res);
@@ -269,7 +268,7 @@ const platformroutes = async function(app, platform) {
     );
 
     if (peers && channel && name && version) {
-      let message = await proxy.instantiateChaincode(
+      const message = await proxy.instantiateChaincode(
         {
           peers,
           name,

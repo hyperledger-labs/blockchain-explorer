@@ -165,22 +165,15 @@ const services = {
 
 const generateDockerCompose = (orgOptions, networkOptions) => ({
   version: '3.4',
-  networks: {
-    'fabric-ca': {
-      external: {
-        name: 'net_fabric-ca'
-      }
-    }
-  },
-  volumes: {
-    private: null
-  },
-  services: orgOptions.services.reduce((acc, service) => {
-    return {
+  networks: { 'fabric-ca': { external: { name: 'net_fabric-ca' } } },
+  volumes: { private: null },
+  services: orgOptions.services.reduce(
+    (acc, service) => ({
       ...acc,
       ...services[service](orgOptions, networkOptions)
-    };
-  }, {})
+    }),
+    {}
+  )
 });
 
 const generteDockerfiles = (orgOptions, networkOptions) => {

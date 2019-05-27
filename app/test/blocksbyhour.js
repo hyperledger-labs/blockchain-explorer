@@ -29,7 +29,7 @@ describe('GET /api/blocksByHour/:channel/:day', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return blockbyhour ', (done) => {
+  it('should return blockbyhour ', done => {
     const obj = blocksbyhour;
     this.get.yields(null, JSON.stringify(obj));
     request.get(

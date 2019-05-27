@@ -19,15 +19,13 @@ class ForkListenerHandler {
       args
     );
 
-    this.syncProcessor.on('message', (msg) => {
+    this.syncProcessor.on('message', msg => {
       _self.platform.getProxy().processSyncMessage(msg);
     });
   }
 
   send(message) {
-    this.syncProcessor.send({
-      message
-    });
+    this.syncProcessor.send({ message });
   }
 
   close() {

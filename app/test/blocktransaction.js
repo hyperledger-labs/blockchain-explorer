@@ -29,7 +29,7 @@ describe('GET /api/block/transactions/:channel/:number', () => {
     request.put.restore();
     request.delete.restore();
   });
-  it('should return currentchannel ', (done) => {
+  it('should return currentchannel ', done => {
     const obj = blocktrans;
     this.get.yields(null, JSON.stringify(obj));
     request.get(

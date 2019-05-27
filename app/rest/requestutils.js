@@ -25,17 +25,11 @@ function reqPayload(req) {
   const reqPayload = [];
   const { params, query, body } = req;
 
-  reqPayload.push({
-    params
-  });
+  reqPayload.push({ params });
 
-  reqPayload.push({
-    query
-  });
+  reqPayload.push({ query });
 
-  reqPayload.push({
-    body
-  });
+  reqPayload.push({ body });
   return reqPayload;
 }
 
@@ -53,13 +47,11 @@ const storage = multer.diskStorage({
 });
 
 // set to upload 2 files, can be increased by updating array
-const upload = multer({
-  storage
-}).array('channelArtifacts', 2);
+const upload = multer({ storage }).array('channelArtifacts', 2);
 
 function aSyncUpload(req, res) {
   return new Promise((resolve, reject) => {
-    upload(req, res, (err) => {
+    upload(req, res, err => {
       const channelTxPath = null;
       const blockPath = null;
       const channelName = req.body.channelName;
@@ -111,7 +103,7 @@ function aSyncUpload(req, res) {
   });
 }
 
-const orgsArrayToString = function (orgs) {
+const orgsArrayToString = function(orgs) {
   let temp = '';
   if (typeof orgs === 'array' || typeof orgs === 'object') {
     orgs.forEach((element, i) => {
@@ -125,7 +117,7 @@ const orgsArrayToString = function (orgs) {
   }
   return temp;
 };
-const queryDatevalidator = function (from, to) {
+const queryDatevalidator = function(from, to) {
   const today = new Date().toISOString();
   if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
     from = new Date(from).toISOString();
@@ -134,7 +126,10 @@ const queryDatevalidator = function (from, to) {
     from = new Date(Date.now() - 864e5).toISOString();
     to = new Date().toISOString();
   }
-  return { from, to };
+  return {
+    from,
+    to
+  };
 };
 
 module.exports = {

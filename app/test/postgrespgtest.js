@@ -29,7 +29,7 @@ const options = {
 const list = new ArrayList();
 list.add('DROP USER IF EXISTS testuser;');
 describe('Test explorerpg.sql for DDL statements syntax verification', () => {
-  it('should read the file explorerpg.sql for ddl statements ', function (readdone) {
+  it('should read the file explorerpg.sql for ddl statements ', function(readdone) {
     this.timeout(5000);
     let sb = new StringBuilder('');
     let isMergeline = false;
@@ -44,18 +44,18 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
     const outstream = new (require('stream'))();
 
     const rl = readline.createInterface(instream, outstream);
-    rl.on('line', (line) => {
+    rl.on('line', line => {
       if (
-        (line.toUpperCase().startsWith('CREATE')
-          || line.toUpperCase().startsWith('DROP')
-          || line.toUpperCase().startsWith('ALTER')
-          || line.toUpperCase().startsWith('GRANT'))
-        && line.endsWith(';')
+        (line.toUpperCase().startsWith('CREATE') ||
+          line.toUpperCase().startsWith('DROP') ||
+          line.toUpperCase().startsWith('ALTER') ||
+          line.toUpperCase().startsWith('GRANT')) &&
+        line.endsWith(';')
       ) {
         if (
           !(
-            line.toUpperCase().startsWith('CREATE DATABASE')
-            || line.toUpperCase().startsWith('DROP DATABASE')
+            line.toUpperCase().startsWith('CREATE DATABASE') ||
+            line.toUpperCase().startsWith('DROP DATABASE')
           )
         ) {
           line = line.replace(/:user/i, 'testuser');
@@ -64,11 +64,11 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
           list.add(line);
         }
       } else if (
-        (line.toUpperCase().startsWith('CREATE')
-          || line.toUpperCase().startsWith('DROP')
-          || line.toUpperCase().startsWith('ALTER')
-          || line.toUpperCase().startsWith('GRANT'))
-        && !line.endsWith(';')
+        (line.toUpperCase().startsWith('CREATE') ||
+          line.toUpperCase().startsWith('DROP') ||
+          line.toUpperCase().startsWith('ALTER') ||
+          line.toUpperCase().startsWith('GRANT')) &&
+        !line.endsWith(';')
       ) {
         sb.append(line);
         isMergeline = true;
@@ -85,10 +85,10 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
         sb.append(line);
       }
     });
-    rl.on('close', (line) => {});
+    rl.on('close', line => {});
     readdone();
   });
-  it('should execute statements successfully in  explorerpg.sql file ', function (testdone) {
+  it('should execute statements successfully in  explorerpg.sql file ', function(testdone) {
     this.timeout(7000);
     options.tests = [];
     const newList = new ArrayList();
@@ -97,9 +97,9 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
         newList.add(list.get(i));
       }
     }
-    test('Test Results', (t) => {
+    test('Test Results', t => {
       for (let i = 0; i < newList.size(); i++) {
-        options.tests[i] = (client) => {
+        options.tests[i] = client => {
           if (i == 0) {
             client.connect();
           }
@@ -108,7 +108,7 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
             .then(() => {
               t.pass(newList.get(i));
             })
-            .catch((err) => {
+            .catch(err => {
               t.fail(newList.get(i));
             });
         };
