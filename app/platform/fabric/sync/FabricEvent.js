@@ -28,13 +28,13 @@ class FabricEvent {
     // create channel event hub
     const eventHub = channel.newChannelEventHub(this.client.defaultPeer);
     eventHub.registerBlockEvent(
-      async (block) => {
+      async block => {
         // skip first block, it is process by peer event hub
         if (!(block.header.number === '0' || block.header.number == 0)) {
           await this.fabricServices.processBlockEvent(this.client, block);
         }
       },
-      (err) => {
+      err => {
         logger.error('Block Event %s', err);
       }
     );
@@ -48,7 +48,7 @@ class FabricEvent {
     if (eventHub) {
       eventHub.connect(true);
       setTimeout(
-        (channel_name) => {
+        channel_name => {
           _self.synchChannelBlocks(channel_name);
         },
         5000,
@@ -56,9 +56,14 @@ class FabricEvent {
       );
     } else {
       // if channel event hub is not defined then create new channel event hub
-      const channel = this.client.hfc_client.getChannel(channel_name);
-      this.createChannelEventHub(channel);
-      return false;
+      try {
+        const channel = this.client.hfc_client.getChannel(channel_name);
+        this.createChannelEventHub(channel);
+        return false;
+      } catch (err) {
+        logger.error(err);
+        return false;
+      }
     }
   }
 

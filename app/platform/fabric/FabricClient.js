@@ -524,7 +524,7 @@ class FabricClient {
     }
 
     if (!this.adminpeers.get(url)) {
-      let newpeer = this.newPeer(channel, url, msp_id, host, msps);
+      let newpeer = this.newPeer(channel, url, msp_id, host, msps, host);
       if (
         newpeer &&
         newpeer.constructor &&
@@ -566,7 +566,7 @@ class FabricClient {
     return newOrderer;
   }
 
-  newPeer(channel, url, msp_id, host, msps) {
+  newPeer(channel, url, msp_id, host, msps, name) {
     let newpeer = null;
     channel._channel_peers.forEach(peer => {
       if (peer.getUrl() === url) {
@@ -579,7 +579,7 @@ class FabricClient {
         logger.debug('Create a new peer %s', url);
         newpeer = this.hfc_client.newPeer(
           url,
-          channel._buildOptions(url, url, host, msps[msp_id])
+          channel._buildOptions(name || url, url, host, msps[msp_id])
         );
         channel.addPeer(newpeer, msp_id);
       } else {

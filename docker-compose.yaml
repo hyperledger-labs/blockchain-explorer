@@ -25,6 +25,7 @@ services:
       - ../hyperledger/docker/config.json:/opt/explorer/app/platform/fabric/config.json
       - ./logs:/opt/explorer/logs
       - ./start.sh:/opt/explorer/start.sh
+      - ./swagger.json:/opt/explorer/swagger.json
     ports:
       - 8888:8080
       - 9229:9229

@@ -357,6 +357,23 @@ const platformroutes = async function(app, platform) {
       return requtil.invalidRequest(req, res);
     }
   });
+
+  /** *
+   Invoke chaincode
+   POST /api/chaincode/:chaincode/invoke
+   curl -i 'http://<host>:<port>/api/chaincode/:chaincode/invoke'
+   */
+  app.post('/api/chaincode/:chaincode/invoke', async (req, res) => {
+    try {
+      const { channelName, targets, fcn, args } = req.body;
+      const { chaincode } = req.params;
+      await proxy.invokeChaincode(channelName, targets, chaincode, fcn, args);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      return requtil.invalidRequest(req, res);
+    }
+  });
 };
 
 module.exports = platformroutes;

@@ -31,9 +31,37 @@
     }
   ],
   "paths": {
+    "/api/chaincode/{chaincode}/invoke": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "summary": "Invoke chaincode",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "chaincode",
+            "in": "path",
+            "description": "chaincode name",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/orgs/docker": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
-        "tags": ["Channel"],
+        "operationId": "getDockerAtrifacts",
         "summary": "Get docker artifact for new org",
         "description": "Get docker artifact for new org",
         "parameters": [
@@ -76,9 +104,115 @@
         }
       }
     },
+    "/api/orgs/switch": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "operationId": "switchOrg",
+        "summary": "Switch to different org",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/orgs/addToChannel": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "operationId": "addOrgToChannel",
+        "summary": "Add new org to channel",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/orgs/addToConsortium": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "operationId": "addToConsortium",
+        "summary": "Add new org to consortium",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/chaincode": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "operationId": "installChaincode",
+        "summary": "Chaincode install",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/channel/{channel}/chaincode": {
+      "x-swagger-router-controller": "platformroutes",
+      "post": {
+        "operationId": "instantiateChaincode",
+        "summary": "instantiate chaincode",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "channel",
+            "in": "path",
+            "description": "channel",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
     "/channels": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "channelList",
         "summary": "Query to fetch channels",
         "description": "Query to fetch channels",
         "responses": {
@@ -98,8 +232,10 @@
       }
     },
     "/status/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "channelStatus",
         "summary": "Query to get BlockCount on a channel",
         "description": "Query to get BlockCount on a channel",
         "parameters": [
@@ -142,8 +278,10 @@
       }
     },
     "/curChannel": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "currentChannel",
         "summary": "get Current channel",
         "description": "get Current channel",
         "responses": {
@@ -163,8 +301,10 @@
       }
     },
     "/changeChannel/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "getChannelChange",
         "summary": "Query to get Change Channel on a channel",
         "description": "Query to get Change Channel on a channel",
         "parameters": [
@@ -198,8 +338,10 @@
       }
     },
     "/chaincode/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Chaincodes"],
+        "operationId": "chaincodeList",
         "summary": "Query to fetch all Installed/instantiated chaincodes",
         "description": "Query to fetch all Installed/instantiated chaincodes",
         "parameters": [
@@ -245,11 +387,13 @@
       }
     },
     "/channel": {
+      "x-swagger-router-controller": "platformroutes",
       "post": {
         "tags": ["Channel"],
+        "operationId": "createChannel",
         "summary": "Create New channel on target peers  ",
         "description": "Create New channel on target peers",
-        "consumes": ["application/x-www-form-urlencoded"],
+        "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
@@ -316,8 +460,10 @@
       }
     },
     "/joinChannel": {
+      "x-swagger-router-controller": "platformroutes",
       "post": {
         "tags": ["Channel"],
+        "operationId": "joinChannel",
         "summary": "join channel ",
         "description": "join  channel ",
         "consumes": ["application/json", "application/x-www-form-urlencoded"],
@@ -372,8 +518,10 @@
       }
     },
     "/block/{channel_genesis_hash}/{number}": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Blocks"],
+        "operationId": "blockByNumber",
         "summary": "Query to Fetch Blocks",
         "description": "Query to Fetch Blocks",
         "parameters": [
@@ -451,8 +599,10 @@
       }
     },
     "/block/transactions/{channel_genesis_hash}/{number}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Transactions"],
+        "operationId": "transactionsCount",
         "summary": "Query to Fetch Block Transactions",
         "description": "Query to Fetch Block Transactions",
         "parameters": [
@@ -499,8 +649,10 @@
       }
     },
     "/blockActivity/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Blocks"],
+        "operationId": "blockActivity",
         "summary": "Query to Fetch Block Activity List",
         "description": "Query to Fetch Block Acivity List",
         "parameters": [
@@ -552,6 +704,7 @@
       }
     },
     "/transaction/{channel_genesis_hash}/{txid}": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Transactions"],
         "summary": "Query to Get Transaction by Txid",
@@ -647,8 +800,10 @@
       }
     },
     "/txList/{channel_genesis_hash}/{number}/{txid}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Transactions"],
+        "operationId": "txList",
         "summary": "Query to Get Trasaction List",
         "description": "Query to Get Trasaction List",
         "parameters": [
@@ -725,8 +880,10 @@
       }
     },
     "/peers/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "peerList",
         "summary": "Peers",
         "description": "Peers",
         "parameters": [
@@ -777,8 +934,10 @@
       }
     },
     "/peersStatus/{channelName}": {
+      "x-swagger-router-controller": "platformroutes",
       "get": {
         "tags": ["Channel"],
+        "operationId": "peerList",
         "summary": "Query Get PeersStatus",
         "description": "Query Get PeersStatus",
         "parameters": [
@@ -826,8 +985,10 @@
       }
     },
     "/blockAndTxList/{channel_genesis_hash}/{number}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Transactions"],
+        "operationId": "txPerBlock",
         "summary": "Query to Get Block And Transaction List",
         "description": "Query to Get Block And Transaction List",
         "parameters": [
@@ -912,8 +1073,10 @@
       }
     },
     "/txByMinute/{channel_genesis_hash}/{hours}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Transactions"],
+        "operationId": "txByMinute",
         "summary": "Query to Get Trasaction BY Minute",
         "description": "Query to Get Trasaction By Minute",
         "parameters": [
@@ -960,8 +1123,10 @@
       }
     },
     "/txByHour/{channel_genesis_hash}/{days}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Transactions"],
+        "operationId": "txByHour",
         "summary": "Query to Get Trasaction By Hour",
         "description": "Queryto  Get Trasaction BY Hour",
         "parameters": [
@@ -1008,8 +1173,10 @@
       }
     },
     "/blocksByMinute/{channel_genesis_hash}/{hours}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Blocks"],
+        "operationId": "blocksByMinute",
         "summary": "Query to Get Blocks BY Minute",
         "description": "Query to Get Blocks By Minute",
         "parameters": [
@@ -1056,8 +1223,10 @@
       }
     },
     "/blocksByHour/{channel_genesis_hash}/{days}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Blocks"],
+        "operationId": "blocksByHour",
         "summary": "Query to Get Blocks By Hour",
         "description": "Query to Get Blocks By Hour",
         "parameters": [
@@ -1104,8 +1273,10 @@
       }
     },
     "/txByOrg/{channel_genesis_hash}": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Blocks"],
+        "operationId": "txByOrg",
         "summary": "Query Get Trasaction By Org",
         "description": "Query Get Trasaction BY Org",
         "parameters": [
@@ -1153,8 +1324,10 @@
       }
     },
     "/channels/info": {
+      "x-swagger-router-controller": "dbroutes",
       "get": {
         "tags": ["Channels"],
+        "operationId": "channelsInfo",
         "summary": "Query to Get Channels Inforamtion",
         "description": "Query to Get channel Information",
         "responses": {
@@ -1194,6 +1367,34 @@
                 }
               }
             }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/tx/getinfo/{txid}": {
+      "x-swagger-router-controller": "platformroutes",
+      "get": {
+        "tags": ["Transactions"],
+        "operationId": "transactionsInfo",
+        "summary": "Query to Get Trasaction By Hour",
+        "parameters": [
+          {
+            "name": "txid",
+            "in": "path",
+            "description": "txid",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
           },
           "default": {
             "description": "Unexpected error",
