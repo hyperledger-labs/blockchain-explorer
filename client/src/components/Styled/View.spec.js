@@ -27,4 +27,13 @@ describe('<View />', () => {
 		);
 		expect(wrapper.exists()).toBe(true);
 	});
+
+	it('Check if dark theme is applied correctly', () => {
+		const wrapperone = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<View classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapperone.exists()).toBe(true);
+	});
 });

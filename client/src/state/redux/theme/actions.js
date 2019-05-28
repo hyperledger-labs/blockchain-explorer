@@ -5,6 +5,10 @@
 import types from './types';
 
 export const changeTheme = mode => ({
-  type: types.CHANGE_THEME,
-  payload: { mode },
+	type: types.CHANGE_THEME,
+	payload: { mode }
 });
+
+export default {
+	changeTheme
+};

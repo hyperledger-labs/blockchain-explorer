@@ -23,8 +23,3 @@ export const register = registered => ({
 	type: types.REGISTER,
 	payload: registered
 });
-
-export const enroll = enrolled => ({
-	type: types.ENROLL,
-	payload: enrolled
-});
