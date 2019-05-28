@@ -5,6 +5,7 @@
 
 import reducers from './reducers';
 import actions from './actions';
+import * as selectors from './selectors';
 
 describe('Theme Reducer', () => {
 	it('should return the initial state', () => {
@@ -20,5 +21,13 @@ describe('Theme Reducer', () => {
 
 		const newState = reducers(initialState, action);
 		expect(newState.mode).toEqual({ mode: 'light' });
+	});
+});
+
+describe('Theme Selector', () => {
+	test('chaincodeListSelector', () => {
+		const state = { theme: { mode: 'test' } };
+		const selectTheme = selectors.modeSelector(state);
+		expect(selectTheme).toBe('test');
 	});
 });

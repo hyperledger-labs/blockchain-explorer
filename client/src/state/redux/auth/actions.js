@@ -23,3 +23,10 @@ export const register = registered => ({
 	type: types.REGISTER,
 	payload: registered
 });
+
+export default {
+	login,
+	network,
+	error,
+	register
+};
