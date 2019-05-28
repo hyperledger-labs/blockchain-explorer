@@ -2,47 +2,81 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
+import Enzyme, { shallow, mount } from 'enzyme';
+import { unwrap } from '@material-ui/core/test-utils';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import Adapter from 'enzyme-adapter-react-16';
+import { createMuiTheme } from '@material-ui/core/styles';
 import { LandingPage } from './LandingPage';
 
+Enzyme.configure({ adapter: new Adapter() });
+const ComponentNaked = unwrap(LandingPage);
+
+describe('<LandingPage />', () => {
+	it('with shallow', () => {
+		const wrapper = shallow(<ComponentNaked classes={{}} />);
+		expect(wrapper.exists()).toBe(true);
+	});
+
+	it('with mount', () => {
+		const wrapper = mount(
+			<MuiThemeProvider theme={createMuiTheme()}>
+				<LandingPage classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
+
+	it('Check if dark theme is applied correctly', () => {
+		const wrapper = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<LandingPage classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
+});
+
 const setup = () => {
-  const props = {
-    classes: {
-      background: 'background',
-      content: 'content',
-    },
-    currentChannel: 'mychannel',
-    getBlockList: jest.fn(),
-    getBlocksPerHour: jest.fn(),
-    getBlocksPerMin: jest.fn(),
-    getChaincodeList: jest.fn(),
-    getChannel: jest.fn(),
-    getChannelList: jest.fn(),
-    getChannels: jest.fn(),
-    getDashStats: jest.fn(),
-    getPeerList: jest.fn(),
-    getPeerStatus: jest.fn(),
-    getTransactionByOrg: jest.fn(),
-    getTransactionList: jest.fn(),
-    getTransactionPerHour: jest.fn(),
-    getTransactionPerMin: jest.fn(),
-    updateLoadStatus: jest.fn(),
-  };
+	const props = {
+		classes: {
+			background: 'background',
+			content: 'content'
+		},
+		currentChannel: 'mychannel',
+		getBlockList: jest.fn(),
+		getBlocksPerHour: jest.fn(),
+		getBlocksPerMin: jest.fn(),
+		getChaincodeList: jest.fn(),
+		getChannel: jest.fn(),
+		getChannelList: jest.fn(),
+		getChannels: jest.fn(),
+		getDashStats: jest.fn(),
+		getPeerList: jest.fn(),
+		getPeerStatus: jest.fn(),
+		getTransactionByOrg: jest.fn(),
+		getTransactionList: jest.fn(),
+		getTransactionPerHour: jest.fn(),
+		getTransactionPerMin: jest.fn(),
+		updateLoadStatus: jest.fn()
+	};
 
-  const wrapper = shallow(<LandingPage {...props} />);
+	const wrapper = shallow(<LandingPage {...props} />);
 
-  return {
-    props,
-    wrapper,
-  };
+	return {
+		props,
+		wrapper
+	};
 };
 
 describe('LandingPage', () => {
-  test('LandingPage component should render', () => {
-    const { wrapper } = setup();
-    expect(wrapper.exists()).toBe(true);
-  });
+	test('LandingPage component should render', () => {
+		const { wrapper } = setup();
+		expect(wrapper.exists()).toBe(true);
+	});
 
-  /*   test('component receives new channel', () => {
+	/*   test('component receives new channel', () => {
     const { wrapper, props } = setup();
     const newChannel = { currentChannel: 'newChannel' };
     wrapper.setProps({ channel: newChannel })
@@ -60,7 +94,7 @@ describe('LandingPage', () => {
     expect(props.getTransactionPerMin).toHaveBeenCalled();
   }) */
 
-  /*   test('component receives the same channel', () => {
+	/*   test('component receives the same channel', () => {
     const { wrapper, props } = setup();
     wrapper.setProps({ channel: props.channel })
     expect(props.getBlockList).not.toHaveBeenCalled();

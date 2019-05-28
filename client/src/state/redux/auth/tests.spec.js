@@ -7,10 +7,23 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import operations from './operations';
 import types from './types';
+import reducers from './reducers';
 
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 const initialState = {};
+
+describe('Auth Reducer', () => {
+	it('should return the initial state', () => {
+		expect(reducers(undefined, {})).toEqual({
+			user: '',
+			token: null,
+			error: '',
+			networks: [],
+			registered: ''
+		});
+	});
+});
 
 describe('Auth', () => {
 	describe('Operations', () => {

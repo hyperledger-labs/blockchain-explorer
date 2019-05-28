@@ -18,7 +18,7 @@ const ComponentNaked = unwrap(App);
 describe('<App />', () => {
 	it('with shallow', () => {
 		const wrapper = shallow(<ComponentNaked classes={{}} />);
-		console.log('shallow', wrapper.debug());
+		expect(wrapper.exists()).toBe(true);
 	});
 });
 

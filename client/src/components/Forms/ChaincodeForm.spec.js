@@ -23,24 +23,18 @@ describe('<ChaincodeForm />', () => {
 	it('with mount', () => {
 		const wrapper = mount(
 			<MuiThemeProvider theme={createMuiTheme()}>
-				<ChaincodeForm />
+				<ChaincodeForm classes={{}} />
 			</MuiThemeProvider>
 		);
 		expect(wrapper.exists()).toBe(true);
 	});
-});
 
-const setup = () => {
-	const wrapper = shallow(<ChaincodeForm />);
-
-	return {
-		wrapper
-	};
-};
-
-describe('ChaincodeForm', () => {
-	test('Chaincode component should render', () => {
-		const { wrapper } = setup();
-		expect(wrapper.exists()).toBe(true);
+	it('Check if dark theme is applied correctly', () => {
+		const wrapperone = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<ChaincodeForm classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapperone.exists()).toBe(true);
 	});
 });

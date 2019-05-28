@@ -1,5 +1,7 @@
 /**
+	
  *    SPDX-License-Identifier: Apache-2.0
+	
  */
 
 import React from 'react';
@@ -8,29 +10,30 @@ import { unwrap } from '@material-ui/core/test-utils';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Adapter from 'enzyme-adapter-react-16';
 import { createMuiTheme } from '@material-ui/core/styles';
-import { ChaincodeModal } from './ChaincodeModal';
+import { PageNotFound } from './PageNotFound';
 
 Enzyme.configure({ adapter: new Adapter() });
-const ComponentNaked = unwrap(ChaincodeModal);
+const ComponentNaked = unwrap(PageNotFound);
 
-describe('<ChaincodeModal />', () => {
+describe('<PageNotFound />', () => {
 	it('with shallow', () => {
-		const wrapper = shallow(<ComponentNaked chaincode={{}} classes={{}} />);
+		const wrapper = shallow(<ComponentNaked classes={{}} />);
 		expect(wrapper.exists()).toBe(true);
 	});
+
 	it('with mount', () => {
 		const wrapper = mount(
 			<MuiThemeProvider theme={createMuiTheme()}>
-				<ChaincodeModal chaincode={{}} classes={{}} />
+				<PageNotFound classes={{}} />
 			</MuiThemeProvider>
 		);
 		expect(wrapper.exists()).toBe(true);
 	});
 
-	it('mount with dark', () => {
+	it('Check if dark theme is applied correctly', () => {
 		const wrapper = mount(
 			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
-				<ChaincodeModal chaincode={{}} classes={{}} />
+				<PageNotFound classes={{}} />
 			</MuiThemeProvider>
 		);
 		expect(wrapper.exists()).toBe(true);

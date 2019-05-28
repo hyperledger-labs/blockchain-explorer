@@ -96,4 +96,13 @@ describe('<TimeChart />', () => {
 		);
 		expect(wrapperone.exists()).toBe(true);
 	});
+
+	it('Check if dark theme is applied correctly', () => {
+		const wrapperone = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<TimeChart chartData={{}} classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapperone.exists()).toBe(true);
+	});
 });
