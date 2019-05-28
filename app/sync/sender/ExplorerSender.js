@@ -2,17 +2,17 @@
     SPDX-License-Identifier: Apache-2.0
 */
 
+const ForkSenderHandler = require('./ForkSenderHandler');
 const explorer_const = require('../../common/ExplorerConst').explorer.const;
 
 class ExplorerSender {
   constructor(syncconfig) {
     this.syncType = syncconfig.type;
-    this.syncSenderHandler;
+    this.syncSenderHandler = null;
   }
 
   async initialize() {
     if (this.syncType && this.syncType === explorer_const.SYNC_TYPE_LOCAL) {
-      const ForkSenderHandler = require('./ForkSenderHandler');
       this.syncSenderHandler = new ForkSenderHandler();
     }
     if (this.syncSenderHandler) {
@@ -23,11 +23,6 @@ class ExplorerSender {
   send(message) {
     if (this.syncSenderHandler) {
       this.syncSenderHandler.send(message);
-    }
-  }
-
-  close() {
-    if (this.syncSenderHandler) {
     }
   }
 }

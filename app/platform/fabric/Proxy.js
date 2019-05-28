@@ -16,6 +16,7 @@ const ExplorerError = require('../../common/ExplorerError');
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 const dockerUtils = require('./utils/dockerUtils');
+const { generateConfig } = require('./utils/FabricUtils');
 
 class Proxy {
   constructor(platform) {
@@ -60,7 +61,9 @@ class Proxy {
         discover_results = await client.initializeChannelFromDiscover(
           channel._name
         );
-      } catch (e) {}
+      } catch (e) {
+        logger.error('Discovery error', e);
+      }
     }
     const peers = [];
     for (const node of nodes) {
@@ -300,6 +303,17 @@ class Proxy {
     );
   }
 
+  async invokeChaincode(channelName, targets, ccId, fcn, args) {
+    return chaincodeService.invokeChaincode(
+      channelName,
+      targets,
+      ccId,
+      fcn,
+      args,
+      this.platform
+    );
+  }
+
   generateDockerArtifacts(orgOptions, randomNumber) {
     const networkOptions = {
       commonDir: 'private',
@@ -350,83 +364,6 @@ class Proxy {
     });
   }
 
-  async invokeChaincode(channelName, targets, ccId, fcn, args) {
-    const client = this.platform.getClient().hfc_client;
-    logger.debug(
-      '\n============ invoke transaction on channel %s ============\n'
-    );
-    try {
-      logger.debug(
-        'Successfully got the fabric client for the organization "%s"'
-      );
-      const channel = client.getChannel(channelName);
-      if (!channel) {
-        const message = 'Channel %s was not defined in the connection profile';
-        logger.error(message);
-        throw new Error(message);
-      }
-      const txId = client.newTransactionID(true);
-      // send proposal to endorser
-      const request = {
-        txId,
-        targets,
-        chaincodeId: ccId,
-        fcn,
-        args,
-        chainId: channel.getName()
-      };
-
-      let results = await channel.sendTransactionProposal(request);
-      console.log('req', request);
-      console.log('res', results[0], new Date());
-
-      const proposalResponses = results[0];
-      const proposal = results[1];
-
-      const all_good = proposalResponses.every(
-        val => val && val.response && val.response.status === 200
-      );
-
-      if (all_good) {
-        logger.info(
-          'Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s", metadata - "%s", endorsement signature: %s',
-          proposalResponses[0].response.status,
-          proposalResponses[0].response.message,
-          proposalResponses[0].response.payload,
-          proposalResponses[0].endorsement.signature
-        );
-
-        const orderer_request = {
-          proposalResponses,
-          proposal
-        };
-        results = await channel.sendTransaction(orderer_request);
-        console.log('results', results, new Date());
-        logger.info('------->>> R E S P O N S E : %j', results);
-        console.log(results);
-        const response = results; //  orderer results are last in the results
-        if (response.status === 'SUCCESS') {
-          logger.info('Successfully sent transaction to the orderer.');
-        } else {
-          logger.debug(
-            'Failed to order the transaction. Error code: %s',
-            response.status
-          );
-        }
-      } else {
-        logger.error(
-          'Failed to send Proposal and receive all good ProposalResponse'
-        );
-      }
-    } catch (error) {
-      logger.error(
-        'Failed to invoke due to error: ',
-        error.stack ? error.stack : error
-      );
-      throw error;
-    }
-  }
-
   async switchOrg(orgName, peers) {
     const channel = this.platform.getClient().getChannel();
     const orderer = this.platform
@@ -442,63 +379,5 @@ class Proxy {
     this.platform.reinitialize(config, orgName);
   }
 }
-
-const generateConfig = (org, channel, orderer, peers) => ({
-  version: '1.0',
-  clients: {
-    [org]: {
-      tlsEnable: true,
-      organization: org,
-      channel,
-      credentialStore: {
-        path: `./tmp/fabric-client-kvs_${org}`,
-        cryptoStore: { path: `./tmp/fabric-client-kvs_${org}` }
-      }
-    }
-  },
-  channels: {
-    [channel]: {
-      peers: { [`peer1.${org}.com`]: {} },
-      connection: {
-        timeout: {
-          peer: {
-            endorser: '60000',
-            eventHub: '60000',
-            eventReg: '60000'
-          }
-        }
-      }
-    }
-  },
-  orderers: { '': { url: 'grpcs://:7050' } },
-  organizations: {
-    [orderer]: {
-      mspid: `${orderer}MSP`,
-      fullpath: false,
-      adminPrivateKey: { path: `/private/orgs/${orderer}/admin/msp/keystore` },
-      signedCert: { path: `/private/orgs/${orderer}/admin/msp/signcerts` }
-    },
-    [org]: {
-      name: org,
-      mspid: `${org}MSP`,
-      fullpath: false,
-      tlsEnable: true,
-      adminPrivateKey: { path: `/private/orgs/${org}/admin/msp/keystore` },
-      signedCert: { path: `/private/orgs/${org}/admin/msp/signcerts` }
-    }
-  },
-  peers: new Array(peers).fill(0).reduce((acc, val, key) => {
-    const peerName = `peer${key + 1}.${org}.com`;
-    return {
-      ...acc,
-      [peerName]: {
-        url: `grpcs://${peerName}:7051`,
-        eventUrl: `grpcs://${peerName}:7053`,
-        grpcOptions: { 'ssl-target-name-override': peerName },
-        tlsCACerts: { path: `/private/${org}-ca-chain.pem` }
-      }
-    };
-  }, {})
-});
 
 module.exports = Proxy;

@@ -1,18 +1,19 @@
 /*
     SPDX-License-Identifier: Apache-2.0
 */
+
+const ForkListenerHandler = require('./ForkListenerHandler');
 const explorer_const = require('../../common/ExplorerConst').explorer.const;
 
 class ExplorerListener {
   constructor(platform, syncconfig) {
     this.platform = platform;
     this.syncType = syncconfig.type;
-    this.syncListenerHandler;
+    this.syncListenerHandler = null;
   }
 
   async initialize(args) {
     if (this.syncType && this.syncType === explorer_const.SYNC_TYPE_LOCAL) {
-      const ForkListenerHandler = require('./ForkListenerHandler');
       this.syncListenerHandler = new ForkListenerHandler(this.platform);
     }
     if (this.syncListenerHandler) {

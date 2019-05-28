@@ -21,9 +21,6 @@ const appList = [];
 const path = require('path');
 const fs = require('fs-extra');
 
-exports.getLogger = getLogger;
-exports.readAllFiles = readAllFiles;
-
 function readAllFiles(dir) {
   const files = fs.readdirSync(dir);
   const certs = [];
@@ -48,18 +45,19 @@ logger.setLevel('INFO');
 
 */
 
-var getLogger = function(moduleName) {
-  if (moduleName == 'pgservice') {
-    var logger = log4js.getLogger('pgservice');
+function getLogger(moduleName) {
+  let logger;
+  if (moduleName === 'pgservice') {
+    logger = log4js.getLogger('pgservice');
   } else {
     appList.push(moduleName);
-    var logger = log4js.getLogger(moduleName);
+    logger = log4js.getLogger(moduleName);
   }
-  var appLog = 'logs/app/app.log';
-  var dbLog = 'logs/db/db.log';
+  let appLog = 'logs/app/app.log';
+  let dbLog = 'logs/db/db.log';
   if (process.env.SYNC_LOG_PATH) {
-    var appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
-    var dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
+    appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
+    dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
   }
   fs.ensureFileSync(appLog);
   fs.ensureFileSync(dbLog);
@@ -81,7 +79,7 @@ var getLogger = function(moduleName) {
   });
   logger.setLevel(process.env.LOG_LEVEL || 'DEBUG');
   return logger;
-};
+}
 
 exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;

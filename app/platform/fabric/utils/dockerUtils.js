@@ -5,13 +5,18 @@ const generatePeerDockerfile = () => {
   const os = 'linux-amd64';
   const caBinaryFile = `hyperledger-fabric-ca-${os}-${fabricVersion}.tar.gz`;
   const clientBinaryFile = `hyperledger-fabric-${os}-${fabricVersion}.tar.gz`;
-  const caURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric-ca/hyperledger-fabric-ca/${os}-${fabricVersion}/${caBinaryFile}`;
-  const clientURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/fabric/hyperledger-fabric/${os}-${fabricVersion}/${clientBinaryFile}`;
+  const caURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/\
+fabric-ca/hyperledger-fabric-ca/${os}-${fabricVersion}/${caBinaryFile}`;
+  const clientURL = `https://nexus.hyperledger.org/content/repositories/releases/org/hyperledger/\
+fabric/hyperledger-fabric/${os}-${fabricVersion}/${clientBinaryFile}`;
 
   return `FROM hyperledger/fabric-peer:1.4.0
-RUN apt-get update && apt-get install -y netcat jq && apt-get install -y curl && rm -rf /var/cache/apt
-RUN curl -o /tmp/fabric-ca-client.tar.gz ${caURL} && tar -xzvf /tmp/fabric-ca-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
-RUN curl -o /tmp/fabric-client.tar.gz ${clientURL} && tar -xzvf /tmp/fabric-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
+RUN apt-get update && apt-get install -y netcat jq \
+&& apt-get install -y curl && rm -rf /var/cache/apt
+RUN curl -o /tmp/fabric-ca-client.tar.gz ${caURL} \
+&& tar -xzvf /tmp/fabric-ca-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
+RUN curl -o /tmp/fabric-client.tar.gz ${clientURL} \
+&& tar -xzvf /tmp/fabric-client.tar.gz -C /tmp && cp -r /tmp/bin/* /usr/local/bin
 RUN chmod +x -R /usr/local/bin/*
 ARG FABRIC_CA_DYNAMIC_LINK=true
 EXPOSE 7051

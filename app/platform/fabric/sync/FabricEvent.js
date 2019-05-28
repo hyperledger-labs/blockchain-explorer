@@ -30,7 +30,7 @@ class FabricEvent {
     eventHub.registerBlockEvent(
       async block => {
         // skip first block, it is process by peer event hub
-        if (!(block.header.number === '0' || block.header.number == 0)) {
+        if (!(block.header.number === '0' || block.header.number === 0)) {
           await this.fabricServices.processBlockEvent(this.client, block);
         }
       },
@@ -48,8 +48,8 @@ class FabricEvent {
     if (eventHub) {
       eventHub.connect(true);
       setTimeout(
-        channel_name => {
-          _self.synchChannelBlocks(channel_name);
+        name => {
+          _self.synchChannelBlocks(name);
         },
         5000,
         channel_name
@@ -82,7 +82,7 @@ class FabricEvent {
 
   disconnectEventHubs() {
     // disconnect all event hubs
-    for (const [channel_name, eventHub] of this.channelEventHubs.entries()) {
+    for (const [channel_name] of this.channelEventHubs.entries()) {
       const status = this.isChannelEventHubConnected();
       if (status) {
         this.disconnectChannelEventHub(channel_name);

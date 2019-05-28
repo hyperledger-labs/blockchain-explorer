@@ -3,21 +3,21 @@
 */
 
 const util = require('util');
-let path = require('path');
-let fs = require('fs');
+const path = require('path');
+const fs = require('fs');
 const exec = util.promisify(require('child_process').exec);
-let config = require('../../../platform/fabric/config.json');
-let FabricUtils = require('./../utils/FabricUtils.js');
-let helper = require('../../../common/helper');
-let ExplorerError = require('../../../common/ExplorerError');
+const config = require('../../../platform/fabric/config.json');
+const FabricUtils = require('./../utils/FabricUtils.js');
+const helper = require('../../../common/helper');
+const ExplorerError = require('../../../common/ExplorerError');
 
-let configtxgenToolPath = config.configtxgenToolPath;
+const { configtxgenToolPath } = config;
 
-let logger = helper.getLogger('channelservice');
+const logger = helper.getLogger('channelservice');
 
-let generateChannelArtifacts = async function(artifacts) {
+async function generateChannelArtifacts(artifacts) {
   const artifactsDir = await FabricUtils.generateDir();
-  let artifactChannelPath = path.resolve(artifactsDir);
+  const artifactChannelPath = path.resolve(artifactsDir);
   const channelTxPath = `${artifactChannelPath}/${artifacts.channelName}.tx`;
   const channelBlockPath = `${artifactChannelPath}/${
     artifacts.channelName
@@ -35,7 +35,7 @@ let generateChannelArtifacts = async function(artifacts) {
     } -outputBlock ${channelBlockPath} `
   );
 
-  const [status] = await Promise.all([
+  await Promise.all([
     exec(
       ` ${configtxgenToolPath}/configtxgen -profile ${
         artifacts.profile
@@ -57,7 +57,7 @@ let generateChannelArtifacts = async function(artifacts) {
     channelBlockPath
   };
   return channelArtifacts;
-};
+}
 
 async function createChannel(artifacts, client) {
   try {
@@ -68,28 +68,28 @@ async function createChannel(artifacts, client) {
       artifacts.genesisBlock
     ) {
       // generate genesis block and channel transaction             //
-      let channelGenesis = await generateChannelArtifacts(artifacts);
+      const channelGenesis = await generateChannelArtifacts(artifacts);
       artifacts.channelTxPath = channelGenesis.channelTxPath;
 
       logger.info('############### C R E A T E  C H A N N E L ###############');
       logger.info(
-        'Creating channel: ' + artifacts.orgName,
+        `Creating channel: ${artifacts.orgName}`,
         artifacts.orgConfigPath,
         artifacts.channelConfigPath
       );
 
-      var envelope = fs.readFileSync(artifacts.channelTxPath);
-      var channelConfig = client.extractChannelConfig(envelope);
-      let signature = client.signChannelConfig(channelConfig);
+      const envelope = fs.readFileSync(artifacts.channelTxPath);
+      const channelConfig = client.extractChannelConfig(envelope);
+      const signature = client.signChannelConfig(channelConfig);
 
-      let request = {
+      const request = {
         config: channelConfig,
         signatures: [signature],
         name: artifacts.channelName,
         txId: client.newTransactionID(true)
       };
 
-      var response = await client.createChannel(request);
+      const response = await client.createChannel(request);
 
       if (response && response.status === 'SUCCESS') {
         artifacts.channelHash = response.txId;
@@ -97,34 +97,33 @@ async function createChannel(artifacts, client) {
           'Successfully created the channel, txId %s',
           artifacts.channelHash
         );
-        let resp = {
+        const resp = {
           success: true,
-          message: 'Successfully created channel ' + artifacts.channelName
-        };
-        return resp;
-      } else {
-        logger.error(
-          'Failed to create the channel ' + artifacts.channelName,
-          response
-        );
-        let resp = {
-          success: false,
-          message: response.info
-            ? response.info
-            : 'Failed to create the channel ' + artifacts.channelName
+          message: `Successfully created channel ${artifacts.channelName}`
         };
         return resp;
       }
+      logger.error(
+        `Failed to create the channel  ${artifacts.channelName}`,
+        response
+      );
+      const resp = {
+        success: false,
+        message: response.info
+          ? response.info
+          : `Failed to create the channel ${artifacts.channelName}`
+      };
+      return resp;
     }
     logger.debug('artifacts ', artifacts);
-    let response = {
+    const response = {
       success: false,
       message: 'Invalid request '
     };
     return response;
   } catch (err) {
     logger.error('createChannel ', err);
-    let response = {
+    const response = {
       success: false,
       message: 'Invalid request, payload'
     };
@@ -135,7 +134,7 @@ async function createChannel(artifacts, client) {
 /*
  * Have an organization join a channel
  */
-let joinChannel = async function(
+const joinChannel = async function(
   channel_name,
   peers,
   org_name,
@@ -143,7 +142,7 @@ let joinChannel = async function(
   peers_config
 ) {
   logger.debug('\n\n============ Join Channel start ============\n');
-  var error_message;
+  let error_message;
   try {
     logger.info(
       'Calling peers in organization %s to join the channel',
@@ -154,9 +153,9 @@ let joinChannel = async function(
       'Successfully got the fabric client for the organization %s',
       org_name
     );
-    var channel = client.getChannel(channel_name);
+    const channel = client.getChannel(channel_name);
     if (!channel) {
-      let message = util.format(
+      const message = util.format(
         'Channel %s was not defined in the connection profile',
         channel_name
       );
@@ -169,17 +168,17 @@ let joinChannel = async function(
 
     // next step is to get the genesis_block from the orderer,
     // the starting point for the channel that we want to join
-    let request = {
-      txId: client.newTransactionID(true) //get an admin based transactionID
+    const request = {
+      txId: client.newTransactionID(true) // get an admin based transactionID
     };
-    let genesis_block = await channel.getGenesisBlock(request);
-    let peersObj = [];
+    const genesis_block = await channel.getGenesisBlock(request);
+    const peersObj = [];
 
-    for (let peer_name of peers) {
-      let peer_config = peers_config[peer_name];
-      let pem = FabricUtils.getPEMfromConfig(peer_config.tlsCACerts);
-      let peer = client.newPeer(peer_config.url, {
-        pem: pem,
+    for (const peer_name of peers) {
+      const peer_config = peers_config[peer_name];
+      const pem = FabricUtils.getPEMfromConfig(peer_config.tlsCACerts);
+      const peer = client.newPeer(peer_config.url, {
+        pem,
         'ssl-target-name-override':
           peer_config.grpcOptions['ssl-target-name-override'],
         name: peer_config.grpcOptions['ssl-target-name-override']
@@ -189,24 +188,24 @@ let joinChannel = async function(
 
     // tell each peer to join and wait for the event hub of each peer to tell us
     // that the channel has been created on each peer
-    let join_request = {
-      targets: peersObj, //using the peer names which only is allowed when a connection profile is loaded
-      txId: client.newTransactionID(true), //get an admin based transactionID
+    const join_request = {
+      targets: peersObj, // using the peer names which only is allowed when a connection profile is loaded
+      txId: client.newTransactionID(true), // get an admin based transactionID
       block: genesis_block
     };
-    let results = await channel.joinChannel(join_request);
+    const results = await channel.joinChannel(join_request);
     logger.info('joinChannel res !!!!!!!!!!!!!!!!!!!!!', results);
 
     // lets check the results of sending to the peers which is
     // last in the results array
-    let peers_results = results;
+    const peers_results = results;
     // then each peer results
-    for (let i in peers_results) {
-      let peer_result = peers_results[i];
-      if (peer_result.response && peer_result.response.status == 200) {
+    for (const i in peers_results) {
+      const peer_result = peers_results[i];
+      if (peer_result.response && peer_result.response.status === 200) {
         logger.info('Successfully joined peer to the channel %s', channel_name);
       } else {
-        let message = util.format(
+        const message = util.format(
           'Failed to joined peer to the channel %s',
           channel_name
         );
@@ -216,34 +215,34 @@ let joinChannel = async function(
     }
   } catch (error) {
     logger.error(
-      'Failed to join channel due to error: ' + error.stack
+      `Failed to join channel due to error: ${error.stack}`
         ? error.stack
         : error
     );
     error_message = error.toString();
   }
   if (!error_message) {
-    let message = util.format(
+    const message = util.format(
       'Successfully joined peers in organization %s to the channel:%s',
       org_name,
       channel_name
     );
     logger.info(message);
     // build a response to send back to the REST caller
-    let response = {
+    const response = {
       success: true,
-      message: message
+      message
     };
     return response;
   }
-  let message = util.format(
+  const message = util.format(
     'Failed to join all peers to channel. cause:%s',
     error_message
   );
   logger.error(message);
-  let response = {
+  const response = {
     success: true,
-    message: message
+    message
   };
   return response;
 };

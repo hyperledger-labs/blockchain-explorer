@@ -30,16 +30,14 @@ class Platform {
     this.broadcaster = broadcaster;
     this.networks = new Map();
     this.proxy = new Proxy(this);
-    this.defaultNetwork;
-    this.defaultClient;
-    this.network_configs;
-    this.syncType;
+    this.defaultNetwork = null;
+    this.defaultClient = null;
+    this.network_configs = null;
+    this.syncType = null;
     this.explorerListeners = [];
   }
 
   async initialize() {
-    const _self = this;
-
     // loading the config.json
     const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
@@ -88,8 +86,8 @@ class Platform {
     await this.buildClients(network_configs);
 
     if (
-      this.networks.size == 0 &&
-      this.networks.get(this.defaultNetwork).size == 0
+      this.networks.size === 0 &&
+      this.networks.get(this.defaultNetwork).size === 0
     ) {
       logger.error(
         '************* There is no client found for Hyperledger fabric platform *************'
@@ -133,7 +131,6 @@ class Platform {
   }
 
   async buildClients(network_configs) {
-    const _self = this;
     let clientstatus = true;
 
     // setting organization enrolment files
@@ -191,7 +188,7 @@ class Platform {
 
   initializeListener(syncconfig) {
     for (const [network_name, clients] of this.networks.entries()) {
-      for (const [client_name, client] of clients.entries()) {
+      for (const [client_name] of clients.entries()) {
         if (this.getClient(network_name, client_name).getStatus()) {
           const explorerListener = new ExplorerListener(this, syncconfig);
           explorerListener.initialize([network_name, client_name, '1']);

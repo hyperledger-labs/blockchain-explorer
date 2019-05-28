@@ -2,7 +2,6 @@
     SPDX-License-Identifier: Apache-2.0
 */
 
-const fs = require('fs-extra');
 const grpc = require('grpc');
 const convertHex = require('convert-hex');
 const helper = require('../../../common/helper');
@@ -27,6 +26,14 @@ const keys = Object.keys(_transProto.TxValidationCode);
 for (let i = 0; i < keys.length; i++) {
   const new_key = _transProto.TxValidationCode[keys[i]];
   _validation_codes[new_key] = keys[i];
+}
+
+// transaction validation code
+function convertValidationCode(code) {
+  if (typeof code === 'string') {
+    return code;
+  }
+  return _validation_codes[code];
 }
 
 class SyncServices {
@@ -103,7 +110,6 @@ class SyncServices {
         };
         this.platform.send(notify);
         throw new ExplorerError(explorer_error.ERROR_2013, channel_name);
-        return false;
       }
     }
     return true;
@@ -314,7 +320,7 @@ class SyncServices {
     // get the first transaction
     const first_tx = block.data.data[0];
     // the 'header' object contains metadata of the transaction
-    const header = first_tx.payload.header;
+    const { header } = first_tx.payload;
     const channel_name = header.channel_header.channel_id;
     const blockPro_key = `${channel_name}_${block.header.number}`;
 
@@ -327,7 +333,8 @@ class SyncServices {
     let channel_genesis_hash = client.getChannelGenHash(channel_name);
     // checking block is channel CONFIG block
     if (!channel_genesis_hash) {
-      // get discovery and insert channel details to db and create new channel object in client context
+      // get discovery and insert channel details to db
+      // create new channel object in client context
       setTimeout(
         async (client, channel_name, block) => {
           await client.initializeNewChannel(channel_name);
@@ -491,15 +498,6 @@ class SyncServices {
         const read_set = JSON.stringify(readSet, null, 2);
         const write_set = JSON.stringify(writeSet, null, 2);
 
-        if (typeof read_set === 'string' || read_set instanceof String) {
-          console.log('read_set length', read_set.length);
-          const bytes = Buffer.byteLength(write_set, 'utf8');
-          const kb = (bytes + 512) / 1024;
-          const mb = (kb + 512) / 1024;
-          const size = `${mb} MB`;
-          console.log('write_set size >>>>>>>>> : ', size);
-        }
-
         const chaincode_id = String.fromCharCode.apply(null, chaincodeID);
         // checking new chaincode is deployed
         if (
@@ -557,7 +555,7 @@ class SyncServices {
         };
 
         // insert transaction
-        const res = await this.persistence
+        await this.persistence
           .getCrudService()
           .saveTransaction(transaction_row);
       }
@@ -605,10 +603,3 @@ class SyncServices {
 }
 
 module.exports = SyncServices;
-// transaction validation code
-function convertValidationCode(code) {
-  if (typeof code === 'string') {
-    return code;
-  }
-  return _validation_codes[code];
-}

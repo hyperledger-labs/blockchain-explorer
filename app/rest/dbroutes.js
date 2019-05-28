@@ -10,7 +10,7 @@ const dbroutes = (app, platform) => {
   const crudService = platform.getPersistence().getCrudService();
 
   app.get('/api/status/:channel_genesis_hash', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     if (channel_genesis_hash) {
       statusMetrics.getStatus(channel_genesis_hash, data => {
         if (data && (data.chaincodeCount && data.txCount && data.peerCount)) {
@@ -37,7 +37,7 @@ const dbroutes = (app, platform) => {
     '/api/block/transactions/:channel_genesis_hash/:number',
     async (req, res) => {
       const number = parseInt(req.params.number);
-      const channel_genesis_hash = req.params.channel_genesis_hash;
+      const { channel_genesis_hash } = req.params;
       if (!isNaN(number) && channel_genesis_hash) {
         const row = await crudService.getTxCountByBlockNum(
           channel_genesis_hash,
@@ -71,15 +71,16 @@ const dbroutes = (app, platform) => {
   */
 
   app.get('/api/transaction/:channel_genesis_hash/:txid', (req, res) => {
-    const txid = req.params.txid;
-    const channel_genesis_hash = req.params.channel_genesis_hash;
-    if (txid && txid != '0' && channel_genesis_hash) {
+    const { channel_genesis_hash, txid } = req.params;
+    if (txid && txid !== '0' && channel_genesis_hash) {
       crudService.getTransactionByID(channel_genesis_hash, txid).then(row => {
         if (row) {
-          row.createdt = new Date(row.createdt).toISOString();
           return res.send({
             status: 200,
-            row
+            row: {
+              ...row,
+              createdt: new Date(row.createdt).toISOString()
+            }
           });
         }
       });
@@ -89,7 +90,7 @@ const dbroutes = (app, platform) => {
   });
 
   app.get('/api/blockActivity/:channel_genesis_hash', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     if (channel_genesis_hash) {
       crudService.getBlockActivityList(channel_genesis_hash).then(row => {
         if (row) {
@@ -116,7 +117,7 @@ const dbroutes = (app, platform) => {
   app.get(
     '/api/txList/:channel_genesis_hash/:blocknum/:txid',
     async (req, res) => {
-      const channel_genesis_hash = req.params.channel_genesis_hash;
+      const { channel_genesis_hash } = req.params;
       const blockNum = parseInt(req.params.blocknum);
       let txid = parseInt(req.params.txid);
       const orgs = requtil.orgsArrayToString(req.query.orgs);
@@ -156,7 +157,7 @@ const dbroutes = (app, platform) => {
   ]
   */
   app.get('/api/peers/:channel_genesis_hash', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     if (channel_genesis_hash) {
       statusMetrics.getPeerList(channel_genesis_hash, data => {
         res.send({
@@ -183,7 +184,7 @@ const dbroutes = (app, platform) => {
   app.get(
     '/api/blockAndTxList/:channel_genesis_hash/:blocknum',
     async (req, res) => {
-      const channel_genesis_hash = req.params.channel_genesis_hash;
+      const { channel_genesis_hash } = req.params;
       const blockNum = parseInt(req.params.blocknum);
       const orgs = requtil.orgsArrayToString(req.query.orgs);
       const { from, to } = requtil.queryDatevalidator(
@@ -221,7 +222,7 @@ const dbroutes = (app, platform) => {
   */
 
   app.get('/api/txByMinute/:channel_genesis_hash/:hours', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     const hours = parseInt(req.params.hours);
 
     if (channel_genesis_hash && !isNaN(hours)) {
@@ -249,7 +250,7 @@ const dbroutes = (app, platform) => {
   */
 
   app.get('/api/txByHour/:channel_genesis_hash/:days', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
@@ -279,7 +280,7 @@ const dbroutes = (app, platform) => {
   */
 
   app.get('/api/blocksByMinute/:channel_genesis_hash/:hours', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     const hours = parseInt(req.params.hours);
 
     if (channel_genesis_hash && !isNaN(hours)) {
@@ -309,7 +310,7 @@ const dbroutes = (app, platform) => {
   */
 
   app.get('/api/blocksByHour/:channel_genesis_hash/:days', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
     const days = parseInt(req.params.days);
 
     if (channel_genesis_hash && !isNaN(days)) {
@@ -336,7 +337,7 @@ const dbroutes = (app, platform) => {
 
   */
   app.get('/api/txByOrg/:channel_genesis_hash', (req, res) => {
-    const channel_genesis_hash = req.params.channel_genesis_hash;
+    const { channel_genesis_hash } = req.params;
 
     if (channel_genesis_hash) {
       proxy.getTxByOrgs(channel_genesis_hash).then(rows =>
@@ -376,7 +377,7 @@ const dbroutes = (app, platform) => {
           channels: data
         });
       })
-      .catch(err => res.send({ status: 500 }));
+      .catch(() => res.send({ status: 500 }));
   });
 };
 

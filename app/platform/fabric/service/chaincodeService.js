@@ -1,12 +1,8 @@
-/* eslint-disable no-else-return */
-/* eslint-disable arrow-parens */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable guard-for-in */
+/* eslint-disable guard-for-in; no-param-reassign */
 /*
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const child_process = require('child_process');
 const fs = require('fs-extra');
 const AdmZip = require('adm-zip');
 const path = require('path');
@@ -24,13 +20,6 @@ const errors = {
   erf: 'Error reading file'
 };
 
-const MAC_FIND_CMD = 'locate ';
-const CURRENT_OS = process.platform;
-let locate_cmd = 'locate -r ';
-if (CURRENT_OS === 'darwin') {
-  locate_cmd = MAC_FIND_CMD;
-}
-
 function extractChaincodeZipArchive(fileContent, folderName) {
   const zip = new AdmZip(fileContent.data);
   zip.extractAllTo(folderName, true);
@@ -42,7 +31,6 @@ async function loadChaincodeSrc(_path) {
   }
 
   try {
-    console.log('path', _path);
     // try to get go chaincodes
     location = (await fs.readdir(path.join(process.env.GOPATH, 'src', _path)))
       .filter(ccPath => new RegExp(regXgo).test(ccPath))
@@ -70,12 +58,12 @@ async function loadChaincodeSrc(_path) {
   try {
     if (Array.isArray(location) && location[0]) {
       // get the first path
-      chaincodePath = location[0];
+      [chaincodePath] = location;
     } else {
       chaincodePath = location.split('\n');
     }
     if (Array.isArray(chaincodePath) && chaincodePath[0]) {
-      chaincodePath = chaincodePath[0];
+      [chaincodePath] = chaincodePath;
       chaincodePath = chaincodePath.trim();
     }
   } catch (error) {
@@ -98,7 +86,6 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   const fabricClient = await platform.getClient();
   const client = fabricClient.hfc_client;
   const targets = [peer]; // build the list of peers that will require this chaincode
-  // todo change file name - nameCode + versionCode
   const chaincodePath = path.join('tmp', 'src', `${name}${version}`);
   logger.debug('path', chaincodePath);
   console.log('path', chaincodePath);
@@ -115,7 +102,6 @@ async function installChaincode(peer, name, zip, version, type, platform) {
   }
   console.log('request');
   // send proposal to install
-  // TODO: update path based on language
   const request = {
     targets,
     chaincodePath: type === 'golang' ? `${name}${version}` : chaincodePath,
@@ -129,25 +115,9 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     console.log('client.installChaincode');
     const results = await client.installChaincode(request);
     const proposalResponses = results[0];
-    let allGood = true;
-    for (const i in proposalResponses) {
-      let oneGood = false;
-      if (
-        proposalResponses &&
-        proposalResponses[i].response &&
-        proposalResponses[i].response.status === 200
-      ) {
-        oneGood = true;
-        logger.info('install proposal was good');
-      } else {
-        errorMessage = proposalResponses[i].toString();
-        logger.error(
-          'install proposal was bad %s',
-          proposalResponses[i].toString()
-        );
-      }
-      allGood &= oneGood;
-    }
+    const allGood = proposalResponses.every(
+      val => val && val.response && val.response.status === 200
+    );
     if (allGood) {
       logger.info(
         'Successfully sent install Proposal and received ProposalResponse'
@@ -155,7 +125,8 @@ async function installChaincode(peer, name, zip, version, type, platform) {
     } else {
       if (!errorMessage) {
         errorMessage =
-          'Failed to send install Proposal or receive valid response. Response null or status is not 200';
+          'Failed to send install Proposal or receive valid response.' +
+          ' Response null or status is not 200';
       }
       logger.error(errorMessage);
     }
@@ -175,13 +146,12 @@ async function installChaincode(peer, name, zip, version, type, platform) {
       success: true,
       message
     };
-  } else {
-    const message = util.format('Failed to install due to:%s', errorMessage);
-    return {
-      success: false,
-      message
-    };
   }
+  const message = util.format('Failed to install due to:%s', errorMessage);
+  return {
+    success: false,
+    message
+  };
 }
 
 async function instantiateChaincode(chaincodeRequest, txtype, platform) {
@@ -282,7 +252,93 @@ async function instantiateChaincode(chaincodeRequest, txtype, platform) {
   return results;
 }
 
+async function invokeChaincode(
+  channelName,
+  targets,
+  ccId,
+  fcn,
+  args,
+  platform
+) {
+  const client = platform.getClient().hfc_client;
+  logger.debug(
+    '\n============ invoke transaction on channel %s ============\n'
+  );
+  try {
+    logger.debug(
+      'Successfully got the fabric client for the organization "%s"'
+    );
+    const channel = client.getChannel(channelName);
+    if (!channel) {
+      const message = 'Channel %s was not defined in the connection profile';
+      logger.error(message);
+      throw new Error(message);
+    }
+    const txId = client.newTransactionID(true);
+    // send proposal to endorser
+    const request = {
+      txId,
+      targets,
+      chaincodeId: ccId,
+      fcn,
+      args,
+      chainId: channel.getName()
+    };
+
+    let results = await channel.sendTransactionProposal(request);
+    console.log('req', request);
+    console.log('res', results[0], new Date());
+
+    const proposalResponses = results[0];
+    const proposal = results[1];
+
+    const all_good = proposalResponses.every(
+      val => val && val.response && val.response.status === 200
+    );
+
+    if (all_good) {
+      logger.info(
+        'Successfully sent Proposal and received ProposalResponse:' +
+          ' Status - %s, message - "%s", metadata - "%s", endorsement signature: %s',
+        proposalResponses[0].response.status,
+        proposalResponses[0].response.message,
+        proposalResponses[0].response.payload,
+        proposalResponses[0].endorsement.signature
+      );
+
+      const orderer_request = {
+        proposalResponses,
+        proposal
+      };
+      results = await channel.sendTransaction(orderer_request);
+      console.log('results', results, new Date());
+      logger.info('------->>> R E S P O N S E : %j', results);
+      console.log(results);
+      const response = results; //  orderer results are last in the results
+      if (response.status === 'SUCCESS') {
+        logger.info('Successfully sent transaction to the orderer.');
+      } else {
+        logger.debug(
+          'Failed to order the transaction. Error code: %s',
+          response.status
+        );
+      }
+    } else {
+      logger.error(
+        'Failed to send Proposal and receive all good ProposalResponse'
+      );
+    }
+  } catch (error) {
+    logger.error(
+      'Failed to invoke due to error: ',
+      error.stack ? error.stack : error
+    );
+    throw error;
+  }
+}
+
 // getPath();
 exports.installChaincode = installChaincode;
 exports.instantiateChaincode = instantiateChaincode;
 exports.loadChaincodeSrc = loadChaincodeSrc;
+exports.invokeChaincode = invokeChaincode;

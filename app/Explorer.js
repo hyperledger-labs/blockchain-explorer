@@ -31,7 +31,7 @@ class Explorer {
     );
     this.app.use(fileUpload());
     this.app.use(compression());
-    this.persistence;
+    this.persistence = null;
     this.platforms = [];
   }
 

@@ -9,8 +9,17 @@
     "object-curly-newline": [
       "error",
       {
-        "minProperties": 2
+        "consistent": true,
+        "multiline": true
       }
-    ]
+    ],
+    "class-methods-use-this": "off",
+    "radix": ["error", "as-needed"],
+    "no-plusplus": "off",
+    "consistent-return": "off",
+    "no-restricted-globals": "off",
+    "guard-for-in": "off",
+    "no-param-reassign": ["error", { "props": false }],
+    "max-len": ["error", { "code": 100, "ignoreComments": true }]
   }
 }

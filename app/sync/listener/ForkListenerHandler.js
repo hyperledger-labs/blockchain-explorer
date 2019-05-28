@@ -8,7 +8,7 @@ const { fork } = require('child_process');
 class ForkListenerHandler {
   constructor(platform) {
     this.platform = platform;
-    this.syncProcessor;
+    this.syncProcessor = null;
   }
 
   async initialize(args) {

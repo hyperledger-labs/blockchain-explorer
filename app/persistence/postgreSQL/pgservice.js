@@ -47,7 +47,7 @@ class pgservice {
       this.client.on('error', err => {
         console.log('db error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-          handleDisconnect();
+          this.handleDisconnect();
         } else {
           throw err;
         }
@@ -133,8 +133,6 @@ class pgservice {
       const addSqlParams = [];
       const updateParms = [];
 
-      const updateparm = ' set 1=1 ';
-
       Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
 
@@ -143,14 +141,12 @@ class pgservice {
         updateParms.push(`${k} = ?`);
       });
 
-      let updatewhereparm = ' (1=1)  ';
       const searchparm = { pkName: pkValue };
 
       Object.keys(searchparm).forEach(k => {
         const v = searchparm[k];
 
         addSqlParams.push(v);
-        updatewhereparm += ` and ${k}=? `;
       });
 
       const updateParmsStr = updateParms.join(',');
@@ -169,8 +165,6 @@ class pgservice {
         logger.debug(
           '--------------------------UPDATE----------------------------'
         );
-        // logger.debug(' update result :', result.affectedRows);
-        // console.log(res);
         logger.debug(
           '-----------------------------------------------------------------\n\n'
         );
@@ -197,8 +191,6 @@ class pgservice {
     return new Promise((resolve, reject) => {
       const addSqlParams = [];
       const updateParms = [];
-
-      const updateparm = ' set 1=1 ';
 
       Object.keys(columnAndValue).forEach(k => {
         const v = columnAndValue[k];
@@ -248,11 +240,10 @@ class pgservice {
    *  @param string  updateSql   the excute sql
    */
   updateBySql(updateSql) {
-    const _self = this;
     return new Promise((resolve, reject) => {
       logger.debug(`update sql is :  ${updateSql}`);
 
-      _self.client.query(updateSql, [], (err, res) => {
+      this.client.query(updateSql, [], (err, res) => {
         if (err) {
           logger.error('[INSERT ERROR] - ', err.message);
           reject(err);
@@ -276,7 +267,7 @@ class pgservice {
    * get row by primary key
    * @param String tablename   the table name.
    * @param String column      the filed of search result.
-   * @param String pkColumn	    the primary key column name.
+   * @param String pkColumn    the primary key column name.
    * @param String value       the primary key value.
    *
    *
@@ -284,7 +275,9 @@ class pgservice {
   getRowByPk(tablename, column, pkColumn, value) {
     const _self = this;
     return new Promise((resolve, reject) => {
-      if (column == '') column = '*';
+      if (column === '') {
+        column = '*';
+      }
 
       const sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `;
 
@@ -342,10 +335,11 @@ class pgservice {
   getRowsByCondition(tablename, column, condtion, orderBy, limit) {
     const _self = this;
     return new Promise((resolve, reject) => {
-      if (column == '') column = '*';
+      if (column === '') {
+        column = '*';
+      }
 
       let updatewhereparm = ' (1=1)  ';
-      const searchparm = { pkName: pkValue };
       const addSqlParams = [];
 
       Object.keys(condtion).forEach(k => {
@@ -508,7 +502,7 @@ class pgservice {
 
         for (let ind = 0; ind < res.rows.length; ind++) {
           logger.debug(`The ind value is: ${res.rows[ind].id}  `);
-          keymap.set(res.rows[ind][key], rows[ind]);
+          keymap.set(res.rows[ind][key], res.rows[ind]);
         }
 
         resolve(keymap);
@@ -526,7 +520,7 @@ class pgservice {
   getSQL2Map4Arr(sql, key) {
     const _self = this;
     return new Promise((resolve, reject) => {
-      _self.client.query(sql, (err, rows) => {
+      _self.client.query(sql, (err, res) => {
         if (err) {
           reject(err);
           return;

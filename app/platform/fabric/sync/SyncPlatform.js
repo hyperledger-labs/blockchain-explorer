@@ -24,15 +24,15 @@ const config_path = path.resolve(__dirname, '../config.json');
 
 class SyncPlatform {
   constructor(persistence, sender) {
-    this.network_name;
-    this.client_name;
-    this.client;
-    this.eventHub;
+    this.network_name = null;
+    this.client_name = null;
+    this.client = null;
+    this.eventHub = null;
     this.sender = sender;
     this.persistence = persistence;
     this.syncService = new SyncService(this, this.persistence);
     this.blocksSyncTime = 60000;
-    this.client_configs;
+    this.client_configs = null;
   }
 
   async initialize(args) {
@@ -57,21 +57,21 @@ class SyncPlatform {
     }
     const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
-    if (args.length == 0) {
+    if (args.length === 0) {
       // get the first network and first client
-      this.network_name = Object.keys(network_configs)[0];
-      this.client_name = Object.keys(
+      [this.network_name] = Object.keys(network_configs);
+      [this.client_name] = Object.keys(
         network_configs[Object.keys(network_configs)[0]].clients
-      )[0];
-    } else if (args.length == 1) {
+      );
+    } else if (args.length === 1) {
       // get the first client with respect to the passed network name
-      this.network_name = args[0];
-      this.client_name = Object.keys(
+      [this.network_name] = args;
+      [this.client_name] = Object.keys(
         network_configs[this.network_name].clients
-      )[0];
+      );
     } else {
-      this.network_name = args[0];
-      this.client_name = args[1];
+      [this.network_name, this.client_name] = args;
+      // this.client_name = args[1];
     }
 
     console.log(
@@ -163,7 +163,7 @@ class SyncPlatform {
 
   setBlocksSyncTime(blocksSyncTime) {
     if (blocksSyncTime) {
-      const time = parseInt(blocksSyncTime, 10);
+      const time = parseInt(blocksSyncTime);
       if (!isNaN(time)) {
         // this.blocksSyncTime = 1 * 10 * 1000;
         this.blocksSyncTime = time * 60 * 1000;

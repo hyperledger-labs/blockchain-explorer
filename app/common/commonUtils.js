@@ -8,6 +8,10 @@
  *
  */
 
+const helper = require('./helper');
+
+const logger = helper.getLogger('commonUtils');
+
 function toUTCmilliseconds(dateStr) {
   let startSyncMills = null;
   try {

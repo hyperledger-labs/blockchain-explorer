@@ -1,7 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
+/* eslint-disable max-len */
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('MetricService');
@@ -37,6 +37,7 @@ class MetricService {
   }
 
   async getPeerData(channel_genesis_hash) {
+    // TODO: or here
     const peerArray = [];
     const c1 = await this.sql
       .getRowsBySQlNoCondtion(`select channel.name as channelName,c.requests as requests,c.channel_genesis_hash as channel_genesis_hash ,

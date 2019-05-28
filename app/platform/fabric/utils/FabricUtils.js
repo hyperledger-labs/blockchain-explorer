@@ -1,3 +1,5 @@
+/* eslint no-nested-ternary: "warn" */
+
 const path = require('path');
 const fs = require('fs-extra');
 const sha = require('js-sha256');
@@ -12,36 +14,26 @@ const ExplorerError = require('../../../common/ExplorerError');
 const explorer_error = require('../../../common/ExplorerMessage').explorer
   .error;
 
-async function createFabricClient(client_configs, client_name, persistence) {
-  // console.log('createFabricClient', client_configs.organizations);
-  // clone global.hfc.config configuration
-  const client_config = cloneConfig(client_configs, client_name);
-
-  // validate client configuration
-  logger.debug('Validating client [%s] configuration', client_name);
-  const validation = validateClientConfig(client_config);
-
-  if (validation) {
-    // create new FabricClient
-    const client = new FabricClient(client_name);
-    // initialize fabric client
-    logger.debug(
-      '************ Initializing fabric client for [%s]************',
-      client_name
-    );
-    await client.initialize(client_config, persistence);
-    return client;
+function processTLS_URL(client_config) {
+  for (const peer_name in client_config.peers) {
+    const { url } = client_config.peers[peer_name];
+    client_config.peers[peer_name].url = client_config.client.tlsEnable
+      ? `grpcs${url.substring(url.indexOf('://'))}`
+      : `grpc${url.substring(url.indexOf('://'))}`;
+    if (client_config.peers[peer_name].eventUrl) {
+      const { eventUrl } = client_config.peers[peer_name];
+      client_config.peers[peer_name].eventUrl = client_config.client.tlsEnable
+        ? `grpcs${eventUrl.substring(eventUrl.indexOf('://'))}`
+        : `grpc${eventUrl.substring(eventUrl.indexOf('://'))}`;
+    }
   }
-  throw new ExplorerError(explorer_error.ERROR_2014);
-}
-
-async function createDetachClient(client_configs, client_name, persistence) {
-  // clone global.hfc.config configuration
-  const client_config = cloneConfig(client_configs, client_name);
-
-  const client = new FabricClient(client_name);
-  await client.initializeDetachClient(client_config, persistence);
-  return client;
+  for (const ord_name in client_config.orderers) {
+    const { url } = client_config.orderers[ord_name];
+    client_config.orderers[ord_name].url = client_config.client.tlsEnable
+      ? `grpcs${url.substring(url.indexOf('://'))}`
+      : `grpc${url.substring(url.indexOf('://'))}`;
+  }
+  return client_config;
 }
 
 function cloneConfig(client_configs, client_name) {
@@ -58,28 +50,6 @@ function cloneConfig(client_configs, client_name) {
 
   // modify url with respect to TLS enable
   client_config = processTLS_URL(client_config);
-  return client_config;
-}
-
-function processTLS_URL(client_config) {
-  for (const peer_name in client_config.peers) {
-    const url = client_config.peers[peer_name].url;
-    client_config.peers[peer_name].url = client_config.client.tlsEnable
-      ? `grpcs${url.substring(url.indexOf('://'))}`
-      : `grpc${url.substring(url.indexOf('://'))}`;
-    if (client_config.peers[peer_name].eventUrl) {
-      const eventUrl = client_config.peers[peer_name].eventUrl;
-      client_config.peers[peer_name].eventUrl = client_config.client.tlsEnable
-        ? `grpcs${eventUrl.substring(eventUrl.indexOf('://'))}`
-        : `grpc${eventUrl.substring(eventUrl.indexOf('://'))}`;
-    }
-  }
-  for (const ord_name in client_config.orderers) {
-    const url = client_config.orderers[ord_name].url;
-    client_config.orderers[ord_name].url = client_config.client.tlsEnable
-      ? `grpcs${url.substring(url.indexOf('://'))}`
-      : `grpc${url.substring(url.indexOf('://'))}`;
-  }
   return client_config;
 }
 
@@ -316,13 +286,36 @@ function validateClientConfig(client_config) {
   return true;
 }
 
-async function setAdminEnrolmentPath(network_configs) {
-  for (const network_name in network_configs) {
-    network_configs[network_name] = setOrgEnrolmentPath(
-      network_configs[network_name]
+async function createFabricClient(client_configs, client_name, persistence) {
+  // console.log('createFabricClient', client_configs.organizations);
+  // clone global.hfc.config configuration
+  const client_config = cloneConfig(client_configs, client_name);
+
+  // validate client configuration
+  logger.debug('Validating client [%s] configuration', client_name);
+  const validation = validateClientConfig(client_config);
+
+  if (validation) {
+    // create new FabricClient
+    const client = new FabricClient(client_name);
+    // initialize fabric client
+    logger.debug(
+      '************ Initializing fabric client for [%s]************',
+      client_name
     );
+    await client.initialize(client_config, persistence);
+    return client;
   }
-  return network_configs;
+  throw new ExplorerError(explorer_error.ERROR_2014);
+}
+
+async function createDetachClient(client_configs, client_name, persistence) {
+  // clone global.hfc.config configuration
+  const client_config = cloneConfig(client_configs, client_name);
+
+  const client = new FabricClient(client_name);
+  await client.initializeDetachClient(client_config, persistence);
+  return client;
 }
 
 function setOrgEnrolmentPath(network_config) {
@@ -339,7 +332,7 @@ function setOrgEnrolmentPath(network_config) {
         );
         if (organization.adminPrivateKey) {
           const privateKeyPath = organization.adminPrivateKey.path;
-          var files = fs.readdirSync(privateKeyPath);
+          const files = fs.readdirSync(privateKeyPath);
           if (files && files.length > 0) {
             organization.adminPrivateKey.path = path.join(
               privateKeyPath,
@@ -350,7 +343,7 @@ function setOrgEnrolmentPath(network_config) {
         // setting admin private key as first file from signcerts dir
         if (organization.signedCert) {
           const signedCertPath = organization.signedCert.path;
-          var files = fs.readdirSync(signedCertPath);
+          const files = fs.readdirSync(signedCertPath);
           if (files && files.length > 0) {
             organization.signedCert.path = path.join(signedCertPath, files[0]);
           }
@@ -366,9 +359,13 @@ function setOrgEnrolmentPath(network_config) {
   return network_config;
 }
 
-async function generateBlockHash(block_header) {
-  const result = await generateBlockHash(block_header);
-  return result;
+async function setAdminEnrolmentPath(network_configs) {
+  for (const network_name in network_configs) {
+    network_configs[network_name] = setOrgEnrolmentPath(
+      network_configs[network_name]
+    );
+  }
+  return network_configs;
 }
 
 async function getBlockTimeStamp(dateStr) {
@@ -409,6 +406,17 @@ async function generateBlockHash(header) {
   return sha.sha256(output);
 }
 
+function readFileSync(config_path) {
+  try {
+    const config_loc = path.resolve(config_path);
+    const data = fs.readFileSync(config_loc);
+    return Buffer.from(data).toString();
+  } catch (err) {
+    logger.error(`NetworkConfig101 - problem reading the PEM file :: ${err}`);
+    throw err;
+  }
+}
+
 function getPEMfromConfig(config) {
   let result = null;
   if (config) {
@@ -422,16 +430,63 @@ function getPEMfromConfig(config) {
   return result;
 }
 
-function readFileSync(config_path) {
-  try {
-    const config_loc = path.resolve(config_path);
-    const data = fs.readFileSync(config_loc);
-    return Buffer.from(data).toString();
-  } catch (err) {
-    logger.error(`NetworkConfig101 - problem reading the PEM file :: ${err}`);
-    throw err;
-  }
-}
+const generateConfig = (org, channel, orderer, peers) => ({
+  version: '1.0',
+  clients: {
+    [org]: {
+      tlsEnable: true,
+      organization: org,
+      channel,
+      credentialStore: {
+        path: `./tmp/fabric-client-kvs_${org}`,
+        cryptoStore: { path: `./tmp/fabric-client-kvs_${org}` }
+      }
+    }
+  },
+  channels: {
+    [channel]: {
+      peers: { [`peer1.${org}.com`]: {} },
+      connection: {
+        timeout: {
+          peer: {
+            endorser: '60000',
+            eventHub: '60000',
+            eventReg: '60000'
+          }
+        }
+      }
+    }
+  },
+  orderers: { '': { url: 'grpcs://:7050' } },
+  organizations: {
+    [orderer]: {
+      mspid: `${orderer}MSP`,
+      fullpath: false,
+      adminPrivateKey: { path: `/private/orgs/${orderer}/admin/msp/keystore` },
+      signedCert: { path: `/private/orgs/${orderer}/admin/msp/signcerts` }
+    },
+    [org]: {
+      name: org,
+      mspid: `${org}MSP`,
+      fullpath: false,
+      tlsEnable: true,
+      adminPrivateKey: { path: `/private/orgs/${org}/admin/msp/keystore` },
+      signedCert: { path: `/private/orgs/${org}/admin/msp/signcerts` }
+    }
+  },
+  peers: new Array(peers).fill(0).reduce((acc, val, key) => {
+    const peerName = `peer${key + 1}.${org}.com`;
+    return {
+      ...acc,
+      [peerName]: {
+        url: `grpcs://${peerName}:7051`,
+        eventUrl: `grpcs://${peerName}:7053`,
+        grpcOptions: { 'ssl-target-name-override': peerName },
+        tlsCACerts: { path: `/private/${org}-ca-chain.pem` }
+      }
+    };
+  }, {})
+});
 
 exports.setAdminEnrolmentPath = setAdminEnrolmentPath;
 exports.setOrgEnrolmentPath = setOrgEnrolmentPath;
@@ -442,3 +497,4 @@ exports.generateDir = generateDir;
 exports.generateBlockHash = generateBlockHash;
 exports.getPEMfromConfig = getPEMfromConfig;
 exports.createDetachClient = createDetachClient;
+exports.generateConfig = generateConfig;

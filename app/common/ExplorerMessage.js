@@ -16,7 +16,8 @@ exports.explorer = {
     ERROR_1007:
       'Missing network_name and client_name , Please run as > sync.js network_name client_name',
     ERROR_1008:
-      'Sync type is set as [local] hence independent sync process cannot be started. Please change the sync type to [host] and restart explorer',
+      'Sync type is set as [local] hence independent sync process cannot be started.' +
+      ' Please change the sync type to [host] and restart explorer',
     ERROR_1009:
       'Failed to connect client peer, please check the configuration and peer status',
 

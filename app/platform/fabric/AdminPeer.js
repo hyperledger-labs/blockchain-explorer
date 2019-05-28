@@ -14,11 +14,8 @@
  limitations under the License.
 */
 
-const api = require('fabric-client/lib/api.js');
 const utils = require('fabric-client/lib/utils.js');
-const Remote = require('fabric-client/lib/Remote');
 const grpc = require('grpc');
-const util = require('util');
 const appRoot = require('app-root-path');
 
 const _serviceProto = grpc.load(
@@ -224,7 +221,7 @@ class AdminPeer {
    * return a printable representation of this object
    */
   toString() {
-    return `${' Admin : {' + 'url:'}${this._url}}`;
+    return `Admin : { url:${this._url}}`;
   }
 }
 

@@ -3,10 +3,8 @@
 */
 
 const syncconfig = require('./explorerconfig.json');
-const helper = require('./common/helper');
 const ExplorerError = require('./common/ExplorerError');
 
-const logger = helper.getLogger('Synchronizer');
 const SyncBuilder = require('./sync/SyncBuilder');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerSender = require('./sync/sender/ExplorerSender');
@@ -14,13 +12,11 @@ const ExplorerSender = require('./sync/sender/ExplorerSender');
 const explorer_const = require('./common/ExplorerConst').explorer.const;
 const explorer_error = require('./common/ExplorerMessage').explorer.error;
 
-let syncScanner;
-
 class Synchronizer {
   constructor(args) {
     this.args = args;
-    this.persistence;
-    this.platform;
+    this.persistence = null;
+    this.platform = null;
   }
 
   async initialize() {
@@ -46,8 +42,8 @@ class Synchronizer {
     // }
 
     if (
-      !(this.args && this.args.length > 2 && this.args[2] === '1')
-      && syncconfig.sync.type !== explorer_const.SYNC_TYPE_HOST
+      !(this.args && this.args.length > 2 && this.args[2] === '1') &&
+      syncconfig.sync.type !== explorer_const.SYNC_TYPE_HOST
     ) {
       throw new ExplorerError(explorer_error.ERROR_1008);
     }
