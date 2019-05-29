@@ -10,7 +10,7 @@ Feature: Bootstrapping Hyperledger Explorer
 #     Given the NETWORK_PROFILE environment variable is solo-disabled
 #     When an admin sets up a channel named "mychannel"
 #     When I start explorer
-#     Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+#     Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
 #     Given I wait "5" seconds
 #     Given I set base URL to "http://localhost:8090"
@@ -40,9 +40,10 @@ Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<networ
     # Need to specify which profiles should be in use before starting Explorer
     Given the NETWORK_PROFILE environment variable is <network-type>
     When I start explorer
-    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
-    Given I wait "5" seconds
+    # Need to wait enough until completing process a new BlockEvent
+    Given I wait "20" seconds
     Given I set base URL to "http://localhost:8090"
     When I make a GET request to "auth/networklist"
     Then the response status code should equal 200
@@ -114,9 +115,10 @@ Scenario: [balance-transfer] Register a new user successfully
     Given I start balance-transfer
     Given the NETWORK_PROFILE environment variable is balance-transfer
     When I start explorer
-    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
-    Given I wait "5" seconds
+    # Need to wait enough until completing process a new BlockEvent
+    Given I wait "20" seconds
     Given I set base URL to "http://localhost:8090"
 
     When I make a POST request to "auth/login" with parameters
@@ -153,9 +155,10 @@ Scenario: [first-network] Not supported to register a new user
     Given I start first-network
     Given the NETWORK_PROFILE environment variable is first-network
     When I start explorer
-    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
-    Given I wait "5" seconds
+    # Need to wait enough until completing process a new BlockEvent
+    Given I wait "20" seconds
     Given I set base URL to "http://localhost:8090"
 
     When I make a POST request to "auth/login" with parameters
@@ -184,7 +187,7 @@ Scenario: [BE-583] Memory Leak : Channel Event Hub shoud be created just once
     Given I start first-network
     Given the NETWORK_PROFILE environment variable is first-network
     When I start explorer
-    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
     Then the explorer app logs contains "Successfully created channel event hub for" 1 time(s) within 60 seconds
 
 @bugfix
@@ -194,7 +197,7 @@ Scenario: [BE-603] Create a channel with long channel name
     Given the NETWORK_PROFILE environment variable is solo-tls-disabled
     When an admin sets up a channel named "mychannel"
     When I start explorer
-    Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
     When an admin sets up a channel named "channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422"
     Then the explorer app logs contains "Successfully created channel event hub for \[channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422\]" 1 time(s) within 60 seconds
