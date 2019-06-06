@@ -8,6 +8,7 @@
  *
  */
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const http = require('http');
 const https = require('https');
@@ -73,6 +74,31 @@ let server;
 let explorer;
 async function startExplorer() {
 	explorer = new Explorer();
+
+	// Application headers
+	explorer.getApp().use(helmet());
+
+	explorer.getApp().use(helmet.xssFilter());
+	explorer.getApp().use(helmet.hidePoweredBy());
+	explorer.getApp().use(helmet.referrerPolicy());
+	explorer.getApp().use(helmet.noSniff());
+	/* eslint-disable */
+	explorer.getApp().use(helmet.frameguard({ action: 'SAMEORIGIN' }));
+	explorer.getApp().use(
+		helmet.contentSecurityPolicy({
+			directives: {
+				defaultSrc: ["'self'"],
+				styleSrc: ["'self'", "'unsafe-inline'"],
+				scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+				objectSrc: ["'self'"],
+				frameSrc: ["'self'"],
+				fontSrc: ["'self'"],
+				imgSrc: ["'self' data: https:; "]
+			}
+		})
+	);
+	/* eslint-enable */
+	// Application headers
 
 	// = =========== web socket ==============//
 	const sslPath = path.join(__dirname, sslCertsPath);

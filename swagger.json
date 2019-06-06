@@ -108,7 +108,7 @@
 			"get": {
 				"tags": ["Channel"],
 				"summary": "Query to get Count of all Channel details",
-				"operationId": "getStstusByHash",
+				"operationId": "getStatusByHash",
 				"parameters": [
 					{
 						"name": "channel_genesis_hash",
@@ -304,47 +304,6 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/register"
-							}
-						}
-					},
-					"required": true
-				},
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {}
-					},
-					"401": {
-						"description": "UnAuthorized",
-						"content": {}
-					},
-					"404": {
-						"description": "Not found",
-						"content": {}
-					}
-				},
-				"security": [
-					{
-						"bearer": []
-					}
-				]
-			}
-		},
-		"/api/joinChannel": {
-			"post": {
-				"tags": ["Channel"],
-				"summary": "Join a New Channel",
-				"operationId": "joinChannel",
-				"requestBody": {
-					"description": "Join a New Channel",
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/joinChannel"
 							}
 						}
 					},
@@ -633,47 +592,6 @@
 				"parameters": [
 					{
 						"name": "channel_genesis_hash",
-						"in": "path",
-						"description": "Query to fetch all Installed/instantiated chaincodes",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success",
-						"content": {}
-					},
-					"400": {
-						"description": "Bad Request",
-						"content": {}
-					},
-					"401": {
-						"description": "UnAuthorized",
-						"content": {}
-					},
-					"404": {
-						"description": "Not found",
-						"content": {}
-					}
-				},
-				"security": [
-					{
-						"bearer": []
-					}
-				]
-			}
-		},
-		"/api/peersStatus/{channelName}": {
-			"get": {
-				"tags": ["Channel"],
-				"summary": "Query to fetch Peer Status",
-				"operationId": "getPeersStatus",
-				"parameters": [
-					{
-						"name": "channelName",
 						"in": "path",
 						"description": "Query to fetch all Installed/instantiated chaincodes",
 						"required": true,
@@ -1031,43 +949,6 @@
 	},
 	"components": {
 		"schemas": {
-			"channel": {
-				"type": "object",
-				"properties": {
-					"channelName": {
-						"type": "string"
-					},
-					"genesisBlock": {
-						"type": "string"
-					},
-					"orgName": {
-						"type": "string"
-					},
-					"channelArtifacts": {
-						"type": "string"
-					},
-					"profile": {
-						"type": "string"
-					}
-				}
-			},
-			"joinChannel": {
-				"type": "object",
-				"properties": {
-					"channelName": {
-						"type": "string"
-					},
-					"orgName": {
-						"type": "string"
-					},
-					"peers": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					}
-				}
-			},
 			"login": {
 				"type": "object",
 				"properties": {
