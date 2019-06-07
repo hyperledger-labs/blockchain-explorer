@@ -89,7 +89,8 @@
 			"!src/state/store.js",
 			"!src/setupTests.js",
 			"!src/registerServiceWorker.js",
-			"!src/services/*.js"
+			"!src/services/*.js",
+			"!src/components/Main.js"
 		],
 		"coverageReporters": [
 			"json",

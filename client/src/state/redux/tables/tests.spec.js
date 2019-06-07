@@ -22,6 +22,7 @@ describe('Tables', () => {
 		});
 
 		const channel = 'mychannel';
+		const query = 'query';
 
 		test('blockList', async done => {
 			nock(/\w*(\W)/g)
@@ -50,6 +51,39 @@ describe('Tables', () => {
 			const store = mockStore(initialState, expectedActions);
 
 			await store.dispatch(operations.blockList(channel));
+			const action = store.getActions();
+			expect(action).toEqual([]);
+
+			done();
+		});
+
+		test('blockListSearch', async done => {
+			nock(/\w*(\W)/g)
+				.get(`/api/blockAndTxList/${channel}/0?${query}`)
+				.reply(200, {
+					rows: [{ test: 'rows' }]
+				});
+
+			const expectedActions = [{ type: types.BLOCK_LIST_SEARCH }];
+			const store = mockStore(initialState, expectedActions);
+
+			await store.dispatch(operations.blockListSearch(channel, query));
+			const action = store.getActions();
+			expect(action[0].type).toEqual(types.BLOCK_LIST_SEARCH);
+
+			done();
+		});
+
+		test('blockListSearch catch error', async done => {
+			spyOn(console, 'error');
+			nock(/\w*(\W)/g)
+				.get(`/api/blockAndTxList/${channel}/0?${query}`)
+				.replyWithError({ code: 'ECONNREFUSED' });
+
+			const expectedActions = [{ type: types.BLOCK_LIST_SEARCH }];
+			const store = mockStore(initialState, expectedActions);
+
+			await store.dispatch(operations.blockListSearch(channel, query));
 			const action = store.getActions();
 			expect(action).toEqual([]);
 
@@ -215,6 +249,39 @@ describe('Tables', () => {
 			const store = mockStore(initialState, expectedActions);
 
 			await store.dispatch(operations.transactionList(channel));
+			const action = store.getActions();
+			expect(action).toEqual([]);
+
+			done();
+		});
+
+		test('transactionListSearch', async done => {
+			nock(/\w*(\W)/g)
+				.get(`/api/txList/${channel}/0/0?${query}`)
+				.reply(200, {
+					rows: [{ test: 'rows' }]
+				});
+
+			const expectedActions = [{ type: types.TRANSACTION_LIST_SEARCH }];
+			const store = mockStore(initialState, expectedActions);
+
+			await store.dispatch(operations.transactionListSearch(channel, query));
+			const action = store.getActions();
+			expect(action[0].type).toEqual(types.TRANSACTION_LIST_SEARCH);
+
+			done();
+		});
+
+		test('transactionListSearch catch error', async done => {
+			spyOn(console, 'error');
+			nock(/\w*(\W)/g)
+				.get(`/api/txList/${channel}/0/0?${query}`)
+				.replyWithError({ code: 'ECONNREFUSED' });
+
+			const expectedActions = [{ type: types.TRANSACTION_LIST_SEARCH }];
+			const store = mockStore(initialState, expectedActions);
+
+			await store.dispatch(operations.transactionListSearch(channel, query));
 			const action = store.getActions();
 			expect(action).toEqual([]);
 

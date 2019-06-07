@@ -128,13 +128,13 @@ describe('Auth', () => {
 
 		test('NetworkList', async done => {
 			nock(/\w*(\W)/g)
-				.post(`/auth/networklist`)
+				.get(`/auth/networklist`)
 				.reply(200);
 
 			const expectedActions = [{ type: types.NETWORK }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.register());
+			await store.dispatch(operations.network());
 			done();
 		});
 	});
