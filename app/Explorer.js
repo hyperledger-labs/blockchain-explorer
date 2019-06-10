@@ -44,7 +44,9 @@ class Explorer {
 			})
 		);
 		this.app.use(passport.initialize());
-		this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+		if (process.env.NODE_ENV !== 'production') {
+			this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+		}
 		this.app.use(compression());
 		this.persistence = null;
 		this.platforms = [];
