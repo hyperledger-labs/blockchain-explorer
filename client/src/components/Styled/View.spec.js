@@ -7,7 +7,7 @@ import { unwrap } from '@material-ui/core/test-utils';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Adapter from 'enzyme-adapter-react-16';
 import { createMuiTheme } from '@material-ui/core/styles';
-import { View } from './View';
+import View from './View';
 
 Enzyme.configure({ adapter: new Adapter() });
 
