@@ -86,12 +86,17 @@
 		"precommit": "lint-staged && ./scripts/verify-license.sh",
 		"e2e-test-check-tool": "/bin/bash -c 'if [[ -z $(which configtxgen) ]]; then echo \"### Need to install tools ###\n\"; exit -1; fi'",
 		"e2e-test-check-img": "/bin/bash -c 'if [[ -z $(docker images -q hyperledger/fabric-peer:latest) ]]; then echo \"### Need to pull fabric images ###\n\"; exit -1; fi'",
-		"e2e-test-setup-tool:ci": "/bin/bash -c 'mkdir fabric-samples; pushd fabric-samples; curl -sSL https://raw.githubusercontent.com/hyperledger/fabric-samples/release-1.4/scripts/bootstrap.sh | bash -s; popd'",
+		"e2e-test-setup-tool:ci": "/bin/bash -c 'curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s -- 1.4.0 1.4.0 0.4.14 -s'",
 		"e2e-test-setup-env": "cd app/platform/fabric/e2e-test; if [ ! -e e2e-test ]; then virtualenv e2e-test; fi && . ./e2e-test/bin/activate && pip install -r requirement.txt",
 		"e2e-test-setup-img": "./build_docker_image.sh",
 		"e2e-test-run": "cd app/platform/fabric/e2e-test; . ./e2e-test/bin/activate && behave explorer.feature",
 		"e2e-test-run-sanitycheck": "cd app/platform/fabric/e2e-test; . ./e2e-test/bin/activate && behave --tags=@sanitycheck --stop --no-skipped explorer.feature",
 		"e2e-test": "run-s e2e-test-check-tool e2e-test-check-img e2e-test-setup-env e2e-test-setup-img e2e-test-run",
-		"e2e-test-sanitycheck:ci": "cross-env PATH=$PATH:$PWD/fabric-samples/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-check-img e2e-test-setup-env e2e-test-setup-img e2e-test-run-sanitycheck"
+		"e2e-test-sanitycheck:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-check-img e2e-test-setup-env e2e-test-setup-img e2e-test-run-sanitycheck",
+		"e2e-gui-test-setup-env": "cd client; npm install",
+		"e2e-gui-test-setup": "./client/e2e-setup.sh",
+		"e2e-gui-test-run": "cd client; npx wdio",
+		"e2e-gui-test": "run-s e2e-gui-test-setup e2e-gui-test-run",
+		"e2e-gui-test:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-check-tool e2e-test-setup-img e2e-gui-test-setup-env e2e-gui-test-setup e2e-gui-test-run"
 	}
 }
