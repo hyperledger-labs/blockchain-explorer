@@ -83,7 +83,7 @@
 		"lint": "eslint .",
 		"linter": "eslint",
 		"lint:fix": "eslint . --fix",
-		"precommit": "lint-staged && ./verify-license.sh",
+		"precommit": "lint-staged && ./scripts/verify-license.sh",
 		"e2e-test-check-tool": "/bin/bash -c 'if [[ -z $(which configtxgen) ]]; then echo \"### Need to install tools ###\n\"; exit -1; fi'",
 		"e2e-test-check-img": "/bin/bash -c 'if [[ -z $(docker images -q hyperledger/fabric-peer:latest) ]]; then echo \"### Need to pull fabric images ###\n\"; exit -1; fi'",
 		"e2e-test-setup-tool:ci": "/bin/bash -c 'mkdir fabric-samples; pushd fabric-samples; curl -sSL https://raw.githubusercontent.com/hyperledger/fabric-samples/release-1.4/scripts/bootstrap.sh | bash -s; popd'",
