@@ -97,7 +97,11 @@
 			"!src/setupTests.js",
 			"!src/registerServiceWorker.js",
 			"!src/services/*.js",
-			"!src/components/Main.js"
+			"!src/components/Main.js",
+			"!src/components/Login/Login.js",
+			"!src/components/Register/Register.js",
+			"!src/components/View/LandingPage.js",
+			"!src/state/redux/auth/operations.js"
 		],
 		"coverageReporters": [
 			"json",
