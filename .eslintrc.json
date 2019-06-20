@@ -371,6 +371,7 @@
 					"Jzd",
 					"G1pbi",
 					"Im7h",
+					"helmet-csp",
 					"khanacademy",
 					"channelsinfo",
 					"signcerts",
@@ -388,6 +389,7 @@
 					"Str",
 					"pgconfig",
 					"searchparm",
+					"x-xss-protection",
 					"prc",
 					"cfcdcd",
 					"594aa5",
@@ -414,7 +416,10 @@
 					"Num",
 					"metricservice",
 					"dbconfig",
-					"pltfrm"
+					"pltfrm",
+					"SAMEORIGIN",
+					"csurf",
+					"_csrf-hl-expl"
 				],
 				"skipIfMatch": ["http://[^s]*"],
 				"skipWordIfMatch": ["^foobar.*$"],

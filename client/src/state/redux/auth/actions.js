@@ -24,7 +24,9 @@ export const register = registered => ({
 	payload: registered
 });
 
-export const enroll = enrolled => ({
-	type: types.ENROLL,
-	payload: enrolled
-});
+export default {
+	login,
+	network,
+	error,
+	register
+};

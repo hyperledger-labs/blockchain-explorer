@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: Apache-2.0
+version: '2.1'
+
+networks:
+  e2egui-net:
+    external:
+      name: e2egui_behave
+
+services:
+  chrome:
+    image: selenium/node-chrome:3.141.59-palladium
+    container_name: selenium-chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - hub
+    environment:
+      HUB_HOST: hub
+    networks:
+      - e2egui-net
+
+  hub:
+    image: selenium/hub:3.141.59-palladium
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+    networks:
+      - e2egui-net

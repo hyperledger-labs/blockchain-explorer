@@ -297,6 +297,7 @@ export class HeaderView extends Component {
 		}
 
 		this.setState({
+			currentChannel: currentChannel,
 			channels: options,
 			isLoading: false,
 			selectedChannel: selectedValue

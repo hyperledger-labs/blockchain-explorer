@@ -51,6 +51,13 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+
+    if scenario.status == "failed":
+        print("Explorer container log:")
+        subprocess.call("docker logs explorer.mynetwork.com 2>&1", shell=True)
+        print("Explorer-DB container log:")
+        subprocess.call("docker logs explorerdb.mynetwork.com 2>&1", shell=True)
+
     # Display memory usage before tearing down the network
     mem = psutil.virtual_memory()
     print("Memory Info Before Network Teardown:\n\tFree: {}\n\tUsed: {}\n\tPercentage: {}\n".format(mem.free, mem.used, mem.percent))

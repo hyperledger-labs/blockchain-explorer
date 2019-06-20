@@ -35,7 +35,7 @@ else
 fi
 
 # If you want to exclude some paths, add a keyword with an extended regular expression format to excluded_paths
-excluded_paths="\.ico$ \.jpg$ \.json$ \.png$ \.svg$ \.tx$ \.crt$ \.ya*ml$ \.key$ \.pem$ _sk$ \/META-INF\/ LICENSE$ \.xml$"
+excluded_paths="\.ico$ \.jpg$ \.json$ \.png$ \.svg$ \.tx$ \.crt$ \.ya*ml$ \.key$ \.pem$ _sk$ \/META-INF\/ LICENSE$ \.xml$ CHANGELOG\.md$"
 
 for check_file in ${check_files}; do
 

@@ -2,36 +2,37 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { ChaincodeModal } from './ChaincodeModal';
+import React from 'react';
+import Enzyme, { shallow, mount } from 'enzyme';
+import { unwrap } from '@material-ui/core/test-utils';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import Adapter from 'enzyme-adapter-react-16';
+import { createMuiTheme } from '@material-ui/core/styles';
+import ChaincodeModal from './ChaincodeModal';
 
-const setup = () => {
-  const props = {
-    classes: {
-      code: 'code',
-      source: 'source',
-      cubeIcon: 'cubeIcon',
-    },
-    chaincode: {
-      chaincodename: 'mycc',
-      channelName: 'mychannel',
-      path: 'github.com/chaincode/chaincode_example02/go/',
-      source: 'Location not found',
-      txCount: 32,
-      version: '1.0',
-    },
-  };
+Enzyme.configure({ adapter: new Adapter() });
+const ComponentNaked = unwrap(ChaincodeModal);
 
-  const wrapper = shallow(<ChaincodeModal {...props} />);
+describe('<ChaincodeModal />', () => {
+	it('with shallow', () => {
+		const wrapper = shallow(<ComponentNaked chaincode={{}} classes={{}} />);
+		expect(wrapper.exists()).toBe(true);
+	});
+	it('with mount', () => {
+		const wrapper = mount(
+			<MuiThemeProvider theme={createMuiTheme()}>
+				<ChaincodeModal chaincode={{}} classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
 
-  return {
-    props,
-    wrapper,
-  };
-};
-
-describe('ChaincodeModal', () => {
-  test('ChaincodeModal component should render', () => {
-    const { wrapper } = setup();
-    expect(wrapper.exists()).toBe(true);
-  });
+	it('mount with dark', () => {
+		const wrapper = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<ChaincodeModal chaincode={{}} classes={{}} />
+			</MuiThemeProvider>
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
 });

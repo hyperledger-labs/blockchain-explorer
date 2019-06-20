@@ -9,8 +9,7 @@ const initialState = {
 	token: null,
 	error: '',
 	networks: [],
-	registered: '',
-	enrolled: ''
+	registered: ''
 };
 
 /* Reducers for Dashboard Charts */

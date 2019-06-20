@@ -1,56 +1,72 @@
 /**
- *    SPDX-License-Identifier: Apache-2.0
+ *    SPDX-License-Identifier: CC-BY-4.0
  */
 
-import { NotificationsPanel } from './NotificationsPanel';
+import React from 'react';
+import Enzyme, { shallow, mount } from 'enzyme';
+import { unwrap } from '@material-ui/core/test-utils';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import Adapter from 'enzyme-adapter-react-16';
+import { createMuiTheme } from '@material-ui/core/styles';
+import NotificationsPanel from './NotificationsPanel';
 
-const setup = () => {
-  const props = {
-    notifications: [
-      {
-        title: 'Block 12 Added',
-        type: 'block',
-        message: 'Block 12 established with 3 tx',
-        time: '2018-05-30T21:15:09.000Z',
-        txcount: 3,
-        datahash:
-          '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7',
-      },
-    ],
-    classes: {
-      avatarBlue: 'NotificationsPanel-avatarBlue-80',
-      root: 'NotificationsPanel-root-79',
-    },
-  };
-  const wrapper = shallow(<NotificationsPanel {...props} />);
+Enzyme.configure({ adapter: new Adapter() });
 
-  return {
-    props,
-    wrapper,
-  };
-};
+const ComponentNaked = unwrap(NotificationsPanel);
 
-describe('NotificationsPanel', () => {
-  test('NotificationsPanel component should render', () => {
-    const { wrapper } = setup();
-    expect(wrapper.exists()).toBe(true);
-  });
+describe('<NotificationsPanel />', () => {
+	it('with shallow', () => {
+		const notification = [
+			{
+				title: 'Block 12 Added',
+				type: 'block',
+				message: 'Block 12 established with 3 tx',
+				time: '2018-05-30T21:15:09.000Z',
+				txcount: 3,
+				datahash: '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7'
+			}
+		];
+		const wrapper = shallow(
+			<ComponentNaked classes={{}} notifications={notification} />
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
 
-  test('avatarIcon returns avatar', () => {
-    const { wrapper, props } = setup();
-    expect(
-      wrapper.instance().avatarIcon('block', props.classes).props.className,
-    ).toBe('NotificationsPanel-avatarBlue-80');
-    expect(
-      wrapper.instance().avatarIcon('notBlock', props.classes).props.className,
-    ).toBe(undefined);
-  });
+	it('with mount', () => {
+		const notification = [
+			{
+				title: 'Block 12 Added',
+				type: 'block',
+				message: 'Block 12 established with 3 tx',
+				time: '2018-05-30T21:15:09.000Z',
+				txcount: 3,
+				datahash: '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7'
+			}
+		];
+		const wrapper = mount(
+			<MuiThemeProvider theme={createMuiTheme()}>
+				<NotificationsPanel classes={{}} notifications={notification} />
+			</MuiThemeProvider>
+		);
+		expect(wrapper.exists()).toBe(true);
+	});
 
-  test('no notifications', () => {
-    const { wrapper } = setup();
-    wrapper.setProps({ notifications: [] });
-    expect(
-      wrapper.find('WithStyles(Typography)').contains('NO NOTIFICATIONS'),
-    ).toBe(true);
-  });
+	it('Check if dark theme is applied correctly', () => {
+		const notification = [
+			{
+				title: 'Block 12 Added',
+				type: 'block',
+				message: 'Block 12 established with 3 tx',
+				time: '2018-05-30T21:15:09.000Z',
+				txcount: 3,
+				datahash: '07ff8fa88e8c8412daa15ae0ecec80b47293a452165d00213ec08811c9fd88e7'
+			}
+		];
+		const wrapperone = mount(
+			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+				<NotificationsPanel classes={{}} notifications={notification} />
+			</MuiThemeProvider>
+		);
+		expect(wrapperone.exists()).toBe(true);
+	});
 });

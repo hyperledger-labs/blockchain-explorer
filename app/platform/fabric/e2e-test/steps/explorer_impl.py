@@ -103,11 +103,17 @@ def start_balancetransfer_impl(context):
 
     try:
         command = ["./runApp.sh"]
-        subprocess.Popen(command, shell=True, env=updated_env, stdout=FNULL)
+        p = subprocess.Popen(command, shell=True, env=updated_env, stdout=subprocess.PIPE)
     except:
         print("Failed to start application: {0}".format(sys.exc_info()[1]))
 
-    time.sleep(10)
+    while True:
+        line = p.stdout.readline()
+        if "SERVER STARTED" in line:
+            print(line)
+            break
+        else:
+            time.sleep(1)
 
     try:
         command = ["./testAPIs.sh"]
