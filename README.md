@@ -42,7 +42,8 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 - [14.0 Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
 - [15.0 Logs](#Logs)
 - [16.0 Troubleshooting](#Troubleshooting)
-- [17.0 License](#License)
+- [17.0 Testing](#Testing)
+- [18.0 License](#License)
 
 
 
@@ -548,9 +549,25 @@ To push the container to your registry, run:
 - Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting TechNotes for Hyperledger Explorer.
 
 
+<a name="Testing" />
+
+# 17.0 Testing    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+
+* Unit test
+
+* End-to-End test
+
+  * For REST API
+
+    - Please visit the [README.md](./app/platform/fabric/e2e-test/README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer REST API.
+
+  * For GUI
+
+    - Please visit the [README.md](./client/test/E2E-TEST-README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer GUI.
+
 
 <a name="License" />
 
-# 17.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 18.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.

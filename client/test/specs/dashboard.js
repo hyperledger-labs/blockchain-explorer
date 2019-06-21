@@ -2,6 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable no-unused-expressions */
+
 require('chai').should();
 var expect = require('chai').expect;
 
@@ -21,7 +23,7 @@ describe('Explorer dashboard', () => {
 	});
 
 	describe('statistics', () => {
-		it('shoud have a metrics', () => {
+		it('should have a metrics', () => {
 			browser.setTimeout({
 				timeouts: 100000
 			});
@@ -43,7 +45,7 @@ describe('Explorer dashboard', () => {
 			txNum.should.be.equal('5');
 
 			// Num. of Nodes
-			var nodeNum = browser
+			nodeNum = browser
 				.$(
 					'#root > div > div > div > div > div:nth-child(1) > div > div > div:nth-child(3) > div > div:nth-child(2) > h1'
 				)
@@ -107,11 +109,11 @@ describe('Explorer dashboard', () => {
 			);
 			path.click();
 
-			var tooltip = browser.$(
+			tooltip = browser.$(
 				'#root > div > div > div > div > div:nth-child(2) > div:nth-child(2) > div > div > div > div.recharts-tooltip-wrapper.recharts-tooltip-wrapper-right.recharts-tooltip-wrapper-bottom > div > ul > li > span.recharts-tooltip-item-name'
 			);
 
-			var displayTooltip = tooltip.isExisting();
+			displayTooltip = tooltip.isExisting();
 			expect(displayTooltip).to.be.true;
 			console.log(tooltip.getText());
 		});

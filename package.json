@@ -94,8 +94,8 @@
 		"e2e-test": "run-s e2e-test-check-tool e2e-test-check-img e2e-test-setup-env e2e-test-setup-img e2e-test-run",
 		"e2e-test-sanitycheck:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-check-img e2e-test-setup-env e2e-test-setup-img e2e-test-run-sanitycheck",
 		"e2e-gui-test-setup-env": "cd client; npm install",
-		"e2e-gui-test-setup": "./client/e2e-setup.sh",
-		"e2e-gui-test-run": "cd client; npx wdio",
+		"e2e-gui-test-setup": "./client/test/e2e-setup.sh",
+		"e2e-gui-test-run": "cd client; npx wdio ./test/wdio.conf.js",
 		"e2e-gui-test": "run-s e2e-gui-test-setup e2e-gui-test-run",
 		"e2e-gui-test:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-setup-img e2e-gui-test-setup-env e2e-gui-test-setup e2e-gui-test-run"
 	}

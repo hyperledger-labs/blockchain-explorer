@@ -5,7 +5,7 @@
 #
 
 
-ROOTDIR="$(cd "$(dirname "$0")"/.. && pwd)"
+ROOTDIR="$(cd "$(dirname "$0")"/../.. && pwd)"
 export CORE_PEER_NETWORKID=e2egui
 export COMPOSE_PROJECT_NAME=$CORE_PEER_NETWORKID
 export NETWORK_PROFILE=first-network
