@@ -5,9 +5,12 @@
 import ReactTable from '../Styled/Table';
 import { Transactions } from './Transactions';
 import TransactionView from '../View/TransactionView';
+import moment from 'moment';
 
-const setup = () => {
-	const props = {
+jest.useFakeTimers();
+
+const setup = prop => {
+	const propsbase = {
 		classes: {
 			hash: 'hash',
 			partialHash: 'partialHash',
@@ -206,6 +209,7 @@ const setup = () => {
 		getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
 	};
 
+	const props = { ...propsbase, ...prop };
 	const wrapper = mount(<Transactions {...props} />);
 
 	return {
@@ -414,5 +418,214 @@ describe('Transactions', () => {
 		];
 		wrapper.setProps({ currentChannel });
 		expect(spy).toHaveBeenCalledTimes(1);
+	});
+
+	test('clearInterval gets called in componentWillReceiveProps when inteval has already been set', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		wrapper.setState({ search: true });
+		const spy = jest.spyOn(instance, 'searchTransactionList');
+
+		const currentChannel = [
+			{
+				currentChannel: 'MyChannel'
+			}
+		];
+
+		wrapper.setProps({ currentChannel });
+
+		expect(clearInterval).toHaveBeenCalled();
+		expect(spy).toHaveBeenCalledTimes(1);
+
+		jest.advanceTimersByTime(70000);
+
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
+
+	test('calls componentWillUnmount', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		const spy = jest.spyOn(instance, 'componentWillUnmount');
+
+		wrapper.unmount();
+
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(clearInterval).toHaveBeenCalled();
+	});
+
+	test('rendered when some of list items are selected', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const selected = { orgs: ['org_a'] };
+		const options = { options: ['org_a', 'org_b', 'org_c'] };
+		wrapper.setState(selected);
+		wrapper.setState(options);
+
+		const header = wrapper.find('.dropdown-heading-value');
+		expect(header.text()).toContain(selected.orgs.join(','));
+	});
+
+	test('rendered when all of list items are selected', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const selected = { orgs: ['org_a', 'org_b', 'org_c'] };
+		const options = { options: ['org_a', 'org_b', 'org_c'] };
+		wrapper.setState(selected);
+		wrapper.setState(options);
+
+		const header = wrapper.find('.dropdown-heading-value');
+		expect(header.text()).toContain('All Orgs Selected');
+	});
+
+	test('search transaction of specified orgs', () => {
+		const { props, wrapper } = setup();
+		const instance = wrapper.instance();
+		wrapper.setState({ orgs: ['org_a', 'org_b'] });
+		wrapper.setState({ search: true });
+		const spy = jest.spyOn(instance, 'searchTransactionList');
+
+		const currentChannel = [
+			{
+				currentChannel: 'MyChannel'
+			}
+		];
+		wrapper.setProps({ currentChannel });
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(props.getTransactionListSearch).toHaveBeenCalled();
+		expect(props.getTransactionListSearch.mock.calls[0][1]).toContain(
+			'&&orgs=org_a&&orgs=org_b'
+		);
+	});
+
+	test('handleMultiSelect gets called when selected is changed', () => {
+		const { props, wrapper } = setup();
+		const instance = wrapper.instance();
+		const spy = jest.spyOn(instance, 'handleMultiSelect');
+
+		const orgSelect = wrapper.find('MultiSelect');
+		expect(orgSelect.exists()).toBe(true);
+		orgSelect.first().prop('onSelectedChanged')(['org_a', 'org_b']);
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(wrapper.state('orgs')).toStrictEqual(['org_a', 'org_b']);
+	});
+
+	test('Simulate onClick when a search button is clicked', async () => {
+		const { wrapper } = setup();
+		wrapper.setState({ search: false });
+		const instance = wrapper.instance();
+		instance.searchTransactionList = jest.fn();
+
+		await wrapper.find('.btn-success').simulate('click');
+		wrapper.update();
+
+		expect(setInterval).toHaveBeenCalled();
+		expect(instance.searchTransactionList).toHaveBeenCalled();
+		expect(wrapper.state('search')).toBe(true);
+	});
+
+	test('searchBlockList gets scheduled when a search button is clicked first time', async () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const spy = jest.spyOn(instance, 'searchTransactionList');
+
+		await wrapper.find('.btn-success').simulate('click');
+		wrapper.update();
+
+		expect(clearInterval).toHaveBeenCalled();
+		expect(setInterval).toHaveBeenCalled();
+		expect(spy).toHaveBeenCalledTimes(1);
+
+		jest.advanceTimersByTime(70000);
+
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
+
+	test('Simulate onClick when a clear button is clicked', async () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		wrapper.setState({ search: true });
+
+		await wrapper.find('.btn-primary').simulate('click');
+		wrapper.update();
+
+		expect(wrapper.state('search')).toBe(false);
+		expect(wrapper.state('orgs').length).toBe(0);
+	});
+
+	test('rendered table when txhash in a transaction is empty', () => {
+		const incomplete_transaction = {
+			transactionList: [
+				{
+					blockid: 20,
+					chaincode_id: '',
+					chaincodename: 'mycc',
+					channelname: 'mychannel',
+					createdt: '4-26-2018 4:32 PM EDT',
+					creator_msp_id: 'Org1MSP',
+					endorser_msp_id: "{'Org1MSP'}",
+					id: 41,
+					read_set: [],
+					status: 200,
+					txhash: '',
+					type: 'ENDORSER_TRANSACTION',
+					write_set: []
+				}
+			]
+		};
+		const { props, wrapper } = setup(incomplete_transaction);
+
+		const txhash = wrapper.find('[data-command="transaction-partial-hash"]');
+		expect(txhash.exists()).toBe(true);
+		expect(
+			txhash
+				.at(0)
+				.text()
+				.trim()
+		).toBe(''); // Tx Id
+	});
+
+	test('Date(from) is set without any errors', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(1).prop('onChange')(moment().subtract(1, 'days'));
+		expect(wrapper.state('err')).toBe(false);
+	});
+
+	test('error is detected when set newer date to `from` than date of `to`', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(1).prop('onChange')(moment().add(1, 'days'));
+		expect(wrapper.state('err')).toBe(true);
+	});
+
+	test('Date(to) is set without any errors', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(3).prop('onChange')(moment().add(1, 'days'));
+		expect(wrapper.state('err')).toBe(false);
+	});
+
+	test('error is detected when set older date to `to` than date of `from`', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(3).prop('onChange')(moment().subtract(2, 'days'));
+		expect(wrapper.state('err')).toBe(true);
+	});
+
+	test('filtered state gets cleared when click clear button', () => {
+		const { props, wrapper } = setup();
+		wrapper.setState({ filtered: ['a', 'b', 'c'], sorted: ['d', 'e'] });
+		wrapper.find('.btn-secondary').simulate('click');
+		wrapper.update();
+		expect(wrapper.state('filtered').length).toBe(0);
+		expect(wrapper.state('sorted').length).toBe(0);
 	});
 });
