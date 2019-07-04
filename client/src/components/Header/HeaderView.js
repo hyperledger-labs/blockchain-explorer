@@ -72,6 +72,7 @@ const {
 const { currentChannelSelector } = chartSelectors;
 const { channelsSelector } = tableSelectors;
 
+/* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
