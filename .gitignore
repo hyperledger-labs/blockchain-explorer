@@ -30,3 +30,4 @@ ssl-certs/*.pem
 ssl-certs/*.csr
 0
 app/test/.nyc_output/
+docs/build/

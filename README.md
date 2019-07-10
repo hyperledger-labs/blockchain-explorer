@@ -7,6 +7,7 @@
 [rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
 [![Build Status](https://jenkins.hyperledger.org/buildStatus/icon?job=blockchain-explorer-merge-x86_64)](https://jenkins.hyperledger.org/view/fabric/job/blockchain-explorer-merge-x86_64)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
+[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=latest)](https://blockchain-explorer.readthedocs.io/en/latest/?badge=latest)
 
 <!-- badges -->
 
@@ -324,6 +325,10 @@ On another terminal:
 - `./main.sh clean`
     - to clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
    directories
+- `./main.sh test`
+    - to test REST API, and UI components
+    - to generate code coverage report
+
 
 Or
 
@@ -334,7 +339,7 @@ Or
 - `npm run test`
 - `cd client/`
 - `npm install`
-- `npm test -- -u --coverage`
+- `npm run test:ci -- -u --coverage`
 - `npm run build`
 
 <a name="Config-https-Hyperledger-Explorer" />

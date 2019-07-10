@@ -46,7 +46,7 @@ client/test/
 
 +-- docker-compose.yaml // Definition for Selenium Hub/Browser container service
 
-+-- e2e-setup.sh        // Bring up fabric network and explorer 
++-- e2e-setup.sh        // Bring up fabric network and explorer
 
 +-- wdio.conf.js        // webdriverIO configuration
 

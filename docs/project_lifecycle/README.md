@@ -1,13 +1,13 @@
 
 <!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
-## Hyperledger Explorewr Project Lifecycle
+## Hyperledger Explorer Project Lifecycle
 
 - Hyperledger Explorer Project follows the Hyperledger Project lifecycle states process as follows:
 
    - [Proposal](proposal.md)
 
-   - [Incubation](incubation.md)
+   - [Incubation](Incubation.md)
 
    - [Active](active.md)
 
