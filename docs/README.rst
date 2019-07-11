@@ -1,30 +1,34 @@
 
-<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
-## Hyperledger Explorer
+Hyperledger Explorer
+====================
 
-- [Project Lifecycle](project_lifecycle/README.md)
-- [Hyperledger Explorer functionalities](project_functionalities/README.md)
+`Project Lifecycle <project_lifecycle/README.md>`__
+
+`Hyperledger Explorer functionalities <project_functionalities/README.md>`__
 
 
 
-# Documentation README
+Documentation README
+----------------------
 
-## Introduction
+Introduction
+~~~~~~~~~~~~
 
 This document contains information on how the Hyperledger Explorer documentation is
 built and published as well as a few conventions one should be aware of
 before making changes to the doc.
 
 The crux of the documentation is written in
-[reStructuredText](http://docutils.sourceforge.net/rst.html) which is
-converted to HTML using [Sphinx](http://www.sphinx-doc.org/en/stable/).
-The HTML is then published on http://hyperledger-fabric.readthedocs.io
+`reStructuredText <http://docutils.sourceforge.net/rst.html>`__ which is
+converted to HTML using `Sphinx <http://www.sphinx-doc.org/en/stable>`__.
+The HTML is then published on http://blockchain-explorer.readthedocs.io
 which has a hook so that any new content that goes into `docs/source`
 on the main repository will trigger a new build and publication of the
 doc.
 
-## Conventions
+Conventions
+~~~~~~~~~~~
 
 * Source files are in RST format and found in the `docs/source` directory.
 * The main entry point is index.rst, so to add something into the Table
@@ -42,7 +46,8 @@ Notes: The above means we have a dependency on the github mirror
 repository. Relative links are unfortunately not working on github
 when browsing through a RST file.
 
-## Setup
+Setup
+~~~~~
 
 Making any changes to the documentation will require you to test your
 changes by building the doc in a way similar to how it is done for
@@ -50,7 +55,8 @@ production. There are two possible setups you can use to do so:
 setting up your own staging repo and publication website, or building
 the docs on your machine. The following sections cover both options:
 
-### Building the docs on your machine
+Building the docs on your machine
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Here are the quick steps to achieve this on a local machine without
 depending on ReadTheDocs, starting from the main fabric
@@ -95,4 +101,4 @@ You can then access the html files at `http://localhost/index.html`.
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
-   https://creativecommons.org/licenses/by/4.0/
+   https://creativecommons.org/licenses/by/4.0/-~~~~~~

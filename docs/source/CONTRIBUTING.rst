@@ -118,9 +118,20 @@ Submitting your change request
 Copyright Notices
 
 There should be a single LICENSE file in the top-level directory that contains the full text of the Apache License `here <http://www.apache.org/licenses/LICENSE-2.0>`__.
-In the individual files, please use the following line:
 
-SPDX-License-Identifier: Apache-2.0
+
+
+
+
+.. note:: In the individual files, please use the following line:
+
+
+          ::
+
+														/*
+														   SPDX-License-Identifier: Apache-2.0
+														*/
+
 
 
 Related Topics
