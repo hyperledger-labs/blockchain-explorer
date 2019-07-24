@@ -393,6 +393,7 @@ From new terminal (if Sync Process in Standalone).
 - `./syncstop.sh`  (it will stop the sync node).
 
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
+- If Hyperledger Fabric network is deployed on other machine, please toggle DISCOVERY_AS_LOCALHOST in start.sh / syncstart.sh to 'false'.
 
 
 
