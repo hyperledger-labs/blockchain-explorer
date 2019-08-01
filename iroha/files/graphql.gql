@@ -1,0 +1,226 @@
+
+# Iroha block
+type Block {
+  # Block height
+  height: Int!
+
+  # Block hash, SHA3-256
+  hash: String!
+
+  # Count of transactions in block
+  transactionCount: Int!
+
+  # Block commit time, ISO format
+  time: String!
+
+  # Transactions in block
+  transactions: [Transaction!]!
+
+  # Previous block hash
+  previousBlockHash: String!
+}
+
+# Paginated list of blocks
+type BlockList {
+  # Blocks in this page
+  items: [Block!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+# Iroha transaction
+type Transaction {
+  # Transaction hash, SHA3-256
+  hash: String!
+
+  # Transaction creator account
+  createdBy: Account
+
+  # Transaction commit time
+  time: String!
+
+  # Height of block containing this transaction
+  blockHeight: Int!
+
+  # Public keys used to sign this transaction
+  signatories: [String!]!
+
+  # JSON commands contained in this transaction
+  commandsJson: String!
+}
+
+# Paginated list of transactions
+type TransactionList {
+  # Transactions in this page
+  items: [Transaction!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+# Iroha account
+type Account {
+  # Account id, in "NAME@DOMAIN" format
+  id: String!
+
+  # Account quorum
+  quorum: Int!
+  
+  # Account roles
+  roles: [Role!]!
+
+  # Permissions from roles
+  permissions: [String!]!
+
+  # Permissions granted by this account
+  permissionsGrantedBy: [PermissionGranted!]!
+
+  # Permissions granted to this account
+  permissionsGrantedTo: [PermissionGranted!]!
+}
+
+type PermissionGranted {
+  by: String!
+  to: String!
+  permission: String!
+}
+
+# Paginated list of accounts
+type AccountList {
+  # Accounts in this page
+  items: [Account!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+# Iroha peer
+type Peer {
+  # Peer address
+  address: String!
+
+  # Peer public key
+  publicKey: String!
+}
+
+# Paginated list of peers
+type PeerList {
+  # Peers in this page
+  items: [Peer!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+# Iroha role
+type Role {
+  # Role name
+  name: String!
+
+  # Role permissions
+  permissions: [String!]!
+}
+
+# Paginated list of roles
+type RoleList {
+  # Roles in this page
+  items: [Role!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+# Iroha domain
+type Domain {
+  # Domain id
+  id: String!
+
+  # Domain permissions
+  defaultRole: Role!
+}
+
+# Paginated list of domains
+type DomainList {
+  # Domains in this page
+  items: [Domain!]!
+
+  # Next page "after" input
+  nextAfter: Int!
+}
+
+type CountPerDomain {
+  domain: String!
+  count: Int!
+}
+
+type Query {
+  # Total block count
+  blockCount: Int!
+
+  # Total transaction count
+  transactionCount: Int!
+
+  # Total account count
+  accountCount: Int!
+
+  # Total peer count
+  peerCount: Int!
+
+  # Total role count
+  roleCount: Int!
+
+  # Total domain count
+  domainCount: Int!
+
+  # Block by height, or null if does not exist
+  blockByHeight(height: Int!): Block
+
+  # Transaction by hash, or null if does not exist
+  transactionByHash(hash: String!): Transaction
+
+  # Account by id, or null if does not exist
+  accountById(id: String!): Account
+
+  # Peer by public key, or null if does not exist
+  peerByPublicKey(publicKey: String!): Peer
+
+  # Role by name, or null if does not exist
+  roleByName(name: String!): Role
+
+  # Domain by id, or null if does not exist
+  domainById(id: String!): Domain
+
+  # Chronological paginated list of blocks
+  blockList(after: Int, count: Int!, reverse: Boolean, timeAfter: String, timeBefore: String): BlockList!
+
+  # Chronological paginated list of transactions
+  transactionList(after: Int, count: Int!, timeAfter: String, timeBefore: String, creatorId: String): TransactionList!
+
+  # Chronological paginated list of accounts
+  accountList(after: Int, count: Int!, id: String): AccountList!
+
+  # Chronological paginated list of peers
+  peerList(after: Int, count: Int!): PeerList!
+
+  # Chronological paginated list of roles
+  roleList(after: Int, count: Int!): RoleList!
+
+  # Chronological paginated list of domains
+  domainList(after: Int, count: Int!): DomainList!
+
+  # Histogram of transactions per minute
+  transactionCountPerMinute(count: Int!): [Int!]!
+
+  # Histogram of transactions per hour
+  transactionCountPerHour(count: Int!): [Int!]!
+
+  # Histogram of blocks per minute
+  blockCountPerMinute(count: Int!): [Int!]!
+
+  # Histogram of blocks per hour
+  blockCountPerHour(count: Int!): [Int!]!
+
+  # Count of transactions created by accounts of domain
+  transactionCountPerDomain: [CountPerDomain!]!
+}

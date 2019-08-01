@@ -6,10 +6,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import createStore from './state/store';
-import authOperations from './state/redux/auth/operations';
 import Theme from './components/Theme';
 import App from './components/App';
 import { unregister } from './registerServiceWorker';
+
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 
 const mode = localStorage.getItem('theme-mode') || 'light';
 const store = createStore({ theme: { mode } });
@@ -27,14 +29,16 @@ function themeSideEffect(store) {
 	};
 }
 
-store.dispatch(authOperations.network());
-
 unregister();
+
+const client = new ApolloClient({ uri: '/graphql' });
 
 ReactDOM.render(
 	<Provider store={store}>
 		<Theme>
-			<App />
+			<ApolloProvider client={client}>
+				<App />
+			</ApolloProvider>
 		</Theme>
 	</Provider>,
 	document.getElementById('root')

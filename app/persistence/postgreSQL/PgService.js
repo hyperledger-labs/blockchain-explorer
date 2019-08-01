@@ -20,6 +20,8 @@
 
 const { Client } = require('pg');
 
+const fs = require('fs');
+
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('PgService');
@@ -40,22 +42,43 @@ class PgService {
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
 		this.pgconfig.port = process.env.DATABASE_PORT || pgconfig.port;
 		this.pgconfig.database = process.env.DATABASE_DATABASE || pgconfig.database;
-		this.pgconfig.username = process.env.DATABASE_USERNAME || pgconfig.username;
-		this.pgconfig.passwd = process.env.DATABASE_PASSWD || pgconfig.passwd;
+		this.pgconfig.user = process.env.DATABASE_USERNAME || pgconfig.username;
+		this.pgconfig.password = process.env.DATABASE_PASSWD || pgconfig.passwd;
 
-		this.connectionString = `postgres://${this.pgconfig.username}:${
-			this.pgconfig.passwd
-		}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
+		const isPostgresSslEnabled = process.env.DATABASE_SSL_ENABLED || false;
 
-		console.log(this.connectionString);
+		if (isPostgresSslEnabled) {
+			const dbCertsPath =
+				process.env.DATABASE_CERTS_PATH ||
+				`${process.env.EXPLORER_APP_PATH}/db-certs`;
 
-		this.client = new Client({
-			connectionString: this.connectionString
-		});
+			this.pgconfig.ssl = {
+				rejectUnauthorized: false,
+				requestCert: true,
+				ca: fs.readFileSync(`${dbCertsPath}/db-certs/server-ca.pem`).toString(),
+				key: fs.readFileSync(`${dbCertsPath}/db-certs/client-key.pem`).toString(),
+				cert: fs.readFileSync(`${dbCertsPath}/db-certs/client-cert.pem`).toString()
+			};
 
-		logger.info(
-			'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
-		);
+			/*
+			 * don't log entire config, it contains sensitive information!
+			 * Value this.pgconfig.ssl.key is private key
+			 */
+			const { rejectUnauthorized, requestCert } = this.pgconfig.ssl;
+			const printConfig = { rejectUnauthorized, requestCert };
+			logger.info('SSL to Postgresql enabled with settings: ', printConfig);
+		} else {
+			logger.info('SSL to Postgresql disabled');
+		}
+
+		// don't log password
+		const connectionString = `postgres://${this.pgconfig.username}:******@${
+			this.pgconfig.host
+		}:${this.pgconfig.port}/${this.pgconfig.database}`;
+
+		logger.info(`connecting to Postgresql ${connectionString}`);
+
+		this.client = new Client(this.pgconfig);
 	}
 
 	/**
@@ -66,7 +89,7 @@ class PgService {
 	async handleDisconnect() {
 		try {
 			this.client.on('error', err => {
-				console.log('db error', err);
+				logger.error('db error', err);
 				if (err.code === 'PROTOCOL_CONNECTION_LOST') {
 					this.handleDisconnect();
 				} else {
@@ -81,7 +104,7 @@ class PgService {
 				 * To avoid a hot loop, and to allow our node script to
 				 * Process asynchronous requests in the meantime.
 				 */
-				console.log('error when connecting to db:', err);
+				logger.error('error when connecting to db:', err);
 				setTimeout(this.handleDisconnect, 2000);
 			}
 		}
@@ -136,7 +159,6 @@ class PgService {
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
-					console.log(err.stack);
 					reject(err);
 					return;
 				}
@@ -146,7 +168,7 @@ class PgService {
 				);
 				//  Console.log('INSERT ID:', res.rows[0].id);
 				logger.debug(
-					'-----------------------------------------------------------------\n\n'
+					'-----------------------------------------------------------------'
 				);
 
 				resolve(res.rows[0].id);
@@ -191,7 +213,6 @@ class PgService {
 			const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
 
 			logger.debug(`update sql is ${addSql}`);
-			console.log(`update sql is ${addSql}`);
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
@@ -249,7 +270,6 @@ class PgService {
 			const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
 
 			logger.debug(`update sql is ${addSql}`);
-			console.log(`update sql is ${addSql}`);
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
@@ -501,7 +521,6 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(` the getRowsBySQlNoCondition ${sql}`);
 
 				if (res && res.rows) {

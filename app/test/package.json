@@ -27,6 +27,7 @@
 		"extension": [
 			".js"
 		],
+		"reporter": "cobertura",
 		"lines": 80,
 		"functions": 80,
 		"statements": 80,

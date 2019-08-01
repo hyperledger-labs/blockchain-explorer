@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import beautify from 'js-beautify';
 import FontAwesome from 'react-fontawesome';
-import { Card, CardBody, CardTitle } from 'reactstrap';
+import Card from 'reactstrap/lib/Card';
+import CardBody from 'reactstrap/lib/CardBody';
+import CardTitle from 'reactstrap/lib/CardTitle';
 import { chaincodeType } from '../types';
 import Modal from '../Styled/Modal';
 

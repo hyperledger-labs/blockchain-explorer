@@ -1,0 +1,45 @@
+version: '3.5'
+
+networks:
+  iroha-explorer:
+    name: iroha-explorer
+    attachable: true
+
+services:
+  iroha-explorer-iroha:
+    build: ./iroha
+    container_name: iroha-explorer-iroha
+    depends_on:
+      - iroha-explorer-iroha-postgres
+    tty: true
+    environment:
+      - IROHA_POSTGRES_HOST=iroha-explorer-iroha-postgres
+      - KEY=node
+    networks:
+      - iroha-explorer
+    logging:
+      driver: none
+    ports:
+      - 50051:50051
+
+  iroha-explorer-iroha-postgres:
+    image: postgres:9.5
+    container_name: iroha-explorer-iroha-postgres
+    environment:
+      - POSTGRES_PASSWORD=iroha-explorer-backend
+    networks:
+      - iroha-explorer
+    logging:
+      driver: none
+
+  iroha-explorer-backend-postgres:
+    image: postgres:9.5
+    container_name: iroha-explorer-backend-postgres
+    environment:
+      - POSTGRES_PASSWORD=iroha-explorer-backend
+    networks:
+      - iroha-explorer
+    logging:
+      driver: none
+    ports:
+      - 5432:5432

@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { Button } from 'reactstrap';
+import Button from 'reactstrap/lib/Button';
 
 const styles = (theme) => {
   const { type } = theme.palette;

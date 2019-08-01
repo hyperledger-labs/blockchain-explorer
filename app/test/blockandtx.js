@@ -48,7 +48,8 @@ describe('GET /api/blockAndTxList/:channel/:blocknum', () => {
 						'createdt',
 						'blockhash',
 						'prev_blockhash',
-						'txhash'
+						'txhash',
+						'blksize'
 					);
 				}
 				done();

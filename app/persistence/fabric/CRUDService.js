@@ -54,7 +54,7 @@ class CRUDService {
 	 */
 
 	getBlockActivityList(channel_genesis_hash) {
-		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, (
       SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
        channel_genesis_hash = '${channel_genesis_hash}' group by transactions.blockid ),
       channel.name as channelname  from blocks inner join channel on blocks.channel_genesis_hash = channel.channel_genesis_hash  where
@@ -76,13 +76,25 @@ class CRUDService {
 	 * @memberof CRUDService
 	 */
 	getTxList(channel_genesis_hash, blockNum, txid, from, to, orgs) {
-		let txListSql = '';
+		let byOrgs = false;
 		if (orgs && orgs !== '') {
-			txListSql = `and t.creator_msp_id in (${orgs})`;
+			byOrgs = true;
 		}
+
+		logger.debug('getTxList.byOrgs ', byOrgs);
+		logger.debug('getTxList.byOrgs ', byOrgs);
+
+		const sqlTxListByOrgs = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
+       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and t.creator_msp_id in (${orgs}) and
+							t.channel_genesis_hash = '${channel_genesis_hash}'  and t.createdt between '${from}' and '${to}'  order by  t.id desc`;
+
 		const sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
-       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} ${txListSql} and
-       t.channel_genesis_hash = '${channel_genesis_hash}'  and t.createdt between '${from}' and '${to}'  order by  t.id desc`;
+       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and
+							t.channel_genesis_hash = '${channel_genesis_hash}'  and t.createdt between '${from}' and '${to}'  order by  t.id desc`;
+
+		if (byOrgs) {
+			return this.sql.getRowsBySQlQuery(sqlTxListByOrgs);
+		}
 		return this.sql.getRowsBySQlQuery(sqlTxList);
 	}
 
@@ -99,17 +111,33 @@ class CRUDService {
 	 * @memberof CRUDService
 	 */
 	getBlockAndTxList(channel_genesis_hash, blockNum, from, to, orgs) {
-		let blockTxListSql = '';
+		let byOrgs = false;
+		// workaround for SQL injection
 		if (orgs && orgs !== '') {
-			blockTxListSql = `and creator_msp_id in (${orgs})`;
+			byOrgs = true;
 		}
+
+		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
+		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
+
 		const sqlBlockTxList = `select a.* from  (
       select (select c.name from channel c where c.channel_genesis_hash =
-         '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
-        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${blockTxListSql} and
+         '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
+        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
          channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}') from blocks where
          blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0 and blocks.createdt between '${from}' and '${to}'
-         order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
+									order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
+
+		const sqlBlockTxListByOrgs = `select a.* from  (
+										select (select c.name from channel c where c.channel_genesis_hash =
+													'${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
+												SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum  and creator_msp_id in (${orgs}) and
+													channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}') from blocks where
+													blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0 and blocks.createdt between '${from}' and '${to}'
+													order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
+		if (byOrgs) {
+			return this.sql.getRowsBySQlQuery(sqlBlockTxListByOrgs);
+		}
 		return this.sql.getRowsBySQlQuery(sqlBlockTxList);
 	}
 
@@ -210,7 +238,7 @@ class CRUDService {
 			await this.sql.updateBySql(
 				`update chaincodes set txcount =txcount+1 where channel_genesis_hash='${
 					transaction.channel_genesis_hash
-				}'`
+				}' and name='${transaction.chaincodename}'`
 			);
 			await this.sql.updateBySql(
 				`update channel set trans =trans+1 where channel_genesis_hash='${

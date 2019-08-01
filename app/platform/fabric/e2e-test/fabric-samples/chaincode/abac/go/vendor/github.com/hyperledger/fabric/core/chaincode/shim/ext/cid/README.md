@@ -1,6 +1,3 @@
-
-<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
-
 # Client Identity Chaincode Library
 
 The client identity chaincode library enables you to write chaincode which

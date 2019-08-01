@@ -1,0 +1,15 @@
+
+# SPDX-License-Identifier: Apache-2.0
+
+
+path_classifiers:
+queries:
+  - exclude: "js/unused-local-variable"
+  - exclude: "js/stack-trace-exposure"
+  - exclude: "js/useless-assignment-to-local"
+  - exclude: "js/react/unused-or-undefined-state-property"
+  - exclude: "js/superfluous-trailing-arguments"
+extraction:
+  javascript:
+    index:
+      exclude: "app/platform/fabric/e2e-test"

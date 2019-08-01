@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.11'
+    displayName: Install NodeJs
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '2.7'
+    displayName: Install Python
+  - script: pip install virtualenv
+    displayName: Install Virtualenv

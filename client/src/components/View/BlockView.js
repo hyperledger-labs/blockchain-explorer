@@ -4,11 +4,20 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
 import FontAwesome from 'react-fontawesome';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Table, Card, CardBody, CardTitle } from 'reactstrap';
-import { blockHashType, onCloseType } from '../types';
+import Table from 'reactstrap/lib/Table';
+import Card from 'reactstrap/lib/Card';
+import CardBody from 'reactstrap/lib/CardBody';
+import CardTitle from 'reactstrap/lib/CardTitle';
+import TransactionView from './TransactionView';
+import { onCloseType } from '../types';
 import Modal from '../Styled/Modal';
+
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
 
 const styles = theme => ({
 	cubeIcon: {
@@ -18,12 +27,17 @@ const styles = theme => ({
 });
 
 export class BlockView extends Component {
+	state = {
+		showTransaction: null,
+	};
+
 	handleClose = () => {
 		const { onClose } = this.props;
 		onClose();
 	};
 
 	render() {
+		const { showTransaction } = this.state;
 		const { blockHash, classes } = this.props;
 		if (!blockHash) {
 			return (
@@ -64,10 +78,6 @@ export class BlockView extends Component {
 							<CardBody className={modalClasses.body}>
 								<Table striped hover responsive className="table-striped">
 									<tbody>
-										<tr>
-											<th>Channel name:</th>
-											<td>{blockHash.channelname}</td>
-										</tr>
 										<tr>
 											<th>Block Number</th>
 											<td>{blockHash.blocknum}</td>
@@ -120,10 +130,30 @@ export class BlockView extends Component {
 												</button>
 											</td>
 										</tr>
+										<tr>
+											<th>Transactions</th>
+											<td>
+												{blockHash.transactions.length ? blockHash.transactions.map(({ hash }, i) =>
+													<div key={i} onClick={() => this.setState({ showTransaction: hash })}>{hash}</div>
+												) : '-'}
+											</td>
+										</tr>
 									</tbody>
 								</Table>
 							</CardBody>
 						</Card>
+						
+						<Dialog
+							open={showTransaction !== null}
+							onClose={() => this.setState({ showTransaction: null })}
+							fullWidth
+							maxWidth="md"
+						>
+							{showTransaction ? <TransactionView
+								transaction={showTransaction}
+								onClose={() => this.setState({ showTransaction: null })}
+							/> : ''}
+						</Dialog>
 					</div>
 				)}
 			</Modal>
@@ -132,8 +162,38 @@ export class BlockView extends Component {
 }
 
 BlockView.propTypes = {
-	blockHash: blockHashType.isRequired,
 	onClose: onCloseType.isRequired
 };
 
-export default withStyles(styles)(BlockView);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`query ($height: Int!) {
+			block: blockByHeight(height: $height) {
+				blocknum: height
+				datahash: hash
+				blockhash: hash
+				prehash: previousBlockHash
+				txcount: transactionCount
+				createdt: time
+				transactions {
+					hash
+				}
+			}
+		}`,
+		{
+			options(props) {
+				return {
+					variables: {
+						height: props.blockHash.height
+					}
+				}
+			},
+			props({ data: { block } }) {
+				return {
+					blockHash: block,
+				};
+			},
+		}
+	),
+)(BlockView);

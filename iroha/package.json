@@ -1,0 +1,49 @@
+{
+  "name": "iroha-explorer-backend",
+  "private": true,
+  "scripts": {
+    "start": "node out/start.js",
+    "start:init": "node out/init.js",
+    "start:sync": "node out/sync.js",
+    "start:info": "node out/info.js",
+    "start:server": "node out/server.js",
+    "clean": "rimraf out doc",
+    "build:doc": "graphdoc -s files/graphql.gql -o doc -f",
+    "build:ts": "tsc",
+    "prebuild": "npm run clean",
+    "build": "npm run build:ts && npm run build:doc",
+    "lint": "tslint --project .",
+    "test": "jest --verbose",
+    "watch": "tsc --watch"
+  },
+  "devDependencies": {
+    "@2fd/graphdoc": "^2.4.0",
+    "@types/dockerode": "^2.5.19",
+    "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.134",
+    "@types/node": "^12.0.8",
+    "@types/slonik": "^16.16.2",
+    "graphql-tag": "^2.10.1",
+    "jest": "^24.8.0",
+    "rimraf": "^2.6.3",
+    "testcontainers": "^1.1.19",
+    "tslint": "^5.17.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.5.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.4.4",
+    "autobind-decorator": "^2.4.0",
+    "dataloader": "^1.4.0",
+    "delay": "^4.3.0",
+    "graphql-yoga": "^1.18.0",
+    "grpc": "^1.21.1",
+    "iroha-helpers": "^0.6.19",
+    "lodash": "^4.17.15",
+    "prom-client": "^11.5.3",
+    "slonik": "^16.19.6",
+    "tslib": "^1.10.0",
+    "wait-on": "^3.2.0",
+    "winston": "^3.2.1"
+  }
+}

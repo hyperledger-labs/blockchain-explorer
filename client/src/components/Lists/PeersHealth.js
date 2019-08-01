@@ -7,6 +7,10 @@ import { withStyles } from '@material-ui/core/styles';
 import ReactTable from '../Styled/Table';
 import { peerStatusType } from '../types';
 
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
 /* eslint-disable */
 
 const styles = theme => ({
@@ -14,9 +18,6 @@ const styles = theme => ({
 		height: 335,
 		overflowY: 'scroll'
 	},
-	center: {
-		textAlign: 'left'
-	}
 });
 
 /* eslint-enable */
@@ -27,7 +28,6 @@ const PeersHealth = ({ peerStatus, classes }) => {
 			Header: 'Peer Name',
 			accessor: 'server_hostname',
 			filterAll: false,
-			className: classes.center
 		} /*
     {
       Header: 'Status',
@@ -58,4 +58,22 @@ PeersHealth.propTypes = {
 	peerStatus: peerStatusType.isRequired
 };
 
-export default withStyles(styles)(PeersHealth);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`{
+			list: peerList(count: 100) {
+				items {
+					server_hostname: address
+				}
+			}
+		}`,
+		{
+			props({ data: { list } }) {
+				return {
+					peerStatus: list ? list.items : [],
+				};
+			},
+		},
+	),
+)(PeersHealth);

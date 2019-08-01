@@ -5,6 +5,9 @@
 const passport = require('passport');
 
 const { responder } = require('./requestutils');
+const helper = require('../common/helper');
+
+const logger = helper.getLogger('Auth');
 
 /**
  *
@@ -37,7 +40,7 @@ const authroutes = async function(router, platform) {
 	 * curl -X POST -H 'Content-Type: routerlication/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
 	 */
 	router.post('/login', async (req, res, next) => {
-		console.log('req.body', req.body);
+		logger.debug('req.body', req.body);
 		return passport.authenticate('local-login', (err, token, userData) => {
 			if (err) {
 				if (err.name === 'IncorrectCredentialsError') {

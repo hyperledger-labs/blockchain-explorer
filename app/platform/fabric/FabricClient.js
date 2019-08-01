@@ -172,7 +172,7 @@ class FabricClient {
 				this.defaultOrderer.getName()
 			);
 		} else if (persistence) {
-			console.log('\n ********* call to initializeDetachClient **********');
+			logger.info('********* call to initializeDetachClient **********');
 			this.initializeDetachClient(this.client_config, persistence);
 		}
 	}
@@ -186,7 +186,7 @@ class FabricClient {
 	 */
 	async initializeDetachClient(client_config, persistence) {
 		const name = client_config.name;
-		console.debug(
+		logger.debug(
 			'initializeDetachClient --> client_config ',
 			client_config,
 			' name ',
@@ -200,14 +200,14 @@ class FabricClient {
 		this.userName = fabricConfig.getAdminUser();
 		const peers = fabricConfig.getPeersConfig();
 
-		console.log('initializeDetachClient, network config) ', config);
-		console.log(
-			'\n************************************* initializeDetachClient *************************************************'
+		logger.info('initializeDetachClient, network config) ', config);
+		logger.info(
+			'************************************* initializeDetachClient *************************************************'
 		);
-		console.log('Error :', explorer_mess.error.ERROR_1009);
-		console.log('Info : ', explorer_mess.message.MESSAGE_1001);
-		console.log(
-			'************************************** initializeDetachClient ************************************************\n'
+		logger.info('Error :', explorer_mess.error.ERROR_1009);
+		logger.info('Info : ', explorer_mess.message.MESSAGE_1001);
+		logger.info(
+			'************************************** initializeDetachClient ************************************************'
 		);
 		const defaultPeerConfig = fabricConfig.getDefaultPeerConfig();
 		const default_peer_name = defaultPeerConfig.name;
@@ -250,14 +250,13 @@ class FabricClient {
 					}
 				} catch (e) {
 					logger.error(e);
-					console.error(e);
 				}
 			}
 
 			try {
 				newchannel.getPeer(default_peer_name);
 			} catch (e) {
-				console.error(
+				logger.error(
 					'Failed to connect to default peer: ',
 					default_peer_name,
 					' \n',
@@ -394,7 +393,7 @@ class FabricClient {
 		);
 		// Setting channel_genesis_hash to map
 		this.setChannelGenHash(channel_name, channel_genesis_hash);
-		console.debug(
+		logger.debug(
 			'Channel genesis hash for channel [%s] >> %s',
 			channel_name,
 			channel_genesis_hash
@@ -414,7 +413,7 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async initializeChannelFromDiscover(channel_name) {
-		console.debug('initializeChannelFromDiscover ', channel_name);
+		logger.debug('initializeChannelFromDiscover ', channel_name);
 		let channel = this.hfc_client.getChannel(channel_name, false);
 		if (!channel) {
 			await this.initializeNewChannel(channel_name);
@@ -466,25 +465,17 @@ class FabricClient {
 				for (const msp_id in discover_results.orderers) {
 					const endpoints = discover_results.orderers[msp_id].endpoints;
 					for (const endpoint of endpoints) {
-						console.log(' FabricClient.discover_results  endpoint ', endpoint);
+						logger.info(' FabricClient.discover_results  endpoint ', endpoint);
 						const discoveryProtocol = this.hfc_client.getConfigSetting(
 							'discovery-protocol'
 						);
 						const requesturl =
 							`${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
-						console.log(
-							'\ninitializeChannelFromDiscover.discoveryProtocol ',
-							discoveryProtocol,
-							' requesturl ',
-							requesturl,
-							'\n'
-						);
 						logger.debug(
-							'\ninitializeChannelFromDiscover.discoveryProtocol ',
+							'initializeChannelFromDiscover.discoveryProtocol ',
 							discoveryProtocol,
 							' requesturl ',
-							requesturl,
-							'\n'
+							requesturl
 						);
 
 						this.newOrderer(
@@ -601,14 +592,88 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async getGenesisBlock(channel) {
-		const defaultOrderer = this.getDefaultOrderer();
-		const request = {
-			orderer: defaultOrderer,
-			txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
-		};
-		const genesisBlock = await channel.getGenesisBlock(request);
-		const block = BlockDecoder.decodeBlock(genesisBlock);
-		return block;
+		const orderer = this.getDefaultOrderer();
+		let genesisBlock = await this.getGenesisBlockFromOrderer(channel, orderer);
+		if (!genesisBlock) {
+			if (orderer) {
+				this.setOffline(channel, orderer);
+			}
+
+			let neworderer = this.switchOrderer(channel);
+			while (neworderer != null) {
+				this.setDefaultOrderer(neworderer);
+				genesisBlock = await this.getGenesisBlockFromOrderer(channel, neworderer);
+				if (genesisBlock) {
+					logger.info(
+						'Succeeded to switch default orderer to ' + neworderer.getName()
+					);
+					break;
+				} else {
+					logger.error('Failed to get genesis block with ' + neworderer.getName());
+					this.setOffline(channel, neworderer);
+					neworderer = this.switchOrderer(channel);
+					continue;
+				}
+			}
+		}
+
+		if (genesisBlock) {
+			return BlockDecoder.decodeBlock(genesisBlock);
+		}
+
+		logger.error('Failed to get genesis block');
+		return null;
+	}
+
+	async getGenesisBlockFromOrderer(channel, orderer) {
+		try {
+			const request = {
+				orderer: orderer,
+				txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
+			};
+			const genesisBlock = await channel.getGenesisBlock(request);
+			return genesisBlock;
+		} catch (error) {
+			logger.error(
+				'Failed to get genesis block with ' + orderer ? orderer.getName() : 'null'
+			);
+			return null;
+		}
+	}
+
+	setOffline(channel, orderer) {
+		if (!channel._discovery_results || !channel._discovery_results.orderers) {
+			return;
+		}
+		for (const mspid in channel._discovery_results.orderers) {
+			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
+			for (let i = 0; i < endpoints.length; i++) {
+				const value = endpoints[i];
+				if (orderer.getName().split(':')[0] === value.host) {
+					logger.debug('Toggle offline : ', value.host);
+					channel._discovery_results.orderers[mspid].endpoints[i]._offline = true;
+					break;
+				}
+			}
+		}
+	}
+
+	switchOrderer(channel) {
+		if (!channel._discovery_results || !channel._discovery_results.orderers) {
+			return null;
+		}
+		let neworderer = null;
+		for (const mspid in channel._discovery_results.orderers) {
+			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
+			for (const value of endpoints) {
+				if (value._offline === undefined) {
+					logger.debug('Switch orderer : ', value.host);
+					neworderer = channel.getOrderer(`${value.host}:${value.port}`);
+					break;
+				}
+			}
+		}
+		return neworderer;
 	}
 
 	/**
@@ -843,6 +908,7 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	setDefaultOrderer(defaultOrderer) {
+		logger.info('Set default orderer : ' + defaultOrderer.getName());
 		this.defaultOrderer = defaultOrderer;
 	}
 

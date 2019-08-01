@@ -13,14 +13,14 @@ import { connect } from 'react-redux';
 
 import { authSelectors } from '../../state/redux/auth';
 
-export function Private({ render, auth, ...rest }) {
+export function Private({ render, component, auth, ...rest }) {
 	const redirect = !auth;
 	return (
 		<Route
 			{...rest}
 			render={props =>
 				!redirect ? (
-					render(props)
+					render ? render(props) : React.createElement(component)
 				) : (
 					<Redirect
 						to={{
