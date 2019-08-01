@@ -168,6 +168,8 @@ Connect to the PostgreSQL database and run DB status commands:
 - `\l`  View created fabricexplorer database.
 - `\d`  View created tables.
 
+If your Postgresql configured with TLS, read link [how to configure connection to Postgresql with TLS](./app/persistence/postgreSQL/CONFIGURE-TLS-CONNECTION-TO-POSTGRESQL.md) 
+
 <a name="Authorization-Configuration" />
 
 # 5.1 Authorization Configuration    <!-- do not remove this comment, ensure there is a blank line before each heading -->
