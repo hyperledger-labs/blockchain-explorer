@@ -20,6 +20,8 @@
 
 const { Client } = require('pg');
 
+const fs = require('fs');
+
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('PgService');
@@ -40,18 +42,36 @@ class PgService {
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
 		this.pgconfig.port = process.env.DATABASE_PORT || pgconfig.port;
 		this.pgconfig.database = process.env.DATABASE_DATABASE || pgconfig.database;
-		this.pgconfig.username = process.env.DATABASE_USERNAME || pgconfig.username;
-		this.pgconfig.passwd = process.env.DATABASE_PASSWD || pgconfig.passwd;
+		this.pgconfig.user = process.env.DATABASE_USERNAME || pgconfig.username;
+		this.pgconfig.password = process.env.DATABASE_PASSWD || pgconfig.passwd;
 
-		this.connectionString = `postgres://${this.pgconfig.username}:${
-			this.pgconfig.passwd
-		}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
+		const isPostgresSslEnabled = process.env.DATABASE_SSL_ENABLED || false;
 
-		console.log(this.connectionString);
+		if (isPostgresSslEnabled) {
+			const dbCertsPath =
+				process.env.DATABASE_CERTS_PATH ||
+				`${process.env.EXPLORER_APP_PATH}/db-certs`;
 
-		this.client = new Client({
-			connectionString: this.connectionString
-		});
+			this.pgconfig.ssl = {
+				rejectUnauthorized: false,
+				requestCert: true,
+				ca: fs.readFileSync(`${dbCertsPath}/db-certs/server-ca.pem`).toString(),
+				key: fs.readFileSync(`${dbCertsPath}/db-certs/client-key.pem`).toString(),
+				cert: fs.readFileSync(`${dbCertsPath}/db-certs/client-cert.pem`).toString()
+			};
+		}
+
+		const connectionString = `postgres://${this.pgconfig.username}:******@${
+			this.pgconfig.host
+		}:${this.pgconfig.port}/${this.pgconfig.database}`;
+
+		logger.info(
+			`connecting to Postgresql ${connectionString} ssl details: ${
+				this.pgconfig.ssl
+			}`
+		);
+
+		this.client = new Client(this.pgconfig);
 
 		logger.info(
 			'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
