@@ -31,4 +31,7 @@ ssl-certs/*.csr
 0
 app/test/.nyc_output/
 docs/build/
+_build
+_static
+_templates
 *.DS_Store

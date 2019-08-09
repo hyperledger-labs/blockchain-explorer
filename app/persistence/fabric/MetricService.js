@@ -127,15 +127,17 @@ class MetricService {
 	async getTxPerChaincodeGenerate(channel_genesis_hash) {
 		const txArray = [];
 		const c = await this.sql
-			.getRowsBySQlNoCondition(`select  c.name as chaincodename,channel.name as channelName ,c.version as version,c.channel_genesis_hash
+			.getRowsBySQlNoCondition(`select  c.name as chaincodename,channel.name as channelname ,c.version as version,c.channel_genesis_hash
        as channel_genesis_hash,c.path as path ,txcount  as c from chaincodes as c inner join channel on c.channel_genesis_hash=channel.channel_genesis_hash where  c.channel_genesis_hash='${channel_genesis_hash}' `);
 		if (c) {
 			c.forEach((item, index) => {
+				console.debug(' item ------------> ', item);
 				txArray.push({
 					chaincodename: item.chaincodename,
 					path: item.path,
 					version: item.version,
 					txCount: item.c,
+					channelName: item.channelname,
 					channel_genesis_hash: item.channel_genesis_hash
 				});
 			});
