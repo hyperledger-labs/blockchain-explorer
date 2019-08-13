@@ -1,7 +1,3 @@
-/*
- *SPDX-License-Identifier: Apache-2.0
- */
-
 /**
  * Copyright 2017 Kapil Sachdeva All Rights Reserved.
  *

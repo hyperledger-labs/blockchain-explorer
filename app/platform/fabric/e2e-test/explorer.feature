@@ -36,7 +36,7 @@ Feature: Bootstrapping Hyperledger Explorer
 # @doNotDecompose
 Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<network-type> and send requests to the basic REST API functions successfully
     # Start a fabric network by using fabric-samples/<network-type>
-    Given I start <network-type>
+    Given I start <network-type> orderer network of type <consensus_type>
     # Need to specify which profiles should be in use before starting Explorer
     Given the NETWORK_PROFILE environment variable is <network-type>
     When I start explorer
@@ -105,9 +105,10 @@ Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<networ
     Then JSON at path ".row[0].channelname" should equal "mychannel"
 
     Examples:
-    |network-type     |
-    |first-network    |
-    |balance-transfer |
+    |network-type     |consensus_type|
+    |first-network    |solo          |
+    |first-network    |etcdraft      |
+    |balance-transfer |unused        |
 
 @basic
 # @doNotDecompose

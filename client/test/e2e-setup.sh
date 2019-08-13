@@ -27,10 +27,11 @@ rm -rf channel-artifacts/* ordererOrganizations peerOrganizations
 mkdir -p ../../configs/$CORE_PEER_NETWORKID
 ./byfn.sh generate -c mychannel
 
-cp -a channel-artifacts ordererOrganizations peerOrganizations ../../configs/$CORE_PEER_NETWORKID
+cp -a channel-artifacts crypto-config/* ../../configs/$CORE_PEER_NETWORKID
 
-docker-compose -f docker-compose-cli.yaml down -v
-docker-compose -f docker-compose-cli.yaml up -d
+docker-compose -f docker-compose-explorer.yaml down -v
+docker-compose -f docker-compose-explorer.yaml up -d
+docker exec -d cli scripts/script.sh
 
 # continue to poll
 # we either get a matched keyword, or reach TIMEOUT
@@ -41,8 +42,9 @@ while
 do
   sleep $DELAY
   set -x
-  docker logs cli | grep -q "All GOOD, BYFN execution completed"
-  rc=$?
+  if [ $(docker ps -q --filter name='dev-peer1.org2' | wc -l) -eq 1 ]; then
+    rc=0
+  fi
   set +x
 done
 
