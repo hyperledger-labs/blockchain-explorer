@@ -133,6 +133,7 @@ class MetricService {
 			c.forEach((item, index) => {
 				txArray.push({
 					chaincodename: item.chaincodename,
+					channelName: item.channelname,
 					path: item.path,
 					version: item.version,
 					txCount: item.c,
