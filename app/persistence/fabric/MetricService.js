@@ -134,6 +134,7 @@ class MetricService {
 				console.debug(' item ------------> ', item);
 				txArray.push({
 					chaincodename: item.chaincodename,
+					channelName: item.channelname,
 					path: item.path,
 					version: item.version,
 					txCount: item.c,
