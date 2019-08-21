@@ -601,14 +601,89 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async getGenesisBlock(channel) {
-		const defaultOrderer = this.getDefaultOrderer();
-		const request = {
-			orderer: defaultOrderer,
-			txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
-		};
-		const genesisBlock = await channel.getGenesisBlock(request);
-		const block = BlockDecoder.decodeBlock(genesisBlock);
-		return block;
+		const orderer = this.getDefaultOrderer();
+		let genesisBlock = await this.getGenesisBlockFromOrderer(channel, orderer);
+		if (!genesisBlock) {
+			if (orderer) {
+				this.setOffline(channel, orderer);
+			}
+
+			let neworderer = this.switchOrderer(channel);
+			while (neworderer != null) {
+				this.setDefaultOrderer(neworderer);
+				genesisBlock = await this.getGenesisBlockFromOrderer(channel, neworderer);
+				if (genesisBlock) {
+					logger.info(
+						'Succeeded to switch default orderer to ' + neworderer.getName()
+					);
+					break;
+				} else {
+					logger.error('Failed to get genesis block with ' + neworderer.getName());
+					this.setOffline(channel, neworderer);
+					neworderer = this.switchOrderer(channel);
+					continue;
+				}
+			}
+		}
+
+		if (genesisBlock) {
+			return BlockDecoder.decodeBlock(genesisBlock);
+		}
+
+		logger.error('Failed to get genesis block');
+		return null;
+	}
+
+	async getGenesisBlockFromOrderer(channel, orderer) {
+		try {
+			const request = {
+				orderer: orderer,
+				txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
+			};
+			const genesisBlock = await channel.getGenesisBlock(request);
+			// console.log(genesisBlock)
+			return genesisBlock;
+		} catch (error) {
+			logger.error(
+				'Failed to get genesis block with ' + orderer ? orderer.getName() : 'null'
+			);
+			return null;
+		}
+	}
+
+	setOffline(channel, orderer) {
+		if (!channel._discovery_results || !channel._discovery_results.orderers) {
+			return;
+		}
+		for (const mspid in channel._discovery_results.orderers) {
+			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
+			for (let i = 0; i < endpoints.length; i++) {
+				const value = endpoints[i];
+				if (orderer.getName().split(':')[0] === value.host) {
+					logger.debug('Toggle offline : ', value.host);
+					channel._discovery_results.orderers[mspid].endpoints[i]._offline = true;
+					break;
+				}
+			}
+		}
+	}
+
+	switchOrderer(channel) {
+		if (!channel._discovery_results || !channel._discovery_results.orderers) {
+			return null;
+		}
+		let neworderer = null;
+		for (const mspid in channel._discovery_results.orderers) {
+			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
+			for (const value of endpoints) {
+				if (value._offline === undefined) {
+					logger.debug('Switch orderer : ', value.host);
+					neworderer = channel.getOrderer(`${value.host}:${value.port}`);
+					break;
+				}
+			}
+		}
+		return neworderer;
 	}
 
 	/**
@@ -843,6 +918,7 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	setDefaultOrderer(defaultOrderer) {
+		logger.info('Set default orderer : ' + defaultOrderer.getName());
 		this.defaultOrderer = defaultOrderer;
 	}
 

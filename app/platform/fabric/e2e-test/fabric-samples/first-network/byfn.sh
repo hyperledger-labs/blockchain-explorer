@@ -501,7 +501,7 @@ COMPOSE_FILE_ORG3=docker-compose-org3.yaml
 # kafka and zookeeper compose file
 COMPOSE_FILE_KAFKA=docker-compose-kafka.yaml
 # two additional etcd/raft orderers
-COMPOSE_FILE_RAFT2=docker-compose-etcdraft2.yaml
+COMPOSE_FILE_RAFT2="docker-compose-etcdraft2.yaml -f docker-compose-etcdraft2-behave.yaml"
 # certificate authorities compose file
 COMPOSE_FILE_CA=docker-compose-ca.yaml
 #

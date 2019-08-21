@@ -175,6 +175,22 @@ def step_impl(context, data, count, timeout):
     data_count = is_in_log("explorer.mynetwork.com", data)
     assert data_count == count, "The log didn't appear the expected number of times({0}).".format(data_count)
 
+@then(u'the explorer app logs contains "{data}" within {timeout:d} seconds')
+def step_impl(context, data, timeout):
+    time.sleep(float(timeout))
+    data_count = is_in_log("explorer.mynetwork.com", data)
+    assert data_count > 0, "The log didn't appear at all."
+
+@when(u'"{container}" is stopped')
+def step_impl(context, container):
+    if hasattr(context, "composition") and hasattr(context, "composeFilesYaml"):
+        print('composition')
+        context.composition.stop([container])
+    elif hasattr(context, "composition_explorer"):
+        print('composition_explorer')
+        context.composition_explorer.stop([container])
+    else:
+        assert False, "Failed to stop container {0}".format(container)
 
 def is_in_log(container, keyText):
     output = subprocess.check_output(
