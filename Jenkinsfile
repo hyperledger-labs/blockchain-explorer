@@ -86,43 +86,44 @@ node ('hyp-x') { // trigger build on x86_64 node
         // }
     }
 
-    // // Run npm tests
-    // stage("E2E Tests for Sanity-check") {
-    //     wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
-    //         try {
-    //             dir("${ROOTDIR}") {
-    //             sh '''
-    //                 npm install
-    //                 npm run e2e-test-sanitycheck:ci
-    //             '''
-    //              }
-    //            }
-    //         catch (err) {
-    //              failure_stage = "e2e tests"
-    //              currentBuild.result = 'FAILURE'
-    //              throw err
-    //         }
-    //     }
-    // }
+    // Run npm tests
+    stage("E2E Tests for Sanity-check") {
+        // wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+            try {
+                dir("${ROOTDIR}") {
+                sh '''
+                    npm -v
+                    npm install
+                    npm run e2e-test-sanitycheck:ci
+                '''
+                }
+            }
+            catch (err) {
+                failure_stage = "e2e tests"
+                currentBuild.result = 'FAILURE'
+                throw err
+            }
+        // }
+    }
 
     // Run npm tests
-    //stage("E2E Tests of GUI for Sanity-check") {
-    //    wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
-    //        try {
-    //            dir("${ROOTDIR}") {
-    //            sh '''
-    //                npm install
-    //                npm run e2e-gui-test:ci
-    //            '''
-    //             }
-    //           }
-    //        catch (err) {
-    //             failure_stage = "e2e tests for GUI"
-    //             currentBuild.result = 'FAILURE'
-    //             throw err
-    //        }
-    //    }
-    //}
+    stage("E2E Tests of GUI for Sanity-check") {
+        // wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'xterm']) {
+            try {
+                dir("${ROOTDIR}") {
+                sh '''
+                    npm install
+                    npm run e2e-gui-test:ci
+                '''
+                    }
+                }
+            catch (err) {
+                    failure_stage = "e2e tests for GUI"
+                    currentBuild.result = 'FAILURE'
+                    throw err
+            }
+        // }
+    }
 
       // Docs HTML Report
 	stage("Doc Output") {

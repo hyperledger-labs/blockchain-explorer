@@ -7,6 +7,7 @@
 [rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
 [![Build Status](https://jenkins.hyperledger.org/buildStatus/icon?job=blockchain-explorer-merge-x86_64)](https://jenkins.hyperledger.org/view/fabric/job/blockchain-explorer-merge-x86_64)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
+[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=latest)](https://blockchain-explorer.readthedocs.io/en/latest/?badge=latest)
 
 <!-- badges -->
 
@@ -16,33 +17,35 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 # Table of Contents    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
-- [1.0 Release Notes](#Release-Notes)
-- [2.0 Directory Structure](#Directory-Structure)
-- [3.0 Dependencies](#Dependencies)
-- [4.0 Clone GIT Repository](#Clone-GIT-Repository)
-- [5.0 Database Setup](#Database-Setup)
-    - [5.1 Authorization Configuration](#Authorization-Configuration)
-- [6.0 Fabric Network Setup](#Fabric-Network-Setup)
-    - [6.1 Configure operations service ](#Config-Operations-Service-Hyperledger-Explorer)
-- [7.0 Configure Hyperledger Fabric](#Configure-Hyperledger-Fabric)
-    - [7.1 Optional: Configure Fabcar Sample](#Configure-Fabcar-Sample)
-    - [7.2 Optional: Configure Balance Transfer Sample](#Configure-Balance-Transfer-Sample)
-- [8.0 Hyperledger Composer Setup](#Hyperledger-Composer-Setup)
-    - [8.1 Configure Hyperledger Explorer for Composer](#Configure-Hyperledger-Explorer-for-Composer)
-- [9.0 Optional: Hyperledger Cello Setup](#Hyperledger-Cello-Setup)
-    - [9.1 Configure Hyperledger Explorer for Cello](#Configure-Hyperledger-Explorer-for-Cello)
-- [10.0 Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
-    - [10.1 Optional: Configure Hyperledger Explorer for HTTPS](#Config-https-Hyperledger-Explorer)
-- [11.0 Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
-- [12.0 Optional: Run Hyperledger Explorer Using Docker](#Run-Hyperledger-Explorer-using-Docker)
-    - [12.1 Docker Repository](#Docker-Docker-Repository)
-    - [12.2 Run Hyperledger Explorer Using Docker Compose](#Run-Hyperledger-Explorer-Using-Docker-Compose)
-    - [12.3 Docker Troubleshooting](#Run-Hyperledger-Explorer-Using-Docker-Compose-Troubleshooting)
-- [13.0 NPM Utility Scripts to Dockerise Application](#NPM-Utility-Scripts-to-Dockerize-Application)
-- [14.0 Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
-- [15.0 Logs](#Logs)
-- [16.0 Troubleshooting](#Troubleshooting)
-- [17.0 License](#License)
+- [Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url]](#hyperledger-explorer-join-the-chatrocketchat-imagerocketchat-url)
+- [Table of Contents ](#table-of-contents)
+- [1.0 Release Notes ](#10-release-notes)
+- [2.0 Directory Structure ](#20-directory-structure)
+- [3.0 Dependencies ](#30-dependencies)
+- [4.0 Clone GIT Repository ](#40-clone-git-repository)
+- [5.0 Database Setup ](#50-database-setup)
+- [5.1 Authorization Configuration ](#51-authorization-configuration)
+- [6.0 Fabric Network Setup ](#60-fabric-network-setup)
+- [7.0 Configure Hyperledger Fabric ](#70-configure-hyperledger-fabric)
+- [7.1 Optional: Configure Fabcar Sample ](#71-optional-configure-fabcar-sample)
+- [7.2 Optional: Configure Balance Transfer Sample ](#72-optional-configure-balance-transfer-sample)
+- [8.0 Hyperledger Composer Setup ](#80-hyperledger-composer-setup)
+  - [8.1 Configure Hyperledger Explorer for Composer ](#81-configure-hyperledger-explorer-for-composer)
+- [9.0 Optional: Hyperledger Cello Setup ](#90-optional-hyperledger-cello-setup)
+  - [9.1 Optional: Configure Hyperledger Explorer for Cello ](#91-optional-configure-hyperledger-explorer-for-cello)
+- [10.0 Build Hyperledger Explorer ](#100-build-hyperledger-explorer)
+- [10.1 Optional: Configure Hyperledger Explorer for HTTPS ](#101-optional-configure-hyperledger-explorer-for-https)
+- [11.0 Run Hyperledger Explorer ](#110-run-hyperledger-explorer)
+- [12.0 Optional: Run Hyperledger Explorer Using Docker ](#120-optional-run-hyperledger-explorer-using-docker)
+  - [12.1 Docker Repository ](#121-docker-repository)
+  - [12.2 Run Hyperledger Explorer Using Docker Compose ](#122-run-hyperledger-explorer-using-docker-compose)
+  - [12.3 Docker Troubleshooting ](#123-docker-troubleshooting)
+- [13.0 NPM Utility Scripts to Dockerize Application ](#130-npm-utility-scripts-to-dockerize-application)
+- [14.0 Hyperledger Explorer Swagger ](#140-hyperledger-explorer-swagger)
+- [15.0 Logs ](#150-logs)
+- [16.0 Troubleshooting ](#160-troubleshooting)
+- [17.0 Testing ](#170-testing)
+- [18.0 License ](#180-license)
 
 
 
@@ -168,7 +171,7 @@ Connect to the PostgreSQL database and run DB status commands:
 - `\l`  View created fabricexplorer database.
 - `\d`  View created tables.
 
-If your Postgresql configured with TLS, read link [how to configure connection to Postgresql with TLS](./app/persistence/postgreSQL/CONFIGURE-TLS-CONNECTION-TO-POSTGRESQL.md) 
+If your Postgresql configured with TLS, read link [how to configure connection to Postgresql with TLS](./app/persistence/postgreSQL/CONFIGURE-TLS-CONNECTION-TO-POSTGRESQL.md)
 
 <a name="Authorization-Configuration" />
 
@@ -325,6 +328,10 @@ On another terminal:
 - `./main.sh clean`
     - to clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
    directories
+- `./main.sh test`
+    - to test REST API, and UI components
+    - to generate code coverage report
+
 
 Or
 
@@ -335,7 +342,7 @@ Or
 - `npm run test`
 - `cd client/`
 - `npm install`
-- `npm test -- -u --coverage`
+- `npm run test:ci -- -u --coverage`
 - `npm run build`
 
 <a name="Config-https-Hyperledger-Explorer" />
@@ -389,6 +396,7 @@ From new terminal (if Sync Process in Standalone).
 - `./syncstop.sh`  (it will stop the sync node).
 
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
+- If Hyperledger Fabric network is deployed on other machine, please toggle DISCOVERY_AS_LOCALHOST in start.sh / syncstart.sh to 'false'.
 
 
 
@@ -550,9 +558,25 @@ To push the container to your registry, run:
 - Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting TechNotes for Hyperledger Explorer.
 
 
+<a name="Testing" />
+
+# 17.0 Testing    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+
+* Unit test
+
+* End-to-End test
+
+  * For REST API
+
+    - Please visit the [README.md](./app/platform/fabric/e2e-test/README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer REST API.
+
+  * For GUI
+
+    - Please visit the [README.md](./client/test/E2E-TEST-README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer GUI.
+
 
 <a name="License" />
 
-# 17.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 18.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.

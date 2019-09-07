@@ -36,7 +36,7 @@ Feature: Bootstrapping Hyperledger Explorer
 # @doNotDecompose
 Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<network-type> and send requests to the basic REST API functions successfully
     # Start a fabric network by using fabric-samples/<network-type>
-    Given I start <network-type>
+    Given I start <network-type> orderer network of type <consensus_type>
     # Need to specify which profiles should be in use before starting Explorer
     Given the NETWORK_PROFILE environment variable is <network-type>
     When I start explorer
@@ -105,9 +105,10 @@ Scenario Outline: [<network-type>] Bring up explorer with fabric-samples/<networ
     Then JSON at path ".row[0].channelname" should equal "mychannel"
 
     Examples:
-    |network-type     |
-    |first-network    |
-    |balance-transfer |
+    |network-type     |consensus_type|
+    |first-network    |solo          |
+    |first-network    |etcdraft      |
+    |balance-transfer |unused        |
 
 @basic
 # @doNotDecompose
@@ -201,3 +202,21 @@ Scenario: [BE-603] Create a channel with long channel name
 
     When an admin sets up a channel named "channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422"
     Then the explorer app logs contains "Successfully created channel event hub for \[channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422\]" 1 time(s) within 60 seconds
+
+@bugfix
+@doNotDecompose
+Scenario: [BE-690] Keep explorer running after losing the default orderer
+    # Start a fabric network by using fabric-samples/first-network
+    Given I start first-network orderer network of type etcdraft
+    # Need to specify which profiles should be in use before starting Explorer
+    Given the NETWORK_PROFILE environment variable is first-network
+    When I start explorer
+    Then the logs on explorer.mynetwork.com contains "Please open web browser to access" within 20 seconds
+
+    When "orderer.example.com" is stopped
+    Then the explorer app logs contains "Succeeded to switch default orderer to orderer2.example.com" within 30 seconds
+
+    Given I wait "20" seconds
+
+    When "orderer2.example.com" is stopped
+    Then the explorer app logs contains "Succeeded to switch default orderer to orderer3.example.com" within 30 seconds

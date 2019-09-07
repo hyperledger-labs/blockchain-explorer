@@ -8,6 +8,7 @@ import { PieChart, Pie, Tooltip, Legend } from 'recharts';
 import { sha256 } from 'js-sha256';
 import { transactionByOrgType } from '../types';
 
+/* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';

@@ -22,6 +22,7 @@ echo "**************************************************************************
 echo "***** Please check the log [$SYNC_LOG_CONSOLE_PATH] for any error *****"
 echo "************************************************************************************"
 
+export DISCOVERY_AS_LOCALHOST=true
 node sync.js $1 $2 >>$SYNC_LOG_CONSOLE_PATH 2>&1 &
 
 find $SYNC_LOG_PATH/app -mtime +7 -type f -delete & find $SYNC_LOG_PATH/db -mtime +7 -type f -delete & find $SYNC_LOG_PATH/console -mtime +7 -type f -delete

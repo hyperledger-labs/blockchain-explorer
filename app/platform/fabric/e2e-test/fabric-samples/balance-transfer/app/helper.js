@@ -1,7 +1,3 @@
-/*
- *SPDX-License-Identifier: Apache-2.0
- */
-
 /**
  * Copyright 2017 IBM All Rights Reserved.
  *
@@ -94,10 +90,7 @@ var getRegisteredUser = async function(username, userOrg, isJson) {
 				adminUserObj
 			);
 			logger.debug('Successfully got the secret for user %s', username);
-			user = await client.setUserContext({
-				username: username,
-				password: secret
-			});
+			user = await client.setUserContext({ username: username, password: secret });
 			logger.debug(
 				'Successfully enrolled username %s  and setUserContext on the client object',
 				username

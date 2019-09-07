@@ -25,7 +25,7 @@ function do_install() {
 
 function do_test() {
 	(cd app/test && npm run test)
-	(cd client && npm test -u --coverage)
+	(cd client && npm run test:ci -- -u --coverage)
 }
 
 function do_clean() {

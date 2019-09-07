@@ -61,11 +61,6 @@ class SyncPlatform {
 			this.client_name
 		);
 
-		setTimeout(() => {
-			console.log('SyncPlatform initialize()-- @ ', new Date().toDateString());
-			this.initialize(args);
-		}, 30000);
-
 		// Loading the config.json
 		const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
@@ -116,6 +111,11 @@ class SyncPlatform {
 		if (!res) {
 			return;
 		}
+
+		setInterval(() => {
+			console.log('Updating the client network and other details to DB');
+			this.syncService.synchNetworkConfigToDB(this.client);
+		}, 30000);
 
 		// Start event
 		this.eventHub = new FabricEvent(this.client, this.syncService);

@@ -21,6 +21,7 @@ import Login from '../Login';
 
 import Private from '../Route';
 
+/* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';

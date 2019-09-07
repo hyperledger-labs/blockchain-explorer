@@ -5,11 +5,12 @@
 import ReactTable from '../Styled/Table';
 import { Blocks } from './Blocks';
 import TransactionView from '../View/TransactionView';
+import moment from 'moment';
 
 jest.useFakeTimers();
 
-const setup = () => {
-	const props = {
+const setup = prop => {
+	const propsbase = {
 		classes: {
 			hash: 'hash',
 			partialHash: 'partialHash',
@@ -54,6 +55,23 @@ const setup = () => {
 			}
 		],
 		blockListSearch: [
+			{
+				blockhash:
+					'1234fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539ffff',
+				blocknum: 21,
+				channelname: 'mychannel',
+				createdt: '2018-04-26T20:32:15.000Z',
+				datahash:
+					'987352e70ca3a6479b1c3dd16f4bac1a55b213f6cff10a96e60977bc8ef9199c',
+				id: 21,
+				prehash: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
+				prev_blockhash: null,
+				txcount: 2,
+				txhash: [
+					'333324cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74d9187',
+					'89218cb27439b256fa38384ee98e34da75f5433cfc21a45a77f98dcbc6bd1a33'
+				]
+			},
 			{
 				blockhash:
 					'6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f',
@@ -185,7 +203,7 @@ const setup = () => {
 		getBlockListSearch: jest.fn(),
 		getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
 	};
-
+	const props = { ...propsbase, ...prop };
 	const wrapper = mount(<Blocks {...props} />);
 
 	return {
@@ -457,6 +475,21 @@ describe('Blocks', () => {
 		expect(wrapper.state('blockHash')).toMatchObject({ blockhash: blockHash });
 	});
 
+	test('handleDialogOpenBlockHash sets the correct state when search is true', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		wrapper.setState({ search: true });
+		const blockHash =
+			'1234fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539ffff';
+		expect(wrapper.state('dialogOpenBlockHash')).toBe(false);
+		expect(wrapper.state('blockHash')).not.toMatchObject({
+			blockhash: blockHash
+		});
+		instance.handleDialogOpenBlockHash(blockHash);
+		expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
+		expect(wrapper.state('blockHash')).toMatchObject({ blockhash: blockHash });
+	});
+
 	test('handleDialogCloseBlockHash sets dialogOpenBlockHash to fasle', () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
@@ -520,6 +553,41 @@ describe('Blocks', () => {
 		expect(spy).toHaveBeenCalledTimes(1);
 	});
 
+	test('clearInterval gets called in componentWillReceiveProps when inteval has already been set', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		wrapper.setState({ search: true });
+		const spy = jest.spyOn(instance, 'searchBlockList');
+
+		const currentChannel = [
+			{
+				currentChannel: 'MyChannel'
+			}
+		];
+
+		wrapper.setProps({ currentChannel });
+
+		expect(clearInterval).toHaveBeenCalled();
+		expect(spy).toHaveBeenCalledTimes(1);
+
+		jest.advanceTimersByTime(70000);
+
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
+
+	test('calls componentWillUnmount', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		const spy = jest.spyOn(instance, 'componentWillUnmount');
+		instance.interval = 1;
+
+		wrapper.unmount();
+
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(clearInterval).toHaveBeenCalled();
+	});
+
 	test('handleSearch should work properly', async () => {
 		const { wrapper } = setup();
 		await wrapper.instance().searchBlockList();
@@ -527,5 +595,237 @@ describe('Blocks', () => {
 		expect(setInterval).toHaveBeenCalled();
 		jest.runOnlyPendingTimers();
 		expect(wrapper.state('search')).toBe(false);
+	});
+
+	test('Simulate onClick when a search button is clicked', async () => {
+		const { wrapper } = setup();
+		wrapper.setState({ search: false });
+		const instance = wrapper.instance();
+		instance.searchBlockList = jest.fn();
+
+		await wrapper.find('.btn-success').simulate('click');
+		wrapper.update();
+
+		expect(setInterval).toHaveBeenCalled();
+		expect(instance.searchBlockList).toHaveBeenCalled();
+		expect(wrapper.state('search')).toBe(true);
+	});
+
+	test('searchBlockList gets scheduled when a search button is clicked first time', async () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const spy = jest.spyOn(instance, 'searchBlockList');
+
+		await wrapper.find('.btn-success').simulate('click');
+		wrapper.update();
+
+		expect(clearInterval).toHaveBeenCalled();
+		expect(setInterval).toHaveBeenCalled();
+		expect(spy).toHaveBeenCalledTimes(1);
+
+		jest.advanceTimersByTime(70000);
+
+		expect(spy).toHaveBeenCalledTimes(2);
+	});
+
+	test('Simulate onClick when a clear button is clicked', async () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.searchBlockList = jest.fn();
+		wrapper.setState({ search: true });
+		instance.interval = undefined;
+
+		clearInterval.mockClear();
+
+		await wrapper.find('.btn-primary').simulate('click');
+		wrapper.update();
+
+		expect(clearInterval).not.toHaveBeenCalled();
+		expect(wrapper.state('search')).toBe(false);
+		expect(wrapper.state('orgs').length).toBe(0);
+	});
+
+	test('clearInterval gets called in handleClearSearch when inteval has already been set', async () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		wrapper.setState({ search: true });
+
+		clearInterval.mockClear();
+
+		await wrapper.find('.btn-primary').simulate('click');
+		wrapper.update();
+
+		expect(clearInterval).toHaveBeenCalled();
+		expect(wrapper.state('search')).toBe(false);
+		expect(wrapper.state('orgs').length).toBe(0);
+	});
+
+	test('rendered when some of list items are selected', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const selected = { orgs: ['org_a'] };
+		const options = { options: ['org_a', 'org_b', 'org_c'] };
+		wrapper.setState(selected);
+		wrapper.setState(options);
+
+		const header = wrapper.find('.dropdown-heading-value');
+		expect(header.text()).toContain(selected.orgs.join(','));
+	});
+
+	test('rendered when all of list items are selected', () => {
+		const { wrapper } = setup();
+		const instance = wrapper.instance();
+		instance.interval = 1;
+		const selected = { orgs: ['org_a', 'org_b', 'org_c'] };
+		const options = { options: ['org_a', 'org_b', 'org_c'] };
+		wrapper.setState(selected);
+		wrapper.setState(options);
+
+		const header = wrapper.find('.dropdown-heading-value');
+		expect(header.text()).toContain('All Orgs Selected');
+	});
+
+	test('search block of specified orgs', () => {
+		const { props, wrapper } = setup();
+		const instance = wrapper.instance();
+		wrapper.setState({ orgs: ['org_a', 'org_b'] });
+		wrapper.setState({ search: true });
+		const spy = jest.spyOn(instance, 'searchBlockList');
+
+		const currentChannel = [
+			{
+				currentChannel: 'MyChannel'
+			}
+		];
+		wrapper.setProps({ currentChannel });
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(props.getBlockListSearch).toHaveBeenCalled();
+		expect(props.getBlockListSearch.mock.calls[0][1]).toContain(
+			'&&orgs=org_a&&orgs=org_b'
+		);
+	});
+
+	test('Date(from) is set without any errors', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(1).prop('onChange')(moment().subtract(1, 'days'));
+		expect(wrapper.state('err')).toBe(false);
+	});
+
+	test('error is detected when set newer date to `from` than date of `to`', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(1).prop('onChange')(moment().add(1, 'days'));
+		expect(wrapper.state('err')).toBe(true);
+	});
+
+	test('Date(to) is set without any errors', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(3).prop('onChange')(moment().add(1, 'days'));
+		expect(wrapper.state('err')).toBe(false);
+	});
+
+	test('error is detected when set older date to `to` than date of `from`', () => {
+		const { props, wrapper } = setup();
+		const datepicker = wrapper.find('DatePicker');
+		expect(datepicker.exists()).toBe(true);
+		datepicker.at(3).prop('onChange')(moment().subtract(2, 'days'));
+		expect(wrapper.state('err')).toBe(true);
+	});
+
+	test('handleMultiSelect gets called when selected is changed', () => {
+		const { props, wrapper } = setup();
+		const instance = wrapper.instance();
+		const spy = jest.spyOn(instance, 'handleMultiSelect');
+
+		const orgSelect = wrapper.find('MultiSelect');
+		expect(orgSelect.exists()).toBe(true);
+		orgSelect.first().prop('onSelectedChanged')(['org_a', 'org_b']);
+		expect(spy).toHaveBeenCalledTimes(1);
+		expect(wrapper.state('orgs')).toStrictEqual(['org_a', 'org_b']);
+	});
+
+	test('rendered table when blocklist is empty', () => {
+		const incomplete_blockList = {
+			blockList: [
+				{
+					blockhash: '',
+					blocknum: 20,
+					channelname: 'mychannel',
+					createdt: '2018-04-26T20:32:13.000Z',
+					datahash: '',
+					id: 21,
+					prehash: '',
+					prev_blockhash: null,
+					txcount: 2,
+					txhash: [
+						'308a24cc218085f16e12af38bf54a72beec0b85e98f971b1e0819592f74deb80',
+						''
+					]
+				}
+			]
+		};
+		const { props, wrapper } = setup(incomplete_blockList);
+	});
+
+	test('rendered table when txhash array in blockList is empty', () => {
+		const incomplete_blockList = {
+			blockList: [
+				{
+					blockhash: '',
+					blocknum: 20,
+					channelname: 'mychannel',
+					createdt: '2018-04-26T20:32:13.000Z',
+					datahash: '',
+					id: 21,
+					prehash: '',
+					prev_blockhash: null,
+					txcount: 2,
+					txhash: null
+				}
+			]
+		};
+		const { props, wrapper } = setup(incomplete_blockList);
+		const table = wrapper.find('ReactTable');
+		expect(table.exists()).toBe(true);
+		const hashFields = table.find('.partialHash');
+		expect(hashFields.length).toBe(3);
+		expect(
+			hashFields
+				.at(0)
+				.text()
+				.trim()
+		).toBe(''); // Data Hash
+		expect(
+			hashFields
+				.at(1)
+				.text()
+				.trim()
+		).toBe(''); // Block Hash
+		expect(
+			hashFields
+				.at(2)
+				.text()
+				.trim()
+		).toBe(''); // Previous Hash
+
+		const txhash = wrapper
+			.find('TdComponent')
+			.find('div')
+			.find('.hash')
+			.find('ul');
+		expect(
+			txhash
+				.last()
+				.text()
+				.trim()
+		).toBe('null'); // TX Hash
 	});
 });

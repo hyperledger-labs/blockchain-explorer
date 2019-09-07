@@ -36,44 +36,63 @@ def start_explorer_impl(context):
     # context.compose_containers = context.composition.collectServiceNames()
 
 @given(u'I start first-network')
-def start_firstnetwork_impl(context):
+@given(u'I start first-network orderer network of type {consensus_type}')
+def start_firstnetwork_impl(context, consensus_type="solo"):
     curpath = os.path.realpath('.')
-    composeFiles = ["%s/fabric-samples/first-network/docker-compose-cli.yaml" % (curpath)]
+    composeFiles = ["%s/fabric-samples/first-network/docker-compose-explorer.yaml" % (curpath)]
     config_util.makeProjectConfigDir(context)
 
     shutil.copyfile("{0}/fabric-samples/first-network/crypto-config.yaml".format(curpath), "{0}/configs/{1}/crypto-config.yaml".format(curpath, context.projectName))
     shutil.copyfile("{0}/fabric-samples/first-network/configtx.yaml".format(curpath), "{0}/configs/{1}/configtx.yaml".format(curpath, context.projectName))
     os.mkdir("{0}/configs/{1}/channel-artifacts".format(curpath, context.projectName))
-    # config_util.buildCryptoFile(context, 2, 2, numOrderers, 2, ouEnable=ouEnabled)
-    generateCryptoArtifacts(context, "mychannel")
-    # config_util.generateCrypto(context, "./configs/{0}/crypto.yaml".format(context.projectName))
-    # config_util.generateConfig(context, "byfn-sys-channel", "TwoOrgsChannel", "TwoOrgsOrdererGenesis")
-    # shutil.copyfile("{0}/configs/{1}/byfn-sys-channel.tx".format(curpath, context.projectName), "{0}/configs/{1}/channel.tx".format(curpath, context.projectName))
-    timeout=120
-    with common_util.Timeout(timeout):
-        if not hasattr(context, "composition"):
-            context.composition = compose_util.Composition(context, composeFiles,
-                                                                    projectName=context.projectName,
-                                                                    startContainers=True)
-        else:
-            context.composition.composeFilesYaml = composeFiles
-            context.composition.up()
-        context.compose_containers = context.composition.collectServiceNames()
+    generateCryptoArtifacts(context, "mychannel", consensus_type)
 
-        common_util.wait_until_in_log(["cli"], "Query successful on peer1.org2 on channel ")
+    # In this step, composition will not be used, clear it once
+    if hasattr(context, "composition"):
+        del context.composition
 
-def generateCryptoArtifacts(context, channelID):
+    updated_env = config_util.updateEnviron(context)
+    updated_env["COMPOSE_PROJECT_NAME"] = context.projectName
+    updated_env["CORE_PEER_NETWORKID"] = context.projectName
+
+    os.chdir("{0}/fabric-samples/first-network".format(curpath))
+
+    try:
+        command = ["./byfn.sh up -f docker-compose-explorer.yaml -c {0} -o {1}".format("mychannel", consensus_type)]
+        subprocess.call(command, shell=True, env=updated_env, stdout=FNULL)
+    except:
+        print("Failed npm install: {0}".format(sys.exc_info()[1]))
+
+    os.chdir(curpath)
+
+def generateCryptoArtifacts(context, channelID, consensus_type):
+    curpath = os.path.realpath('.')
     testConfigs = config_util.makeProjectConfigDir(context)
     updated_env = config_util.updateEnviron(context)
     try:
-        command = ["../../fabric-samples/first-network/byfn.sh", "generate", "-c", channelID]
-        return subprocess.call(command, cwd=testConfigs, env=updated_env, stdout=FNULL, stderr=subprocess.STDOUT)
-        #return subprocess.check_output(command, env=updated_env)
+        command = ["../../fabric-samples/first-network/byfn.sh", "generate", "-f", "docker-compose-explorer.yaml", "-c", channelID, "-o", consensus_type]
+        subprocess.call(command, cwd=testConfigs, env=updated_env, stderr=subprocess.STDOUT)
     except:
-        print("Unable to inspect orderer config data: {0}".format(sys.exc_info()[1]))
+        print("Unable to generate crypto artifacts: {0}".format(sys.exc_info()[1]))
+
+    try:
+        shutil.rmtree("{0}/fabric-samples/first-network/crypto-config".format(curpath), ignore_errors=True)
+        shutil.copytree("{0}/crypto-config".format(testConfigs), "{0}/fabric-samples/first-network/crypto-config".format(curpath))
+        shutil.copytree("{0}/crypto-config/peerOrganizations".format(testConfigs), "{0}/peerOrganizations".format(testConfigs))
+        shutil.copytree("{0}/crypto-config/ordererOrganizations".format(testConfigs), "{0}/ordererOrganizations".format(testConfigs))
+    except:
+        print("Unable to copy crypto artifacts: {0}".format(sys.exc_info()[1]))
+
+    try:
+        shutil.rmtree("{0}/fabric-samples/first-network/channel-artifacts".format(curpath), ignore_errors=True)
+        shutil.copytree("{0}/channel-artifacts".format(testConfigs), "{0}/fabric-samples/first-network/channel-artifacts".format(curpath))
+    except:
+        print("Unable to copy channel artifacts: {0}".format(sys.exc_info()[1]))
+
 
 @given(u'I start balance-transfer')
-def start_balancetransfer_impl(context):
+@given(u'I start balance-transfer orderer network of type {consensus_type}')
+def start_balancetransfer_impl(context, consensus_type="solo"):
     testConfigs = config_util.makeProjectConfigDir(context)
     curpath = os.path.realpath('.')
     shutil.copytree(
@@ -156,6 +175,22 @@ def step_impl(context, data, count, timeout):
     data_count = is_in_log("explorer.mynetwork.com", data)
     assert data_count == count, "The log didn't appear the expected number of times({0}).".format(data_count)
 
+@then(u'the explorer app logs contains "{data}" within {timeout:d} seconds')
+def step_impl(context, data, timeout):
+    time.sleep(float(timeout))
+    data_count = is_in_log("explorer.mynetwork.com", data)
+    assert data_count > 0, "The log didn't appear at all."
+
+@when(u'"{container}" is stopped')
+def step_impl(context, container):
+    if hasattr(context, "composition") and hasattr(context, "composeFilesYaml"):
+        print('composition')
+        context.composition.stop([container])
+    elif hasattr(context, "composition_explorer"):
+        print('composition_explorer')
+        context.composition_explorer.stop([container])
+    else:
+        assert False, "Failed to stop container {0}".format(container)
 
 def is_in_log(container, keyText):
     output = subprocess.check_output(

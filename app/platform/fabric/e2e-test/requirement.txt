@@ -13,7 +13,7 @@ requests
 pyOpenSSL==19.0.0
 pysha3==1.0b1
 six
-grpcio==0.13.1
+grpcio
 ecdsa
 python-slugify
 b3j0f.aop

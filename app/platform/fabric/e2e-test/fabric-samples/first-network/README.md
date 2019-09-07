@@ -1,6 +1,3 @@
-
-<!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
-
 ## Build Your First Network (BYFN)
 
 The directions for using this are documented in the Hyperledger Fabric
