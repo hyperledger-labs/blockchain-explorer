@@ -218,7 +218,7 @@ class SyncServices {
 
 		const peer_row = {
 			mspid: peer.mspid,
-			requests: requesturl,
+			requests: requesturl.replace(/^grpcs*:\/\//, ''),
 			events: eventurl,
 			server_hostname: host_port[0],
 			channel_genesis_hash,
@@ -254,7 +254,7 @@ class SyncServices {
 
 		const orderer_row = {
 			mspid: orderer.org_name,
-			requests: requesturl,
+			requests: requesturl.replace(/^grpcs*:\/\//, ''),
 			server_hostname: orderer.host,
 			channel_genesis_hash,
 			peer_type: 'ORDERER'
