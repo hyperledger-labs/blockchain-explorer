@@ -134,6 +134,19 @@ class Proxy {
 					}
 				}
 				peers.push(node);
+			} else if (node.peer_type === 'ORDERER') {
+				node.status = 'DOWN';
+				if (discover_results && discover_results.orderers) {
+					const org = discover_results.orderers[node.mspid];
+					for (const endpoint of org.endpoints) {
+						if (endpoint.host.indexOf(node.server_hostname) > -1) {
+							node.ledger_height_low = '-';
+							node.ledger_height_high = '-';
+							node.ledger_height_unsigned = '-';
+						}
+					}
+				}
+				peers.push(node);
 			}
 		}
 

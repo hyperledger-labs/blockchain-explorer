@@ -63,12 +63,12 @@ describe('Explorer dashboard', () => {
 	});
 
 	describe('peers', () => {
-		it('should have 4 peers', () => {
+		it('should have 5 peers', () => {
 			var peerList = browser.$(
 				'#root > div > div > div > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div > div > div.rt-table > div.rt-tbody'
 			);
 			var elmNum = peerList.getProperty('childElementCount');
-			elmNum.should.be.equal(4);
+			elmNum.should.be.equal(5);
 		});
 
 		it('should have the correct URL for each peer', () => {
@@ -82,6 +82,7 @@ describe('Explorer dashboard', () => {
 			expect(peerUrlStrList).to.include('peer1.org1.example.com');
 			expect(peerUrlStrList).to.include('peer0.org2.example.com');
 			expect(peerUrlStrList).to.include('peer1.org2.example.com');
+			expect(peerUrlStrList).to.include('orderer.example.com');
 		});
 	});
 
