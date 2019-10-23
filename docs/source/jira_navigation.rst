@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 Using Jira to understand current work items
 ===========================================
 

@@ -377,7 +377,7 @@ export class Blocks extends Component {
 										{tid.slice(0, 6)} {!tid ? '' : '... '}
 									</a>
 								</li>
-							))
+						  ))
 						: 'null'}
 				</ul>
 			),

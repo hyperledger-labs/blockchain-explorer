@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 Submitting a Change to Gerrit
 =============================
 

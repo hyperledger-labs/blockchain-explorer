@@ -138,7 +138,6 @@ class MetricService {
 					path: item.path,
 					version: item.version,
 					txCount: item.c,
-					channelName: item.channelname,
 					channel_genesis_hash: item.channel_genesis_hash
 				});
 			});

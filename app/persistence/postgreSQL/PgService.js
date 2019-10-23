@@ -59,17 +59,24 @@ class PgService {
 				key: fs.readFileSync(`${dbCertsPath}/db-certs/client-key.pem`).toString(),
 				cert: fs.readFileSync(`${dbCertsPath}/db-certs/client-cert.pem`).toString()
 			};
+
+			/*
+			 * don't log entire config, it contains sensitive information!
+			 * Value this.pgconfig.ssl.key is private key
+			 */
+			const { rejectUnauthorized, requestCert } = this.pgconfig.ssl;
+			const printConfig = { rejectUnauthorized, requestCert };
+			logger.info('SSL to Postgresql enabled with settings: ', printConfig);
+		} else {
+			logger.info('SSL to Postgresql disabled');
 		}
 
+		// don't log password
 		const connectionString = `postgres://${this.pgconfig.username}:******@${
 			this.pgconfig.host
 		}:${this.pgconfig.port}/${this.pgconfig.database}`;
 
-		logger.info(
-			`connecting to Postgresql ${connectionString} ssl details: ${
-				this.pgconfig.ssl
-			}`
-		);
+		logger.info(`connecting to Postgresql ${connectionString}`);
 
 		this.client = new Client(this.pgconfig);
 

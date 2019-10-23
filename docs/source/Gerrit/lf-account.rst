@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 Requesting a Linux Foundation Account
 =====================================
 

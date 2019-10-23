@@ -1,3 +1,27 @@
+## v0.3.9.5
+
+* [0da6b21](https://github.com/hyperledger/blockchain-explorer/commit/0da6b21) [BE-699](https://jira.hyperledger.org/browse/BE-699) Update packages
+* [791db7b](https://github.com/hyperledger/blockchain-explorer/commit/791db7b) [BE-693](https://jira.hyperledger.org/browse/BE-693) Update packages
+* [4629eac](https://github.com/hyperledger/blockchain-explorer/commit/4629eac) Add CODEOWNERS
+* [e2d2782](https://github.com/hyperledger/blockchain-explorer/commit/e2d2782) [BE-690](https://jira.hyperledger.org/browse/BE-690) Switch orderer when losing connection
+* [154fdac](https://github.com/hyperledger/blockchain-explorer/commit/154fdac) [BE-681](https://jira.hyperledger.org/browse/BE-681) Add e2e test for raft ordering model
+* [f6ad147](https://github.com/hyperledger/blockchain-explorer/commit/f6ad147) FABCI-398 Remove AnsiColor wrap in bc Explorer
+* [b1c3fcd](https://github.com/hyperledger/blockchain-explorer/commit/b1c3fcd) FABCI-398 Remove AnsiColor wrap in bc Explorer
+* [2518b61](https://github.com/hyperledger/blockchain-explorer/commit/2518b61) [BE-688](https://jira.hyperledger.org/browse/BE-688) Fix a bug on chaincode view
+* [edebabc](https://github.com/hyperledger/blockchain-explorer/commit/edebabc) [BE-679](https://jira.hyperledger.org/browse/BE-679) Create online docs
+* [0aadf19](https://github.com/hyperledger/blockchain-explorer/commit/0aadf19) [BE-686](https://jira.hyperledger.org/browse/BE-686) Fix log for SSL settings in PgService
+* [2c6eed5](https://github.com/hyperledger/blockchain-explorer/commit/2c6eed5) [BE-685](https://jira.hyperledger.org/browse/BE-685) Add options for TLS connection to Postgresql
+* [f24a57c](https://github.com/hyperledger/blockchain-explorer/commit/f24a57c) [BE-685](https://jira.hyperledger.org/browse/BE-685) Add options for TLS connection to Postgresql
+* [d79a7b9](https://github.com/hyperledger/blockchain-explorer/commit/d79a7b9) [BE-682](https://jira.hyperledger.org/browse/BE-682) Fix node access error in non-docker env
+* [8db6e4b](https://github.com/hyperledger/blockchain-explorer/commit/8db6e4b) [BE-682](https://jira.hyperledger.org/browse/BE-682) Verify with fabric v1.4.2
+* [0061fa0](https://github.com/hyperledger/blockchain-explorer/commit/0061fa0) [BE-678](https://jira.hyperledger.org/browse/BE-678) Create online documentation
+* [7cfb817](https://github.com/hyperledger/blockchain-explorer/commit/7cfb817) [BE-678](https://jira.hyperledger.org/browse/BE-678) Create online documentation
+* [0e6b536](https://github.com/hyperledger/blockchain-explorer/commit/0e6b536) [BE-677](https://jira.hyperledger.org/browse/BE-677) Ignoring style code for coverage purposes
+* [89b434d](https://github.com/hyperledger/blockchain-explorer/commit/89b434d) [BE-667](https://jira.hyperledger.org/browse/BE-667) Increase UI code coverage
+* [4ed8706](https://github.com/hyperledger/blockchain-explorer/commit/4ed8706) [BE-111](https://jira.hyperledger.org/browse/BE-111) Update Hyperledger Explorer documentation
+* [fe002ce](https://github.com/hyperledger/blockchain-explorer/commit/fe002ce) [BE-666](https://jira.hyperledger.org/browse/BE-666) Add steps how to run e2e test for GUI to README
+* [23398dd](https://github.com/hyperledger/blockchain-explorer/commit/23398dd) [BE-669](https://jira.hyperledger.org/browse/BE-669) Update gprcio pkg for e2e test
+
 ## v0.3.9.4
 
 * [4fc8c14](https://github.com/hyperledger/blockchain-explorer/commit/4fc8c14) [BE-652](https://jira.hyperledger.org/browse/BE-652) Increase Code Coverage

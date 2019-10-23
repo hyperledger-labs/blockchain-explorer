@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 .. :orphan:
 
 Running HL Explorer in kubernetes

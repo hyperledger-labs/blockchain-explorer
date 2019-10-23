@@ -1,3 +1,7 @@
+--
+--    SPDX-License-Identifier: Apache-2.0
+--
+
 Setting up the development environment
 --------------------------------------
 

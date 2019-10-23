@@ -17,34 +17,35 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 # Table of Contents    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
-- [1.0 Release Notes](#Release-Notes)
-- [2.0 Directory Structure](#Directory-Structure)
-- [3.0 Dependencies](#Dependencies)
-- [4.0 Clone GIT Repository](#Clone-GIT-Repository)
-- [5.0 Database Setup](#Database-Setup)
-    - [5.1 Authorization Configuration](#Authorization-Configuration)
-- [6.0 Fabric Network Setup](#Fabric-Network-Setup)
-    - [6.1 Configure operations service ](#Config-Operations-Service-Hyperledger-Explorer)
-- [7.0 Configure Hyperledger Fabric](#Configure-Hyperledger-Fabric)
-    - [7.1 Optional: Configure Fabcar Sample](#Configure-Fabcar-Sample)
-    - [7.2 Optional: Configure Balance Transfer Sample](#Configure-Balance-Transfer-Sample)
-- [8.0 Hyperledger Composer Setup](#Hyperledger-Composer-Setup)
-    - [8.1 Configure Hyperledger Explorer for Composer](#Configure-Hyperledger-Explorer-for-Composer)
-- [9.0 Optional: Hyperledger Cello Setup](#Hyperledger-Cello-Setup)
-    - [9.1 Configure Hyperledger Explorer for Cello](#Configure-Hyperledger-Explorer-for-Cello)
-- [10.0 Build Hyperledger Explorer](#Build-Hyperledger-Explorer)
-    - [10.1 Optional: Configure Hyperledger Explorer for HTTPS](#Config-https-Hyperledger-Explorer)
-- [11.0 Run Hyperledger Explorer](#Run-Hyperledger-Explorer)
-- [12.0 Optional: Run Hyperledger Explorer Using Docker](#Run-Hyperledger-Explorer-using-Docker)
-    - [12.1 Docker Repository](#Docker-Docker-Repository)
-    - [12.2 Run Hyperledger Explorer Using Docker Compose](#Run-Hyperledger-Explorer-Using-Docker-Compose)
-    - [12.3 Docker Troubleshooting](#Run-Hyperledger-Explorer-Using-Docker-Compose-Troubleshooting)
-- [13.0 NPM Utility Scripts to Dockerise Application](#NPM-Utility-Scripts-to-Dockerize-Application)
-- [14.0 Hyperledger Explorer Swagger](#Hyperledger-Explorer-Swagger)
-- [15.0 Logs](#Logs)
-- [16.0 Troubleshooting](#Troubleshooting)
-- [17.0 Testing](#Testing)
-- [18.0 License](#License)
+- [Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url]](#hyperledger-explorer-join-the-chatrocketchat-imagerocketchat-url)
+- [Table of Contents ](#table-of-contents)
+- [1.0 Release Notes ](#10-release-notes)
+- [2.0 Directory Structure ](#20-directory-structure)
+- [3.0 Dependencies ](#30-dependencies)
+- [4.0 Clone GIT Repository ](#40-clone-git-repository)
+- [5.0 Database Setup ](#50-database-setup)
+- [5.1 Authorization Configuration ](#51-authorization-configuration)
+- [6.0 Fabric Network Setup ](#60-fabric-network-setup)
+- [7.0 Configure Hyperledger Fabric ](#70-configure-hyperledger-fabric)
+- [7.1 Optional: Configure Fabcar Sample ](#71-optional-configure-fabcar-sample)
+- [7.2 Optional: Configure Balance Transfer Sample ](#72-optional-configure-balance-transfer-sample)
+- [8.0 Hyperledger Composer Setup ](#80-hyperledger-composer-setup)
+  - [8.1 Configure Hyperledger Explorer for Composer ](#81-configure-hyperledger-explorer-for-composer)
+- [9.0 Optional: Hyperledger Cello Setup ](#90-optional-hyperledger-cello-setup)
+  - [9.1 Optional: Configure Hyperledger Explorer for Cello ](#91-optional-configure-hyperledger-explorer-for-cello)
+- [10.0 Build Hyperledger Explorer ](#100-build-hyperledger-explorer)
+- [10.1 Optional: Configure Hyperledger Explorer for HTTPS ](#101-optional-configure-hyperledger-explorer-for-https)
+- [11.0 Run Hyperledger Explorer ](#110-run-hyperledger-explorer)
+- [12.0 Optional: Run Hyperledger Explorer Using Docker ](#120-optional-run-hyperledger-explorer-using-docker)
+  - [12.1 Docker Repository ](#121-docker-repository)
+  - [12.2 Run Hyperledger Explorer Using Docker Compose ](#122-run-hyperledger-explorer-using-docker-compose)
+  - [12.3 Docker Troubleshooting ](#123-docker-troubleshooting)
+- [13.0 NPM Utility Scripts to Dockerize Application ](#130-npm-utility-scripts-to-dockerize-application)
+- [14.0 Hyperledger Explorer Swagger ](#140-hyperledger-explorer-swagger)
+- [15.0 Logs ](#150-logs)
+- [16.0 Troubleshooting ](#160-troubleshooting)
+- [17.0 Testing ](#170-testing)
+- [18.0 License ](#180-license)
 
 
 
@@ -54,6 +55,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
+| <b>[v0.3.9.5](release_notes/v0.3.9.5.md)</b> (Sep 8, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.4](release_notes/v0.3.9.4.md)</b> (June 18, 2019) | [v1.4.1](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.3](release_notes/v0.3.9.3.md)</b> (May 24, 2019) | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.2](release_notes/v0.3.9.2.md)</b> (May 16, 2019) | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |

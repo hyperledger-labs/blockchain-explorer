@@ -95,7 +95,7 @@ export class TimelineStream extends Component {
 								contentStyle={{
 									backgroundColor: 'transparent'
 								}}
-								buttons={(
+								buttons={
 									<a
 										data-command="block-link"
 										href="#/"
@@ -103,7 +103,7 @@ export class TimelineStream extends Component {
 									>
 										<img src={blockOpen} alt="View Blocks" className={classes.open} />
 									</a>
-								)}
+								}
 							>
 								<Typography variant="body1">
 									<b className={classes.text}> Channel Name:</b> {item.channelName}{' '}
