@@ -1,6 +1,6 @@
---
---    SPDX-License-Identifier: Apache-2.0
---
+
+.. SPDX-License-Identifier: Apache-2.0
+
 
 .. Hyperledger Explorer documentation master file, created by
    sphinx-quickstart on Tue Jul  2 15:36:38 2019.
@@ -20,8 +20,6 @@ Hyperledger Explorer documentation
 Overview of Hyperledger Explorer
 ================================
 
-
-
 Table of contents
 =================
 
@@ -31,9 +29,11 @@ Table of contents
 
    introduction
    architecture
+   ui_screens/ui_screens
+   getting_started
    tutorials
    CONTRIBUTING
-   glossary
+
 
 
 

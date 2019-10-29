@@ -1,6 +1,6 @@
---
---    SPDX-License-Identifier: Apache-2.0
---
+
+.. SPDX-License-Identifier: Apache-2.0
+
 
 
 Introduction
@@ -12,8 +12,8 @@ Hyperledger Explorer allows you to explore the entire blockchain of the `Hyperle
 What are the key features of Hyperledger Explorer?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-			- Web application with a rich user interface, build using latest technologies, such as reactjs, Google material ui, and web-sockets.
-			- Blockchain module that can listen, and query a hyperledger fabric network.
+			- Web application with a rich user interface, developed using latest technologies, such as ReactJS, Google material ui, web-sockets, and others.
+			- Blockchain module that can listen, and query a Hyperledger Fabric network.
 			- Utility that can:
 					- Get the latest status blocks, network, and chaincodes, view blocks, and transactions.
 					- Blocks and transactions metrics by hours, and minutes.
@@ -22,20 +22,8 @@ What are the key features of Hyperledger Explorer?
 					- Get real time notification of new blocks.
 
 
-Getting Started with Hyperledger Explorer
------------------------------------------
-
-TODO
-
-.. add an introduction on how to start using HLExplorer, short description with using images, and explanation what are the futures with notes on images
-.. located in blockchain-explorer/docs/source/images
-
 .. toctree::
    :maxdepth: 1
-
-   architecture/ui_presentation
-
-
 
 
 

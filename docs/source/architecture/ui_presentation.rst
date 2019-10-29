@@ -1,13 +1,14 @@
---
---    SPDX-License-Identifier: Apache-2.0
---
 
-UI Presentaion
+.. SPDX-License-Identifier: Apache-2.0
+
+
+
+User Interface Presentation
 ===========================================
 
-An overview of the UI presentation layer
+When choosing a framework, or a library in most of the cases we look at the performance, maturity, and support this is where ReactJs was a benefit
+to us and used in our HLExplorer front end.
 
-TODO
 
 .. add an overview
 
@@ -15,8 +16,10 @@ TODO
    :width: 850px
 
 
+
 .. toctree::
    :maxdepth: 1
+
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License
