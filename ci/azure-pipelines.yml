@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: Apache-2.0
+
+name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.rrr)
+trigger:
+- master
+
+jobs:
+- job: TestsWithCoverage
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - template: install_deps.yml
+  - checkout: self
+  - script: |
+      npm config set prefix ~/npm && npm install -g mocha
+      npm install chai && npm install
+      cd app/test && npm install
+      npm run test
+      cd ../../client && npm install
+      echo "--------> npm tests with code coverage"
+      npm run test:ci -- -u --coverage && npm run build
+    displayName: Run Tests With Coverage Report
+
+- job: SanityChecks
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - template: install_deps.yml
+  - checkout: self
+  - script: |
+      npm install
+      npm run e2e-test-sanitycheck:ci
+    displayName: Run Sanity Checks
+
+- job: GUITests
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - template: install_deps.yml
+  - checkout: self
+  - script: |
+      npm install
+      npm run e2e-gui-test:ci
+    displayName: Run GUI Tests
