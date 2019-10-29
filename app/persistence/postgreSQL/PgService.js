@@ -18,9 +18,10 @@
  * limitations under the License.
  */
 
-const { Client } = require('pg');
+// const { Client } = require('pg');
 
 const fs = require('fs');
+const Pool = require('pg-pool');
 
 const helper = require('../../common/helper');
 
@@ -65,7 +66,10 @@ class PgService {
 			 * Value this.pgconfig.ssl.key is private key
 			 */
 			const { rejectUnauthorized, requestCert } = this.pgconfig.ssl;
-			const printConfig = { rejectUnauthorized, requestCert };
+			const printConfig = {
+				rejectUnauthorized,
+				requestCert
+			};
 			logger.info('SSL to Postgresql enabled with settings: ', printConfig);
 		} else {
 			logger.info('SSL to Postgresql disabled');
@@ -78,40 +82,19 @@ class PgService {
 
 		logger.info(`connecting to Postgresql ${connectionString}`);
 
-		this.client = new Client(this.pgconfig);
+		this.client = new Pool(this.pgconfig);
+
+		console.log('DB Pool created: ');
+		logger.info('DB Pool created: ');
+
+		this.client.on('error', err => {
+			console.log('db error:', err);
+			logger.error('db error:', err);
+		});
 
 		logger.info(
 			'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
 		);
-	}
-
-	/**
-	 *
-	 *
-	 * @memberof PgService
-	 */
-	async handleDisconnect() {
-		try {
-			this.client.on('error', err => {
-				console.log('db error', err);
-				if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-					this.handleDisconnect();
-				} else {
-					throw err;
-				}
-			});
-			await this.client.connect();
-		} catch (err) {
-			if (err) {
-				/*
-				 * We introduce a delay before attempting to reconnect,
-				 * To avoid a hot loop, and to allow our node script to
-				 * Process asynchronous requests in the meantime.
-				 */
-				console.log('error when connecting to db:', err);
-				setTimeout(this.handleDisconnect, 2000);
-			}
-		}
 	}
 
 	/**

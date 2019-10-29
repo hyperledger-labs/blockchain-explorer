@@ -25,7 +25,6 @@ class PersistenceFactory {
 			// Avoid to load all db Persist module
 			const PostgreSQL = require('./postgreSQL/Persist');
 			const persistence = new PostgreSQL(dbconfig);
-			await persistence.getPGService().handleDisconnect();
 			return persistence;
 		}
 		throw new ExplorerError(explorer_error.ERROR_1003, db);
