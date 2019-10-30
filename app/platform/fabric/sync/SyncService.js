@@ -477,7 +477,8 @@ class SyncServices {
 				createdt,
 				prev_blockhash: '',
 				blockhash,
-				channel_genesis_hash
+				channel_genesis_hash,
+				blksize: jsonObjSize(block)
 			};
 			const txLen = block.data.data.length;
 			for (let i = 0; i < txLen; i++) {
@@ -651,7 +652,8 @@ class SyncServices {
 					} tx`,
 					time: createdt,
 					txcount: block.data.data.length,
-					datahash: block.header.data_hash
+					datahash: block.header.data_hash,
+					blksize: block_row.blksize
 				};
 
 				_self.platform.send(notify);
@@ -700,4 +702,50 @@ function convertValidationCode(code) {
 		return code;
 	}
 	return _validation_codes[code];
+}
+
+// Calculate data size of json object
+function jsonObjSize(json) {
+	let bytes = 0;
+
+	function sizeOf(obj) {
+		if (obj !== null && obj !== undefined) {
+			switch (typeof obj) {
+				case 'number': {
+					bytes += 8;
+					break;
+				}
+				case 'string': {
+					bytes += obj.length;
+					break;
+				}
+				case 'boolean': {
+					bytes += 4;
+					break;
+				}
+				case 'object': {
+					const objClass = Object.prototype.toString.call(obj).slice(8, -1);
+					if (objClass === 'Object' || objClass === 'Array') {
+						for (const key in obj) {
+							if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+							sizeOf(obj[key]);
+						}
+					} else {
+						bytes += obj.length;
+					}
+					break;
+				}
+				default:
+					console.log(typeof obj);
+					break;
+			}
+		}
+		return bytes;
+	}
+
+	function formatByteSize(rawByte) {
+		return (rawByte / 1024).toFixed(0);
+	}
+
+	return formatByteSize(sizeOf(json));
 }
