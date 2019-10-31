@@ -210,7 +210,7 @@ class CRUDService {
 			await this.sql.updateBySql(
 				`update chaincodes set txcount =txcount+1 where channel_genesis_hash='${
 					transaction.channel_genesis_hash
-				}'`
+				}' and name='${transaction.chaincodename}'`
 			);
 			await this.sql.updateBySql(
 				`update channel set trans =trans+1 where channel_genesis_hash='${

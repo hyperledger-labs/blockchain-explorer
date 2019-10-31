@@ -38,7 +38,7 @@ describe('Explorer chaincode view', () => {
 			var ccTxCount = browser.$(
 				'#root > div > div > div > div > div > div > div > div.rt-table > div.rt-tbody > div > div > div:nth-child(4)'
 			);
-			ccTxCount.getText().should.be.equal('5');
+			ccTxCount.getText().should.be.equal('1');
 
 			var ccChName = browser.$(
 				'#root > div > div > div > div > div > div > div > div.rt-table > div.rt-tbody > div > div > div:nth-child(2)'
