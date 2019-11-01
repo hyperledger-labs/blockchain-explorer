@@ -389,6 +389,19 @@ export class Blocks extends Component {
 					{ threshold: matchSorter.rankings.SIMPLEMATCH }
 				),
 			filterAll: true
+		},
+		{
+			Header: 'Size(KB)',
+			accessor: 'blksize',
+			filterMethod: (filter, rows) =>
+				matchSorter(
+					rows,
+					filter.value,
+					{ keys: ['blksize'] },
+					{ threshold: matchSorter.rankings.SIMPLEMATCH }
+				),
+			filterAll: true,
+			width: 150
 		}
 	];
 

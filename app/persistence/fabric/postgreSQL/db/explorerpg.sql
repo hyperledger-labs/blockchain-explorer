@@ -24,7 +24,8 @@ CREATE TABLE blocks
   createdt Timestamp DEFAULT NULL,
   prev_blockhash character varying(256) DEFAULT NULL,
   blockhash character varying(256) DEFAULT NULL,
-  channel_genesis_hash character varying(256) DEFAULT NULL
+  channel_genesis_hash character varying(256) DEFAULT NULL,
+  blksize integer DEFAULT NULL
 );
 
 ALTER table blocks owner to :user;
