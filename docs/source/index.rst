@@ -29,7 +29,6 @@ Table of contents
 
    introduction
    architecture
-   ui_screens/ui_screens
    getting_started
    tutorials
    CONTRIBUTING

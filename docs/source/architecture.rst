@@ -13,7 +13,7 @@ Architecture Reference
 .. toctree::
    :maxdepth: 1
 
-
+   architecture/index
    architecture/ui_presentation
    architecture/backend
    architecture/databaselayer

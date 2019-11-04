@@ -3,15 +3,14 @@
 
 
 
-User Interface Presentation
-===========================================
+Front End
+========================================
 
 When choosing a framework, or a library in most of the cases we look at the performance, maturity, and support this is where ReactJs was a benefit
 to us and used in our HLExplorer front end.
 
-
-.. add an overview
-
+The high-level architecture of presentation layer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: ../images/ui_presentation.png
    :width: 850px
 

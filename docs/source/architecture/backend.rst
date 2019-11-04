@@ -21,11 +21,10 @@ Back End Layer
 Main components of the HLExplorer back end can be listed as:
 
   .. .. image:: ../images/backend.png
-  .. :width: 850px
+     .. :width: 850px
 
 .. toctree::
    :maxdepth: 1
-
 
    restapi
    gateway
@@ -34,6 +33,7 @@ Main components of the HLExplorer back end can be listed as:
    synchronizer
    websockets
    configuration
+   logs
 
 
 
