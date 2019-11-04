@@ -48,18 +48,10 @@ Swagger
 To learn more about REST API, and use an interactive API console to submit requests you can take advantage of the `SWAGGER <https://github.com/hyperledger/blockchain-explorer/tree/master#Hyperledger-Explorer-Swagger>`__
 provided by the Hyperledger Explorer.
 
-Some screenshots of the SWAGGER in local environment.
-
-
 Hyperledger Explorer SWAGGER home page.
 
-.. image:: ../images/swagger.png
-   :width: 850px
-
-
-.. image:: ../images/swagger-blocks.png
-   :width: 850px
-
+.. raw:: html
+     :file: ./restapi.html
 
 
 

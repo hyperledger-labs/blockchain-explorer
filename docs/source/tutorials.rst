@@ -13,12 +13,7 @@ In this tutorial we will try to highlight on how to configure and run Hyperledge
    :maxdepth: 1
 
 
-   tutorials/hl_explorer_local
-   tutorials/hl_explorer_docker
-   tutorials/hl_explorer_cloud
-   tutorials/hl_explorer_kubernetes
-
-
+   tutorials/run_explorer
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License

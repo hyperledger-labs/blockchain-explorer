@@ -11,10 +11,8 @@ to us and used in our HLExplorer front end.
 
 The high-level architecture of presentation layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. image:: ../images/ui_presentation.png
-   :width: 850px
-
-
+.. raw:: html
+     :file: ./hl_ui_high_level.html
 
 .. toctree::
    :maxdepth: 1

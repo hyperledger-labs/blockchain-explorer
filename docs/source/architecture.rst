@@ -14,7 +14,7 @@ Architecture Reference
    :maxdepth: 1
 
    architecture/index
-   architecture/ui_presentation
+   architecture/hl_ui_high_level
    architecture/backend
    architecture/databaselayer
 

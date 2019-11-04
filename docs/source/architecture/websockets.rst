@@ -13,8 +13,7 @@ The image below illustrates how the notification is displayed when new blocks ar
 new block details is provided in the notification panel.
 
 
-.. image:: ../_static/images/hl_new_block_notification_panel.png
-   :width: 850px
-
+.. raw:: html
+     :file: ./websockets.html
 
 .. TODO

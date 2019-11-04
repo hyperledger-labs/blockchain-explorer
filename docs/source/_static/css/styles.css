@@ -1,0 +1,17 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+
+input[type='checkbox'] {
+	display: none;
+}
+
+.container img {
+	margin: 0px;
+	transition: transform 0.25s ease;
+	cursor: zoom-in;
+}
+
+input[type='checkbox']:checked ~ label > img {
+	transform: scale(1.75);
+	transform-origin: left;
+	cursor: zoom-out;
+}
