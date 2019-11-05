@@ -31,7 +31,7 @@ What are the key features of Hyperledger Explorer?
 
 
 
-   presentation/index
+..   presentation/index
 
 
 

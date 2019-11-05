@@ -8,10 +8,13 @@ input[type='checkbox'] {
 	margin: 0px;
 	transition: transform 0.25s ease;
 	cursor: zoom-in;
+	overflow: auto;
+	display: block;
 }
 
 input[type='checkbox']:checked ~ label > img {
-	transform: scale(1.75);
-	transform-origin: left;
+	transform: scale(1.2);
+	/*transform-origin: left; */
+	transform-origin: 0 0;
 	cursor: zoom-out;
 }

@@ -2,7 +2,7 @@
 .. SPDX-License-Identifier: Apache-2.0
 
 
-Running HL Explorer:
+Running HL Explorer
 *********************************
 
 

@@ -23,18 +23,17 @@ Overview of Hyperledger Explorer
 Table of contents
 =================
 
+
 .. toctree::
    :maxdepth: 1
 
 
    introduction
+   presentation/index
    architecture
    getting_started
    tutorials
    CONTRIBUTING
-
-
-
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/
