@@ -5,6 +5,20 @@
 Running HL Explorer
 *********************************
 
+Dependencies
+~~~~~~~~~~~~~
+
+Following are the software dependencies required to install and run hyperledger explorer:
+
+Nodejs 8.11.x (Note that v9.x is not yet supported)
+PostgreSQL 9.5 or greater
+jq
+Linux-based operating system, such as Ubuntu or MacOS
+Verified Docker versions supported:
+
+Docker CE 18.09.2 or later
+Docker Compose 1.14.0
+
 
 TODO
 

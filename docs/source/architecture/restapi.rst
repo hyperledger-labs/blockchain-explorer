@@ -43,6 +43,17 @@ The REST API list of features include:
 
 
 
+Routes
+~~~~~~~~
+There are three main routes defined, authorization, database, and platform.
+
+
+
+.. raw:: html
+     :file: ./routes.html
+
+
+
 Swagger
 ~~~~~~~~
 To learn more about REST API, and use an interactive API console to submit requests you can take advantage of the `SWAGGER <https://github.com/hyperledger/blockchain-explorer/tree/master#Hyperledger-Explorer-Swagger>`__

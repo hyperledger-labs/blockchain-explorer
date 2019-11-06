@@ -14,7 +14,7 @@ The ability to visualize data is of critical importance, in order to extract bus
 functionality.
 
 What are the key features of Hyperledger Explorer?
--------------------------------------------------------------------------------------------------------
+-----------------------------------------------------
 - Web application with a rich user interface, developed using latest technologies, such as ReactJS, Google material ui, web-sockets, and others.
 - Blockchain module that can listen, and query a Hyperledger Fabric network.
 - Utility that can:
@@ -26,12 +26,12 @@ What are the key features of Hyperledger Explorer?
 		- Get real time notification of new blocks.
 
 
+Please proceed to next page, or click the link below to get familiar with Hyperledger Explorer screens.
+
 .. toctree::
    :maxdepth: 1
 
-
-
-..   presentation/index
+   presentation/index
 
 
 

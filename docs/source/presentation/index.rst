@@ -52,10 +52,12 @@ the block details accessed from the provided link.
 
 Dark theme screen
 -----------------
-The dark theme mode it is another view of the Hyperledger Explorer, there can be some potential benefits by switching to it.
+The dark theme mode is another view of the Hyperledger Explorer, there can be some potential benefits by switching to it.
 
 .. raw:: html
      :file: ./hl_dark_theme.html
+
+
 
 
 Network
@@ -64,6 +66,8 @@ Network screen consist of the list of the properties that channel is configured 
 
 .. raw:: html
      :file: ./hl_network.html
+
+
 
 
 Block list
@@ -77,12 +81,18 @@ by date range, and selected organization from the list.
      :file: ./hl_block_list.html
 
 
+
+
 Block details window
 --------------------
-TODO add content
+This screen represents in detail a block. You can see the creation of the block, number of transactions in this block, block hash, data hash,
+and the previous hash that connects
+to the previous block. For usability you can copy any of the hashes using the clipboard icon.
 
 .. raw:: html
      :file: ./hl_block_details_window.html
+
+
 
 Filter result
 --------------
@@ -95,12 +105,14 @@ The :guilabel:`Reset` button can be used to reset the date range, and the organi
      :file: ./hl_filter_window.html
 
 
+
 Transaction list
 -----------------
 Transaction list screen has almost identical functionality as the block list screen.
 
 .. raw:: html
      :file: ./hl_transaction_list.html
+
 
 
 Transaction details
@@ -111,6 +123,8 @@ Transaction details is similar to block details, JSON data can be folded/unfolde
      :file: ./hl_tx_details.html
 
 
+
+
 Chaincode list
 ---------------
 Chaincode list displays the chaincode properties and has filter, and sort functionalities. Displayed list is for the current selected channel.
@@ -119,12 +133,14 @@ Chaincode list displays the chaincode properties and has filter, and sort functi
      :file: ./hl_chaincodes.html
 
 
+
 Channel list
 --------------
 Channel list displays all the channels, and it's properties, has similar filter, and sort functionalities as chaincode list.
 
 .. raw:: html
      :file: ./hl_channel_list.html
+
 
 
 
@@ -165,6 +181,9 @@ block/transaction, hours or minute.
 
 
         .. image:: ../_static/images/hl_tx_count_minute.png
+
+
+
 
 
 

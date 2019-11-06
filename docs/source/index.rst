@@ -12,6 +12,7 @@ Hyperledger Explorer documentation
 **********************************
 
 .. image:: images/Hyperledger_Explorer_Logo_Color.png
+    :width: 650px
 
 
 

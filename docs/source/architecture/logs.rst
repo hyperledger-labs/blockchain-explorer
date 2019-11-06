@@ -16,20 +16,53 @@ Why do we log?
 * Error tracking, when errors do occur, we need to know when they started, and how often they occurred.
 * Analyzing, logs are valuable sources of information. We can analyze logs to discover usage patterns and make decisions.
 
+	* There are two directories created by the application, one for standalone sync, and when running with explorer
+					* ``$blockchain-explorer/logs/``.
+					* ``$blockchain-explorer/logs/sync``.
 
-We have divided logs by the following categories:
+	* Both have same subdirectories
+					* ``app/``.
+					* ``db/``.
+					* ``console/``.
 
-* Application logs
 
-  * We record, information, debug, error and other types of events, these logs are located in ``$blockchain-explorer/logs/app`` directory.
+.. container:: content-tabs
 
-* Database logs
+    .. tab-container:: apps
+        :title: Application logs
 
-  * Useful information, debug, and errors are recorded during the CRUD operations, logs are located in ``$blockchain-explorer/logs/db`` directory.
+        Information, debug, error and other types of events, these logs are located in ``$blockchain-explorer/logs/app/`` directory.
 
-* Console logs
+							.. raw:: html
+												:file: ./logs_app.html
 
-  * We print different levels of messages to stdout and stderr, all the console logs are also redirected to a console.log files for the auditing purposes, location the the logs are in ``$blockchain-explorer/logs/console`` directory.
+    .. tab-container:: db
+        :title: Database logs
+
+        Useful information, debug, and errors are recorded during the CRUD operations, logs are located in ``$blockchain-explorer/logs/db`` directory.
+
+							.. raw:: html
+												:file: ./logs_db.html
+
+
+    .. tab-container:: console
+        :title: Console logs
+
+        Different levels of messages to stdout and stderr, all the console logs are also redirected to a console.log files for the auditing purposes, location the the logs are in ``$blockchain-explorer/logs/console`` directory.
+
+							.. raw:: html
+												:file: ./logs_console.html
+
+
+
+
+
+
+
+
+
+
+
 
 
 .. note::
