@@ -19,8 +19,32 @@ by community through the `mail listings <https://lists.hyperledger.org/g/explore
 `Rocket Chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__ hyperledger-explorer channel.
 
 
-.. toctree::
-   :maxdepth: 1
+TODO
+
+.. container:: content-tabs
+
+    .. tab-container:: local
+        :title: Run locally
+
+        Content for Running HL Explorer locally
+
+    .. tab-container:: cloud
+        :title: Run in cloud
+
+        Content for Running HL Explorer in cloud
+
+    .. tab-container:: docker
+        :title: Run in docker
+
+        Content for Running HL Explorer in docker
+
+    .. tab-container:: kubernetes
+        :title: Run in kubernetes
+
+								Hyperledger Explorer project team did not test, or setup to run explorer in kubernetes, but someone did a tremendous job in setting it,
+								and added an explanation on how to set it up.
+								If you're interested to experiment, and willing to give a try you're more than welcomed.
+								Please let us know if you succeeded in `running explorer in kubernetes <https://github.com/feitnomore/hyperledger-fabric-kubernetes>`__.
 
 
 
@@ -29,6 +53,7 @@ by community through the `mail listings <https://lists.hyperledger.org/g/explore
 
 
 
+.. add a short overview, and rely on links in current README of the github
 
 
 .. Licensed under Creative Commons Attribution 4.0 International License

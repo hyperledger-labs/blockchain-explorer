@@ -1,0 +1,35 @@
+# Copyright the Hyperledger Fabric contributors. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: RELEASE-$(Date:yyyyMMdd)$(Rev:.rrr)
+trigger:
+  tags:
+    include:
+      - v*
+pr: none
+
+variables:
+- group: secrets
+
+jobs:
+- job: Release
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - script: docker login --username=$(DockerHub-Username) --password=$(DockerHub-Password)
+    displayName: Login to Docker
+  - script: ./build_docker_image.sh
+    displayName: Build Docker Images
+  - script: docker tag hyperledger/explorer hyperledger/explorer:$(git describe --abbrev=0 --tags | cut -d 'v' -f 2)
+    displayName: Tag Explorer Image
+  - script: docker tag hyperledger/explorer-db hyperledger/explorer-db:$(git describe --abbrev=0 --tags | cut -d 'v' -f 2)
+    displayName: Tag Explorer DB Image
+  - script: docker push hyperledger/explorer
+    displayName: Push Explorer Latest Image
+  - script: docker push hyperledger/explorer-db
+    displayName: Push Explorer DB Latest Image
+  - script: docker push hyperledger/explorer:$(git describe --abbrev=0 --tags | cut -d 'v' -f 2)
+    displayName: Push Explorer Versioned Image
+  - script: docker push hyperledger/explorer-db:$(git describe --abbrev=0 --tags | cut -d 'v' -f 2)
+    displayName: Push Explorer DB Versioned Image

@@ -122,17 +122,25 @@ function setOrgEnrolmentPath(network_config) {
 				);
 				if (organization.adminPrivateKey) {
 					const privateKeyPath = organization.adminPrivateKey.path;
-					const files = fs.readdirSync(privateKeyPath);
-					if (files && files.length > 0) {
-						organization.adminPrivateKey.path = path.join(privateKeyPath, files[0]);
+					try {
+						const files = fs.readdirSync(privateKeyPath);
+						if (files && files.length > 0) {
+							organization.adminPrivateKey.path = path.join(privateKeyPath, files[0]);
+						}
+					} catch (err) {
+						logger.error(err);
 					}
 				}
 				// Setting admin private key as first file from signcerts dir
 				if (organization.signedCert) {
 					const signedCertPath = organization.signedCert.path;
-					const files = fs.readdirSync(signedCertPath);
-					if (files && files.length > 0) {
-						organization.signedCert.path = path.join(signedCertPath, files[0]);
+					try {
+						const files = fs.readdirSync(signedCertPath);
+						if (files && files.length > 0) {
+							organization.signedCert.path = path.join(signedCertPath, files[0]);
+						}
+					} catch (err) {
+						logger.error(err);
 					}
 				}
 			} else {

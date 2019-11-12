@@ -33,7 +33,6 @@ Table of contents
    presentation/index
    architecture
    getting_started
-   tutorials
    CONTRIBUTING
 
 .. Licensed under Creative Commons Attribution 4.0 International License

@@ -25,7 +25,7 @@ Dashboard
 Dashboard is the home page of the Hyperledger Explorer, and displays a set of panels that will show the latest activity of the
 Hyperledger Fabric network the explorer is configured to.
 We can see the navigation tabs: :guilabel:`DASHBOARD`, :guilabel:`NETWORK`, :guilabel:`BLOCKS`, :guilabel:`TRANSACTIONS`, :guilabel:`CHAINCODES`,  :guilabel:`CHANNELS`.
-Along with the navigation tabs there are: :guilabel:`channel drop down`, :guilabel:`dark theme switch`, :guilabel:`latest notification`, and :guilabel:`register user` icons.
+Along with the navigation tabs there are: :guilabel:`channel drop down`, :guilabel:`dark theme switch`, and :guilabel:`latest notification` icons.
 List of the peers can be seen, metrics, followed by latest activity, and transactions by organization panels.
 Each panel reflects the historical, metrics, and the latest activity per selected channel.
 
@@ -158,6 +158,7 @@ block/transaction, hours or minute.
     .. tab-container:: blocks_per_hour
         :title: Blocks per hour
 
+        Displays the number of blocks added to fabric network in that period.
 
         .. image:: ../_static/images/hl_blocks_per_hour.png
 
@@ -165,6 +166,7 @@ block/transaction, hours or minute.
     .. tab-container:: blocks_per_minute
         :title: Blocks per minute
 
+        The number of transactions added to fabric network in that period.
 
         .. image:: ../_static/images/hl_blocks_per_minute.png
 
@@ -172,6 +174,7 @@ block/transaction, hours or minute.
     .. tab-container:: tx_per_hour
         :title: Transactions per hour
 
+        Displays the number of transactions added to fabric network in that period.
 
         .. image:: ../_static/images/hl_tx_count_per_hour.png
 
@@ -179,6 +182,7 @@ block/transaction, hours or minute.
     .. tab-container:: tx_per_minute
         :title: Transactions per minute
 
+        The number of transactions added to fabric network in that period.
 
         .. image:: ../_static/images/hl_tx_count_minute.png
 
