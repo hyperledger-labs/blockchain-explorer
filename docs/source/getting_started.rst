@@ -7,10 +7,8 @@ Getting Started with Hyperledger Explorer
 
 TODO
 
-.. add an introduction on how to start using HLExplorer, short description with using images, and explanation what are the futures with notes on images
-.. located in blockchain-explorer/docs/source/images
 
-Hyperledger Explorer can run locally in your local environment or using docker. Minimum configuration allows you to get it setup up, and running
+Hyperledger Explorer can run in your local environment or using docker. Minimum configuration allows you to get it setup up, and running
 in short time.
 There are well defined steps and `instructions <https://github.com/hyperledger/blockchain-explorer/blob/master/README.md>`__ how to get you setup and
 run HL Explorer successfully. Along with the instructions you may find useful
@@ -19,14 +17,33 @@ by community through the `mail listings <https://lists.hyperledger.org/g/explore
 `Rocket Chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__ hyperledger-explorer channel.
 
 
-TODO
+
+
+Following are the software dependencies required to install and run hyperledger explorer:
+
+	* `Node.js <https://nodejs.org/en/>`__ 8.11.x (Note that v9.x is not yet supported)
+	* `PostgreSQL 9.5 or greater <https://www.postgresql.org/>`__
+	* `jq <https://stedolan.github.io/jq>`__, a lightweight and flexible command-line JSON processor
+	* Linux-based operating system, such as `Ubuntu <https://ubuntu.com/>`__ or MacOS
+
+Verified Docker versions supported:
+
+	* `Docker CE 18.09.2 or later <https://hub.docker.com/search/?type=edition&offering=community&operating_system=linux>`__
+	* `Docker Compose 1.14.0 <https://docs.docker.com/compose>`__
+
+.. note::
+
+   See `Release Notes <https://github.com/hyperledger/blockchain-explorer/blob/master/README.md#10-release-notes---->`__ on supported Hyperledger Fabric and Explorer versions.
+
 
 .. container:: content-tabs
 
     .. tab-container:: local
         :title: Run locally
 
-        Content for Running HL Explorer locally
+
+        Assuming that your environment has the required software dependencies, follow up `instructions <https://github.com/hyperledger/blockchain-explorer/blob/master/README.md>`__  on how to setup Hyperledger Explorer to run in your local environment
+
 
     .. tab-container:: cloud
         :title: Run in cloud
