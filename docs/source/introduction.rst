@@ -26,12 +26,12 @@ What are the key features of Hyperledger Explorer?
 		- Get real time notification of new blocks.
 
 
-Please proceed to next page, or click the link below to get familiar with Hyperledger Explorer screens.
+.. Please proceed to next page, or click the link below to get familiar with Hyperledger Explorer screens.
 
-.. toctree::
+.. .. toctree::
    :maxdepth: 1
 
-   presentation/index
+..   presentation/index
 
 
 

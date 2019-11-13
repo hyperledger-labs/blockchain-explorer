@@ -47,13 +47,11 @@ Configuration
     .. tab-container:: run_standalone
         :title: Run host (Standalone)
 
-							   .. code-block:: json
-
-														{
-															"sync": {
-															"type": "host"
-															}
-														}
+							  * From new terminal (if Sync Process in Standalone).
+									
+										* ``cd blockchain-explorer/``
+										* ``./syncstart.sh`` (it will have the sync node up).
+										* ``./syncstop.sh`` (it will stop the sync node).
 
 
     .. tab-container:: run_local
@@ -65,7 +63,7 @@ Configuration
 											* ``./start.sh`` (it will have the backend up).
 											* ``./start.sh debug`` (it will have the backend in debug mode).
 											* ``./start.sh print`` (it will print help).
-											* Launch the URL ``http(s)://localhost:8080`` on a browser.
+											* Launch the URL ``http(s)://<host>:<port>`` on a browser.
 											* ``./stop.sh`` (it will stop the node server).
 
 
@@ -75,7 +73,7 @@ Configuration
 			* Please restart Explorer if any changes made to explorerconfig.json.
 
 			  * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
-			  * If Hyperledger Fabric network is deployed on other machine, please toggle DISCOVERY_AS_LOCALHOST in ``start.sh / syncstart.sh to 'false'``.
+			  * If Hyperledger Fabric network is deployed on other machine, please toggle ``DISCOVERY_AS_LOCALHOST`` in ``start.sh / syncstart.sh to 'false'``.
 
 
 

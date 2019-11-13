@@ -40,7 +40,7 @@ Each panel reflects the historical, metrics, and the latest activity per selecte
 Latest blocks notification panel
 --------------------------------
 The latest block notification panel displays the block number, channel name, datahash, and the number of transactions per block.
-There is an  :guilabel:`icon link` if clicked, it will show the latest block details, and is located in the right most corner of the panel. In the picture below you can see
+There is an  :guilabel:`icon link` to show the latest block details, and is located in the right most corner of the panel. In the picture below you can see
 the block details accessed from the provided link.
 
 
@@ -108,7 +108,8 @@ The :guilabel:`Reset` button can be used to reset the date range, and the organi
 
 Transaction list
 -----------------
-Transaction list screen has almost identical functionality as the block list screen.
+Transaction list screen has almost identical functionality as the block list screen, the number of rows per page, up to 100, can be selected from
+the drop down, next and previous buttons allow to navigate the direction of results, back or forward.
 
 .. raw:: html
      :file: ./hl_transaction_list.html
