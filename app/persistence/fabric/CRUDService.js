@@ -54,7 +54,7 @@ class CRUDService {
 	 */
 
 	getBlockActivityList(channel_genesis_hash) {
-		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, (
       SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
        channel_genesis_hash = '${channel_genesis_hash}' group by transactions.blockid ),
       channel.name as channelname  from blocks inner join channel on blocks.channel_genesis_hash = channel.channel_genesis_hash  where
@@ -105,7 +105,7 @@ class CRUDService {
 		}
 		const sqlBlockTxList = `select a.* from  (
       select (select c.name from channel c where c.channel_genesis_hash =
-         '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt,(
+         '${channel_genesis_hash}' ) as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
         SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${blockTxListSql} and
          channel_genesis_hash = '${channel_genesis_hash}' and createdt between '${from}' and '${to}') from blocks where
          blocks.channel_genesis_hash ='${channel_genesis_hash}' and blocknum >= 0 and blocks.createdt between '${from}' and '${to}'
@@ -210,7 +210,7 @@ class CRUDService {
 			await this.sql.updateBySql(
 				`update chaincodes set txcount =txcount+1 where channel_genesis_hash='${
 					transaction.channel_genesis_hash
-				}'`
+				}' and name='${transaction.chaincodename}'`
 			);
 			await this.sql.updateBySql(
 				`update channel set trans =trans+1 where channel_genesis_hash='${

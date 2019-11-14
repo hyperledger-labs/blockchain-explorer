@@ -218,6 +218,7 @@
 					"auth",
 					"authroutes",
 					"axios",
+					"blksize",
 					"blockactivity",
 					"blocksbyhour",
 					"blockandtx",
@@ -358,6 +359,7 @@
 					"txhash",
 					"robertfeng",
 					"vchinoy",
+					"Uint8",
 					"unhandled",
 					"utils",
 					"util",
@@ -421,7 +423,9 @@
 					"pltfrm",
 					"SAMEORIGIN",
 					"csurf",
-					"_csrf-hl-expl"
+					"_csrf-hl-expl",
+					"Uint8",
+					"Uint8Array"
 				],
 				"skipIfMatch": ["http://[^s]*"],
 				"skipWordIfMatch": ["^foobar.*$"],
