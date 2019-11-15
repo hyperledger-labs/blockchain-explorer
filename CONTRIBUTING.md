@@ -20,9 +20,11 @@ The code is structured into two main categories
 * ReactJS UI (client folder)
 * NodeJS back-end (all other folders)
 
-### Gerrit
+<!-- ### Gerrit
 
 All the patches should be submitted to gerrit for review. Follow the general guidelines on getting Linux foundation account and submitting patches [here](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account.html)
+
+-->
 
 
 ### Copyright Notices
