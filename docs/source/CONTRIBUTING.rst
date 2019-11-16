@@ -63,18 +63,12 @@ Verified Docker versions supported:
 
 
 
-
 Submitting your fix
 ~~~~~~~~~~~~~~~~~~~
 
 If you just submitted a JIRA for a bug you've discovered, and would like to
 provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then you can submit a change request (PR), please follow guidance provided by `GitHub <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>`__.
-
-.. important:: Commit your changes with Jira ticket and description
-..
-
-
+yourself, then you can submit a change request (PR), please follow guidance provided by `CONTRIBUTING.md <https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md>`__.
 
 
 Working on fixing issues and working stories
