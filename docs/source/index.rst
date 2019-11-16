@@ -33,6 +33,7 @@ Table of contents
    presentation/index
    architecture
    getting_started
+   repos
    CONTRIBUTING
 
 .. Licensed under Creative Commons Attribution 4.0 International License
