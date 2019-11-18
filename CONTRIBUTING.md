@@ -10,7 +10,7 @@ We welcome contributions to the Hyperledger Explorer Project in many forms like 
 
 We track all bugs and feature requests on [Hyperledger Explorer Jira](https://jira.hyperledger.org/projects/BE/issues). Please send a detailed bug report with relevant logs and steps to reproduce the issue when you encounter an issue. We always appreciate such bug reports as it reduces our effort and will help us fix the bug easily. Please use the search functionality to ensure that the bug/feature request you are trying to file does not exist already. If it exists, you can always add additional information to the JIRA issue in the comments sections and start watching for updates. All the issue here will be added to our backlog and prioritized in the upcoming sprints.
 
-You can contact the developers for any general problems or questions on [Hyperledger Chat](https://chat.hyperledger.org/channel/blockchain-explorer).
+You can contact the developers for any general problems or questions on [Hyperledger Chat](https://chat.hyperledger.org/channel/hyperledger-explorer).
 
 ## Documentation updates and Code contributions
 
@@ -20,9 +20,16 @@ The code is structured into two main categories
 * ReactJS UI (client folder)
 * NodeJS back-end (all other folders)
 
-### Gerrit
 
-All the patches should be submitted to gerrit for review. Follow the general guidelines on getting Linux foundation account and submitting patches [here](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account.html)
+Submitting your fix
+~~~~~~~~~~~~~~~~~~~
+
+If you just submitted a JIRA for a bug you've discovered, and would like to
+provide a fix, we would welcome that gladly! Please assign the JIRA issue to
+yourself, then you can submit a change request (PR), please follow guidance provided by `GitHub <https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests>`__.
+
+.. important:: Commit your changes with Jira ticket and description
+..
 
 
 ### Copyright Notices
