@@ -43,9 +43,7 @@
 
 ## Infrastructure
 
-- Gerrit or Github repo has been created
-
- - [Team code collaboration tool](https://gerrit.hyperledger.org/r/c/blockchain-explorer/+/31990)
+ - [Team code collaboration tool](https://github.com/hyperledger/blockchain-explorer)
  - [Hyperledger Explorer Repository](https://github.com/hyperledger/blockchain-explorer)
 
 - Mailing lists have been created and are archived
