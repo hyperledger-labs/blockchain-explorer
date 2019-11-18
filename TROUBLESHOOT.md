@@ -385,8 +385,8 @@ Related Information:
 ```
     <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
     { Error: 12 UNIMPLEMENTED: unknown service discovery.Discovery
-        at new createStatusError (/Users/USER_ID/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:64:15)
-        at /Users/USER_ID/workspace/gerrit/blockchain-explorer/node_modules/grpc/src/client.js:583:15
+        at new createStatusError (/Users/USER_ID/workspace/blockchain-explorer/node_modules/grpc/src/client.js:64:15)
+        at /Users/USER_ID/workspace/blockchain-explorer/node_modules/grpc/src/client.js:583:15
       code: 12,
       metadata: Metadata { _internal_repr: {} },
       details: 'unknown service discovery.Discovery' }
