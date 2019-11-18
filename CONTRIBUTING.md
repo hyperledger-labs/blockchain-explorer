@@ -46,7 +46,7 @@ For this reason do not mix any formatting fixes or code moves with actual code c
 another part of the software. Running the `./main.sh clean && ./main.sh install && ./main.sh test` command locally will help you
 to be confident that your changes will pass CI tests once pushed as a Pull Request.
 1. **Push your changes** to your remote fork.
-1. **Create a pull-request** (PR) on the Besu repository. If the PR addresses an existing Jira issue,
+1. **Create a pull-request** (PR) on the Hyperledger Explorer repository. If the PR addresses an existing Jira issue,
 include the issue number in the PR title in square brackets (for example, `[BE-333]`).
 1. **Add labels** to identify the type of your PR. _For example, if your PR is not ready to validate,
 add the "work-in-progress" label. If it fixes a bug, add the "bug" label._
