@@ -68,9 +68,8 @@ In the individual files, please use the following line, and appropriate comment 
 
 `SPDX-License-Identifier: Apache-2.0`
 
+*example for a .js file type*
 ```
-example for a .js file type*
-
 /*
 * SPDX-License-Identifier: Apache-2.0
 */
