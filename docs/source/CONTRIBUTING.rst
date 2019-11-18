@@ -111,7 +111,6 @@ Related Topics
    :maxdepth: 1
 
    MAINTAINERS
-   jira_navigation
    dev-setup/devenv
    dev-setup/build
    Style-guides/js-style
