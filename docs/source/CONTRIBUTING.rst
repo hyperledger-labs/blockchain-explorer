@@ -11,12 +11,13 @@ Getting a Linux Foundation account
 ----------------------------------
 
 In order to participate in the development of the Hyperledger Explorer
-project, you will need a :doc:`Linux Foundation
-account <Gerrit/lf-account>`. You will need to use your LF ID to
-access to all the Hyperledger community tools, including
-`Gerrit <https://gerrit.hyperledger.org>`__,
-`Jira <https://jira.hyperledger.org>`__,
-`RocketChat <https://chat.hyperledger.org>`__.
+project, you will need a `Linux Foundation account <https://identity.linuxfoundation.org/>`__.
+
+You will need to use your LF ID to access to all the Hyperledger community tools, including:
+
+ * `Jira <https://jira.hyperledger.org>`__.
+ * `RocketChat <https://chat.hyperledger.org>`__.
+ * `Mailing list <https://lists.hyperledger.org/g/explorer>`__.
 
 
 Bug Reports and Feature Requests
@@ -62,15 +63,12 @@ Verified Docker versions supported:
 
 
 
-
 Submitting your fix
 ~~~~~~~~~~~~~~~~~~~
 
 If you just submitted a JIRA for a bug you've discovered, and would like to
 provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then you can submit a change request (CR).
-
-.. note:: If you need help with submitting your first CR, we have created a brief :doc:`CR <submit_cr>`.
+yourself, then you can submit a change request (PR), please follow guidance provided by `CONTRIBUTING.md <https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md>`__.
 
 
 Working on fixing issues and working stories
@@ -86,38 +84,6 @@ assignment if you cannot finish in a reasonable time, or add a comment
 saying that you are still actively working the issue if you need a
 little more time.
 
-
-Setting up development environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Next, try :doc:`building the project <dev-setup/build>` in your local
-development environment to ensure that everything is set up correctly.
-
-Submitting your change request
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
--  Changes should be small, and should cover one jira.
-
--  Add a link to the JIRA story when submitting the change.
-
--  Create unit and integration tests (or update to existing tests)
-   with every change.
-
--  Any new or updated unit tests should have NO external dependencies.
-   Unit tests can be run from the project root ``blockchain-explorer`` with ``./main.sh install && ./main.sh test`` .
-
--  Write a short and meaningful commit message, no more than 55 (or less)
-   character title, followed by a blank line.
-   Each commit MUST include the JIRA corresponding to the change (e.g. [BE-55]).
-
-.. note:: Gerrit automatically creates a hyperlink to the JIRA item.
-          e.g.
-
-          ::
-
-              [BE-55] Handle 500 error
-
-              Fix [BE-55] handling 500 error when server fails to return a request.
 
 Copyright Notices
 
@@ -145,14 +111,10 @@ Related Topics
    :maxdepth: 1
 
    MAINTAINERS
-   jira_navigation
    dev-setup/devenv
    dev-setup/build
-   Gerrit/lf-account
-   Gerrit/gerrit
-   Gerrit/changes
-   Gerrit/reviewing
    Style-guides/js-style
+
 
 
 
