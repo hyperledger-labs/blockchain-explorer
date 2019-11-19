@@ -1,3 +1,32 @@
+## v1.0.0-rc1
+
+* [5b89717](https://github.com/hyperledger/blockchain-explorer/commit/5b89717) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub
+* [d4ffda2](https://github.com/hyperledger/blockchain-explorer/commit/d4ffda2) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub
+* [51bc0cb](https://github.com/hyperledger/blockchain-explorer/commit/51bc0cb) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub
+* [942f970](https://github.com/hyperledger/blockchain-explorer/commit/942f970) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub repo
+* [8a2ee47](https://github.com/hyperledger/blockchain-explorer/commit/8a2ee47) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub repo
+* [1e50907](https://github.com/hyperledger/blockchain-explorer/commit/1e50907) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub repo
+* [a5a85ee](https://github.com/hyperledger/blockchain-explorer/commit/a5a85ee) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub repo
+* [9b97c69](https://github.com/hyperledger/blockchain-explorer/commit/9b97c69) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub repo
+* [7f063dc](https://github.com/hyperledger/blockchain-explorer/commit/7f063dc) [BE-704](https://jira.hyperledger.org/browse/BE-704) Online documentation-synchronizer
+* [4fedc3a](https://github.com/hyperledger/blockchain-explorer/commit/4fedc3a) [BE-704](https://jira.hyperledger.org/browse/BE-704) Online documentation-synchronizer
+* [264cfa7](https://github.com/hyperledger/blockchain-explorer/commit/264cfa7) [BE-705](https://jira.hyperledger.org/browse/BE-705) Add release pipeline
+* [48713ae](https://github.com/hyperledger/blockchain-explorer/commit/48713ae) [BE-679](https://jira.hyperledger.org/browse/BE-679) Create online documentation
+* [bfbf572](https://github.com/hyperledger/blockchain-explorer/commit/bfbf572) [BE-679](https://jira.hyperledger.org/browse/BE-679) Create online documentation
+* [7a75553](https://github.com/hyperledger/blockchain-explorer/commit/7a75553) [BE-679](https://jira.hyperledger.org/browse/BE-679) Create online documentation
+* [834f233](https://github.com/hyperledger/blockchain-explorer/commit/834f233) [BE-679](https://jira.hyperledger.org/browse/BE-679) Create online documentation phase -2
+* [d99e177](https://github.com/hyperledger/blockchain-explorer/commit/d99e177) [BE-697](https://jira.hyperledger.org/browse/BE-697) Add a column for block size on BLOCK view
+* [9058833](https://github.com/hyperledger/blockchain-explorer/commit/9058833) [BE-702](https://jira.hyperledger.org/browse/BE-702) Add condition to query for getting tx count
+* [010f25c](https://github.com/hyperledger/blockchain-explorer/commit/010f25c) [BE-674](https://jira.hyperledger.org/browse/BE-674)  Lost connection to explorer-db
+* [3b68223](https://github.com/hyperledger/blockchain-explorer/commit/3b68223) [BE-703](https://jira.hyperledger.org/browse/BE-703) Links broken in README.md
+* [c17dc0f](https://github.com/hyperledger/blockchain-explorer/commit/c17dc0f) Add Azure Pipelines Files
+* [460f42e](https://github.com/hyperledger/blockchain-explorer/commit/460f42e) [BE-701](https://jira.hyperledger.org/browse/BE-701) Fix severe vulnerabilities of node package
+* [838feab](https://github.com/hyperledger/blockchain-explorer/commit/838feab) [BE-701](https://jira.hyperledger.org/browse/BE-701) Fix severe vulnerabilities of node package
+* [e1e8a66](https://github.com/hyperledger/blockchain-explorer/commit/e1e8a66) [IN-68] Add default GitHub SECURITY policy
+* [93fe895](https://github.com/hyperledger/blockchain-explorer/commit/93fe895) [BE-695](https://jira.hyperledger.org/browse/BE-695) Add orderer to node list and network view
+* [5a19221](https://github.com/hyperledger/blockchain-explorer/commit/5a19221) [BE-699](https://jira.hyperledger.org/browse/BE-699) Update packages
+* [7f57041](https://github.com/hyperledger/blockchain-explorer/commit/7f57041) [IN-68] Add default GitHub SECURITY policy
+
 ## v0.3.9.5
 
 * [0da6b21](https://github.com/hyperledger/blockchain-explorer/commit/0da6b21) [BE-699](https://jira.hyperledger.org/browse/BE-699) Update packages
