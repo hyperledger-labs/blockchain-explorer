@@ -33,7 +33,7 @@
    [BDD test](https://github.com/hyperledger/blockchain-explorer/tree/master/app/platform/fabric/e2e-test) and are triggered during the CI/CD builds.
  - Code coverage is setup in both [frontend](https://github.com/hyperledger/blockchain-explorer/blob/master/client/package.json#L58) and [back-end](https://github.com/hyperledger/blockchain-explorer/blob/master/app/test/package.json#L24).
 
- - [Coverage report example](https://jenkins.hyperledger.org/view/blockchain-explorer/job/blockchain-explorer-merge-x86_64/Code_20Coverage_20Report/) available after each Jenkins build.
+ - [Coverage report example](https://jenkins.hyperledger.org/view/blockchain-explorer/job/blockchain-explorer-merge-x86_64/Code_20Coverage_20Report/) available after each build.
 
  - The project uses use the [Hyperledger standard release taxonomy](https://docs.google.com/document/d/1Vap2giuxQw5b82Htl6BxRzLztrR4JGd2tWkJKP7i5Es/edit).
  - Sufficient user documentation
@@ -58,7 +58,7 @@
 
 ## Continuous Integration
 
- - [CI/CD](https://jenkins.hyperledger.org/view/blockchain-explorer/)
+ - [CI/CD](https://dev.azure.com/Hyperledger/blockchain-explorer)
  - [CONTRIBUTING.md](https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md)
  - [MAINTAINERS.rst](https://github.com/hyperledger/blockchain-explorer/blob/master/MAINTAINERS.rst)
 
