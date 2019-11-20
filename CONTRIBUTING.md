@@ -43,8 +43,9 @@ _In general a commit serves a single purpose and diffs should be easily comprehe
 For this reason do not mix any formatting fixes or code moves with actual code changes._
 1. **Commit your changes** see [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/) article by Chris Beams.
 1. **Test your changes** locally before pushing to ensure that what you are proposing is not breaking
-another part of the software. Running the `./main.sh clean && ./main.sh install && ./main.sh test` command locally will help you
-to be confident that your changes will pass CI tests once pushed as a Pull Request.
+another part of the software.
+Running the ```./main.sh clean && ./main.sh install && ./main.sh test``` command locally will help you to be confident that your changes will
+pass CI tests once pushed as a Pull Request.
 1. **Push your changes** to your remote fork.
 1. **Create a pull-request** (PR) on the Hyperledger Explorer repository. If the PR addresses an existing Jira issue,
 include the issue number in the PR title in square brackets (for example, `[BE-333]`).

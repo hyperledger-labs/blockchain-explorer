@@ -62,7 +62,7 @@ This facilitates social contribution, easy testing, and peer review.
 
 To contribute changes, use the following workflow:
 
-* `Fork the repository <https://github.com/hyperledger/blockchain-explorer/form>`__.
+* `Fork the repository <https://github.com/hyperledger/blockchain-explorer/fork>`__.
 * Clone your fork to your computer.
 * Create a topic branch and name it appropriately. Starting the branch name with the issue number is a good practice and a reminder to fix only one issue in a Pull-Request (PR).
 * Make your changes, adhering to the documentation conventions described below. In general a commit serves a single purpose and diffs should be easily comprehensible. For this reason do not mix any formatting fixes or typo fixes with actual documentation changes.

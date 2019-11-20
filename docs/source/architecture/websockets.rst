@@ -16,4 +16,3 @@ new block details is provided in the notification panel.
 .. raw:: html
      :file: ./websockets.html
 
-.. TODO

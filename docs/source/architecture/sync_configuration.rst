@@ -48,7 +48,7 @@ Configuration
         :title: Run host (Standalone)
 
 							  * From new terminal (if Sync Process in Standalone).
-									
+
 										* ``cd blockchain-explorer/``
 										* ``./syncstart.sh`` (it will have the sync node up).
 										* ``./syncstop.sh`` (it will stop the sync node).
@@ -70,7 +70,7 @@ Configuration
 
 .. attention::
 
-			* Please restart Explorer if any changes made to explorerconfig.json.
+			* Please restart Explorer if any changes made to `explorerconfig.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/explorerconfig.json>`__.
 
 			  * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
 			  * If Hyperledger Fabric network is deployed on other machine, please toggle ``DISCOVERY_AS_LOCALHOST`` in ``start.sh / syncstart.sh to 'false'``.
@@ -79,15 +79,3 @@ Configuration
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-.. TODO
