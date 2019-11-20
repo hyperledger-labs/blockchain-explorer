@@ -15,8 +15,8 @@ project, you will need a `Linux Foundation account <https://identity.linuxfounda
 
 You will need to use your LF ID to access to all the Hyperledger community tools, including:
 
- * `Jira <https://jira.hyperledger.org>`__.
- * `RocketChat <https://chat.hyperledger.org>`__.
+ * `Jira <https://jira.hyperledger.org/projects/BE/issues>`__.
+ * `RocketChat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__.
  * `Mailing list <https://lists.hyperledger.org/g/explorer>`__.
 
 
@@ -62,6 +62,13 @@ Verified Docker versions supported:
 - `Docker Compose 1.14.0 <https://docs.docker.com/compose>`__
 
 
+Working on fixing issues and working stories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Review the `issues list <https://jira.hyperledger.org/projects/BE/issues>`__ and find something that interests you.
+Start with something relatively straight forward and achievable, and that no one is already assigned. If no one is assigned, then assign the issue
+to yourself. Please be considerate and rescind the assignment if you cannot finish in a reasonable time, or add a comment saying that you are
+still actively working the issue if you need a little more time.
 
 Submitting your fix
 ~~~~~~~~~~~~~~~~~~~
@@ -71,24 +78,10 @@ provide a fix, we would welcome that gladly! Please assign the JIRA issue to
 yourself, then you can submit a change request (PR), please follow guidance provided by `CONTRIBUTING.md <https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md>`__.
 
 
-Working on fixing issues and working stories
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Review the `issues
-list <https://jira.hyperledger.org/secure/RapidBoard.jspa?rapidView=155&view=planning.nodetail>`__ and find
-something that interests you.
-Start with something relatively straight forward and
-achievable, and that no one is already assigned. If no one is assigned,
-then assign the issue to yourself. Please be considerate and rescind the
-assignment if you cannot finish in a reasonable time, or add a comment
-saying that you are still actively working the issue if you need a
-little more time.
-
-
 Copyright Notices
+~~~~~~~~~~~~~~~~~~~
 
 There should be a single LICENSE file in the top-level directory that contains the full text of the Apache License `here <http://www.apache.org/licenses/LICENSE-2.0>`__.
-
 
 
 
