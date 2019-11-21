@@ -7,7 +7,7 @@
 [rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
 [![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/hyperledger.blockchain-explorer?branchName=master)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=master)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
-[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=latest)](https://blockchain-explorer.readthedocs.io/en/latest/?badge=mster)
+[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=master)](https://blockchain-explorer.readthedocs.io/en/master/?badge=master)
 
 <!-- badges -->
 
