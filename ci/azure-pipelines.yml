@@ -20,6 +20,19 @@ jobs:
       echo "--------> npm tests with code coverage"
       npm run test:ci -- -u --coverage && npm run build
     displayName: Run Tests With Coverage Report
+  - script: |
+      cd client
+      wget https://raw.github.com/eriwen/lcov-to-cobertura-xml/master/lcov_cobertura/lcov_cobertura.py
+      python lcov_cobertura.py ./coverage/lcov.info
+      mv $(System.DefaultWorkingDirectory)/app/test/*.js $(System.DefaultWorkingDirectory)/client
+    displayName: Create Cobertura Report
+  - script: npx cobertura-merge -o output.xml package1=$(System.DefaultWorkingDirectory)/app/test/coverage/cobertura-coverage.xml package2=$(System.DefaultWorkingDirectory)/client/coverage.xml
+    displayName: Merge Cobertura Reports
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: $(System.DefaultWorkingDirectory)/output.xml
+      pathToSources: $(System.DefaultWorkingDirectory)/client
 
 - job: SanityChecks
   pool:
