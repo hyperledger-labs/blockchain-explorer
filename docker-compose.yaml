@@ -39,6 +39,7 @@ services:
     hostname: explorer.mynetwork.com
     environment:
       - DATABASE_HOST=explorerdb.mynetwork.com
+      - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
       - LOG_LEVEL_APP=debug
