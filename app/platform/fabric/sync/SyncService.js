@@ -64,6 +64,17 @@ class SyncServices {
 	 */
 	async synchNetworkConfigToDB(client) {
 		const channels = client.getChannels();
+		const channels_query = await client.hfc_client.queryChannels(
+			client.defaultPeer,
+			true
+		);
+		for (const channel of channels_query.channels) {
+			const channel_name = channel.channel_id;
+			if (!channels.get(channel_name)) {
+				await client.initializeNewChannel(channel_name);
+			}
+		}
+
 		for (const [channel_name, channel] of channels.entries()) {
 			console.log(
 				'SyncServices.synchNetworkConfigToDB client ',
