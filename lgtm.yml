@@ -4,6 +4,6 @@
 extraction:
   javascript:
     index:
-      filters:
-        - exclude: "**/e2e-test/*.js"
+      exclude:
+        - e2e-test
 
