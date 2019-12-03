@@ -8,6 +8,4 @@ extraction:
     index:
       exclude:
         - e2e-test
-					filetypes:
-													".js": "js"
-													".py": "py"
+
