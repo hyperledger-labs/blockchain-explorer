@@ -3,7 +3,7 @@
 
 extraction:
   javascript:
-  index:
-  exclude:
-  - app/platform/fabric/e2e-test/
+    index:
+      filters:
+        - exclude: "**/e2e-test/*.js"
 
