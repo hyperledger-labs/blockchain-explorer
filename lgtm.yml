@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: Apache-2.0
+
+path_classifiers:
+queries:
+
+extraction:
+  javascript:
+    index:
+      filters:
+        exclude: "**/e2e-test/*.*"
