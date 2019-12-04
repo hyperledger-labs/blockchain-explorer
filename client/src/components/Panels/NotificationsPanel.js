@@ -13,6 +13,7 @@ import FontAwesome from 'react-fontawesome';
 import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 
+/* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
@@ -42,6 +43,7 @@ const styles = theme => {
 };
 
 export class NotificationsPanel extends Component {
+	/* istanbul ignore next */
 	avatarIcon = (type, classes) => {
 		switch (type) {
 			case 'block':
@@ -59,6 +61,7 @@ export class NotificationsPanel extends Component {
 		}
 	};
 
+	/* istanbul ignore next */
 	render() {
 		const { classes, notifications } = this.props;
 		if (notifications.length === 0) {
@@ -77,6 +80,7 @@ export class NotificationsPanel extends Component {
 			);
 		}
 
+		/* istanbul ignore next */
 		return (
 			<div className={classes.panel}>
 				<div className={classes.root}>

@@ -2,10 +2,12 @@
 #    SPDX-License-Identifier: Apache-2.0
 #
 
+
 explorer_1/scripts/bower_components/
 explorer_1/webcontent
 
 node_modules
+app/test/coverage/
 
 .idea/*
 venv

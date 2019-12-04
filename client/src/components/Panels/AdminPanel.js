@@ -22,6 +22,7 @@ import ChannelForm from '../Forms/ChannelForm';
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
+	/* istanbul ignore next */
 	return {
 		current: {
 			color: dark ? 'rgb(42, 173, 230)' : undefined
@@ -39,6 +40,7 @@ const styles = theme => {
 class AdminPanel extends Component {
 	handleChange = () => {};
 
+	/* istanbul ignore next */
 	render() {
 		const { classes } = this.props;
 		return (
@@ -120,6 +122,7 @@ class AdminPanel extends Component {
 	}
 }
 
+/* istanbul ignore next */
 function mapStateToProps(state, ownProps) {
 	return {
 		channelList: state.channelList.channelList,
@@ -130,6 +133,7 @@ function mapStateToProps(state, ownProps) {
 //   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}
 // }
 
+/* istanbul ignore next */
 export default compose(
 	withStyles(styles),
 	connect(mapStateToProps /* ,mapDispatchToProps */)
