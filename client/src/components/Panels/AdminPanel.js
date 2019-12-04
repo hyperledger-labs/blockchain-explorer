@@ -39,6 +39,7 @@ const styles = theme => {
 class AdminPanel extends Component {
 	handleChange = () => {};
 
+	/* istanbul ignore next */
 	render() {
 		const { classes } = this.props;
 		return (
@@ -120,6 +121,7 @@ class AdminPanel extends Component {
 	}
 }
 
+/* istanbul ignore next */
 function mapStateToProps(state, ownProps) {
 	return {
 		channelList: state.channelList.channelList,
