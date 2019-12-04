@@ -37,26 +37,26 @@ yourself, then you can submit a change request (PR), please follow guidance prov
 1. **Clone your fork** to your computer.
 1. **Create a topic branch** and name it appropriately.
 Starting the branch name with the issue number is a good practice and a reminder to fix only one issue in a
-Pull-Request (PR)._
+Pull-Request (PR).
 1. **Make your changes** adhering to the coding conventions described below.
-_In general a commit serves a single purpose and diffs should be easily comprehensible.
-For this reason do not mix any formatting fixes or code moves with actual code changes._
+In general a commit serves a single purpose and diffs should be easily comprehensible.
+For this reason do not mix any formatting fixes or code moves with actual code changes.
 1. **Commit your changes** see [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/) article by Chris Beams.
 1. **Test your changes** locally before pushing to ensure that what you are proposing is not breaking
 another part of the software.
-Running the ```./main.sh clean && ./main.sh install && ./main.sh test``` command locally will help you to be confident that your changes will
+Running the ```  ./main.sh clean && ./main.sh install && ./main.sh test ``` command locally will help you to be confident that your changes will
 pass CI tests once pushed as a Pull Request.
 1. **Push your changes** to your remote fork.
 1. **Create a pull-request** (PR) on the Hyperledger Explorer repository. If the PR addresses an existing Jira issue,
-include the issue number in the PR title in square brackets (for example, `[BE-333]`).
-1. **Add labels** to identify the type of your PR. _For example, if your PR is not ready to validate,
-add the "work-in-progress" label. If it fixes a bug, add the "bug" label._
+include the issue number in the PR title in square brackets (for example, `BE-333`).
+1. **Add labels** to identify the type of your PR. For example, if your PR is not ready to validate,
+add the "work-in-progress" label. If it fixes a bug, add the "bug" label.
 1. If the PR address an existing Jira issue, comment in the Jira issue with the PR number.
 1. **Ensure your changes are reviewed**.
-_Select the reviewers you would like to review your PR.
-If you don't know who to choose, simply select the reviewers proposed by GitHub or leave blank._
+Select the reviewers you would like to review your PR.
+If you don't know who to choose, simply select the reviewers proposed by GitHub or leave blank.
 1. **Make any required changes** on your contribution from the reviewers feedback.
-_Make the changes, commit to your branch, and push to your remote fork._
+Make the changes, commit to your branch, and push to your remote fork.
 1. **When your PR is validated**, all tests passed and your branch has no conflicts with the target branch,
 you can **"squash and merge"** your PR and you're done.
 

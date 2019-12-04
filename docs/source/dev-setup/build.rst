@@ -14,6 +14,7 @@ To build Hyperledger Explorer:
 
     cd blockchain-explorer
     git checkout <branch-name>
+    ./main.sh clean
     ./main.sh install
 
 .. note::
@@ -30,6 +31,7 @@ Use the following sequence to run all unit tests
 ::
 
     cd blockchain-explorer
+    ./main.sh clean
     ./main.sh install
     ./main.sh test
 
