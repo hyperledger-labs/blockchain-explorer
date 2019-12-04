@@ -170,6 +170,11 @@ class Platform {
 		/* eslint-disable */
 		for (const [network_name, clients] of this.networks.entries()) {
 			for (const [client_name, client] of clients.entries()) {
+				console.log(
+					'initializeListener, client_name, client ',
+					client_name,
+					client.client_config
+				);
 				if (this.getClient(network_name, client_name).getStatus()) {
 					const explorerListener = new ExplorerListener(this, syncconfig);
 					explorerListener.initialize([network_name, client_name, '1']);

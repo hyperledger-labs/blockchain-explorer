@@ -1,15 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
+
+path_classifiers:
+queries:
+  exclude: "js/unused-local-variable"
 extraction:
   javascript:
     index:
-      filters:
-        - exclude: "app/platform/fabric/e2e-test/fabric-samples/balance-transfer/app.js"
-        - exclude: "app/platform/fabric/e2e-test/fabric-samples/balance-transfer/typescript/app.ts"
-        - exclude: "app/rest/authroutes.js"
-        - exclude: "app/rest/requestutils.js"
-        - exclude: "app/platform/fabric/Platform.js"
-        - exclude: "app/platform/fabric/e2e-test/sdk/node/query.js"
-        - exclude: "client/src/state/redux/auth/operations.js"
-queries:
-  exclude: js/unused-local-variable
+      exclude: "app/platform/fabric/e2e-test"
