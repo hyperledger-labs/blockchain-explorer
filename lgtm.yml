@@ -8,3 +8,5 @@ extraction:
      typescript: none
 queries:
   exclude: js/unused-local-variable
+  exclude: js/unused-loop-variable
+  exclude: js/type-confusion-through-parameter-tampering
