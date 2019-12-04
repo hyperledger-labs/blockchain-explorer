@@ -1,10 +1,10 @@
-
 # SPDX-License-Identifier: Apache-2.0
 
 path_classifiers:
 extraction:
   javascript:
     index:
-      exclude: app/platform/fabric/e2e-test
+     exclude: app/platform/fabric/e2e-test
+     typescript: none
 queries:
   exclude: js/unused-local-variable
