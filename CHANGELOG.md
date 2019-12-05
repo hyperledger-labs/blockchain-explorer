@@ -1,3 +1,15 @@
+## v1.0.0-rc2
+
+* [d754835](https://github.com/hyperledger/blockchain-explorer/commit/d754835) Be 711 code quality (#62)
+* [db55e92](https://github.com/hyperledger/blockchain-explorer/commit/db55e92) [BE-702](https://jira.hyperledger.org/browse/BE-702) Update documents, azure (#60)
+* [621a12a](https://github.com/hyperledger/blockchain-explorer/commit/621a12a) [BE-713](https://jira.hyperledger.org/browse/BE-713) Fix an issue to fail detecting newly added channel (#59)
+* [5b8ec0b](https://github.com/hyperledger/blockchain-explorer/commit/5b8ec0b) [BE-710](https://jira.hyperledger.org/browse/BE-710) Security vulnerability (#57)
+* [7f889ff](https://github.com/hyperledger/blockchain-explorer/commit/7f889ff) [BE-708](https://jira.hyperledger.org/browse/BE-708) Online docs issues  (#56)
+* [6367cee](https://github.com/hyperledger/blockchain-explorer/commit/6367cee) [BE-709](https://jira.hyperledger.org/browse/BE-709) Add code coverage report to AZP
+* [27f06a2](https://github.com/hyperledger/blockchain-explorer/commit/27f06a2) [BE-708](https://jira.hyperledger.org/browse/BE-708) Online docs issues (#54)
+* [c6bd828](https://github.com/hyperledger/blockchain-explorer/commit/c6bd828) [BE-708](https://jira.hyperledger.org/browse/BE-708)Jenkins is no longer used
+* [a790ef3](https://github.com/hyperledger/blockchain-explorer/commit/a790ef3) [BE-708](https://jira.hyperledger.org/browse/BE-708) Update build status badge (#52)
+
 ## v1.0.0-rc1
 
 * [5b89717](https://github.com/hyperledger/blockchain-explorer/commit/5b89717) [BE-706](https://jira.hyperledger.org/browse/BE-706) Switching to GitHub
