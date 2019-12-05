@@ -4,6 +4,7 @@
 import actions from './actions';
 import { get } from '../../../services/request';
 
+/* istanbul ignore next */
 const blockList = channel => dispatch =>
 	get(`/api/blockAndTxList/${channel}/0`)
 		.then(resp => {
@@ -31,6 +32,7 @@ const blockListSearch = (channel, query) => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const chaincodeList = channel => dispatch =>
 	get(`/api/chaincode/${channel}`)
 		.then(resp => {
@@ -51,6 +53,8 @@ const chaincodeList = channel => dispatch =>
 		});
 
 // table channel
+
+/* istanbul ignore next */
 const channels = () => dispatch =>
 	get('/api/channels/info')
 		.then(resp => {
@@ -70,6 +74,7 @@ const channels = () => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const peerList = channel => dispatch =>
 	get(`/api/peersStatus/${channel}`)
 		.then(resp => {
@@ -89,6 +94,7 @@ const peerList = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const transaction = (channel, transactionId) => dispatch =>
 	get(`/api/transaction/${channel}/${transactionId}`)
 		.then(resp => {
@@ -117,6 +123,7 @@ const transactionListSearch = (channel, query) => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const transactionList = channel => dispatch =>
 	get(`/api/txList/${channel}/0/0/`)
 		.then(resp => {

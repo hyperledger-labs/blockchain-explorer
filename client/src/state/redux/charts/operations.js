@@ -5,6 +5,7 @@
 import actions from './actions';
 import { get } from '../../../services/request';
 
+/* istanbul ignore next */
 const blockPerHour = channel => dispatch =>
 	get(`/api/blocksByHour/${channel}/1`)
 		.then(resp => {
@@ -24,6 +25,7 @@ const blockPerHour = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const blockPerMin = channel => dispatch =>
 	get(`/api/blocksByMinute/${channel}/1`)
 		.then(resp => {
@@ -43,6 +45,7 @@ const blockPerMin = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const changeChannel = channel => dispatch =>
 	get(`/api/changeChannel/${channel}`)
 		.then(resp => {
@@ -62,6 +65,7 @@ const changeChannel = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const channel = () => dispatch =>
 	get('/api/curChannel')
 		.then(resp => {
@@ -81,6 +85,7 @@ const channel = () => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const channelList = () => dispatch =>
 	get('/api/channels')
 		.then(resp => {
@@ -100,6 +105,7 @@ const channelList = () => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const dashStats = channel => dispatch =>
 	get(`/api/status/${channel}`)
 		.then(resp => {
@@ -118,6 +124,8 @@ const dashStats = channel => dispatch =>
 		.catch(error => {
 			console.error(error);
 		});
+
+/* istanbul ignore next */
 const blockActivity = channel => dispatch =>
 	get(`/api/blockActivity/${channel}`)
 		.then(resp => {
@@ -137,11 +145,13 @@ const blockActivity = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const notification = notification => dispatch => {
 	const notify = JSON.parse(notification);
 	dispatch(actions.getNotification(notify));
 };
 
+/* istanbul ignore next */
 const peerStatus = channel => dispatch =>
 	get(`/api/peersStatus/${channel}`)
 		.then(resp => {
@@ -161,6 +171,7 @@ const peerStatus = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const transactionByOrg = channel => dispatch =>
 	get(`/api/txByOrg/${channel}`)
 		.then(resp => {
@@ -180,6 +191,7 @@ const transactionByOrg = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const transactionPerHour = channel => dispatch =>
 	get(`/api/txByHour/${channel}/1`)
 		.then(resp => {
@@ -199,6 +211,7 @@ const transactionPerHour = channel => dispatch =>
 			console.error(error);
 		});
 
+/* istanbul ignore next */
 const transactionPerMin = channel => dispatch =>
 	get(`/api/txByMinute/${channel}/1`)
 		.then(resp => {

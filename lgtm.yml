@@ -1,18 +1,10 @@
-
 # SPDX-License-Identifier: Apache-2.0
 
+
 path_classifiers:
-  docs:
-    - '**/*.md'
-  test:
-    - '**/test/**/*.js'
-  third_party:
-    - 'third_party/**/*.*'
-  externs:
-    - '**/*.extern.js'
+queries:
+  exclude: "js/unused-local-variable"
 extraction:
   javascript:
     index:
-      exclude: e2e-test
-queries:
-  exclude: js/unused-local-variable
+      exclude: "app/platform/fabric/e2e-test"
