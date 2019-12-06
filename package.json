@@ -25,6 +25,7 @@
 		"ejs": "^2.5.6",
 		"enum": "^2.5.0",
 		"express": "^4.15.3",
+		"express-rate-limit": "^5.0.0",
 		"fabric-ca-client": "^1.4.4",
 		"fabric-client": "^1.4.4",
 		"fabric-network": "^1.4.4",
