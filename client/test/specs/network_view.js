@@ -41,7 +41,7 @@ describe('Explorer network view', () => {
 			expect(nodeStrList).to.include('peer1.org1.example.com');
 			expect(nodeStrList).to.include('peer0.org2.example.com');
 			expect(nodeStrList).to.include('peer1.org2.example.com');
-			expect(nodeStrList).to.include('orderer.example.com');
+			expect(nodeStrList).to.include('orderer0.example.com');
 		});
 	});
 });

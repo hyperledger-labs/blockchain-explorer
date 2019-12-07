@@ -6,6 +6,7 @@ import time
 import os
 import sys
 import uuid
+import basic_impl
 import compose_util
 import common_util
 import config_util
@@ -15,6 +16,12 @@ import requests
 import json_responses
 
 FNULL = open(os.devnull, 'w')
+
+@given(u'For explorer env, I have a bootstrapped fabric network of type {ordererType}')
+def step_impl(context, ordererType):
+    config_util.PROFILE_TYPES.update({"kafka-sd": "SampleInsecureKafka"})
+    config_util.ORDERER_TYPES.append("kafka-sd")
+    basic_impl.bootstrapped_impl(context, ordererType, "leveldb", False)
 
 @when(u'I start explorer')
 def start_explorer_impl(context):
@@ -164,7 +171,6 @@ def request_to_the_path_described_on_table(context, request_verb):
     for row in context.table:
         for x in context.table.headings:
             path = row[x]
-            print(path)
             if path.startswith("context") and path[8:] == "block_height":
                 # TODO messy code
                 # This attribute should be integer
@@ -174,7 +180,6 @@ def request_to_the_path_described_on_table(context, request_verb):
             else:
                 url = url + '/' + path
 
-    print(url)
     context.r = getattr(requests, request_verb.lower())(url, headers=context.headers, verify=context.verify_ssl)
 
     log_full(context.r)
@@ -196,10 +201,8 @@ def step_impl(context, data, timeout):
 @when(u'"{container}" is stopped')
 def step_impl(context, container):
     if hasattr(context, "composition") and hasattr(context, "composeFilesYaml"):
-        print('composition')
         context.composition.stop([container])
     elif hasattr(context, "composition_explorer"):
-        print('composition_explorer')
         context.composition_explorer.stop([container])
     else:
         assert False, "Failed to stop container {0}".format(container)
@@ -219,3 +222,44 @@ def start_explorer_impl(context, srcfile, dstfile, peer):
         subprocess.call(cmd, shell=True, env=updated_env)
     except:
         print("Unable to copy {0} on {1}: {2}".format(srcfile, peer, sys.exc_info()[1]))
+
+@step(u'Update "{peer}" of "{org}" as an anchor in "{channel}"')
+def step_impl(context, peer, org, channel):
+    try:
+        testConfigs = config_util.makeProjectConfigDir(context)
+        updated_env = config_util.updateEnviron(context)
+        cmd = ['mkdir -p {0}/channel-artifacts'.format(testConfigs) ]
+        subprocess.call(cmd, shell=True, env=updated_env)
+        cmd = ['configtxgen -configPath {1} -profile {0} -outputAnchorPeersUpdate ./{1}/channel-artifacts/{2}_{3}anchor.tx -channelID {2} -asOrg {3}'.format(config_util.CHANNEL_PROFILE, testConfigs, channel, org)]
+        subprocess.call(cmd, shell=True, env=updated_env)
+    except:
+        print("Unable to create anchor tx file for {0} on {1}: {2}".format(peer, channel, sys.exc_info()[1]))
+
+    update_anchor(context, peer, channel, tx_filename='channel-artifacts/{0}_{1}anchor.tx'.format(channel, org))
+
+def update_anchor(context, peer, channelId="mychannel", orderer="orderer0.example.com", tx_filename="update.pb", user="Admin"):
+    configDir = "/var/hyperledger/configs/{0}".format(context.composition.projectName)
+
+    # peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o orderer.example.com:7050 --tls --cafile $ORDERER_CA
+    peerParts = peer.split('.')
+    org = '.'.join(peerParts[1:])
+    setup = context.interface.get_env_vars(context, peer, includeAll=False, user=user)
+    command = ["peer", "channel", "update",
+                "--file", '{0}/{1}'.format(configDir, tx_filename),
+                "--channelID", channelId,
+                "--orderer", '{0}:7050'.format(orderer)]
+    if context.tls:
+        command = command + ["--tls",
+                                "--cafile",
+                                '{0}/ordererOrganizations/example.com/orderers/{1}/msp/tlscacerts/tlsca.example.com-cert.pem'.format(configDir, orderer)]
+    if hasattr(context, "mutual_tls") and context.mutual_tls:
+        command = command + ["--clientauth",
+                                "--certfile",
+                                '{0}/peerOrganizations/{1}/users/{2}@{1}/tls/client.crt'.format(configDir, org, user),
+                                "--keyfile",
+                                '{0}/peerOrganizations/{1}/users/{2}@{1}/tls/client.key'.format(configDir, org, user)]
+
+    command.append('"')
+    output = context.composition.docker_exec(setup+command, [peer])
+    print("[{0}]: {1}".format(" ".join(setup+command), output))
+    return output
