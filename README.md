@@ -250,7 +250,7 @@ On another terminal:
 # 7.1 Optional: Configure Fabcar Sample    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 Setup Fabcar sample network by following [Fabcar Sample Network](https://hyperledger-fabric.readthedocs.io/en/release-1.4/understand_fabcar_network.html) from Hyperledger fabric samples.
-- Make sure to set the environment variables ```CORE_PEER_GOSSIP_BOOTSTRAP``` and ```CORE_PEER_GOSSIP_EXTERNAL_ENDPOINT``` for each peer in the docker-compose.yaml file. These settings enable the Fabric discovery service, which is used by Hyperledger Explorer to discover the network topology.
+- Make sure to set the environment variables ```CORE_PEER_GOSSIP_BOOTSTRAP``` and ```CORE_PEER_GOSSIP_EXTERNALENDPOINT``` for each peer in the docker-compose.yaml file. These settings enable the Fabric discovery service, which is used by Hyperledger Explorer to discover the network topology.
 - Configure Fabcar sample network based on this link [CONFIG-FABCAR-HLEXPLORER.md](CONFIG-FABCAR-HLEXPLORER.md)
 
 
