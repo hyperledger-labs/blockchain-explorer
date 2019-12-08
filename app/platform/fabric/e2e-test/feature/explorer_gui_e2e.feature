@@ -20,7 +20,3 @@ Scenario: Bring up fabric network for GUI e2e test
 
     When I start explorer
     Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
-
-@doNotDecompose
-Scenario: test Bring up fabric network for GUI e2e test
-    Given Update "peer0.org1.example.com" of "ExampleCom" as an anchor in "mychannel"

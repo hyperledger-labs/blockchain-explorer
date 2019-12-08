@@ -7,13 +7,11 @@
 Feature: Fabric-CA Service
     As a user I want to be able to use the Fabric-CA for generation of certificates
 
-@doNotDecompose
+##@doNotDecompose
 ##@interop
 ##@daily
 Scenario Outline: FAB-6489: Interoperability Test using <type> based orderer with a <database> db using the <interface> with <language> chaincode
     Given I have a bootstrapped fabric network of type <type> using state-database <database> with tls
-    Given Copy "./bin/fabric-ca-client" to "/usr/local/bin/fabric-ca-client" on "peer0.org1.example.com"
-    Given Copy "./bin/fabric-ca-client" to "/usr/local/bin/fabric-ca-client" on "peer0.org2.example.com"
     And I use the <interface> interface
     And I enroll the following users using fabric-ca
          | username  |   organization   | password |  role  | certType |
