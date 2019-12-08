@@ -4,7 +4,7 @@ version: '2.1'
 networks:
   e2egui-net:
     external:
-      name: e2egui_behave
+      name: ${NETWORK_ID}
 
 services:
   chrome:

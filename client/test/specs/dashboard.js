@@ -68,7 +68,7 @@ describe('Explorer dashboard', () => {
 				'#root > div > div > div > div > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div > div > div.rt-table > div.rt-tbody'
 			);
 			var elmNum = peerList.getProperty('childElementCount');
-			elmNum.should.be.equal(5);
+			elmNum.should.be.equal(7);
 		});
 
 		it('should have the correct URL for each peer', () => {
@@ -82,7 +82,9 @@ describe('Explorer dashboard', () => {
 			expect(peerUrlStrList).to.include('peer1.org1.example.com');
 			expect(peerUrlStrList).to.include('peer0.org2.example.com');
 			expect(peerUrlStrList).to.include('peer1.org2.example.com');
-			expect(peerUrlStrList).to.include('orderer.example.com');
+			expect(peerUrlStrList).to.include('orderer0.example.com');
+			expect(peerUrlStrList).to.include('orderer1.example.com');
+			expect(peerUrlStrList).to.include('orderer2.example.com');
 		});
 	});
 

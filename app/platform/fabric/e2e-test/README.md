@@ -7,47 +7,52 @@
 Feature: Bootstrapping Hyperledger Explorer
     As a user I want to be able to bootstrap Hyperledger Explorer
 
-    Scenario: Bring up explorer with tls-disabled fabric network and retrieve channel list successfully
-        Given I have a bootstrapped fabric network of type solo without tls
+    Scenario Outline: <consensus_type> : Bring up explorer and send requests to the basic REST API functions successfully
+        Given I have a bootstrapped fabric network of type <consensus_type>
+        Given the NETWORK_PROFILE environment variable is solo-tls-disabled
+
         When an admin sets up a channel named "mychannel"
+        When an admin deploys chaincode at path "github.com/hyperledger/fabric/examples/chaincode/go/example02/cmd" with args ["init","a","1000","b","2000"] with name "mycc" on channel "mychannel"
+        When a user invokes on the channel "mychannel" using chaincode named "mycc" with args ["invoke","a","b","10"]
+        When I wait "3" seconds
+        When a user queries on the channel "mychannel" using chaincode named "mycc" with args ["query","a"]
+        Then a user receives a success response of 990
+
         When I start explorer
-        Then the logs on explorer.mynetwork.com contains "Synchronizer pid is " within 10 seconds
+        Then the logs on explorer.mynetwork.com contains "Please open web browser to access ：" within 20 seconds
 
-        Given I wait "5" seconds
+        # Need to wait enough until completing process a new BlockEvent
+        Given I wait "20" seconds
         Given I set base URL to "http://localhost:8090"
-        When I make a POST request to "auth/login" with parameters
-        |user  |password   |network        |
-        |test  |test       |first-network  |
+        When I make a GET request to "auth/networklist"
         Then the response status code should equal 200
-        Then the response structure should equal "loginResp"
-        Then JSON at path ".success" should equal true
-        Then JSON at path ".user.message" should equal "logged in"
-        Then JSON at path ".user.name" should equal "test"
-
-        Given JSON at path ".success" should equal true
-        Given I want to reuse "token" parameter
-        Given I set Authorization header to "context.token"
-        When I make a GET request to "api/channels"
-        Then the response status code should equal 200
-        Then the response structure should equal "channelsResp"
-        Then JSON at path ".channels" should equal ["mychannel"]
+        Then the response structure should equal "networklistResp"
+        Then JSON at path ".networkList" should equal [[ "first-network", {} ]]
 ```
 
 # Setup
 
 
-## Pull fabric images
+## Download tools & pull fabric images
 
 ```
-$ cd /some/where/fabric-samples
-$ ./scripts/bootstrap.sh
+$ curl -sSL http://bit.ly/2ysbOFE | bash -s -- 1.4.4 1.4.4 0.4.18 -s
 ```
 
-## Build Explorer / Explorer-DB image
+## Prepare Explorer / Explorer-DB image
+
+### Build images
 
 ```
 $ cd /some/where/blockchain-explorer
 $ ./build_docker_image.sh
+```
+
+### Pull images
+
+```
+$ docker pull hyperledger/explorer
+$ docker pull hyperledger/explorer-db
 ```
 
 ## Install python & pip
@@ -73,7 +78,7 @@ $ pip --version
 
 ```
 $ apt-get install virtualenv
-$ cd /some/where/blockchain-explorer/app/platform/fabric/e2e-test
+$ cd /some/where/blockchain-explorer/app/platform/fabric/e2e-test/feature
 $ virtualenv e2e-test
 $ source e2e-test/bin/activate
 (e2e-test) $
@@ -83,7 +88,7 @@ $ source e2e-test/bin/activate
 
 ```
 $ pip install virtualenv
-$ cd /some/where/blockchain-explorer/app/platform/fabric/e2e-test
+$ cd /some/where/blockchain-explorer/app/platform/fabric/e2e-test/feature
 $ virtualenv e2e-test
 $ source e2e-test/bin/activate
 (e2e-test) $
@@ -92,14 +97,14 @@ $ source e2e-test/bin/activate
 ## Install required packages
 
 ```
-# At /some/where/blockchain-explorer/app/platform/fabric/e2e-test on virtual env
+# At /some/where/blockchain-explorer/app/platform/fabric/e2e-test/feature on virtual env
 (e2e-test) $ pip install -r requirement.txt
 ```
 
 # Run test scenarios
 
 ```
-# At /some/where/blockchain-explorer/app/platform/fabric/e2e-test on virtual env
+# At /some/where/blockchain-explorer/app/platform/fabric/e2e-test/feature on virtual env
 (e2e-test) $ behave ./explorer.feature
 ```
 
@@ -131,8 +136,8 @@ $ npm run e2e-test
 
 * To preserve the test runtime environment without clean up when finishing test
   ```diff
-  --- a/app/platform/fabric/e2e-test/explorer.feature
-  +++ b/app/platform/fabric/e2e-test/explorer.feature
+  --- a/app/platform/fabric/e2e-test/feature/explorer.feature
+  +++ b/app/platform/fabric/e2e-test/feature/explorer.feature
   @@ -145,7 +149,7 @@ Scenario: [balance-transfer] Register a new user and enroll successfully
       Then the response parameter "status" should equal 200
 
@@ -144,19 +149,59 @@ $ npm run e2e-test
       Given the NETWORK_PROFILE environment variable is first-network
   ```
 
-# Project Structure
+# How to upgrade fabric-test environment
 
-Feature files are intended to locate in `/app/platform/fabric/e2e-test` folder. Corresponding steps are located in `/app/platform/fabric/e2e-test/steps`.
-Overall project structure is as follows:
+All files copied from the original fabric-test repository have not been modified. When upgrading the baseline of fabric-test, you only need to override them.
+
+```
+$ git clone --recurse-submodules https://github.com/hyperledger/fabric-test.git -b release-1.4
+$ cd fabric-test
+$ git checkout --recurse-submodules 64a5e04  # Choose a certain commit hash to be used for this upgrade
+$ find fabric/examples/chaincode fabric-samples/chaincode chaincodes/ feature/ -type f | zip fabric-test_64a5e04.zip -@
+$ cd /some/where/blockchain-explorer/app/platform/fabric/e2e-test
+$ unzip -o /some/where/fabric-test_64a5e04.zip
+```
+
+## Added files for e2e-test environment
+
+To add e2e-test support to explorer, we have added the following files over the original files from fabric-test repository.
 
 ```
 app/platform/fabric/e2e-test/
+  .gitignore
+  README.md
+  feature/
+    explorer.feature
+    explorer_gui_e2e.feature
+    requirement.txt
+    docker-compose/
+      docker-compose-explorer.yaml
+      docker-compose-kafka-sd.yml
+    explorer-configs/
+    steps/
+      explorer_impl.py
+      json_responses.py
+```
 
-+-- requirements.txt    // store python requirements
+# Project Structure
+
+Feature files are intended to locate in `/app/platform/fabric/e2e-test/feature` folder. Corresponding steps are located in `/app/platform/fabric/e2e-test/feature/steps`.
+Overall project structure is as follows:
+
+```
+app/platform/fabric/e2e-test/chaincodes/        // hyperledger/fabric-test
+app/platform/fabric/e2e-test/fabric/            // hyperledger/fabric-test
+app/platform/fabric/e2e-test/fabric-samples/    // hyperledger/fabric-test
+app/platform/fabric/e2e-test/fabric-sdk-java/   // hyperledger/fabric-test
+app/platform/fabric/e2e-test/feature/           // hyperledger/fabric-test
+
++-- requirement.txt    // store python requirements
 
 +-- environment.py      // contains common actions related to scenarios (e.g. clearing headers after running each feature file)
 
-+-- explorer.feature    // feature files (Test Scenarios)
++-- explorer.feature          // feature files (Test Scenarios)
+
++-- explorer_gui_e2e.feature  // feature files for GUI e2e test scenario
 
 +-- configs/
 
@@ -174,7 +219,7 @@ app/platform/fabric/e2e-test/
 
     +-- docker-compose-explorer.yaml    // definition of containers to bring up Hyperledger Explorer / Explorer DB
 
-    +-- config.json                     // Configuration file for Hyperledger Explorer
+    +-- docker-compose-kafka-sd.yml     // definition of containers to add configurations for service discovery to fabric network
 
 +-- explorer-configs/                   // Configuration and Profile for each scenario
                                         // You can specify which environments should be in use on each scenario by defining NETWORK_PROFILE env variable
@@ -185,25 +230,19 @@ app/platform/fabric/e2e-test/
 
         +-- ${NETWORK_PROFILE}.json
 
-+-- fabric-samples/         // Cloned from fabric-samples repo with tag:v1.4.0
-                            // Some docker-compose files and scripts are modified a little bit for this BDD env
-
-    +-- balance-transfer/
-
-    +-- first-network/
-
     +-- chaincode/
 
 +-- steps/
-
-    +-- explorer_impl.py    // New added steps for the e2e test of Hyperledger Explorer
 
     +-- *_impl.py           // Existing steps for fabric-test repository environment to manipulating fabric network and asserting status
 
     +-- *_util.py           // Utility functions for fabric-test repository environment
 
+    +-- explorer_impl.py    // New added steps for the e2e test of Hyperledger Explorer
+
     +-- json_responses.py   // response data structures described in Trafaret format
 
+app/platform/fabric/e2e-test/README.md
 ```
 
 Mainly we'll update `explorer.feature`, `steps/explorer_impl.py` and `steps/json_responses.py` to cover more scenarios.

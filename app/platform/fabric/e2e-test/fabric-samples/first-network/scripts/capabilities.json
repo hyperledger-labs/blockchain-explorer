@@ -1,9 +1,0 @@
-{
-	"mod_policy": "Admins",
-	"value": {
-		"capabilities": {
-			"V1_4_2": {}
-		}
-	},
-	"version": "0"
-}
