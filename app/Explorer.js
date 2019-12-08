@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const compression = require('compression');
 const passport = require('passport');
+const RateLimit = require('express-rate-limit');
 const PlatformBuilder = require('./platform/PlatformBuilder');
 const explorerconfig = require('./explorerconfig.json');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
@@ -37,12 +38,26 @@ class Explorer {
 	 */
 	constructor() {
 		this.app = new Express();
+
+		// set up rate limiter: maximum of 1000 requests per minute
+
+		const limiter = new RateLimit({
+			windowMs: 1 * 60 * 1000, // 1 minute
+			max: 1000
+		});
+		// apply rate limiter to all requests
+		this.app.use(limiter);
+
 		this.app.use(bodyParser.json());
 		this.app.use(
 			bodyParser.urlencoded({
 				extended: true
 			})
 		);
+
+		// eslint-disable-next-line spellcheck/spell-checker
+		// handle rate limit, see https://lgtm.com/rules/1506065727959/
+
 		this.app.use(passport.initialize());
 		if (process.env.NODE_ENV !== 'production') {
 			this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
