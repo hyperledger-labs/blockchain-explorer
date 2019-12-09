@@ -45,6 +45,7 @@
 		"pg-pool": "^2.0.7",
 		"prettyjson": "^1.2.1",
 		"prop-types": "^15.6.2",
+		"query-string": "^6.9.0",
 		"save": "^2.3.3",
 		"stomp-broker-js": "^0.1.3",
 		"stompjs": "^2.3.3",
