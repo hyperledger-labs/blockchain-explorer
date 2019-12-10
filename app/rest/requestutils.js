@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const queryString = require('query-string');
 /**
  *
  *
@@ -88,18 +89,30 @@ function reqPayload(req) {
 	return requestPayload;
 }
 
-const orgsArrayToString = function(orgs) {
+const orgsArrayToString = function(reqQuery) {
 	let temp = '';
-	if (Array.isArray(orgs) || typeof orgs === 'object') {
-		orgs.forEach((element, i) => {
-			temp += `'${element}'`;
-			if (orgs.length - 1 !== i) {
-				temp += ',';
+	if (reqQuery) {
+		// eslint-disable-next-line spellcheck/spell-checker
+		// workaround 'Type confusion through parameter tampering', see `https //lgtm dot com/rules/1506301137371 `
+		const orgsStr = queryString.stringify(reqQuery);
+
+		if (orgsStr) {
+			const parsedReq = queryString.parse(orgsStr);
+			if (parsedReq && parsedReq.orgs) {
+				const orgsArray = parsedReq.orgs.toString().split(',');
+				// format DB value for IN clause, ex: in ('a', 'b', 'c')
+				if (orgsArray) {
+					orgsArray.forEach((element, i) => {
+						temp += `'${element}'`;
+						if (orgsArray.length - 1 !== i) {
+							temp += ',';
+						}
+					});
+				}
 			}
-		});
-	} else if (orgs) {
-		temp = `'${orgs}'`;
+		}
 	}
+
 	return temp;
 };
 
