@@ -90,7 +90,6 @@ function reqPayload(req) {
 }
 
 const orgsArrayToString = function(reqQuery) {
-	console.log('reqQuery: ', reqQuery);
 	let temp = '';
 	if (reqQuery) {
 		// eslint-disable-next-line spellcheck/spell-checker
