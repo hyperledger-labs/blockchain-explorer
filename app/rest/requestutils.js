@@ -90,6 +90,7 @@ function reqPayload(req) {
 }
 
 const orgsArrayToString = function(reqQuery) {
+	console.log('reqQuery: ', reqQuery);
 	let temp = '';
 	if (reqQuery) {
 		// eslint-disable-next-line spellcheck/spell-checker
@@ -100,7 +101,6 @@ const orgsArrayToString = function(reqQuery) {
 			const parsedReq = queryString.parse(orgsStr);
 			if (parsedReq && parsedReq.orgs) {
 				const orgsArray = parsedReq.orgs.toString().split(',');
-				console.log('requestutils.orgsArrayToString.orgsArray ', orgsArray);
 				// format DB value for IN clause, ex: in ('a', 'b', 'c')
 				if (orgsArray) {
 					orgsArray.forEach((element, i) => {
@@ -113,7 +113,7 @@ const orgsArrayToString = function(reqQuery) {
 			}
 		}
 	}
-	console.log('comma separated organizations: ', temp);
+
 	return temp;
 };
 
