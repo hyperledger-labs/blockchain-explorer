@@ -55,7 +55,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
-| <b>[v1.0.0-rc2](release_notes/v1.0.0-rc2.md)</b> (Dec 5, 2019)  | [v1.4.0-v1.4.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
+| <b>[v1.0.0-rc2](release_notes/v1.0.0-rc2.md)</b> (Dec 10, 2019)  | [v1.4.0 to v1.4.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc1](release_notes/v1.0.0-rc1.md)</b> (Nov 18, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.5](release_notes/v0.3.9.5.md)</b> (Sep 8, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.4](release_notes/v0.3.9.4.md)</b> (June 18, 2019) | [v1.4.1](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |

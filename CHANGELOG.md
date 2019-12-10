@@ -1,5 +1,11 @@
 ## v1.0.0-rc2
 
+* [96134fa](https://github.com/hyperledger/blockchain-explorer/commit/96134fa) [BE-719](https://jira.hyperledger.org/browse/BE-719) Fix parameter tampering (#68)
+* [50d196d](https://github.com/hyperledger/blockchain-explorer/commit/50d196d) [BE-714](https://jira.hyperledger.org/browse/BE-714) Refine app and client e2e-test environment for v1.4.4 (#65)
+* [dac1dce](https://github.com/hyperledger/blockchain-explorer/commit/dac1dce) [BE-717](https://jira.hyperledger.org/browse/BE-717) Code quality fix (#66)
+* [7cc3349](https://github.com/hyperledger/blockchain-explorer/commit/7cc3349) [BE-718](https://jira.hyperledger.org/browse/BE-718) Fix typo in CORE_PEER_GOSSIP_EXTERNAL_ENDPOINT (#67)
+* [1b40146](https://github.com/hyperledger/blockchain-explorer/commit/1b40146) Be 716 v1.0.0 rc2 (#64)
+* [fa26184](https://github.com/hyperledger/blockchain-explorer/commit/fa26184) [BE-716](https://jira.hyperledger.org/browse/BE-716) v1.0.0-rc2 release (#63)
 * [d754835](https://github.com/hyperledger/blockchain-explorer/commit/d754835) Be 711 code quality (#62)
 * [db55e92](https://github.com/hyperledger/blockchain-explorer/commit/db55e92) [BE-702](https://jira.hyperledger.org/browse/BE-702) Update documents, azure (#60)
 * [621a12a](https://github.com/hyperledger/blockchain-explorer/commit/621a12a) [BE-713](https://jira.hyperledger.org/browse/BE-713) Fix an issue to fail detecting newly added channel (#59)
