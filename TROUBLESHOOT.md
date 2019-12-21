@@ -1003,29 +1003,119 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
 ##### Related Information:
     HL Explorer support for HL Fabric 1.4
 
+#### Problem Description: Hyperledger Explorer error when connecting to db: error: Ident authentication failed for user "hppoc"
+
+##### Background Information:
+```
+  false ssl-certs /produtos/hyperledger-blockchain/blockchain-explorer/ssl-certs
+error when connecting to db: error: Ident authentication failed for user "hppoc"
+    at Connection.parseE (/produtos/hyperledger-blockchain/blockchain-explorer/node_modules/pg/lib/connection.js:604:11)
+
+error when connecting to db: error: Ident authentication failed for user "hppoc"
+    at Connection.parseE (/produtos/hyperledger-blockchain/blockchain-explorer/node_modules/pg/lib/connection.js:604:11)
+    at Connection.parseMessage (/produtos/hyperledger-blockchain/blockchain-explorer/node_modules/pg/lib/connection.js:401:19)
+    at Socket.<anonymous> (/produtos/hyperledger-blockchain/blockchain-explorer/node_modules/pg/lib/connection.js:121:22)
+    at Socket.emit (events.js:210:5)
+    at addChunk (_stream_readable.js:309:12)
+    at readableAddChunk (_stream_readable.js:290:11)
+    at Socket.Readable.push (_stream_readable.js:224:10)
+    at TCP.onStreamRead (internal/stream_base_commons.js:182:23) {
+  .......
+...
+  file: 'auth.c',
+  line: '308',
+  routine: 'auth_failed'
+}
+error when connecting to db: TypeError: Cannot read property 'on' of undefined
+    at Timeout.handleDisconnect [as _onTimeout] (/produtos/hyperledger-blockchain/blockchain-explorer/app/persistence/postgreSQL/PgService.js:95:16)
+    at listOnTimeout (internal/timers.js:531:17)
+    at processTimers (internal/timers.js:475:7)
+<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
+TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received undefined
+    at setTimeout (timers.js:118:11)
+    at Timeout.handleDisconnect [as _onTimeout] (/produtos/hyperledger-blockchain/blockchain-explorer/app/persistence/postgreSQL/PgService.js:112:5)
+    at listOnTimeout (internal/timers.js:531:17)
+    at processTimers (internal/timers.js:475:7) {
+  code: 'ERR_INVALID_CALLBACK'
+}
+
+.....
+...
+error when connecting to db: TypeError: Cannot read property 'on' of undefined
+    at Timeout.handleDisconnect [as _onTimeout] (/produtos/hyperledger-blockchain/blockchain-explorer/app/persistence/postgreSQL/PgService.js:95:16)
+    at listOnTimeout (internal/timers.js:531:17)
+    at processTimers (internal/timers.js:475:7)
+<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>
+TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received undefined
+    at setTimeout (timers.js:118:11)
+    at Timeout.handleDisconnect [as _onTimeout] (/produtos/hyperledger-blockchain/blockchain-explorer/app/persistence/postgreSQL/PgService.js:112:5)
+    at listOnTimeout (internal/timers.js:531:17)
+    at processTimers (internal/timers.js:475:7) {
+  code: 'ERR_INVALID_CALLBACK'
+}
+<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
+Received kill signal, shutting down gracefully
+<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>
+Closed out connections
+<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>
+```
+##### Possible cause:
+    Permission related, Postgres is trying to authenticate a user using the Ident protocol, and can't.
+##### Possible solution:
+
+The ident authentication method works by obtaining the client's operating
+system user name from an ident server and using it as the allowed database
+user name (with an optional user name mapping). This is only supported on TCP/IP connections.
+
+Identify the location and edit the pg_hba.conf file
+
+ ``` /var/lib/pgsql/9.6/data/pg_hba.conf ```
+
+change:
+
+``` host all all 127.0.0.1/32 ident ```
+
+to
+
+``` host all all 127.0.0.1/32 md5 ```
+
+
+
+#### Related Information:
+ Full error info at https://pastebin.com/fyNSp66K
+
 ### Docker Troubleshooting commands
-    List your networks
-    $docker network ls
-    List docker images id
-    $docker images | grep block
-    Remove an image
-    $docker rmi <image_id>
-    Login to docker
-    $docker exec -it <image_id> sh
-    Read explorer app log
-    $docker exec <image_id> cat /opt/logs/app/app.log
-    Inspect real IP's
-    $docker inspect <image_id> | grep IPAddress
-    Stop and remove dockers
-    $docker stop $(docker ps -a -q)
-    $docker rm -f $(docker ps -a -q)
-    Remove default fabric crypto
-    $rm -rf ./crypto-config/*
-    $rm -rf ~/.hfc*
-    From the docker ($docker exec -it <image_id> sh)
-    Install curl:
-    $apk update && apk add curl
-    Use curl in docker to query explorer REST API
-    Example:
-    $curl http://localhost:8080/api/channels
-    Example response: {"status":200,"channels":["dockerchannel","mychannel"]
+
+List your networks ``` $docker network ls ```
+
+List docker images id ``` $docker images | grep block ```
+
+Remove an image ``` $docker rmi <image_id> ```
+
+Login to docker ``` $docker exec -it <image_id> sh ```
+
+Read explorer app log ``` $docker exec <image_id> cat /opt/logs/app/app.log ```
+
+Inspect real IPs ``` $docker inspect <image_id> | grep IPAddress ```
+
+Stop and remove dockers
+
+``` $docker stop $(docker ps -a -q) ```
+``` $docker rm -f $(docker ps -a -q) ```
+
+Remove default fabric crypto
+
+``` $rm -rf ./crypto-config/* ```
+``` $rm -rf ~/.hfc* ```
+
+From the docker ($docker exec -it <image_id> sh)
+
+Install curl: ``` $apk update && apk add curl ```
+
+Use curl in docker to query explorer REST API
+Example: ``` $curl http://localhost:8080/api/channels ```
+
+Example response: ``` {"status":200,"channels":["dockerchannel","mychannel"] ```
+
+
+
