@@ -37,6 +37,10 @@ services:
       - DATABASE_HOST=explorerdb.mynetwork.com
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
+      - LOG_LEVEL_APP=debug
+      - LOG_LEVEL_DB=debug
+      - LOG_LEVEL_CONSOLE=info
+      - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
       - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json

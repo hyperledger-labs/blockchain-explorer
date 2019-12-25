@@ -172,7 +172,7 @@ class FabricClient {
 				this.defaultOrderer.getName()
 			);
 		} else if (persistence) {
-			logger.info('\n ********* call to initializeDetachClient **********');
+			logger.info('********* call to initializeDetachClient **********');
 			this.initializeDetachClient(this.client_config, persistence);
 		}
 	}
@@ -202,12 +202,12 @@ class FabricClient {
 
 		logger.info('initializeDetachClient, network config) ', config);
 		logger.info(
-			'\n************************************* initializeDetachClient *************************************************'
+			'************************************* initializeDetachClient *************************************************'
 		);
 		logger.info('Error :', explorer_mess.error.ERROR_1009);
 		logger.info('Info : ', explorer_mess.message.MESSAGE_1001);
 		logger.info(
-			'************************************** initializeDetachClient ************************************************\n'
+			'************************************** initializeDetachClient ************************************************'
 		);
 		const defaultPeerConfig = fabricConfig.getDefaultPeerConfig();
 		const default_peer_name = defaultPeerConfig.name;
@@ -472,11 +472,10 @@ class FabricClient {
 						const requesturl =
 							`${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
 						logger.info(
-							'\ninitializeChannelFromDiscover.discoveryProtocol ',
+							'initializeChannelFromDiscover.discoveryProtocol ',
 							discoveryProtocol,
 							' requesturl ',
-							requesturl,
-							'\n'
+							requesturl
 						);
 
 						this.newOrderer(

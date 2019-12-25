@@ -22,6 +22,7 @@ const log4js = require('log4js/lib/log4js');
 
 const path = require('path');
 const fs = require('fs-extra');
+const yn = require('yn');
 
 exports.getLogger = getLogger;
 exports.readAllFiles = readAllFiles;
@@ -74,7 +75,21 @@ function getLogger(moduleName) {
 		consoleLog = `${process.env.SYNC_LOG_PATH}/console/console.log`;
 	}
 
-	log4js.configure({
+	let appLevel = 'debug';
+	let dbLevel = 'debug';
+	let consoleLevel = 'info';
+
+	if (process.env.LOG_LEVEL_APP) {
+		appLevel = process.env.LOG_LEVEL_APP;
+	}
+	if (process.env.LOG_LEVEL_DB) {
+		dbLevel = process.env.LOG_LEVEL_DB;
+	}
+	if (process.env.LOG_LEVEL_CONSOLE) {
+		consoleLevel = process.env.LOG_LEVEL_CONSOLE;
+	}
+
+	const logConfig = {
 		appenders: {
 			app: {
 				type: 'dateFile',
@@ -94,14 +109,22 @@ function getLogger(moduleName) {
 			consoleFilter: {
 				type: 'logLevelFilter',
 				appender: 'console',
-				level: 'info'
+				level: consoleLevel
 			}
 		},
 		categories: {
-			default: { appenders: ['consoleFilter', 'app'], level: 'debug' },
-			PgService: { appenders: ['consoleFilter', 'db'], level: 'debug' }
+			default: { appenders: ['consoleFilter', 'app'], level: appLevel },
+			PgService: { appenders: ['consoleFilter', 'db'], level: dbLevel }
 		}
-	});
+	};
+
+	if (process.env.LOG_CONSOLE_STDOUT) {
+		if (yn(process.env.LOG_CONSOLE_STDOUT)) {
+			logConfig.appenders.console = { type: 'console' };
+		}
+	}
+
+	log4js.configure(logConfig);
 
 	return logger;
 }

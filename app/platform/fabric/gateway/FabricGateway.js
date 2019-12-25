@@ -56,7 +56,7 @@ class FabricGateway {
 		this.identityLabel = this.userName;
 		this.FSWALLET = 'wallet/' + this.networkName;
 
-		const info = `\nLoading configuration  ${this.config} \n`;
+		const info = `Loading configuration  ${this.config}`;
 		logger.debug(info.toUpperCase());
 
 		const peers = this.fabricConfig.getPeers();
@@ -73,7 +73,7 @@ class FabricGateway {
 			signedCertPath
 		} = this.fabricConfig.getOrganizationsConfig());
 		logger.log(
-			'\nsignedCertPath ',
+			'signedCertPath ',
 			signedCertPath,
 			' \nadminPrivateKeyPath ',
 			adminPrivateKeyPath

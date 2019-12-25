@@ -81,7 +81,7 @@ class SyncPlatform {
 		}
 
 		logger.info(
-			`\n${explorer_mess.message.MESSAGE_1002}`,
+			explorer_mess.message.MESSAGE_1002,
 			this.network_name,
 			this.client_name
 		);
