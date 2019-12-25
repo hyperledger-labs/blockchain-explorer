@@ -3,6 +3,9 @@
  */
 
 const fs = require('fs');
+const helper = require('../../common/helper');
+
+const logger = helper.getLogger('FabricConfig');
 
 /**
  *
@@ -61,7 +64,7 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getTls() {
-		console.log('config.client.tlsEnable ', this.config.client.tlsEnable);
+		logger.info('config.client.tlsEnable ', this.config.client.tlsEnable);
 		return this.config.client.tlsEnable;
 	}
 
@@ -115,7 +118,7 @@ class FabricConfig {
 		let defChannel;
 		for (const x in this.config.channels) {
 			// Getting default channel
-			console.log('FabricConfig, this.config.channels ', x);
+			logger.info('FabricConfig, this.config.channels ', x);
 			if (x) {
 				defChannel = x;
 			}

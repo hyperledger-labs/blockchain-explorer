@@ -131,7 +131,7 @@ class MetricService {
        as channel_genesis_hash,c.path as path ,txcount  as c from chaincodes as c inner join channel on c.channel_genesis_hash=channel.channel_genesis_hash where  c.channel_genesis_hash='${channel_genesis_hash}' `);
 		if (c) {
 			c.forEach((item, index) => {
-				console.debug(' item ------------> ', item);
+				logger.debug(' item ------------> ', item);
 				txArray.push({
 					chaincodename: item.chaincodename,
 					channelName: item.channelname,

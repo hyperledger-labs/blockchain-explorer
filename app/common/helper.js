@@ -20,8 +20,6 @@
 
 const log4js = require('log4js/lib/log4js');
 
-const appList = [];
-
 const path = require('path');
 const fs = require('fs-extra');
 
@@ -64,46 +62,46 @@ function readAllFiles(dir) {
  * @returns
  */
 function getLogger(moduleName) {
-	let logger;
-
-	if (moduleName === 'PgService') {
-		logger = log4js.getLogger('PgService');
-	} else {
-		appList.push(moduleName);
-		logger = log4js.getLogger(moduleName);
-	}
+	const logger = log4js.getLogger(moduleName);
 
 	let appLog = 'logs/app/app.log';
 	let dbLog = 'logs/db/db.log';
+	let consoleLog = 'logs/console/console.log';
 
 	if (process.env.SYNC_LOG_PATH) {
 		appLog = `${process.env.SYNC_LOG_PATH}/app/app.log`;
 		dbLog = `${process.env.SYNC_LOG_PATH}/db/db.log`;
+		consoleLog = `${process.env.SYNC_LOG_PATH}/console/console.log`;
 	}
 
-	fs.ensureFileSync(appLog);
-	fs.ensureFileSync(dbLog);
-
 	log4js.configure({
-		appenders: [
-			{
+		appenders: {
+			app: {
 				type: 'dateFile',
 				filename: appLog,
-				// eslint-disable-next-line spellcheck/spell-checker
-				pattern: '-yyyy-MM-dd',
-				category: appList
+				daysToKeep: 7
 			},
-			{
+			db: {
 				type: 'dateFile',
 				filename: dbLog,
-				// eslint-disable-next-line spellcheck/spell-checker
-				pattern: '-yyyy-MM-dd',
-				category: ['PgService']
+				daysToKeep: 7
+			},
+			console: {
+				type: 'dateFile',
+				filename: consoleLog,
+				daysToKeep: 7
+			},
+			consoleFilter: {
+				type: 'logLevelFilter',
+				appender: 'console',
+				level: 'info'
 			}
-		]
+		},
+		categories: {
+			default: { appenders: ['consoleFilter', 'app'], level: 'debug' },
+			PgService: { appenders: ['consoleFilter', 'db'], level: 'debug' }
+		}
 	});
-
-	logger.setLevel('DEBUG');
 
 	return logger;
 }

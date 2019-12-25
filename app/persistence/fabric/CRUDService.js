@@ -82,7 +82,7 @@ class CRUDService {
 		}
 
 		logger.debug('getTxList.byOrgs ', byOrgs);
-		console.debug('getTxList.byOrgs ', byOrgs);
+		logger.debug('getTxList.byOrgs ', byOrgs);
 
 		const sqlTxListByOrgs = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
        inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash where  t.blockid >= ${blockNum} and t.id >= ${txid} and t.creator_msp_id in (${orgs}) and
@@ -118,7 +118,7 @@ class CRUDService {
 		}
 
 		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
-		console.debug('getBlockAndTxList.byOrgs ', byOrgs);
+		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
 
 		const sqlBlockTxList = `select a.* from  (
       select (select c.name from channel c where c.channel_genesis_hash =
