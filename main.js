@@ -115,9 +115,7 @@ async function startExplorer() {
 	const broadcaster = new Broadcaster(server);
 	await explorer.initialize(broadcaster);
 	explorer.getApp().use(express.static(path.join(__dirname, 'client/build')));
-	logger.info(
-		'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
-	);
+
 	// ============= start server =======================
 	server.listen(port, () => {
 		logger.info(

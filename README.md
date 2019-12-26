@@ -36,6 +36,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 - [10.0 Build Hyperledger Explorer ](#Build-Hyperledger-Explorer)
 - [10.1 Optional: Configure Hyperledger Explorer for HTTPS ](#Configure-Hyperledger-Explorer-for-HTTPS)
 - [11.0 Run Hyperledger Explorer ](#Run-Hyperledger-Explorer)
+  - [11.1 Configuration of logging ](#Run-Hyperledger-Explorer-Logging)
 - [12.0 Optional: Run Hyperledger Explorer Using Docker ](#Run-Hyperledger-Explorer-using-Docker)
   - [12.1 Docker Repository ](#Docker-Repository)
   - [12.2 Run Hyperledger Explorer Using Docker Compose ](#Run-Hyperledger-Explorer-using-Docker-Compose)
@@ -401,7 +402,24 @@ From new terminal (if Sync Process in Standalone).
 - If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
 - If Hyperledger Fabric network is deployed on other machine, please toggle DISCOVERY_AS_LOCALHOST in start.sh / syncstart.sh to 'false'.
 
+<a name="Run-Hyperledger-Explorer-Logging" />
 
+# 11.1 Configuration of logging    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+
+By using the following environmet variables, you can control log level of each component (app, db and console). You can set these `ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF` string to each level. Each file is rolled by both date (7days) and size (8MB).
+
+* LOG_LEVEL_APP
+  * Log level regarding application layer. The logs are written to `logs/app/app.log`.
+  * default `DEBUG`
+* LOG_LEVEL_DB
+  * Log level regarding backend layer. The logs are written to `logs/db/db.log`.
+  * default `DEBUG`
+* LOG_LEVEL_CONSOLE
+  * Log level regarding console. The logs are written to `logs/console/console.log`.
+  * default `INFO`
+* LOG_CONSOLE_STDOUT
+  * You can switch the destination of console log from file to standard output.
+  * default `false`
 
 <a name="Run-Hyperledger-Explorer-using-Docker" />
 

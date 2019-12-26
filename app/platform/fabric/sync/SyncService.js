@@ -256,7 +256,7 @@ class SyncServices {
 			'discovery-protocol'
 		);
 		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
-		logger.info(
+		logger.debug(
 			'insertNewOrderers discoveryProtocol ',
 			discoveryProtocol,
 			' requesturl ',
@@ -641,7 +641,7 @@ class SyncServices {
 				const res = await this.persistence
 					.getCrudService()
 					.saveTransaction(transaction_row);
-				logger.info('saveTransaction ', res);
+				logger.debug('saveTransaction ', res);
 			}
 
 			// Insert block

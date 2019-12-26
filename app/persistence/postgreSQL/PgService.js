@@ -79,10 +79,6 @@ class PgService {
 		logger.info(`connecting to Postgresql ${connectionString}`);
 
 		this.client = new Client(this.pgconfig);
-
-		logger.info(
-			'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
-		);
 	}
 
 	/**

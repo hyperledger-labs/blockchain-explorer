@@ -471,7 +471,7 @@ class FabricClient {
 						);
 						const requesturl =
 							`${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
-						logger.info(
+						logger.debug(
 							'initializeChannelFromDiscover.discoveryProtocol ',
 							discoveryProtocol,
 							' requesturl ',
