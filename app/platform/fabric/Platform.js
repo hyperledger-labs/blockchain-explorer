@@ -64,7 +64,7 @@ class Platform {
 		logger.debug(
 			'******* Initialization started for hyperledger fabric platform ******'
 		);
-		console.debug(
+		logger.debug(
 			'******* Initialization started for hyperledger fabric platform ******,',
 			network_configs
 		);
@@ -117,7 +117,7 @@ class Platform {
 			 * Create fabric explorer client for each
 			 * Each client is connected to only a single peer and monitor that particular peer only
 			 */
-			console.log(
+			logger.info(
 				' client_configs.name ',
 				client_configs.name,
 				' client_configs.profile ',
@@ -135,14 +135,14 @@ class Platform {
 			let client;
 
 			if (clientstatus) {
-				console.log('FabricUtils.createFabricClient ');
+				logger.info('FabricUtils.createFabricClient ');
 				client = await FabricUtils.createFabricClient(
 					client_configs,
 					client_name,
 					this.persistence
 				);
 			} else {
-				console.log('FabricUtils.createDetachClient ');
+				logger.info('FabricUtils.createDetachClient ');
 				client = await FabricUtils.createDetachClient(
 					client_configs,
 					client_name,
@@ -151,7 +151,7 @@ class Platform {
 			}
 			if (client) {
 				// Set client into clients map
-				console.log('FabricUtils.createDetachClient ');
+				logger.info('FabricUtils.createDetachClient ');
 				const clients = this.networks.get(network_name);
 				clients.set(client_name, client);
 				// Console.log('clients ', clients);
@@ -170,7 +170,7 @@ class Platform {
 		/* eslint-disable */
 		for (const [network_name, clients] of this.networks.entries()) {
 			for (const [client_name, client] of clients.entries()) {
-				console.log(
+				logger.info(
 					'initializeListener, client_name, client ',
 					client_name,
 					client.client_config
@@ -307,7 +307,7 @@ class Platform {
 	 * @memberof Platform
 	 */
 	async destroy() {
-		console.log(
+		logger.info(
 			'<<<<<<<<<<<<<<<<<<<<<<<<<< Closing explorer  >>>>>>>>>>>>>>>>>>>>>'
 		);
 		for (const explorerListener of this.explorerListeners) {

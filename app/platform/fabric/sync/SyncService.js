@@ -76,7 +76,7 @@ class SyncServices {
 		}
 
 		for (const [channel_name, channel] of channels.entries()) {
-			console.log(
+			logger.info(
 				'SyncServices.synchNetworkConfigToDB client ',
 				client.client_name,
 				' channel_name ',
@@ -256,7 +256,7 @@ class SyncServices {
 			'discovery-protocol'
 		);
 		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
-		console.log(
+		logger.debug(
 			'insertNewOrderers discoveryProtocol ',
 			discoveryProtocol,
 			' requesturl ',
@@ -641,13 +641,13 @@ class SyncServices {
 				const res = await this.persistence
 					.getCrudService()
 					.saveTransaction(transaction_row);
-				console.log('saveTransaction ', res);
+				logger.debug('saveTransaction ', res);
 			}
 
 			// Insert block
-			console.log('block_row.blocknum ', block_row.blocknum);
+			logger.info('block_row.blocknum ', block_row.blocknum);
 			const status = await this.persistence.getCrudService().saveBlock(block_row);
-			console.debug('status ', status);
+			logger.debug('status ', status);
 
 			if (status) {
 				// Push last block
@@ -670,7 +670,7 @@ class SyncServices {
 				_self.platform.send(notify);
 			}
 		} else {
-			console.error('Failed to process the block %j', block);
+			logger.error('Failed to process the block %j', block);
 			logger.error('Failed to process the block %j', block);
 		}
 		const index = blocksInProcess.indexOf(blockPro_key);
@@ -747,7 +747,7 @@ function jsonObjSize(json) {
 					break;
 				}
 				default:
-					console.log(typeof obj);
+					logger.debug(typeof obj);
 					break;
 			}
 		}

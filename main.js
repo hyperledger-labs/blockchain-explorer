@@ -48,7 +48,7 @@ class Broadcaster extends WebSocket.Server {
 		this.on('connection', function connection(ws, req) {
 			const location = url.parse(req.url, true);
 			this.on('message', message => {
-				console.log('received: %s, %s', location, message);
+				logger.info('received: %s, %s', location, message);
 			});
 		});
 	}
@@ -63,7 +63,6 @@ class Broadcaster extends WebSocket.Server {
 		this.clients.forEach(client => {
 			if (client.readyState === WebSocket.OPEN) {
 				logger.debug('Broadcast >> %j', data);
-				console.log('Broadcast >> %j', data);
 				client.send(JSON.stringify(data));
 			}
 		});
@@ -102,7 +101,7 @@ async function startExplorer() {
 
 	// = =========== web socket ==============//
 	const sslPath = path.join(__dirname, sslCertsPath);
-	console.debug(sslEnabled, sslCertsPath, sslPath);
+	logger.debug(sslEnabled, sslCertsPath, sslPath);
 
 	if (sslEnabled) {
 		const options = {
@@ -116,18 +115,13 @@ async function startExplorer() {
 	const broadcaster = new Broadcaster(server);
 	await explorer.initialize(broadcaster);
 	explorer.getApp().use(express.static(path.join(__dirname, 'client/build')));
-	logger.info(
-		'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
-	);
+
 	// ============= start server =======================
 	server.listen(port, () => {
-		console.log('\n');
-		console.log(
+		logger.info(
 			`Please open web browser to access ：${protocol}://${host}:${port}/`
 		);
-		console.log('\n');
-		console.log(`pid is ${process.pid}`);
-		console.log('\n');
+		logger.info(`pid is ${process.pid}`);
 	});
 }
 
@@ -148,17 +142,15 @@ server.on('connection', connection => {
  */
 
 const shutDown = function(exitCode) {
-	console.log('Received kill signal, shutting down gracefully');
+	logger.info('Received kill signal, shutting down gracefully');
 	server.close(() => {
 		explorer.close();
-		console.log('Closed out connections');
+		logger.info('Closed out connections');
 		process.exit(exitCode);
 	});
 
 	setTimeout(() => {
-		console.error(
-			'Could not close connections in time, forcefully shutting down'
-		);
+		logger.error('Could not close connections in time, forcefully shutting down');
 		explorer.close();
 		process.exit(1);
 	}, 10000);
@@ -168,22 +160,26 @@ const shutDown = function(exitCode) {
 };
 
 process.on('unhandledRejection', up => {
-	console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+	logger.error(
+		'<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>'
+	);
 	if (up instanceof ExplorerError) {
-		console.log('Error : ', up.message);
+		logger.error('Error : ', up.message);
 	} else {
-		console.log(up);
+		logger.error(up);
 	}
 	setTimeout(() => {
 		shutDown(1);
 	}, 2000);
 });
 process.on('uncaughtException', up => {
-	console.log('<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>');
+	logger.error(
+		'<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>'
+	);
 	if (up instanceof ExplorerError) {
-		console.log('Error : ', up.message);
+		logger.error('Error : ', up.message);
 	} else {
-		console.log(up);
+		logger.error(up);
 	}
 	setTimeout(() => {
 		shutDown(1);

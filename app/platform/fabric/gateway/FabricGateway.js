@@ -56,7 +56,7 @@ class FabricGateway {
 		this.identityLabel = this.userName;
 		this.FSWALLET = 'wallet/' + this.networkName;
 
-		const info = `\nLoading configuration  ${this.config} \n`;
+		const info = `Loading configuration  ${this.config}`;
 		logger.debug(info.toUpperCase());
 
 		const peers = this.fabricConfig.getPeers();
@@ -73,7 +73,7 @@ class FabricGateway {
 			signedCertPath
 		} = this.fabricConfig.getOrganizationsConfig());
 		logger.log(
-			'\nsignedCertPath ',
+			'signedCertPath ',
 			signedCertPath,
 			' \nadminPrivateKeyPath ',
 			adminPrivateKeyPath
@@ -95,7 +95,7 @@ class FabricGateway {
 			// Check to see if we've already enrolled the admin user.
 			const adminExists = await this.wallet.exists(this.userName);
 			if (adminExists) {
-				console.debug(
+				logger.debug(
 					`An identity for the admin user: ${
 						this.userName
 					} already exists in the wallet`
@@ -143,7 +143,6 @@ class FabricGateway {
 			this.client = this.gateway.getClient();
 		} catch (error) {
 			logger.error(` ${error}`);
-			console.debug(error);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
 		}
 	}
@@ -227,7 +226,6 @@ class FabricGateway {
 			 * Reason : no fabric running, check your network
 			 */
 			logger.error('Error instantiating FabricCAServices ', error);
-			console.dir('Error instantiating FabricCAServices ', error);
 			// TODO decide how to proceed if error
 		}
 		return {
@@ -238,7 +236,7 @@ class FabricGateway {
 
 	async getIdentityInfo(label) {
 		let identityInfo;
-		console.log('Searching for an identity with label: ', label);
+		logger.info('Searching for an identity with label: ', label);
 		try {
 			const list = await this.wallet.list();
 			identityInfo = list.filter(id => {

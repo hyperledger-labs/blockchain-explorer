@@ -52,8 +52,7 @@ class UserService {
 				if (clients.config && clients.config.client) {
 					enableAuth = clients.config.client.enableAuthentication;
 					if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
-						logger.log(`Network: ${network_name} enableAuthentication ${enableAuth}`);
-						console.log(
+						logger.info(
 							`Network: ${network_name} enableAuthentication ${enableAuth}`
 						);
 						adminUser = clients.config.client.adminUser;

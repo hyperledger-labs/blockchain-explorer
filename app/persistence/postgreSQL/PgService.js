@@ -79,10 +79,6 @@ class PgService {
 		logger.info(`connecting to Postgresql ${connectionString}`);
 
 		this.client = new Client(this.pgconfig);
-
-		logger.info(
-			'Please set logger.setLevel to DEBUG in ./app/helper.js to log the debugging.'
-		);
 	}
 
 	/**
@@ -93,7 +89,7 @@ class PgService {
 	async handleDisconnect() {
 		try {
 			this.client.on('error', err => {
-				console.log('db error', err);
+				logger.error('db error', err);
 				if (err.code === 'PROTOCOL_CONNECTION_LOST') {
 					this.handleDisconnect();
 				} else {
@@ -108,7 +104,7 @@ class PgService {
 				 * To avoid a hot loop, and to allow our node script to
 				 * Process asynchronous requests in the meantime.
 				 */
-				console.log('error when connecting to db:', err);
+				logger.error('error when connecting to db:', err);
 				setTimeout(this.handleDisconnect, 2000);
 			}
 		}
@@ -163,7 +159,6 @@ class PgService {
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
-					console.log(err.stack);
 					reject(err);
 					return;
 				}
@@ -173,7 +168,7 @@ class PgService {
 				);
 				//  Console.log('INSERT ID:', res.rows[0].id);
 				logger.debug(
-					'-----------------------------------------------------------------\n\n'
+					'-----------------------------------------------------------------'
 				);
 
 				resolve(res.rows[0].id);
@@ -218,7 +213,6 @@ class PgService {
 			const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${pkName} = ${pkValue} RETURNING *`;
 
 			logger.debug(`update sql is ${addSql}`);
-			console.log(`update sql is ${addSql}`);
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
@@ -276,7 +270,6 @@ class PgService {
 			const addSql = ` UPDATE ${tablename} set ${updateParmsStr} WHERE ${updatewhereparm} RETURNING * `;
 
 			logger.debug(`update sql is ${addSql}`);
-			console.log(`update sql is ${addSql}`);
 			_self.client.query(addSql, addSqlParams, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
@@ -528,7 +521,6 @@ class PgService {
 					return;
 				}
 
-				// console.log(  `The solution is: ${rows.length }  `  );
 				logger.debug(` the getRowsBySQlNoCondition ${sql}`);
 
 				if (res && res.rows) {

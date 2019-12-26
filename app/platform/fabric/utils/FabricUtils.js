@@ -225,7 +225,6 @@ function getPEMfromConfig(config) {
 				result = utils.normalizeX509(result);
 			} catch (e) {
 				logger.error(e);
-				console.error(e);
 			}
 		}
 	}

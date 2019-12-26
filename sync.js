@@ -17,9 +17,7 @@ async function start() {
 	synchronizer = new Synchronizer(args);
 	await synchronizer.initialize();
 
-	console.log('\n');
-	console.log(`Synchronizer pid is ${process.pid}`);
-	console.log('\n');
+	logger.info(`Synchronizer pid is ${process.pid}`);
 }
 
 start();
@@ -30,7 +28,7 @@ start();
  */
 
 const shutDown = function() {
-	console.log(
+	logger.info(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Closing client processor >>>>>>>>>>>>>>>>>>>>>'
 	);
 	if (synchronizer) {
@@ -39,7 +37,7 @@ const shutDown = function() {
 	setTimeout(() => {
 		process.exit(0);
 		setTimeout(() => {
-			console.error(
+			logger.error(
 				'Could not close child connections in time, forcefully shutting down'
 			);
 			if (synchronizer) {
@@ -51,24 +49,24 @@ const shutDown = function() {
 };
 
 process.on('unhandledRejection', up => {
-	console.log(
+	logger.error(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
 	);
 	if (up instanceof ExplorerError) {
-		console.log('Error : ', up.message);
+		logger.error('Error : ', up.message);
 	} else {
-		console.log(up);
+		logger.error(up);
 	}
 	shutDown();
 });
 process.on('uncaughtException', up => {
-	console.log(
+	logger.error(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
 	);
 	if (up instanceof ExplorerError) {
-		console.log('Error : ', up.message);
+		logger.error('Error : ', up.message);
 	} else {
-		console.log(up);
+		logger.error(up);
 	}
 	shutDown();
 });

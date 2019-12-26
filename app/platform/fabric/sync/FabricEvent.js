@@ -68,7 +68,6 @@ class FabricEvent {
 			},
 			err => {
 				logger.error('Block Event %s', err);
-				console.error(err);
 			}
 		);
 		this.connectChannelEventHub(channel.getName(), eventHub);
@@ -106,7 +105,6 @@ class FabricEvent {
 				}
 			} catch (err) {
 				logger.error('Failed to get the channel ', err);
-				console.error('Failed to get the channel ', err);
 			}
 			return false;
 		}

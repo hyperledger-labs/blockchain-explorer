@@ -172,7 +172,7 @@ class FabricClient {
 				this.defaultOrderer.getName()
 			);
 		} else if (persistence) {
-			console.log('\n ********* call to initializeDetachClient **********');
+			logger.info('********* call to initializeDetachClient **********');
 			this.initializeDetachClient(this.client_config, persistence);
 		}
 	}
@@ -186,7 +186,7 @@ class FabricClient {
 	 */
 	async initializeDetachClient(client_config, persistence) {
 		const name = client_config.name;
-		console.debug(
+		logger.debug(
 			'initializeDetachClient --> client_config ',
 			client_config,
 			' name ',
@@ -200,14 +200,14 @@ class FabricClient {
 		this.userName = fabricConfig.getAdminUser();
 		const peers = fabricConfig.getPeersConfig();
 
-		console.log('initializeDetachClient, network config) ', config);
-		console.log(
-			'\n************************************* initializeDetachClient *************************************************'
+		logger.info('initializeDetachClient, network config) ', config);
+		logger.info(
+			'************************************* initializeDetachClient *************************************************'
 		);
-		console.log('Error :', explorer_mess.error.ERROR_1009);
-		console.log('Info : ', explorer_mess.message.MESSAGE_1001);
-		console.log(
-			'************************************** initializeDetachClient ************************************************\n'
+		logger.info('Error :', explorer_mess.error.ERROR_1009);
+		logger.info('Info : ', explorer_mess.message.MESSAGE_1001);
+		logger.info(
+			'************************************** initializeDetachClient ************************************************'
 		);
 		const defaultPeerConfig = fabricConfig.getDefaultPeerConfig();
 		const default_peer_name = defaultPeerConfig.name;
@@ -250,14 +250,13 @@ class FabricClient {
 					}
 				} catch (e) {
 					logger.error(e);
-					console.error(e);
 				}
 			}
 
 			try {
 				newchannel.getPeer(default_peer_name);
 			} catch (e) {
-				console.error(
+				logger.error(
 					'Failed to connect to default peer: ',
 					default_peer_name,
 					' \n',
@@ -394,7 +393,7 @@ class FabricClient {
 		);
 		// Setting channel_genesis_hash to map
 		this.setChannelGenHash(channel_name, channel_genesis_hash);
-		console.debug(
+		logger.debug(
 			'Channel genesis hash for channel [%s] >> %s',
 			channel_name,
 			channel_genesis_hash
@@ -414,7 +413,7 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async initializeChannelFromDiscover(channel_name) {
-		console.debug('initializeChannelFromDiscover ', channel_name);
+		logger.debug('initializeChannelFromDiscover ', channel_name);
 		let channel = this.hfc_client.getChannel(channel_name, false);
 		if (!channel) {
 			await this.initializeNewChannel(channel_name);
@@ -466,25 +465,17 @@ class FabricClient {
 				for (const msp_id in discover_results.orderers) {
 					const endpoints = discover_results.orderers[msp_id].endpoints;
 					for (const endpoint of endpoints) {
-						console.log(' FabricClient.discover_results  endpoint ', endpoint);
+						logger.info(' FabricClient.discover_results  endpoint ', endpoint);
 						const discoveryProtocol = this.hfc_client.getConfigSetting(
 							'discovery-protocol'
 						);
 						const requesturl =
 							`${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
-						console.log(
-							'\ninitializeChannelFromDiscover.discoveryProtocol ',
-							discoveryProtocol,
-							' requesturl ',
-							requesturl,
-							'\n'
-						);
 						logger.debug(
-							'\ninitializeChannelFromDiscover.discoveryProtocol ',
+							'initializeChannelFromDiscover.discoveryProtocol ',
 							discoveryProtocol,
 							' requesturl ',
-							requesturl,
-							'\n'
+							requesturl
 						);
 
 						this.newOrderer(
@@ -641,7 +632,6 @@ class FabricClient {
 				txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
 			};
 			const genesisBlock = await channel.getGenesisBlock(request);
-			// console.log(genesisBlock)
 			return genesisBlock;
 		} catch (error) {
 			logger.error(

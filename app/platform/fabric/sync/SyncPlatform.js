@@ -80,8 +80,8 @@ class SyncPlatform {
 			this.client_name = args[1];
 		}
 
-		console.log(
-			`\n${explorer_mess.message.MESSAGE_1002}`,
+		logger.info(
+			explorer_mess.message.MESSAGE_1002,
 			this.network_name,
 			this.client_name
 		);
@@ -113,7 +113,7 @@ class SyncPlatform {
 		}
 
 		setInterval(() => {
-			console.log('Updating the client network and other details to DB');
+			logger.info('Updating the client network and other details to DB');
 			this.syncService.synchNetworkConfigToDB(this.client);
 		}, 30000);
 
