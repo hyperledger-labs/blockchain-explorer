@@ -5,7 +5,7 @@
 
 [rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer
 [rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
-[![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/hyperledger.blockchain-explorer?branchName=master)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=master)
+[![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/Blockchain-Explorer?branchName=master)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=master)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
 [![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=master)](https://blockchain-explorer.readthedocs.io/en/master/?badge=master)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/hyperledger/blockchain-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hyperledger/blockchain-explorer/context:javascript)
