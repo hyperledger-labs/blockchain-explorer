@@ -35,7 +35,8 @@ const strategy = function(platform) {
 			const userInfo = await proxy.authenticate(reqUser);
 
 			const payload = {
-				sub: userInfo.user
+				user: userInfo.user,
+				network: userInfo.network
 			};
 
 			if (userInfo && !userInfo.authenticated) {
@@ -53,7 +54,8 @@ const strategy = function(platform) {
 			// @ts-check
 			const data = {
 				message: 'logged in',
-				name: userData.user
+				name: userData.user,
+				network: userData.network
 			};
 
 			return done(null, token, data);

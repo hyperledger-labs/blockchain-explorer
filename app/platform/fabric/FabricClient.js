@@ -32,7 +32,8 @@ class FabricClient {
 	 * @param {*} client_name
 	 * @memberof FabricClient
 	 */
-	constructor(client_name) {
+	constructor(network_name, client_name) {
+		this.network_name = network_name;
 		this.client_name = client_name;
 		this.hfc_client = null;
 		this.fabricGateway = null;
@@ -213,7 +214,7 @@ class FabricClient {
 		const default_peer_name = defaultPeerConfig.name;
 		const channels = await persistence
 			.getCrudService()
-			.getChannelsInfo(default_peer_name);
+			.getChannelsInfo(this.network_name, default_peer_name);
 
 		const default_channel_name = fabricConfig.getDefaultChannel();
 
@@ -225,7 +226,7 @@ class FabricClient {
 			this.setChannelGenHash(channel.channelname, channel.channel_genesis_hash);
 			const nodes = await persistence
 				.getMetricService()
-				.getPeerList(channel.channel_genesis_hash);
+				.getPeerList(this.network_name, channel.channel_genesis_hash);
 			let newchannel;
 			try {
 				newchannel = this.hfc_client.getChannel(channel.channelname);

@@ -45,20 +45,16 @@ class UserService {
 		let adminPassword = null;
 		if (user.user && user.password && user.network) {
 			logger.log('user.network ', user.network);
-			const network = this.platform.getNetworks().get(user.network);
+			const clientObj = this.platform.getNetworks().get(user.network);
 
 			// TODO, need review maybe there is a better way to get the client config enableAuthentication
-			for (const [network_name, clients] of network.entries()) {
-				if (clients.config && clients.config.client) {
-					enableAuth = clients.config.client.enableAuthentication;
-					if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
-						logger.info(
-							`Network: ${network_name} enableAuthentication ${enableAuth}`
-						);
-						adminUser = clients.config.client.adminUser;
-						adminPassword = clients.config.client.adminPassword;
-						break;
-					}
+			let client = clientObj.instance;
+			if (client.config && client.config.client) {
+				enableAuth = client.config.client.enableAuthentication;
+				if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
+					logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
+					adminUser = client.config.client.adminUser;
+					adminPassword = client.config.client.adminPassword;
 				}
 			}
 
@@ -67,7 +63,8 @@ class UserService {
 				return {
 					authenticated: true,
 					user: user.user,
-					enableAuthentication: enableAuth
+					enableAuthentication: enableAuth,
+					network: user.network
 				};
 			}
 
@@ -76,7 +73,8 @@ class UserService {
 				return {
 					authenticated: true,
 					user: user.user,
-					enableAuthentication: enableAuth
+					enableAuthentication: enableAuth,
+					network: user.network
 				};
 			} else {
 				return {
@@ -276,10 +274,7 @@ class UserService {
 			fabricGw.gateway.disconnect();
 
 			// Connect to gateway
-			await fabricGw.gateway.connect(
-				fabricGw.config,
-				connectionOptions
-			);
+			await fabricGw.gateway.connect(fabricGw.config, connectionOptions);
 			logger.debug('Successfully reconnected with ', username);
 		} catch (err) {
 			throw new Error('Failed to reconnect: ' + err.toString());

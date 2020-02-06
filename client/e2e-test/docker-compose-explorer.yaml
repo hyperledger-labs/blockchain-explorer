@@ -24,7 +24,6 @@ services:
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     volumes:
-      - ./../../app/persistence/fabric/postgreSQL/db/createdb.sh:/docker-entrypoint-initdb.d/createdb.sh
       - pgdata:/var/lib/postgresql/data
     networks:
       - mynetwork.com

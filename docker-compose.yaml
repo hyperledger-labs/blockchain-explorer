@@ -29,7 +29,6 @@ services:
       timeout: 10s
       retries: 5
     volumes:
-      - ./app/persistence/fabric/postgreSQL/db/createdb.sh:/docker-entrypoint-initdb.d/createdb.sh
       - pgdata:/var/lib/postgresql/data
     networks:
       - mynetwork.com

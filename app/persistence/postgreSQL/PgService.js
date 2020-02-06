@@ -72,9 +72,7 @@ class PgService {
 		}
 
 		// don't log password
-		const connectionString = `postgres://${this.pgconfig.username}:******@${
-			this.pgconfig.host
-		}:${this.pgconfig.port}/${this.pgconfig.database}`;
+		const connectionString = `postgres://${this.pgconfig.username}:******@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
 
 		logger.info(`connecting to Postgresql ${connectionString}`);
 

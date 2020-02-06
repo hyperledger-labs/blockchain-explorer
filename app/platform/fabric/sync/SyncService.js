@@ -118,15 +118,15 @@ class SyncServices {
 	 */
 	async insertNewChannel(client, channel, block, channel_genesis_hash) {
 		const channel_name = channel.getName();
-
+		const network_name = client.network_name;
 		const channelInfo = await this.persistence
 			.getCrudService()
-			.getChannel(channel_name, channel_genesis_hash);
+			.getChannel(network_name, channel_name, channel_genesis_hash);
 
 		if (!channelInfo) {
 			const count = await this.persistence
 				.getCrudService()
-				.existChannel(channel_name);
+				.existChannel(network_name, channel_name);
 			if (count.count === '0') {
 				if (block.data && block.data.data.length > 0 && block.data.data[0]) {
 					const createdt = await FabricUtils.getBlockTimeStamp(
@@ -141,7 +141,9 @@ class SyncServices {
 						channel_version: block.data.data[0].payload.header.channel_header.version,
 						channel_genesis_hash
 					};
-					await this.persistence.getCrudService().saveChannel(channel_row);
+					await this.persistence
+						.getCrudService()
+						.saveChannel(network_name, channel_row);
 				}
 			} else {
 				const notify = {
@@ -211,6 +213,7 @@ class SyncServices {
 	async insertNewPeer(peer, channel_genesis_hash, client) {
 		let eventurl = '';
 		let requesturl = peer.endpoint;
+		const network_name = client.network_name;
 		const host_port = peer.endpoint.split(':');
 		if (
 			client.client_config.peers &&
@@ -235,12 +238,14 @@ class SyncServices {
 			channel_genesis_hash,
 			peer_type: 'PEER'
 		};
-		await this.persistence.getCrudService().savePeer(peer_row);
+		await this.persistence.getCrudService().savePeer(network_name, peer_row);
 		const channel_peer_row = {
 			peerid: host_port[0],
 			channelid: channel_genesis_hash
 		};
-		await this.persistence.getCrudService().savePeerChannelRef(channel_peer_row);
+		await this.persistence
+			.getCrudService()
+			.savePeerChannelRef(network_name, channel_peer_row);
 	}
 
 	/**
@@ -252,6 +257,7 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
+		const network_name = client.network_name;
 		const discoveryProtocol = client.hfc_client.getConfigSetting(
 			'discovery-protocol'
 		);
@@ -270,14 +276,14 @@ class SyncServices {
 			channel_genesis_hash,
 			peer_type: 'ORDERER'
 		};
-		await this.persistence.getCrudService().savePeer(orderer_row);
+		await this.persistence.getCrudService().savePeer(network_name, orderer_row);
 		const channel_orderer_row = {
 			peerid: orderer.host,
 			channelid: channel_genesis_hash
 		};
 		await this.persistence
 			.getCrudService()
-			.savePeerChannelRef(channel_orderer_row);
+			.savePeerChannelRef(network_name, channel_orderer_row);
 	}
 
 	/**
@@ -295,6 +301,7 @@ class SyncServices {
 		channel_genesis_hash,
 		discoveryResults
 	) {
+		const network_name = client.network_name;
 		const chaincodes = await channel.queryInstantiatedChaincodes(
 			client.getDefaultPeer(),
 			true
@@ -308,7 +315,9 @@ class SyncServices {
 				createdt: new Date(),
 				channel_genesis_hash
 			};
-			await this.persistence.getCrudService().saveChaincode(chaincode_row);
+			await this.persistence
+				.getCrudService()
+				.saveChaincode(network_name, chaincode_row);
 			if (discoveryResults && discoveryResults.peers_by_org) {
 				for (const org_name in discoveryResults.peers_by_org) {
 					const org = discoveryResults.peers_by_org[org_name];
@@ -319,6 +328,7 @@ class SyncServices {
 								c_code.version === chaincode.version
 							) {
 								await this.insertNewChaincodePeerRef(
+									client,
 									c_code,
 									peer.endpoint,
 									channel_genesis_hash
@@ -339,7 +349,13 @@ class SyncServices {
 	 * @param {*} channel_genesis_hash
 	 * @memberof SyncServices
 	 */
-	async insertNewChaincodePeerRef(chaincode, endpoint, channel_genesis_hash) {
+	async insertNewChaincodePeerRef(
+		client,
+		chaincode,
+		endpoint,
+		channel_genesis_hash
+	) {
+		const network_name = client.network_name;
 		const host_port = endpoint.split(':');
 		const chaincode_peer_row = {
 			chaincodeid: chaincode.name,
@@ -349,10 +365,11 @@ class SyncServices {
 		};
 		await this.persistence
 			.getCrudService()
-			.saveChaincodPeerRef(chaincode_peer_row);
+			.saveChaincodPeerRef(network_name, chaincode_peer_row);
 	}
 
 	async synchBlocks(client, channel) {
+		const network_name = client.network_name;
 		const client_name = client.getClientName();
 		const channel_name = channel.getName();
 
@@ -373,7 +390,7 @@ class SyncServices {
 		// Query missing blocks from DB
 		const results = await this.persistence
 			.getMetricService()
-			.findMissingBlockNumber(channel_genesis_hash, blockHeight);
+			.findMissingBlockNumber(network_name, channel_genesis_hash, blockHeight);
 
 		if (results) {
 			for (const result of results) {
@@ -400,6 +417,7 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async processBlockEvent(client, block) {
+		const network_name = client.network_name;
 		const _self = this;
 		// Get the first transaction
 		const first_tx = block.data.data[0];
@@ -633,20 +651,23 @@ class SyncServices {
 					endorser_signature,
 					creator_id_bytes,
 					payload_proposal_hash,
-					endorser_id_bytes
+					endorser_id_bytes,
+					network_name
 				};
 
 				// Insert transaction
 
 				const res = await this.persistence
 					.getCrudService()
-					.saveTransaction(transaction_row);
+					.saveTransaction(network_name, transaction_row);
 				logger.debug('saveTransaction ', res);
 			}
 
 			// Insert block
 			logger.info('block_row.blocknum ', block_row.blocknum);
-			const status = await this.persistence.getCrudService().saveBlock(block_row);
+			const status = await this.persistence
+				.getCrudService()
+				.saveBlock(network_name, block_row);
 			logger.debug('status ', status);
 
 			if (status) {
