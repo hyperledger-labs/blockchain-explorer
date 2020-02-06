@@ -67,7 +67,8 @@ class UserService {
 				return {
 					authenticated: true,
 					user: user.user,
-					enableAuthentication: enableAuth
+					enableAuthentication: enableAuth,
+					network: user.network
 				};
 			}
 
@@ -76,7 +77,8 @@ class UserService {
 				return {
 					authenticated: true,
 					user: user.user,
-					enableAuthentication: enableAuth
+					enableAuthentication: enableAuth,
+					network: user.network
 				};
 			} else {
 				return {

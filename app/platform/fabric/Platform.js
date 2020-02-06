@@ -255,10 +255,11 @@ class Platform {
 	 * @returns
 	 * @memberof Platform
 	 */
-	getClient(network_name, client_name) {
+	getClient(network_name) {
 		return this.networks
 			.get(network_name || this.defaultNetwork)
-			.get(client_name || this.defaultClient);
+			.entries()
+			.next().value[1];
 	}
 
 	/**

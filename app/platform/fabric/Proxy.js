@@ -74,8 +74,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getCurrentChannel() {
-		const client = await this.platform.getClient();
+	async getCurrentChannel(network_name) {
+		const client = await this.platform.getClient(network_name);
 		const channel = client.getDefaultChannel();
 		const channel_genesis_hash = client.getChannelGenHash(channel.getName());
 		let respose;
@@ -101,8 +101,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getPeersStatus(channel_genesis_hash) {
-		const client = await this.platform.getClient();
+	async getPeersStatus(network_name, channel_genesis_hash) {
+		const client = await this.platform.getClient(network_name);
 		const channel = client.getDefaultChannel();
 		const nodes = await this.persistence
 			.getMetricService()
@@ -161,8 +161,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async changeChannel(channel_genesis_hash) {
-		const client = this.platform.getClient();
+	async changeChannel(network_name, channel_genesis_hash) {
+		const client = this.platform.getClient(network_name);
 		const respose = client.setDefaultChannelByHash(channel_genesis_hash);
 		logger.debug('changeChannel >> %s', respose);
 		return respose;
@@ -174,8 +174,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getChannelsInfo() {
-		const client = this.platform.getClient();
+	async getChannelsInfo(network_name) {
+		const client = this.platform.getClient(network_name);
 		const channels = await this.persistence
 			.getCrudService()
 			.getChannelsInfo(client.getDefaultPeer());
@@ -231,8 +231,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getBlockByNumber(channel_genesis_hash, number) {
-		const client = this.platform.getClient();
+	async getBlockByNumber(network_name, channel_genesis_hash, number) {
+		const client = this.platform.getClient(network_name);
 		const channel = client.getChannelByHash(channel_genesis_hash);
 
 		const block = channel.queryBlock(
@@ -265,8 +265,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getChannels() {
-		const client = this.platform.getClient();
+	async getChannels(network_name) {
+		const client = this.platform.getClient(network_name);
 		const client_channels = client.getChannelNames();
 		const channels = await this.persistence
 			.getCrudService()
@@ -276,9 +276,7 @@ class Proxy {
 		for (let i = 0; i < channels.length; i++) {
 			const index = client_channels.indexOf(channels[i].channelname);
 			if (!(index > -1)) {
-				await this.platform
-					.getClient()
-					.initializeNewChannel(channels[i].channelname);
+				await client.initializeNewChannel(channels[i].channelname);
 			}
 			respose.push(channels[i].channelname);
 		}
