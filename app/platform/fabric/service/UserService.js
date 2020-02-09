@@ -48,7 +48,8 @@ class UserService {
 			const network = this.platform.getNetworks().get(user.network);
 
 			// TODO, need review maybe there is a better way to get the client config enableAuthentication
-			for (const [network_name, clients] of network.entries()) {
+			for (const [network_name, clientObj] of network.entries()) {
+				let clients = clientObj.client;
 				if (clients.config && clients.config.client) {
 					enableAuth = clients.config.client.enableAuthentication;
 					if (typeof enableAuth !== 'undefined' && enableAuth !== null) {

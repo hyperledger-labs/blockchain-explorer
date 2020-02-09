@@ -1,6 +1,6 @@
 {
 	"network-configs": {
-		"balance-transfer": {
+		"balancetransfer": {
 			"name": "balance-transfer",
 			"profile": "./connection-profile/balance-transfer.json"
 		}

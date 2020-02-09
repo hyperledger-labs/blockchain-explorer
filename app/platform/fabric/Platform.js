@@ -13,6 +13,7 @@ const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
 const ExplorerListener = require('../../sync/listener/ExplorerListener');
 
+const PersistenceFactory = require('../../persistence/PersistenceFactory');
 const CRUDService = require('../../persistence/fabric/CRUDService');
 const MetricService = require('../../persistence/fabric/MetricService');
 
@@ -29,12 +30,14 @@ const config_path = path.resolve(__dirname, './config.json');
 class Platform {
 	/**
 	 * Creates an instance of Platform.
-	 * @param {*} persistence
+	 * @param {*} persistenceStore
+	 * @param {*} persistenceConfig
 	 * @param {*} broadcaster
 	 * @memberof Platform
 	 */
-	constructor(persistence, broadcaster) {
-		this.persistence = persistence;
+	constructor(persistenceStore, persistenceConfig, broadcaster) {
+		this.persistenceStore = persistenceStore;
+		this.persistenceConfig = persistenceConfig;
 		this.broadcaster = broadcaster;
 		this.networks = new Map();
 		this.proxy = new Proxy(this);
@@ -130,6 +133,24 @@ class Platform {
 			}
 
 			// Create client instance
+			logger.debug('Creating persistence', network_name);
+
+			this.persistenceConfig.networkName = network_name;
+			logger.debug(network_name, this.persistenceConfig);
+			const persistence = await PersistenceFactory.create(
+				this.persistenceStore,
+				this.persistenceConfig
+			);
+			if (!persistence) {
+				logger.error('Failed to create persistence for', network_name);
+				this.networks.delete(network_name);
+				continue;
+			}
+
+			// Setting platform specific CRUDService and MetricService
+			this.setPersistenceService(persistence);
+
+			// Create client instance
 			logger.debug('Creating client [%s] >> ', client_configs, client_name);
 
 			let client;
@@ -139,22 +160,21 @@ class Platform {
 				client = await FabricUtils.createFabricClient(
 					client_configs,
 					client_name,
-					this.persistence
+					persistence
 				);
 			} else {
 				logger.info('FabricUtils.createDetachClient ');
 				client = await FabricUtils.createDetachClient(
 					client_configs,
 					client_name,
-					this.persistence
+					persistence
 				);
 			}
 			if (client) {
 				// Set client into clients map
 				logger.info('FabricUtils.createDetachClient ');
 				const clients = this.networks.get(network_name);
-				clients.set(client_name, client);
-				// Console.log('clients ', clients);
+				clients.set(client_name, { client: client, persistence: persistence });
 			}
 			//  }
 		}
@@ -166,10 +186,11 @@ class Platform {
 	 * @param {*} syncconfig
 	 * @memberof Platform
 	 */
-	initializeListener(syncconfig) {
+	async initializeListener(syncconfig) {
 		/* eslint-disable */
 		for (const [network_name, clients] of this.networks.entries()) {
-			for (const [client_name, client] of clients.entries()) {
+			for (const [client_name, clientObj] of clients.entries()) {
+				let client = clientObj.client;
 				logger.info(
 					'initializeListener, client_name, client ',
 					client_name,
@@ -191,14 +212,10 @@ class Platform {
 	 *
 	 * @memberof Platform
 	 */
-	setPersistenceService() {
+	setPersistenceService(persistence) {
 		// Setting platform specific CRUDService and MetricService
-		this.persistence.setMetricService(
-			new MetricService(this.persistence.getPGService())
-		);
-		this.persistence.setCrudService(
-			new CRUDService(this.persistence.getPGService())
-		);
+		persistence.setMetricService(new MetricService(persistence.getPGService()));
+		persistence.setCrudService(new CRUDService(persistence.getPGService()));
 	}
 
 	/**
@@ -216,7 +233,7 @@ class Platform {
 			this.defaultNetwork = network_name;
 			let client;
 			if (client_name) {
-				client = network.get(client_name);
+				client = network.get(client_name).client;
 				if (client) {
 					this.defaultClient = client_name;
 				} else {
@@ -250,26 +267,29 @@ class Platform {
 	/**
 	 *
 	 *
-	 * @param {*} network_name
-	 * @param {*} client_name
+	 * @param {*} networkName
 	 * @returns
 	 * @memberof Platform
 	 */
-	getClient(network_name) {
+	getClient(networkName) {
 		return this.networks
-			.get(network_name || this.defaultNetwork)
+			.get(networkName || this.defaultNetwork)
 			.entries()
-			.next().value[1];
+			.next().value[1].client;
 	}
 
 	/**
 	 *
 	 *
+	 * @param {*} networkName
 	 * @returns
 	 * @memberof Platform
 	 */
-	getPersistence() {
-		return this.persistence;
+	getPersistence(networkName) {
+		return this.networks
+			.get(networkName || this.defaultNetwork)
+			.entries()
+			.next().value[1].persistence;
 	}
 
 	/**

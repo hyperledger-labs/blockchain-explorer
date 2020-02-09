@@ -25,7 +25,7 @@ const platformroutes = async function(router, platform) {
 
 		if (channel_genesis_hash) {
 			proxy
-				.getTxByOrgs(channel_genesis_hash)
+				.getTxByOrgs(req.network, channel_genesis_hash)
 				.then(rows => res.send({ status: 200, rows }));
 		} else {
 			return requtil.invalidRequest(req, res);
