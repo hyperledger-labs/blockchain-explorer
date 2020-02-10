@@ -25,11 +25,11 @@ Scenario Outline: <consensus_type> : Bring up explorer and send requests to the 
     When I make a GET request to "auth/networklist"
     Then the response status code should equal 200
     Then the response structure should equal "networklistResp"
-    Then JSON at path ".networkList" should equal [[ "first-network", {} ]]
+    Then JSON at path ".networkList" should equal [[ "firstnetwork", {} ]]
 
     When I make a POST request to "auth/login" with parameters
     |user  |password   |network       |
-    |test  |test       |first-network |
+    |test  |test       |firstnetwork |
     Then the response status code should equal 200
     Then the response structure should equal "loginResp"
     Then JSON at path ".success" should equal true
@@ -115,7 +115,7 @@ Scenario Outline: Register a new user successfully using <type> based orderer wi
 
     When I make a POST request to "auth/login" with parameters
     |user    |password   |network             |
-    |latitia |h3ll0      |balance-transfer    |
+    |latitia |h3ll0      |balancetransfer    |
     Then the response status code should equal 200
     Then the response structure should equal "loginResp"
     Then JSON at path ".success" should equal true
@@ -164,7 +164,7 @@ Scenario: Check a variety of error cases
     Given I set base URL to "http://localhost:8090"
     When I make a POST request to "auth/login" with parameters
     |user   |password   |network        |
-    |test1  |test1      |first-network  |
+    |test1  |test1      |firstnetwork  |
     Then the response status code should equal 200
     Then the response structure should equal "loginResp"
     Then JSON at path ".success" should equal true

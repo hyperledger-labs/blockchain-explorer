@@ -1,21 +1,22 @@
 #!/bin/bash
 
 # SPDX-License-Identifier: Apache-2.0
+ROOTDIR=${EXPLORERROOT:-../../../../..}
 
 echo "Copying ENV variables into temp file..."
 node processenv.js
 if [ $( jq .DATABASE_USERNAME /tmp/process.env.json) == null ]; then
-  export USER=$( jq .postgreSQL.username ../../../../explorerconfig.json )
+  export USER=$( jq .postgreSQL.username ${ROOTDIR}/app/explorerconfig.json )
 else
   export USER=$( jq .DATABASE_USERNAME /tmp/process.env.json)
 fi
 if [ $(jq .DATABASE_DATABASE /tmp/process.env.json) == null ]; then
-  export DATABASE_PREFIX=$(jq -r .postgreSQL.databasePrefix ../../../../explorerconfig.json )
+  export DATABASE_PREFIX=$(jq -r .postgreSQL.databasePrefix ${ROOTDIR}/app/explorerconfig.json )
 else
-  export DATABASE_PREFIX=$(jq .DATABASE_DATABASE /tmp/process.env.json)
+  export DATABASE_PREFIX=$(jq -r .DATABASE_DATABASE /tmp/process.env.json)
 fi
 if [ $(jq .DATABASE_PASSWORD /tmp/process.env.json) == null ]; then
-  export PASSWD=$(jq .postgreSQL.passwd ../../../../explorerconfig.json | sed "y/\"/'/")
+  export PASSWD=$(jq .postgreSQL.passwd ${ROOTDIR}/app/explorerconfig.json | sed "y/\"/'/")
 else
   export PASSWD=$(jq .DATABASE_PASSWORD /tmp/process.env.json |  sed "y/\"/'/")
 fi
@@ -24,7 +25,7 @@ if [ -f /tmp/process.env.json ] ; then
     rm /tmp/process.env.json
 fi
 
-for network_name in $(jq . ../../../../platform/fabric/config.json | jq '.["network-configs"]' | jq keys | jq -r .[]); do
+for network_name in $(jq '.["network-configs"]' ${ROOTDIR}/app/platform/fabric/config.json | jq keys | jq -r .[]); do
   echo $network_name | grep -E "^[0-9a-z_]+$" >/dev/null
   if [ $? -eq 1 ]; then
     echo 'Explorer uses network name to create db name. Please specify each network name using digits, lower characters and underscores.'
