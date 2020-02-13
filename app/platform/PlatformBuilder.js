@@ -17,20 +17,15 @@ class PlatformBuilder {
 	 *
 	 * @static
 	 * @param {*} pltfrm
-	 * @param {*} persistenceStore
-	 * @param {*} persistenceConfig
+	 * @param {*} persistence
 	 * @param {*} broadcaster
 	 * @returns
 	 * @memberof PlatformBuilder
 	 */
-	static async build(pltfrm, persistenceStore, persistenceConfig, broadcaster) {
+	static async build(pltfrm, persistence, broadcaster) {
 		if (pltfrm === explorer_const.PLATFORM_FABRIC) {
 			const Platform = require('./fabric/Platform');
-			const platform = new Platform(
-				persistenceStore,
-				persistenceConfig,
-				broadcaster
-			);
+			const platform = new Platform(persistence, broadcaster);
 			return platform;
 		}
 		throw new ExplorerError(explorer_error.ERROR_1004, pltfrm);

@@ -45,21 +45,16 @@ class UserService {
 		let adminPassword = null;
 		if (user.user && user.password && user.network) {
 			logger.log('user.network ', user.network);
-			const network = this.platform.getNetworks().get(user.network);
+			const clientObj = this.platform.getNetworks().get(user.network);
 
 			// TODO, need review maybe there is a better way to get the client config enableAuthentication
-			for (const [network_name, clientObj] of network.entries()) {
-				let clients = clientObj.client;
-				if (clients.config && clients.config.client) {
-					enableAuth = clients.config.client.enableAuthentication;
-					if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
-						logger.info(
-							`Network: ${network_name} enableAuthentication ${enableAuth}`
-						);
-						adminUser = clients.config.client.adminUser;
-						adminPassword = clients.config.client.adminPassword;
-						break;
-					}
+			let client = clientObj.instance;
+			if (client.config && client.config.client) {
+				enableAuth = client.config.client.enableAuthentication;
+				if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
+					logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
+					adminUser = client.config.client.adminUser;
+					adminPassword = client.config.client.adminPassword;
 				}
 			}
 

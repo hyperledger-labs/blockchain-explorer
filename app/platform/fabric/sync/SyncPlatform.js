@@ -100,11 +100,14 @@ class SyncPlatform {
 
 		this.client = await FabricUtils.createFabricClient(
 			this.client_configs,
+			this.network_name,
 			this.client_name
 		);
 		if (!this.client) {
 			throw new ExplorerError(explorer_mess.error.ERROR_2011);
 		}
+
+		this.client.network_name = this.network_name;
 
 		// Updating the client network and other details to DB
 		const res = await this.syncService.synchNetworkConfigToDB(this.client);

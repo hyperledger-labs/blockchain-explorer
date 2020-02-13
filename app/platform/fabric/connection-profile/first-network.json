@@ -7,7 +7,7 @@
 		"adminUser": "admin",
 		"adminPassword": "adminpw",
 		"enableAuthentication": false,
-		"organization": "Org1",
+		"organization": "Org1MSP",
 		"connection": {
 			"timeout": {
 				"peer": {
@@ -38,17 +38,17 @@
 			"mspid": "Org1MSP",
 			"fullpath": true,
 			"adminPrivateKey": {
-				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/1bebc656f198efb4b5bed08ef42cf3b2d89ac86f0a6b928e7a172fd823df0a48_sk"
+				"path": "/home/atsushi/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/sk"
 			},
 			"signedCert": {
-				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+				"path": "/home/atsushi/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0.org1.example.com": {
 			"tlsCACerts": {
-				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"path": "/home/atsushi/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://localhost:7051",
 			"eventUrl": "grpcs://localhost:7053",

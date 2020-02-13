@@ -4,7 +4,7 @@
 	"postgreSQL": {
 		"host": "127.0.0.1",
 		"port": "5432",
-		"databasePrefix": "fabricexplorer",
+		"database": "fabricexplorer",
 		"username": "hppoc",
 		"passwd": "password"
 	},

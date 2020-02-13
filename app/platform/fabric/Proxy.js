@@ -25,6 +25,7 @@ class Proxy {
 	 */
 	constructor(platform) {
 		this.platform = platform;
+		this.persistence = platform.getPersistence();
 		this.broadcaster = platform.getBroadcaster();
 	}
 
@@ -74,6 +75,8 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async getCurrentChannel(network_name) {
+		logger.debug('getCurrentChannel: network_name', network_name);
+
 		const client = await this.platform.getClient(network_name);
 		const channel = client.getDefaultChannel();
 		const channel_genesis_hash = client.getChannelGenHash(channel.getName());
@@ -103,10 +106,9 @@ class Proxy {
 	async getPeersStatus(network_name, channel_genesis_hash) {
 		const client = await this.platform.getClient(network_name);
 		const channel = client.getDefaultChannel();
-		const nodes = await this.platform
-			.getPersistence(network_name)
+		const nodes = await this.persistence
 			.getMetricService()
-			.getPeerList(channel_genesis_hash);
+			.getPeerList(network_name, channel_genesis_hash);
 		let discover_results;
 		if (client.status) {
 			try {
@@ -176,10 +178,9 @@ class Proxy {
 	 */
 	async getChannelsInfo(network_name) {
 		const client = this.platform.getClient(network_name);
-		const channels = await this.platform
-			.getPersistence(network_name)
+		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(client.getDefaultPeer());
+			.getChannelsInfo(network_name, client.getDefaultPeer());
 		const currentchannels = [];
 		for (const channel of channels) {
 			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -202,14 +203,12 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async getTxByOrgs(network_name, channel_genesis_hash) {
-		const rows = await this.platform
-			.getPersistence(network_name)
+		const rows = await this.persistence
 			.getMetricService()
-			.getTxByOrgs(channel_genesis_hash);
-		const organizations = await this.platform
-			.getPersistence(network_name)
+			.getTxByOrgs(network_name, channel_genesis_hash);
+		const organizations = await this.persistence
 			.getMetricService()
-			.getOrgsData(channel_genesis_hash);
+			.getOrgsData(network_name, channel_genesis_hash);
 
 		for (const organization of rows) {
 			const index = organizations.indexOf(organization.creator_msp_id);
@@ -271,10 +270,9 @@ class Proxy {
 	async getChannels(network_name) {
 		const client = this.platform.getClient(network_name);
 		const client_channels = client.getChannelNames();
-		const channels = await this.platform
-			.getPersistence(network_name)
+		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(client.getDefaultPeer());
+			.getChannelsInfo(network_name, client.getDefaultPeer());
 		const respose = [];
 
 		for (let i = 0; i < channels.length; i++) {
@@ -328,9 +326,7 @@ class Proxy {
 		if (fabric_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
 			// Initialize new channel instance in parent
 			if (msg.network_name && msg.client_name) {
-				const client = this.platform.networks
-					.get(msg.network_name)
-					.get(msg.client_name).client;
+				const client = this.platform.getClient(msg.network_name);
 				if (msg.channel_name) {
 					client.initializeNewChannel(msg.channel_name);
 				} else {
@@ -349,9 +345,7 @@ class Proxy {
 		) {
 			// Update channel details in parent
 			if (msg.network_name && msg.client_name) {
-				const client = this.platform.networks
-					.get(msg.network_name)
-					.get(msg.client_name).client;
+				const client = this.platform.getClient(msg.network_name);
 				if (msg.channel_name) {
 					client.initializeChannelFromDiscover(msg.channel_name);
 				} else {

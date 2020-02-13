@@ -21,8 +21,6 @@ services:
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
     volumes:
-      - ./../explorer-configs/config-${NETWORK_PROFILE}.json:/opt/app/platform/fabric/config.json
-      - ./../../../../../explorerconfig.json:/opt/app/explorerconfig.json
       - pgdata:/var/lib/postgresql/data
     networks:
       - mynetwork.com

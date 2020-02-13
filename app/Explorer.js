@@ -10,6 +10,7 @@ const passport = require('passport');
 const RateLimit = require('express-rate-limit');
 const PlatformBuilder = require('./platform/PlatformBuilder');
 const explorerconfig = require('./explorerconfig.json');
+const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerError = require('./common/ExplorerError');
 
 const localLoginStrategy = require('./passport/local-login');
@@ -62,6 +63,7 @@ class Explorer {
 			this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 		}
 		this.app.use(compression());
+		this.persistence = null;
 		this.platforms = [];
 	}
 
@@ -91,16 +93,19 @@ class Explorer {
 				explorerconfig[explorer_const.PERSISTENCE]
 			);
 		}
-		const persistenceStore = explorerconfig[explorer_const.PERSISTENCE];
-		const persistenceConfig = explorerconfig[persistenceStore];
+		this.persistence = await PersistenceFactory.create(
+			explorerconfig[explorer_const.PERSISTENCE],
+			explorerconfig[explorerconfig[explorer_const.PERSISTENCE]]
+		);
 
 		for (const pltfrm of explorerconfig[explorer_const.PLATFORMS]) {
 			const platform = await PlatformBuilder.build(
 				pltfrm,
-				persistenceStore,
-				persistenceConfig,
+				this.persistence,
 				broadcaster
 			);
+
+			platform.setPersistenceService();
 
 			passport.use('local-login', localLoginStrategy(platform));
 
@@ -138,6 +143,9 @@ class Explorer {
 	 */
 
 	close() {
+		if (this.persistence) {
+			this.persistence.closeconnection();
+		}
 		for (const platform of this.platforms) {
 			if (platform) {
 				platform.destroy();

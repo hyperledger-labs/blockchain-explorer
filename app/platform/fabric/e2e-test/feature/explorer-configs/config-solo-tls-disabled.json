@@ -1,6 +1,6 @@
 {
 	"network-configs": {
-		"firstnetwork": {
+		"first-network": {
 			"name": "solo-tls-disabled",
 			"profile": "./connection-profile/solo-tls-disabled.json"
 		}

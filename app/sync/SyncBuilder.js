@@ -21,14 +21,10 @@ class SyncBuilder {
 	 * @returns
 	 * @memberof SyncBuilder
 	 */
-	static async build(pltfrm, persistenceStore, persistenceConfig, sender) {
+	static async build(pltfrm, persistence, sender) {
 		if (pltfrm === explorer_const.PLATFORM_FABRIC) {
 			const SyncPlatform = require('../platform/fabric/sync/SyncPlatform');
-			const platform = new SyncPlatform(
-				persistenceStore,
-				persistenceConfig,
-				sender
-			);
+			const platform = new SyncPlatform(persistence, sender);
 			return platform;
 		}
 		throw new ExplorerError(explorer_error.ERROR_1005, pltfrm);

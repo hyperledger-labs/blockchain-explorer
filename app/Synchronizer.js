@@ -54,12 +54,9 @@ class Synchronizer {
 			throw new ExplorerError(explorer_error.ERROR_1006);
 		}
 
-		const persistenceStore = syncconfig[explorer_const.PERSISTENCE];
-		const persistenceConfig = syncconfig[persistenceStore];
-		persistenceConfig.networkName = this.args[0]; // network_name
 		this.persistence = await PersistenceFactory.create(
-			persistenceStore,
-			persistenceConfig
+			syncconfig[explorer_const.PERSISTENCE],
+			syncconfig[syncconfig[explorer_const.PERSISTENCE]]
 		);
 
 		const sender = new ExplorerSender(syncconfig.sync);

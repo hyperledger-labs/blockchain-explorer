@@ -14,8 +14,6 @@ ENV DATABASE_USERNAME 	hppoc
 # default password for HLF Explorer db connection
 ENV DATABASE_PASSWORD 	password
 
-ENV EXPLORERROOT        /opt
-
 RUN apk update \
  && apk add jq \
  && apk add nodejs \

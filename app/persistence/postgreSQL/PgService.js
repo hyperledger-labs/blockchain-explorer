@@ -41,8 +41,7 @@ class PgService {
 		this.pgconfig = pgconfig;
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
 		this.pgconfig.port = process.env.DATABASE_PORT || pgconfig.port;
-		this.pgconfig.database =
-			this.pgconfig.databasePrefix + '_' + this.pgconfig.networkName;
+		this.pgconfig.database = process.env.DATABASE_DATABASE || pgconfig.database;
 		this.pgconfig.user = process.env.DATABASE_USERNAME || pgconfig.username;
 		this.pgconfig.password = process.env.DATABASE_PASSWD || pgconfig.passwd;
 

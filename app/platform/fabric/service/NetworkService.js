@@ -31,12 +31,15 @@ class NetworkService {
 		// Get the list of the networks from the  configuration that was loaded from the config.json
 		const networklist = [];
 		const networks = this.platform.getNetworks();
+		logger.debug('Network list ', networks);
 		const iterator = networks.entries();
 		for (const value of iterator) {
-			networklist.push(value);
+			const network_name = value[0];
+			logger.debug('Network list ', network_name);
+			networklist.push([network_name]);
 		}
 
-		logger.log('Network list ', networklist);
+		logger.debug('Network list ', networklist);
 		return networklist;
 	}
 }
