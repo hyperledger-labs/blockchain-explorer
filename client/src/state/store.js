@@ -8,7 +8,7 @@ import * as reducers from './redux';
 import Auth from './Auth';
 
 export default function configureStore(initialState) {
-	const token = Auth.getToken();
+	const token = Auth.getToken() || 'fake-token';
 	const rootReducer = combineReducers(reducers);
 
 	return createStore(

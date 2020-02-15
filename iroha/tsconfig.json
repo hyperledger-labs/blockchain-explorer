@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "outDir": "./out",
+    "skipLibCheck": true,
+    "sourceMap": true,
+
+    "target": "es2017",
+    "module": "commonjs",
+    "moduleResolution": "node",
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
+}

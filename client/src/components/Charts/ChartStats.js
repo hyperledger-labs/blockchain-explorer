@@ -5,31 +5,34 @@
 import React, { Component } from 'react';
 import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import moment from 'moment-timezone';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
+import TabContent from 'reactstrap/lib/TabContent';
+import TabPane from 'reactstrap/lib/TabPane';
+import Nav from 'reactstrap/lib/Nav';
+import NavItem from 'reactstrap/lib/NavItem';
+import NavLink from 'reactstrap/lib/NavLink';
 import classnames from 'classnames';
-import { chartSelectors, chartOperations } from '../../state/redux/charts';
 import TimeChart from './TimeChart';
 import {
 	blockPerHourType,
 	blockPerMinType,
-	currentChannelType,
-	getBlocksPerHourType,
-	getBlocksPerMinType,
-	getTransactionPerHourType,
-	getTransactionPerMinType,
 	transactionPerHourType,
-	transactionPerMinType
+	transactionPerMinType,
 } from '../types';
 
-const {
-	blockPerHourSelector,
-	blockPerMinSelector,
-	currentChannelSelector,
-	transactionPerHourSelector,
-	transactionPerMinSelector
-} = chartSelectors;
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
+const MINUTE = 60000;
+const HOUR = 60 * MINUTE;
+
+function convert(counts, period) {
+	const now = Date.now();
+	return (counts || []).map((count, i) => ({
+		datetime: new Date(now - period * (counts.length - i - 1)).toISOString(),
+		count: count.toString(),
+	}));
+}
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -63,17 +66,7 @@ export class ChartStats extends Component {
 	}
 
 	syncData = currentChannel => {
-		const {
-			getBlocksPerHour,
-			getBlocksPerMin,
-			getTransactionPerHour,
-			getTransactionPerMin
-		} = this.props;
-
-		getBlocksPerMin(currentChannel);
-		getBlocksPerHour(currentChannel);
-		getTransactionPerMin(currentChannel);
-		getTransactionPerHour(currentChannel);
+		this.props.refetch();
 	};
 
 	timeDataSetup = (chartData = []) => {
@@ -189,30 +182,29 @@ export class ChartStats extends Component {
 ChartStats.propTypes = {
 	blockPerHour: blockPerHourType.isRequired,
 	blockPerMin: blockPerMinType.isRequired,
-	currentChannel: currentChannelType.isRequired,
-	getBlocksPerHour: getBlocksPerHourType.isRequired,
-	getBlocksPerMin: getBlocksPerMinType.isRequired,
-	getTransactionPerHour: getTransactionPerHourType.isRequired,
-	getTransactionPerMin: getTransactionPerMinType.isRequired,
 	transactionPerHour: transactionPerHourType.isRequired,
-	transactionPerMin: transactionPerMinType.isRequired
+	transactionPerMin: transactionPerMinType.isRequired,
 };
 
 export default compose(
 	withStyles(styles),
-	connect(
-		state => ({
-			blockPerHour: blockPerHourSelector(state),
-			blockPerMin: blockPerMinSelector(state),
-			transactionPerHour: transactionPerHourSelector(state),
-			transactionPerMin: transactionPerMinSelector(state),
-			currentChannel: currentChannelSelector(state)
-		}),
+	graphql(
+		gql`{
+			blockCountPerHour(count: 24)
+			transactionCountPerMinute(count: 60)
+			transactionCountPerHour(count: 24)
+			blockCountPerMinute(count: 60)
+		}`,
 		{
-			getBlocksPerHour: chartOperations.blockPerHour,
-			getBlocksPerMin: chartOperations.blockPerMin,
-			getTransactionPerHour: chartOperations.transactionPerHour,
-			getTransactionPerMin: chartOperations.transactionPerMin
-		}
-	)
+			props({ data }) {
+				return {
+					blockPerHour: convert(data.blockCountPerHour, HOUR),
+					transactionPerMin: convert(data.transactionCountPerMinute, MINUTE),
+					transactionPerHour: convert(data.transactionCountPerHour, HOUR),
+					blockPerMin: convert(data.blockCountPerMinute, MINUTE),
+					refetch: data.refetch,
+				};
+			},
+		},
+	),
 )(ChartStats);

@@ -5,22 +5,25 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
-import matchSorter from 'match-sorter';
+import Button from 'reactstrap/lib/Button';
+import Input from 'reactstrap/lib/Input';
+import InputGroup from 'reactstrap/lib/InputGroup';
+import InputGroupAddon from 'reactstrap/lib/InputGroupAddon';
+import FontAwesome from 'react-fontawesome';
 import find from 'lodash/find';
-import moment from 'moment';
+import last from 'lodash/last';
 import { isNull } from 'util';
 import ReactTable from '../Styled/Table';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
-import MultiSelect from '../Styled/MultiSelect';
 import DatePicker from '../Styled/DatePicker';
 import {
 	blockListType,
-	currentChannelType,
-	getTransactionType,
-	transactionType
 } from '../types';
+
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -103,199 +106,93 @@ export class Blocks extends Component {
 		this.state = {
 			dialogOpen: false,
 			dialogOpenBlockHash: false,
-			err: false,
-			search: false,
-			to: moment(),
-			orgs: [],
-			options: [],
-			filtered: [],
-			sorted: [],
-			from: moment().subtract(1, 'days'),
-			blockHash: {}
+			blockHash: {},
+			searchBlockHeight: null,
+			page: 0,
+			pages: [null],
 		};
+		this.searchBlockHeightRef = null;
 	}
 
-	componentDidMount() {
-		const { blockList } = this.props;
-		const selection = {};
-		blockList.forEach(element => {
-			selection[element.blocknum] = false;
-		});
-		const opts = [];
-		this.props.transactionByOrg.forEach(val => {
-			opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
-		});
-		this.setState({ selection, options: opts });
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (
-			this.state.search &&
-			nextProps.currentChannel !== this.props.currentChannel
-		) {
-			if (this.interval !== undefined) {
-				clearInterval(this.interval);
-			}
-			this.interval = setInterval(() => {
-				this.searchBlockList(nextProps.currentChannel);
-			}, 60000);
-			this.searchBlockList(nextProps.currentChannel);
+	componentWillReceiveProps({ nextAfter }) {
+		const { pages } = this.state;
+		if (last(pages) < nextAfter) {
+			this.setState({ pages: [...pages, nextAfter] });
 		}
 	}
 
-	componentWillUnmount() {
-		clearInterval(this.interVal);
-	}
-
-	handleCustomRender(selected, options) {
-		if (selected.length === 0) {
-			return 'Select Orgs';
-		}
-		if (selected.length === options.length) {
-			return 'All Orgs Selected';
-		}
-
-		return selected.join(',');
-	}
-
-	searchBlockList = async channel => {
-		let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-			this.state.to
-		).toString()}`;
-		for (let i = 0; i < this.state.orgs.length; i++) {
-			query += `&&orgs=${this.state.orgs[i]}`;
-		}
-		let channelhash = this.props.currentChannel;
-		if (channel !== undefined) {
-			channelhash = channel;
-		}
-		await this.props.getBlockListSearch(channelhash, query);
-	};
-
-	handleDialogOpen = async tid => {
-		const { getTransaction, currentChannel } = this.props;
-		await getTransaction(currentChannel, tid);
-		this.setState({ dialogOpen: true });
-	};
-
-	handleMultiSelect = value => {
-		this.setState({ orgs: value });
+	handleDialogOpen = async (tid) => {
+		this.setState({ dialogOpen: true, transaction: tid });
 	};
 
 	handleDialogClose = () => {
 		this.setState({ dialogOpen: false });
 	};
 
-	handleSearch = async () => {
-		if (this.interval !== undefined) {
-			clearInterval(this.interval);
-		}
-		this.interval = setInterval(() => {
-			this.searchBlockList();
-		}, 60000);
-		await this.searchBlockList();
-		this.setState({ search: true });
-	};
-
-	handleClearSearch = () => {
-		if (this.interval !== undefined) {
-			clearInterval(this.interval);
-		}
-		this.setState({
-			search: false,
-			to: moment(),
-			orgs: [],
-			err: false,
-			from: moment().subtract(1, 'days')
-		});
-	};
-
-	handleDialogOpenBlockHash = blockHash => {
-		const blockList = this.state.search
-			? this.props.blockListSearch
-			: this.props.blockList;
+	handleDialogOpenBlockHash = (blockHash) => {
+		const { blockList } = this.props;
 		const data = find(blockList, item => item.blockhash === blockHash);
 
 		this.setState({
 			dialogOpenBlockHash: true,
-			blockHash: data
+			blockHash: data,
 		});
 	};
+
+	openBlockByHeight(height) {
+		this.setState({
+			dialogOpenBlockHash: true,
+			blockHash: { height },
+		});
+	}
 
 	handleDialogCloseBlockHash = () => {
 		this.setState({ dialogOpenBlockHash: false });
 	};
 
-	handleEye = (row, val) => {
-		const { selection } = this.state;
-		const data = Object.assign({}, selection, { [row.index]: !val });
-		this.setState({ selection: data });
+	searchBlockHeightOnChange(value) {
+		const { totalBlockCount } = this.props;
+		this.setState({ searchBlockHeight: isNaN(value) ? null : Math.max(1, totalBlockCount !== null && value > totalBlockCount ? totalBlockCount : value) | 0 });
+		if (isNaN(value) && this.searchBlockHeightRef) {
+			this.searchBlockHeightRef.setAttribute('value', '');
+		}
+	}
+
+	refetch(variables, state) {
+		this.setState(state);
+		this.props.refetch(variables);
+	}
+	
+	pageToAfter = (page, pageSize) => this.wholePaging ? page * pageSize : this.state.pages[page];
+
+	onPageSizeChange = (pageSize, page) => {
+		if (this.wholePaging) {
+			this.refetch({ after: this.pageToAfter(page, pageSize), pageSize }, { page });
+		} else {
+			this.refetch({ after: null, pageSize }, { page: 0, pages: [null] });
+		}
 	};
+
+	onPageChange = (page) => {
+		this.refetch({ after: this.pageToAfter(page, this.props.pageSize) }, { page });
+	};
+
+	timeRangeOnChange = key => (value) => {
+		this.refetch({ after: null, [key]: value }, { page: 0, pages: [null] });
+	};
+
+	get wholePaging() {
+		return this.props.timeAfter === null && this.props.timeBefore === null;
+	}
 
 	reactTableSetup = classes => [
 		{
-			Header: 'Block Number',
+			Header: 'Height',
 			accessor: 'blocknum',
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['blocknum'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true,
-			width: 150
+			width: 80,
 		},
 		{
-			Header: 'Channel Name',
-			accessor: 'channelname',
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['channelname'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
-		},
-		{
-			Header: 'Number of Tx',
-			accessor: 'txcount',
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['txcount'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true,
-			width: 150
-		},
-		{
-			Header: 'Data Hash',
-			accessor: 'datahash',
-			className: classes.hash,
-			Cell: row => (
-				<span>
-					<ul className={classes.partialHash} href="#/blocks">
-						<div className={classes.fullHash} id="showTransactionId">
-							{row.value}
-						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
-					</ul>{' '}
-				</span>
-			),
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['datahash'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
-		},
-		{
-			Header: 'Block Hash',
+			Header: 'Hash',
 			accessor: 'blockhash',
 			className: classes.hash,
 			Cell: row => (
@@ -308,47 +205,15 @@ export class Blocks extends Component {
 					>
 						<div className={classes.fullHash} id="showTransactionId">
 							{row.value}
-						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
-					</a>{' '}
+						</div>
+						{' '}
+						{row.value.slice(0, 6)}
+						{' '}
+						{!row.value ? '' : '... '}
+					</a>
+					{' '}
 				</span>
 			),
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['blockhash'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
-		},
-		{
-			Header: 'Previous Hash',
-			accessor: 'prehash',
-			className: classes.hash,
-			Cell: row => (
-				<span>
-					<ul
-						className={classes.partialHash}
-						onClick={() => this.handleDialogOpenBlockHash(row.value)}
-						href="#/blocks"
-					>
-						<div className={classes.fullHash} id="showTransactionId">
-							{row.value}
-						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
-					</ul>{' '}
-				</span>
-			),
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['prehash'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true,
-			width: 150
 		},
 		{
 			Header: 'Transactions',
@@ -358,168 +223,110 @@ export class Blocks extends Component {
 				<ul>
 					{!isNull(row.value)
 						? row.value.map(tid => (
-								<li
-									key={tid}
-									style={{
-										overflow: 'hidden',
-										whiteSpace: 'nowrap',
-										textOverflow: 'ellipsis'
-									}}
+							<li
+								key={tid}
+								style={{
+									overflow: 'hidden',
+									whiteSpace: 'nowrap',
+									textOverflow: 'ellipsis',
+								}}
+							>
+								<a
+									className={classes.partialHash}
+									onClick={() => this.handleDialogOpen(tid)}
+									href="#/blocks"
 								>
-									<a
-										className={classes.partialHash}
-										onClick={() => this.handleDialogOpen(tid)}
-										href="#/blocks"
+									<div
+										className={classes.lastFullHash}
+										id="showTransactionId"
 									>
-										<div className={classes.lastFullHash} id="showTransactionId">
-											{tid}
-										</div>{' '}
-										{tid.slice(0, 6)} {!tid ? '' : '... '}
-									</a>
-								</li>
-						  ))
+										{tid}
+									</div>
+									{' '}
+									{tid.slice(0, 6)}
+									{' '}
+									{!tid ? '' : '... '}
+								</a>
+							</li>
+						))
 						: 'null'}
 				</ul>
 			),
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['txhash'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
 		},
-		{
-			Header: 'Size(KB)',
-			accessor: 'blksize',
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['blksize'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true,
-			width: 150
-		}
 	];
 
 	render() {
-		const blockList = this.state.search
-			? this.props.blockListSearch
-			: this.props.blockList;
-		const { transaction, classes } = this.props;
-		const { blockHash, dialogOpen, dialogOpenBlockHash } = this.state;
+		const {
+			blockList, classes, totalBlockCount,
+			pageSize, loading,
+			timeAfter, timeBefore,
+		} = this.props;
+		const {
+			transaction, blockHash, dialogOpen, dialogOpenBlockHash, searchBlockHeight,
+			page,
+			pages,
+		} = this.state;
 		return (
 			<div>
-				<div className={`${classes.filter} row searchRow`}>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">From</label>
+				<div className="row searchRow">
+					<div className="col-md-4">
+						<InputGroup>
+							<Input
+								type="number"
+								placeholder="Height"
+								value={searchBlockHeight === null ? '' : searchBlockHeight}
+								onChange={e => this.searchBlockHeightOnChange(e.target.valueAsNumber)}
+								innerRef={e => this.searchBlockHeightRef = e}
+							/>
+							{totalBlockCount !== null && searchBlockHeight !== null && <InputGroupAddon addonType="append">
+								<Button
+									className={classes.searchButton}
+									color="success"
+									onClick={() => this.openBlockByHeight(searchBlockHeight)}
+								>
+									<FontAwesome name="external-link" />
+								</Button>
+							</InputGroupAddon>}
+						</InputGroup>
+					</div>
+					<div className="col-md-4">
 						<DatePicker
-							id="from"
-							selected={this.state.from}
+							placeholderText="From"
+							selected={timeAfter}
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.to) {
-									this.setState({ err: true, from: date });
-								} else {
-									this.setState({ from: date, err: false });
-								}
-							}}
+							onChange={this.timeRangeOnChange('timeAfter')}
+							maxDate={timeBefore}
 						/>
 					</div>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">To</label>
+					<div className="col-md-4">
 						<DatePicker
-							id="to"
-							selected={this.state.to}
+							placeholderText="To"
+							selected={timeBefore}
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.from) {
-									this.setState({ to: date, err: false });
-								} else {
-									this.setState({ err: true, to: date });
-								}
-							}}
-						>
-							<div className="validator ">
-								{this.state.err && (
-									<span className=" label border-red">
-										{' '}
-										From date should be less than To date
-									</span>
-								)}
-							</div>
-						</DatePicker>
-					</div>
-					<div className="col-md-2">
-						<MultiSelect
-							hasSelectAll
-							valueRenderer={this.handleCustomRender}
-							shouldToggleOnHover={false}
-							selected={this.state.orgs}
-							options={this.state.options}
-							selectAllLabel="All Orgs"
-							onSelectedChanged={value => {
-								this.handleMultiSelect(value);
-							}}
+							onChange={this.timeRangeOnChange('timeBefore')}
+							minDate={timeAfter}
 						/>
-					</div>
-					<div className="col-md-2">
-						<Button
-							className={classes.searchButton}
-							color="success"
-							disabled={this.state.err}
-							onClick={async () => {
-								await this.handleSearch();
-							}}
-						>
-							Search
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="primary"
-							onClick={() => {
-								this.handleClearSearch();
-							}}
-						>
-							Reset
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="secondary"
-							onClick={() => this.setState({ filtered: [], sorted: [] })}
-						>
-							Clear Filter
-						</Button>
 					</div>
 				</div>
 				<ReactTable
 					data={blockList}
 					columns={this.reactTableSetup(classes)}
-					defaultPageSize={10}
 					list
-					filterable
-					sorted={this.state.sorted}
-					onSortedChange={sorted => {
-						this.setState({ sorted });
-					}}
-					filtered={this.state.filtered}
-					onFilteredChange={filtered => {
-						this.setState({ filtered });
-					}}
+					sortable={false}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={!(blockList.length < 5)}
+
+					manual
+					loading={loading}
+					page={page}
+					pageSize={pageSize}
+					onPageChange={this.onPageChange}
+					onPageSizeChange={this.onPageSizeChange}
+					pages={this.wholePaging ? totalBlockCount !== null ? Math.ceil(totalBlockCount / pageSize) : 1 : pages.length}
 				/>
 
 				<Dialog
@@ -552,13 +359,53 @@ export class Blocks extends Component {
 
 Blocks.propTypes = {
 	blockList: blockListType.isRequired,
-	currentChannel: currentChannelType.isRequired,
-	getTransaction: getTransactionType.isRequired,
-	transaction: transactionType
 };
 
-Blocks.defaultProps = {
-	transaction: null
-};
-
-export default withStyles(styles)(Blocks);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`query ($pageSize: Int!, $after: Int, $timeAfter: String, $timeBefore: String) {
+			list: blockList(count: $pageSize, after: $after, timeAfter: $timeAfter, timeBefore: $timeBefore) {
+				items {
+					height
+					hash
+					previousBlockHash
+					transactionCount
+					transactions {
+						hash
+					}
+				}
+				nextAfter
+			}
+			total: blockCount
+		}`,
+		{
+			options: {
+				variables: {
+					pageSize: 10,
+					timeAfter: null,
+					timeBefore: null,
+				},
+			},
+			props({ data: { list, total, loading, refetch, variables: { pageSize, timeAfter, timeBefore } } }) {
+				return {
+					blockList: list ? list.items.map(({ height, hash, previousBlockHash, transactionCount, transactions }) => ({
+						height,
+						blocknum: height,
+						txcount: transactionCount,
+						blockhash: hash,
+						prehash: previousBlockHash,
+						txhash: transactions.map(x => x.hash),
+					})) : [],
+					nextAfter: list ? list.nextAfter : null,
+					totalBlockCount: total === undefined ? null : total,
+					pageSize,
+					timeAfter,
+					timeBefore,
+					loading,
+					refetch,
+				};
+			},
+		},
+	),
+)(Blocks);

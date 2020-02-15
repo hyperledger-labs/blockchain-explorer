@@ -11,7 +11,6 @@ import classnames from 'classnames';
 import Main from '../Main';
 import Header from '../Header';
 import Footer from '../Footer';
-import LandingPage from '../View/LandingPage';
 import ErrorMessage from '../ErrorMessage';
 import { chartSelectors } from '../../state/redux/charts';
 import { themeSelectors, themeActions } from '../../state/redux/theme';
@@ -61,10 +60,6 @@ export class App extends Component {
 	/* istanbul ignore next */
 	render() {
 		const { auth } = this.props;
-		const { loading } = this.state;
-		if (auth && loading) {
-			return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
-		}
 		const { classes, mode, error } = this.props;
 		const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
 		return (

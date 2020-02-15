@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Alert } from 'reactstrap';
+import Alert from 'reactstrap/lib/Alert';
 
 const styles = {
 	error: {

@@ -6,10 +6,18 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import FontAwesome from 'react-fontawesome';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Table, Card, CardBody, CardTitle } from 'reactstrap';
+import Table from 'reactstrap/lib/Table';
+import Card from 'reactstrap/lib/Card';
+import CardBody from 'reactstrap/lib/CardBody';
+import CardTitle from 'reactstrap/lib/CardTitle';
 import JSONTree from 'react-json-tree';
 import { transactionType } from '../types';
 import Modal from '../Styled/Modal';
+
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
 /* eslint-disable */
 const readTheme = {
 	base00: '#f3f3f3',
@@ -60,13 +68,6 @@ const styles = theme => ({
 		}
 	}
 });
-
-const reads = {
-	color: '#2AA233'
-};
-const writes = {
-	color: '#DD8016'
-};
 
 export class TransactionView extends Component {
 	handleClose = () => {
@@ -139,50 +140,32 @@ export class TransactionView extends Component {
 												</td>
 											</tr>
 											<tr>
-												<th>Validation Code:</th>
-												<td>{transaction.validation_code}</td>
-											</tr>
-											<tr>
-												<th>Payload Proposal Hash:</th>
-												<td>{transaction.payload_proposal_hash}</td>
-											</tr>
-											<tr>
 												<th>Creator MSP:</th>
 												<td>{transaction.creator_msp_id}</td>
 											</tr>
 											<tr>
-												<th>Endoser:</th>
-												<td>{transaction.endorser_msp_id}</td>
-											</tr>
-											<tr>
-												<th>Chaincode Name:</th>
-												<td>{transaction.chaincodename}</td>
-											</tr>
-											<tr>
-												<th>Type:</th>
-												<td>{transaction.type}</td>
+												<th>Block:</th>
+												<td>{transaction.blockHeight}</td>
 											</tr>
 											<tr>
 												<th>Time:</th>
 												<td>{transaction.createdt}</td>
 											</tr>
 											<tr>
-												<th style={reads}>Reads:</th>
+												<th>Commands:</th>
 												<td className={classes.JSONtree}>
 													<JSONTree
-														data={transaction.read_set}
-														theme={readTheme}
-														invertTheme={false}
+														data={transaction.commandsJson}
+														theme={writeTheme}
 													/>
 												</td>
 											</tr>
 											<tr>
-												<th style={writes}>Writes:</th>
+												<th>Signatories:</th>
 												<td className={classes.JSONtree}>
 													<JSONTree
-														data={transaction.write_set}
+														data={transaction.signatories}
 														theme={writeTheme}
-														invertTheme={false}
 													/>
 												</td>
 											</tr>
@@ -233,4 +216,43 @@ TransactionView.defaultProps = {
 	transaction: null
 };
 
-export default withStyles(styles)(TransactionView);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`query ($hash: String!) {
+			transaction: transactionByHash(hash: $hash) {
+				hash
+				createdBy {
+					id
+				}
+				time
+        blockHeight
+        signatories
+        commandsJson
+			}
+		}`,
+		{
+			options(props) {
+				return {
+					variables: {
+						hash: props.transaction,
+					},
+				};
+			},
+			props({ data: { transaction } }) {
+				return {
+					transaction: transaction ? {
+						txhash: transaction.hash,
+						creator_msp_id: transaction.createdBy.id,
+						createdt: transaction.time,
+						read_set: {},
+						write_set: {},
+            blockHeight: transaction.blockHeight,
+            signatories: transaction.signatories,
+            commandsJson: JSON.parse(transaction.commandsJson),
+					} : {},
+				};
+			},
+		},
+	),
+)(TransactionView);

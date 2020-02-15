@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import FontAwesome from 'react-fontawesome';
-import { Badge } from 'reactstrap';
+import Badge from 'reactstrap/lib/Badge';
 import Timeago from 'react-timeago';
 
 /* istanbul ignore next */

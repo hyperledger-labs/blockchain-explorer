@@ -134,10 +134,9 @@ th {
   margin: 2%;
 }
 
-.searchRow .col-md-1,
-.searchRow .col-md-2 {
-  padding-right: 6px !important;
-  margin-top: 20px;
+.row.searchRow  {
+  padding: 10px 0;
+  margin: 0;
 }
 .selectDate {
   width: 250px;

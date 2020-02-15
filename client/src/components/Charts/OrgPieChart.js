@@ -8,6 +8,10 @@ import { PieChart, Pie, Tooltip, Legend } from 'recharts';
 import { sha256 } from 'js-sha256';
 import { transactionByOrgType } from '../types';
 
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -121,4 +125,24 @@ OrgPieChart.propTypes = {
 	transactionByOrg: transactionByOrgType.isRequired
 };
 
-export default withStyles(styles)(OrgPieChart);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`{
+			list: transactionCountPerDomain {
+				domain
+				count
+			}
+		}`,
+		{
+			props({ data: { list } }) {
+				return {
+					transactionByOrg: list ? list.map(({ domain, count }) => ({
+						creator_msp_id: domain,
+						count: count.toString(),
+					})) : [],
+				};
+			},
+		},
+	),
+)(OrgPieChart);

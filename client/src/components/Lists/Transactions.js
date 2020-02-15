@@ -5,20 +5,16 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
-import matchSorter from 'match-sorter';
-import moment from 'moment';
+import Button from 'reactstrap/lib/Button';
+import Input from 'reactstrap/lib/Input';
+import last from 'lodash/last';
 import ReactTable from '../Styled/Table';
 import TransactionView from '../View/TransactionView';
 import DatePicker from '../Styled/DatePicker';
-import MultiSelect from '../Styled/MultiSelect';
 
-import {
-	currentChannelType,
-	getTransactionType,
-	transactionListType,
-	transactionType
-} from '../types';
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -90,114 +86,57 @@ export class Transactions extends Component {
 		super(props);
 		this.state = {
 			dialogOpen: false,
-			search: false,
-			to: moment(),
-			orgs: [],
-			options: [],
-			filtered: [],
-			sorted: [],
-			err: false,
-			from: moment().subtract(1, 'days')
+			page: 0,
+			pages: [null],
+			creatorId: null,
 		};
 	}
 
-	componentDidMount() {
-		const { transactionList } = this.props;
-		const selection = {};
-		transactionList.forEach(element => {
-			selection[element.blocknum] = false;
-		});
-		const opts = [];
-		this.props.transactionByOrg.forEach(val => {
-			opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
-		});
-		this.setState({ selection, options: opts });
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (
-			this.state.search &&
-			nextProps.currentChannel !== this.props.currentChannel
-		) {
-			if (this.interval !== undefined) {
-				clearInterval(this.interval);
-			}
-			this.interval = setInterval(() => {
-				this.searchTransactionList(nextProps.currentChannel);
-			}, 60000);
-			this.searchTransactionList(nextProps.currentChannel);
+	componentWillReceiveProps({ nextAfter }) {
+		const { pages } = this.state;
+		if (last(pages) < nextAfter) {
+			this.setState({ pages: [...pages, nextAfter] });
 		}
 	}
 
-	componentWillUnmount() {
-		clearInterval(this.interVal);
-	}
-
-	handleCustomRender(selected, options) {
-		if (selected.length === 0) {
-			return 'Select Orgs';
-		}
-		if (selected.length === options.length) {
-			return 'All Orgs Selected';
-		}
-
-		return selected.join(',');
-	}
-
-	searchTransactionList = async channel => {
-		let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-			this.state.to
-		).toString()}`;
-		for (let i = 0; i < this.state.orgs.length; i++) {
-			query += `&&orgs=${this.state.orgs[i]}`;
-		}
-		let channelhash = this.props.currentChannel;
-		if (channel !== undefined) {
-			channelhash = channel;
-		}
-		await this.props.getTransactionListSearch(channelhash, query);
-	};
-
-	handleDialogOpen = async tid => {
-		const { currentChannel, getTransaction } = this.props;
-		await getTransaction(currentChannel, tid);
-		this.setState({ dialogOpen: true });
-	};
-
-	handleMultiSelect = value => {
-		this.setState({ orgs: value });
+	handleDialogOpen = async (tid) => {
+		this.setState({ dialogOpen: true, transaction: tid });
 	};
 
 	handleDialogClose = () => {
 		this.setState({ dialogOpen: false });
 	};
 
-	handleSearch = async () => {
-		if (this.interval !== undefined) {
-			clearInterval(this.interval);
+	refetch(variables, state) {
+		this.setState(state);
+		this.props.refetch(variables);
+	}
+	
+	pageToAfter = (page, pageSize) => this.wholePaging ? page * pageSize : this.state.pages[page];
+
+	onPageSizeChange = (pageSize, page) => {
+		if (this.wholePaging) {
+			this.refetch({ after: this.pageToAfter(page, pageSize), pageSize }, { page });
+		} else {
+			this.refetch({ after: null, pageSize }, { page: 0, pages: [null] });
 		}
-		this.interval = setInterval(() => {
-			this.searchTransactionList();
-		}, 60000);
-		await this.searchTransactionList();
-		this.setState({ search: true });
 	};
 
-	handleClearSearch = () => {
-		this.setState({
-			search: false,
-			to: moment(),
-			orgs: [],
-			err: false,
-			from: moment().subtract(1, 'days')
-		});
+	onPageChange = (page) => {
+		this.refetch({ after: this.pageToAfter(page, this.props.pageSize) }, { page });
 	};
 
-	handleEye = (row, val) => {
-		const { selection } = this.state;
-		const data = Object.assign({}, selection, { [row.index]: !val });
-		this.setState({ selection: data });
+	timeRangeOnChange = key => (value) => {
+		this.refetch({ after: null, [key]: value }, { page: 0, pages: [null] });
 	};
+
+	creatorIdOnChange(creatorId) {
+		this.refetch({ after: null, creatorId }, { page: 0, pages: [null], creatorId });
+	}
+
+	get wholePaging() {
+		return this.props.timeAfter === null && this.props.timeBefore === null && this.state.creatorId === null;
+	}
 
 	render() {
 		const { classes } = this.props;
@@ -205,29 +144,9 @@ export class Transactions extends Component {
 			{
 				Header: 'Creator',
 				accessor: 'creator_msp_id',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['creator_msp_id'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
 			},
 			{
-				Header: 'Channel Name',
-				accessor: 'channelname',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['channelname'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
-			{
-				Header: 'Tx Id',
+				Header: 'Hash',
 				accessor: 'txhash',
 				className: classes.hash,
 				Cell: row => (
@@ -240,173 +159,79 @@ export class Transactions extends Component {
 						>
 							<div className={classes.fullHash} id="showTransactionId">
 								{row.value}
-							</div>{' '}
+							</div>
+							{' '}
 							{row.value.slice(0, 6)}
 							{!row.value ? '' : '... '}
 						</a>
 					</span>
 				),
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['txhash'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
-			{
-				Header: 'Type',
-				accessor: 'type',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['type'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
-			{
-				Header: 'Chaincode',
-				accessor: 'chaincodename',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['chaincodename'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
 			},
 			{
 				Header: 'Timestamp',
 				accessor: 'createdt',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['createdt'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			}
+			},
 		];
 
-		const transactionList = this.state.search
-			? this.props.transactionListSearch
-			: this.props.transactionList;
-		const { transaction } = this.props;
-		const { dialogOpen } = this.state;
+		const {
+			transactionList,
+			totalTransactionCount, pageSize, loading,
+			timeAfter, timeBefore,
+		} = this.props;
+		const {
+			transaction, dialogOpen,
+			page,
+			pages,
+			creatorId,
+		} = this.state;
 		return (
 			<div>
-				<div className={`${classes.filter} row searchRow`}>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">From</label>
+				<div className="row searchRow">
+					<div className="col-md-3">
+						<Input
+							placeholder="Creator"
+							value={creatorId || ''}
+							onChange={e => this.creatorIdOnChange(e.target.value || null)}
+						/>
+					</div>
+					<div className="col-md-3">
 						<DatePicker
-							id="from"
-							selected={this.state.from}
+							placeholderText="From"
+							selected={timeAfter}
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.to) {
-									this.setState({ err: true, from: date });
-								} else {
-									this.setState({ from: date, err: false });
-								}
-							}}
+							onChange={this.timeRangeOnChange('timeAfter')}
+							maxDate={timeBefore}
 						/>
 					</div>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">To</label>
+					<div className="col-md-3">
 						<DatePicker
-							id="to"
-							selected={this.state.to}
+							placeholderText="To"
+							selected={timeBefore}
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.from) {
-									this.setState({ to: date, err: false });
-								} else {
-									this.setState({ err: true, to: date });
-								}
-							}}
-						>
-							<div className="validator ">
-								{this.state.err && (
-									<span className=" label border-red">
-										{' '}
-										From date should be less than To date
-									</span>
-								)}
-							</div>
-						</DatePicker>
-					</div>
-					<div className="col-md-2">
-						<MultiSelect
-							hasSelectAll
-							valueRenderer={this.handleCustomRender}
-							shouldToggleOnHover={false}
-							selected={this.state.orgs}
-							options={this.state.options}
-							selectAllLabel="All Orgs"
-							onSelectedChanged={value => {
-								this.handleMultiSelect(value);
-							}}
+							onChange={this.timeRangeOnChange('timeBefore')}
+							minDate={timeAfter}
 						/>
-					</div>
-					<div className="col-md-2">
-						<Button
-							className={classes.searchButton}
-							color="success"
-							disabled={this.state.err}
-							onClick={async () => {
-								await this.handleSearch();
-							}}
-						>
-							Search
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="primary"
-							onClick={() => {
-								this.handleClearSearch();
-							}}
-						>
-							Reset
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="secondary"
-							onClick={() => this.setState({ filtered: [], sorted: [] })}
-						>
-							Clear Filter
-						</Button>
 					</div>
 				</div>
 				<ReactTable
 					data={transactionList}
 					columns={columnHeaders}
-					defaultPageSize={10}
 					list
-					filterable
-					sorted={this.state.sorted}
-					onSortedChange={sorted => {
-						this.setState({ sorted });
-					}}
-					filtered={this.state.filtered}
-					onFilteredChange={filtered => {
-						this.setState({ filtered });
-					}}
+					sortable={false}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={!(transactionList.length < 5)}
+
+					manual
+					loading={loading}
+					page={page}
+					pageSize={pageSize}
+					onPageChange={this.onPageChange}
+					onPageSizeChange={this.onPageSizeChange}
+					pages={this.wholePaging ? totalTransactionCount !== null ? Math.ceil(totalTransactionCount / pageSize) : 1 : pages.length}
 				/>
 
 				<Dialog
@@ -425,15 +250,47 @@ export class Transactions extends Component {
 	}
 }
 
-Transactions.propTypes = {
-	currentChannel: currentChannelType.isRequired,
-	getTransaction: getTransactionType.isRequired,
-	transaction: transactionType,
-	transactionList: transactionListType.isRequired
-};
-
-Transactions.defaultProps = {
-	transaction: null
-};
-
-export default withStyles(styles)(Transactions);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`query ($pageSize: Int!, $after: Int, $timeAfter: String, $timeBefore: String, $creatorId: String) {
+			list: transactionList(count: $pageSize, after: $after, timeAfter: $timeAfter, timeBefore: $timeBefore, creatorId: $creatorId) {
+				items {
+					hash
+					time
+					createdBy {
+						id
+					}
+				}
+				nextAfter
+			}
+			total: transactionCount
+		}`,
+		{
+			options: {
+				variables: {
+					pageSize: 10,
+					timeAfter: null,
+					timeBefore: null,
+					creatorId: null,
+				},
+			},
+			props({ data: { list, total, loading, refetch, variables: { pageSize, timeAfter, timeBefore } } }) {
+				return {
+					transactionList: list ? list.items.map(({ hash, time, createdBy }) => ({
+						txhash: hash,
+						createdt: time,
+						creator_msp_id: createdBy.id,
+					})) : [],
+					nextAfter: list ? list.nextAfter : null,
+					totalTransactionCount: total === undefined ? null : total,
+					pageSize,
+					timeAfter,
+					timeBefore,
+					loading,
+					refetch,
+				};
+			},
+		},
+	),
+)(Transactions);

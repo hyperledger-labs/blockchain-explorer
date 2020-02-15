@@ -1,0 +1,82 @@
+{
+"blockV1": {
+  "payload": {
+    "transactions": [
+      {
+        "payload": {
+          "reducedPayload": {
+            "commands": [
+              {
+                "addPeer": {
+                  "peer": {
+                    "address": "localhost:10001",
+                    "peerKey": "dc36091324a19f8e004940d69e390dde63c35acbd0b1e68c81fb9f4687d35b5c"
+                  }
+                }
+              },
+              {
+                "createRole": {
+                  "roleName": "tester",
+                  "permissions": [
+                    "can_get_my_acc_txs", "can_get_all_acc_txs", "can_get_domain_acc_txs",
+
+                    "can_create_asset",
+                    "can_set_detail",
+                    "can_transfer",
+                    "can_receive",
+                    "can_add_asset_qty",
+                    "can_subtract_asset_qty",
+                    "can_create_domain",
+                    "can_grant_can_add_my_signatory",
+                    "can_grant_can_remove_my_signatory",
+                    "can_add_peer",
+                    "can_append_role",
+                    "can_create_role",
+                    "can_detach_role",
+                    "can_get_my_acc_ast_txs",
+                    "can_get_all_acc_detail",
+                    "can_get_all_accounts",
+                    "can_get_all_acc_ast",
+                    "can_get_blocks",
+                    "can_get_roles",
+                    "can_get_all_signatories",
+                    "can_get_domain_accounts",
+                    "can_set_quorum",
+                    "can_add_signatory",
+                    "can_create_account",
+                    "can_get_all_txs",
+                    "can_get_domain_acc_detail",
+                    "can_read_assets",
+                    "can_grant_can_set_my_quorum",
+                    "can_grant_can_transfer_my_assets",
+                    "can_get_my_signatories",
+                    "can_remove_signatory"
+                  ]
+                }
+              },
+              {
+                "createDomain": {
+                  "domainId": "explorer",
+                  "defaultRole": "tester"
+                }
+              },
+              {
+                "createAccount": {
+                  "accountName": "admin",
+                  "domainId": "explorer",
+                  "publicKey": "2c72cee27724a6fc8df70b950885233935413f91df57a92ef185941c82f1bf11"
+                }
+              }
+            ],
+            "creatorAccountId": "admin@explorer",
+            "quorum": 1
+          }
+        }
+      }
+    ],
+    "txNumber": 1,
+    "height": "1",
+    "prevBlockHash": "0000000000000000000000000000000000000000000000000000000000000000"
+  }
+ }
+}

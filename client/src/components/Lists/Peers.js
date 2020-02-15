@@ -7,6 +7,10 @@ import matchSorter from 'match-sorter';
 import ReactTable from '../Styled/Table';
 import { peerListType } from '../types';
 
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
 /* istanbul ignore next */
 const Peers = ({ peerList }) => {
 	const columnHeaders = [
@@ -120,4 +124,31 @@ Peers.propTypes = {
 	peerList: peerListType.isRequired
 };
 
-export default Peers;
+export default compose(
+	graphql(
+		gql`{
+			list: peerList(count: 100) {
+				items {
+					address
+					publicKey
+				}
+			}
+			blockCount
+		}`,
+		{
+			props({ data: { list, blockCount } }) {
+				return {
+					peerList: list ? list.items.map(({ address, publicKey }) => ({
+						server_hostname: address,
+						requests: address,
+						peer_type: 'PEER',
+						mspid: publicKey,
+						ledger_height_high: 0,
+						ledger_height_low: blockCount,
+						ledger_height_unsigned: true,
+					})) : [],
+				};
+			},
+		},
+	),
+)(Peers);

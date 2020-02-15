@@ -1,0 +1,11 @@
+{
+  "extends": ["tslint-config-airbnb"],
+  "rules": {
+    "import-name": [false],
+    "max-line-length": [false],
+    "no-floating-promises": [true],
+    "object-shorthand-properties-first": [false],
+    "ordered-imports": [true],
+    "variable-name": [false]
+  }
+}

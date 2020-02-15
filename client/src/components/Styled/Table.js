@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 import classnames from 'classnames';
+import matchSorter from 'match-sorter';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -20,12 +21,6 @@ const styles = theme => {
 		table: {
 			'& .rt-tbody': {
 				overflow: 'scroll !important'
-			},
-			'& .rt-tr-group .rt-tr': {
-				paddingTop: 30
-			},
-			'& .rt-td': {
-				textAlign: 'center'
 			},
 			'& .rt-th input': {
 				background: dark ? '#7165ad !important' : undefined,
@@ -49,18 +44,23 @@ const styles = theme => {
 		pagination: {
 			'& button': {
 				color: dark ? '#ffffff !important' : undefined,
-				backgroundColor: dark ? '#5d538e !important' : undefined
+				backgroundColor: dark ? '#5d538e !important' : undefined,
 			},
 			'& button:hover': {
 				color: dark ? '#39c9f5 !important' : undefined,
-				backgroundColor: dark ? '#7165ad !important' : undefined
-			}
-		}
+				backgroundColor: dark ? '#7165ad !important' : undefined,
+			},
+		},
 	};
 };
 
-const Table = props => {
-	const { className = '', list = false, classes, ...rest } = props;
+const Table = (props) => {
+	const {
+		className = '', list = false, classes,
+		data,
+		defaultPageSize,
+		...rest
+	} = props;
 	const clazz = classnames(
 		classes.table,
 		'-striped -highlight',
@@ -71,9 +71,25 @@ const Table = props => {
 		<ReactTable
 			className={clazz}
 			{...rest}
+			data={data}
+			{...defaultPageSize && {
+				defaultPageSize,
+				showPagination: data.length >= defaultPageSize,
+			}}
 			getPaginationProps={() => ({ className: classes.pagination })}
 		/>
 	);
 };
+
+export const filteredColumn = (original) => ({
+	...original,
+	filterMethod: (filter, rows) => matchSorter(
+		rows,
+		filter.value,
+		{ keys: [original.accessor] },
+		{ threshold: matchSorter.rankings.SIMPLEMATCH },
+	),
+	filterAll: true,
+});
 
 export default withStyles(styles)(Table);

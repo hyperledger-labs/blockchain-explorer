@@ -8,12 +8,16 @@ import { Timeline, TimelineEvent } from 'react-event-timeline';
 import Dialog from '@material-ui/core/Dialog';
 import FontAwesome from 'react-fontawesome';
 import Typography from '@material-ui/core/Typography';
-import { Badge } from 'reactstrap';
+import Badge from 'reactstrap/lib/Badge';
 import Timeago from 'react-timeago';
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import blockOpen from '../../static/images/blockOpen.png';
 import { blockListType, notificationsType } from '../types';
+
+import compose from 'recompose/compose';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -106,8 +110,6 @@ export class TimelineStream extends Component {
 								}
 							>
 								<Typography variant="body1">
-									<b className={classes.text}> Channel Name:</b> {item.channelName}{' '}
-									<br />
 									<b className={classes.text}> Datahash:</b> {item.datahash} <br />
 									<b className={classes.text}> Number of Tx:</b> {item.txcount}
 								</Typography>
@@ -147,4 +149,33 @@ TimelineStream.propTypes = {
 	notifications: notificationsType.isRequired
 };
 
-export default withStyles(styles)(TimelineStream);
+export default compose(
+	withStyles(styles),
+	graphql(
+		gql`{
+			list: blockList(count: 3, reverse: true) {
+				items {
+					height
+					hash
+					transactionCount
+					time
+				}
+			}
+		}`,
+		{
+			props({ data: { list } }) {
+				const blocks = list ? list.items : [];
+				return {
+					blockList: blocks.map(({ height, hash }) => ({ height, blockhash: hash })),
+					notifications: blocks.map(({ height, hash, transactionCount, time }) => ({
+						title: `Block ${height}`,
+						blockhash: hash,
+						datahash: hash,
+						txcount: transactionCount,
+						time,
+					})),
+				};
+			},
+		},
+	),
+)(TimelineStream);
