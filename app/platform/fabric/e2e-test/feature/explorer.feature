@@ -25,7 +25,7 @@ Scenario Outline: <consensus_type> : Bring up explorer and send requests to the 
     When I make a GET request to "auth/networklist"
     Then the response status code should equal 200
     Then the response structure should equal "networklistResp"
-    Then JSON at path ".networkList" should equal [[ "first-network", {} ]]
+    Then JSON at path ".networkList" should equal [[ "first-network" ]]
 
     When I make a POST request to "auth/login" with parameters
     |user  |password   |network       |
