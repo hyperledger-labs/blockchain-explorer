@@ -1,0 +1,123 @@
+organizations:
+  - name: org1
+#! For smoke test suite, connection-profile are read from smoke directory
+    connProfilePath: ./connection-profile/connection_profile_org1.yaml
+  - name: org2
+    connProfilePath: ./connection-profile/connection_profile_org2.yaml
+
+createChannel:
+  - channelName: commonchannel
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    channelTxPath: ./channel-artifacts/commonchannel/commonchannel.tx
+    organizations: org1
+  - channelName: org1channel
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    channelTxPath: ./channel-artifacts/org1channel/org1channel.tx
+    organizations: org1
+  - channelName: org2channel
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    channelTxPath: ./channel-artifacts/org2channel/org2channel.tx
+    organizations: org2
+
+anchorPeerUpdate:
+  - channelName: commonchannel
+    organizations: org1
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    anchorPeerUpdateTxPath: ./channel-artifacts/commonchannel/commonchannelorg1anchor.tx
+  - channelName: commonchannel
+    organizations: org2
+    anchorPeerUpdateTxPath: ./channel-artifacts/commonchannel/commonchannelorg2anchor.tx
+  - channelName: org1channel
+    organizations: org1
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    anchorPeerUpdateTxPath: ./channel-artifacts/org1channel/org1channelorg1anchor.tx
+  - channelName: org2channel
+    organizations: org2
+#! For smoke test suite, channel-artifacts are read from smoke directory
+    anchorPeerUpdateTxPath: ./channel-artifacts/org2channel/org2channelorg2anchor.tx
+
+joinChannel:
+# joins all peers in listed organziations to all channels based on channelPrefix and numChannels
+  - channelName: commonchannel
+    organizations: org1,org2
+  - channelName: org1channel
+    organizations: org1
+  - channelName: org2channel
+    organizations: org2
+
+installChaincode:
+# installs chaincode with specified name on all peers in listed organziations
+  - name: samplecc
+    version: v1
+    path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
+    organizations: org1,org2
+    language: golang
+    metadataPath: ""
+
+  - name: samplecc
+    version: v2
+    path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
+    organizations: org1,org2
+    language: golang
+    metadataPath: ""
+
+instantiateChaincode:
+  - channelName: testorgschannel0
+    name: samplecc
+    version: v1
+    args: ""
+    organizations: org1
+    endorsementPolicy: 2of(org1,org2)
+    collectionPath: ""
+
+upgradeChaincode:
+  - channelName: testorgschannel0
+    name: samplecc
+    version: v2
+    args: ""
+    organizations: org1
+    endorsementPolicy: 1of(org1,org2)
+    collectionPath: ""
+
+invokes:
+  - channelName: testorgschannel0
+    name: samplecc
+    targetPeers: OrgAnchor
+    nProcPerOrg: 2
+    nRequest: 10
+    runDur: 0
+    organizations: org1,org2
+    txnOpt:
+      - mode: constant
+        options:
+          constFreq: 0
+          devFreq: 0
+    queryCheck: 100
+    eventOpt:
+      type: FilteredBlock
+      listener:  Block
+      timeout: 240000
+    ccOpt:
+      ccType: ccchecker
+      keyStart: 0
+      payLoadMin: 1024
+      payLoadMax: 2048
+    args: "put,a1,1"
+
+queries:
+  - channelName: testorgschannel0
+    name: samplecc
+    targetPeers: OrgAnchor
+    nProcPerOrg: 2
+    nRequest: 10
+    runDur: 0
+    organizations: org1,org2
+    ccOpt:
+      ccType: ccchecker
+      keyStart: 0
+    txnOpt:
+      - mode: constant
+        options:
+          constFreq: 0
+          devFreq: 0
+    args: "get,a1"
