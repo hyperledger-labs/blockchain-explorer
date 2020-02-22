@@ -1,0 +1,59 @@
+{
+	"name": "first-network",
+	"version": "1.0.0",
+	"license": "Apache-2.0",
+	"client": {
+		"tlsEnable": true,
+		"adminUser": "admin",
+		"adminPassword": "adminpw",
+		"enableAuthentication": true,
+		"organization": "org1",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"testorgschannel0": {
+			"peers": {
+				"peer0-org1": {}
+			},
+			"connection": {
+				"timeout": {
+					"peer": {
+						"endorser": "6000",
+						"eventHub": "6000",
+						"eventReg": "6000"
+					}
+				}
+			}
+		}
+	},
+	"organizations": {
+		"org1": {
+			"mspid": "Org1ExampleCom",
+			"fullpath": true,
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
+			},
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0-org1": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
+			},
+			"url": "grpcs://peer0-org1:31000",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0-org1"
+			}
+		}
+	}
+}

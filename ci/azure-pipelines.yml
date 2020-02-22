@@ -9,6 +9,7 @@ jobs:
   pool:
     vmImage: ubuntu-16.04
   steps:
+
   - template: install_deps.yml
   - checkout: self
   - script: |

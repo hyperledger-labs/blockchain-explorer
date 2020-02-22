@@ -1,5 +1,7 @@
 module apitest_test
 
+// SPDX-License-Identifier: Apache-2.0
+
 go 1.13
 
 require (
