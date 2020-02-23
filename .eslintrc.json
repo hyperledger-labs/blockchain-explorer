@@ -435,7 +435,8 @@
 					"cwd",
 					"ordererorg1",
 					"samplecc",
-					"testorgschannel0"
+					"testorgschannel0",
+					"mynetwork"
 				],
 				"skipIfMatch": ["http://[^s]*"],
 				"skipWordIfMatch": ["^foobar.*$"],

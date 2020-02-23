@@ -1,9 +1,10 @@
-package apitest_test
+package apitest
 
 import (
 	"fmt"
 	"log"
 	"os/exec"
+	"strconv"
 
 	"github.com/go-resty/resty/v2"
 	. "github.com/onsi/ginkgo"
@@ -13,21 +14,23 @@ import (
 	"github.com/hyperledger/fabric-test/tools/operator/testclient"
 )
 
-var _ = Describe("Smoke Test Suite", func() {
+var _ = Describe("REST API Test Suite", func() {
 
-	Describe("Running Smoke Test Suite in fabric-test", func() {
+	Describe("Running REST API Test Suite in fabric-test", func() {
 		var (
-			action        string
-			inputSpecPath string
-			token         string
+			action             string
+			inputSpecPath      string
+			token              string
+			channelGenesisHash string
+			blockHeight        int
 		)
-		It("Running end to end (old cc lifecycle)", func() {
+		It("starting fabric network", func() {
 			out, err := exec.Command("pwd").Output()
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Printf("The date is %s\n", out)
-			inputSpecPath = "smoke-test-input-singleprofile.yml"
+			inputSpecPath = "apitest-input-singleprofile.yml"
 
 			By("0) Generating channel artifacts")
 			_, err = networkclient.ExecuteCommand("./genchannelartifacts.sh", []string{}, true)
@@ -46,10 +49,6 @@ var _ = Describe("Smoke Test Suite", func() {
 			By("3) Updating channel with anchor peers")
 			action = "anchorpeer"
 			err = testclient.Testclient(action, inputSpecPath)
-			Expect(err).NotTo(HaveOccurred())
-
-			By("4) Launch Explorer with single profile mode")
-			_, err = networkclient.ExecuteCommand("./runexplorer.sh", []string{"single"}, true)
 			Expect(err).NotTo(HaveOccurred())
 
 			// By("4) Installing Chaincode on Peers")
@@ -83,7 +82,12 @@ var _ = Describe("Smoke Test Suite", func() {
 			// Expect(err).NotTo(HaveOccurred())
 		})
 
-		It("api test", func() {
+		It("launch explorer", func() {
+			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"single"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("get network list", func() {
 			type NetworklistInfo struct {
 				NetworkList [][]interface{} `json:"networkList"`
 			}
@@ -108,7 +112,7 @@ var _ = Describe("Smoke Test Suite", func() {
 
 		})
 
-		It("login", func() {
+		It("login to org1-network", func() {
 
 			type UserData struct {
 				Message string `json:"message"`
@@ -124,12 +128,6 @@ var _ = Describe("Smoke Test Suite", func() {
 			}
 
 			client := resty.New()
-
-			// client.SetQueryParams(map[string]string{ // sample of those who use this manner
-			// 	"user":     "admin",
-			// 	"password": "adminpw",
-			// 	"network":  "org1-network",
-			// })
 
 			resp, err := client.R().
 				EnableTrace().
@@ -174,13 +172,13 @@ var _ = Describe("Smoke Test Suite", func() {
 		It("get channels info", func() {
 
 			type ChannelData struct {
-				Id                   int    `json:"id"`
-				Channelname          string `json:"channelname"`
-				Blocks               int    `json:"blocks"`
-				Channel_genesis_hash string `json:"channel_genesis_hash"`
-				Transactions         int    `json:"transactions"`
-				Createdat            string `json:"createdat"`
-				Channel_hash         string `json:"channel_hash"`
+				ID                 int    `json:"id"`
+				Channelname        string `json:"channelname"`
+				Blocks             int    `json:"blocks"`
+				ChannelGenesisHash string `json:"channel_genesis_hash"`
+				Transactions       int    `json:"transactions"`
+				Createdat          string `json:"createdat"`
+				ChannelHash        string `json:"channel_hash"`
 			}
 
 			type ChannelsInfoResp struct {
@@ -199,8 +197,39 @@ var _ = Describe("Smoke Test Suite", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 
 			result := resp.Result().(*ChannelsInfoResp)
+			chList := []string{}
+			for _, ch := range result.Channels {
+				chList = append(chList, ch.Channelname)
+				if ch.Channelname == "commonchannel" {
+					channelGenesisHash = ch.ChannelGenesisHash
+					blockHeight = ch.Blocks - 1
+				}
+			}
+			// Expect(result.Channels[0].Channelname).Should(Equal("commonchannel"))
+			Expect(chList).Should(ContainElements([]string{"commonchannel", "org1channel"}))
 
-			Expect(result.Channels[0].Channelname).Should(Equal("commonchannel"))
+		})
+
+		It("get block info", func() {
+			type BlockResp struct {
+				Status       int         `json:"status"`
+				Number       string      `json:"number"`
+				PreviousHash string      `json:"previous_hash"`
+				DataHash     string      `json:"data_hash"`
+				Transactions interface{} `json:"transactions"`
+			}
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&BlockResp{}).
+				Get("http://localhost:8090/api/block/" + channelGenesisHash + "/" + strconv.Itoa(blockHeight))
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*BlockResp)
+			Expect(result.Status).Should(Equal(200))
 
 		})
 

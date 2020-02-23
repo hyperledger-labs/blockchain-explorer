@@ -1,4 +1,4 @@
-package apitest_test
+package apitest
 
 import (
 	"strings"
@@ -12,15 +12,15 @@ import (
 	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 )
 
-func TestSmoke(t *testing.T) {
+func TestRestApi(t *testing.T) {
 	RegisterFailHandler(Fail)
-	junitReporter := reporters.NewJUnitReporter("results_smoke-test-suite.xml")
-	RunSpecsWithDefaultAndCustomReporters(t, "Smoke Test Suite", []Reporter{junitReporter})
+	junitReporter := reporters.NewJUnitReporter("results_rest-api-test-suite.xml")
+	RunSpecsWithDefaultAndCustomReporters(t, "Rest Api Test Suite", []Reporter{junitReporter})
 }
 
 // Bringing up network using BeforeSuite
 var _ = BeforeSuite(func() {
-	networkSpecPath := "smoke-network-spec.yml"
+	networkSpecPath := "apitest-network-spec.yml"
 	err := launcher.Launcher("up", "docker", "", networkSpecPath)
 	Expect(err).NotTo(HaveOccurred())
 })
@@ -28,7 +28,7 @@ var _ = BeforeSuite(func() {
 // Cleaning up network launched from BeforeSuite and removing all chaincode containers
 // and chaincode container images using AfterSuite
 var _ = AfterSuite(func() {
-	networkSpecPath := "smoke-network-spec.yml"
+	networkSpecPath := "apitest-network-spec.yml"
 	err := launcher.Launcher("down", "docker", "", networkSpecPath)
 	Expect(err).NotTo(HaveOccurred())
 

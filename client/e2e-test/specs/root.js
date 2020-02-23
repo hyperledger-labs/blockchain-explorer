@@ -35,7 +35,10 @@ describe('GUI e2e test', () => {
 			{ cwd: fabric_test_path, env: process.env, shell: true }
 		);
 		if (child.error) console.log('network up', child.stderr.toString());
-		// else console.log('Network started', child.stdout.toString());
+		if (child.stdout) console.log('network up(stdout)', child.stdout.toString());
+		if (child.stderr) console.log('network up(stderr)', child.stderr.toString());
+
+		console.log('Network started');
 
 		child = spawnSync(
 			'go',
@@ -103,10 +106,46 @@ describe('GUI e2e test', () => {
 			// runs before all tests in this block
 			browser.url('http://explorer.mynetwork.com:8080');
 			// Login
+			console.log('before all');
 			var userInput = browser.$('#user');
 			var passInput = browser.$('#password');
-			userInput.setValue('admin');
-			passInput.setValue('adminpw');
+			try {
+				userInput.setValue('admin');
+				passInput.setValue('adminpw');
+			} catch (error) {
+				let child = spawnSync('docker', ['ps', '-a'], {
+					cwd: fabric_test_path,
+					env: process.env,
+					shell: true
+				});
+				if (child.stdout)
+					console.log('docker ps (stdout)', child.stdout.toString());
+				if (child.stderr)
+					console.log('docker ps (stderr)', child.stderr.toString());
+				child = spawnSync('docker', ['logs', 'explorer.mynetwork.com'], {
+					cwd: fabric_test_path,
+					env: process.env,
+					shell: true
+				});
+				if (child.stdout)
+					console.log('docker logs (stdout)', child.stdout.toString());
+				if (child.stderr)
+					console.log('docker logs (stderr)', child.stderr.toString());
+				child = spawnSync(
+					'find',
+					['${GOPATH}/src/github.com/hyperledger/fabric-test/tools/operator'],
+					{
+						cwd: fabric_test_path,
+						env: process.env,
+						shell: true
+					}
+				);
+				if (child.stdout)
+					console.log('find crypto-config (stdout)', child.stdout.toString());
+				if (child.stderr)
+					console.log('find crypto-config (stderr)', child.stderr.toString());
+				return;
+			}
 			var signinBtn = browser.$('#root > div > div > div > form > button > span');
 
 			signinBtn.click();

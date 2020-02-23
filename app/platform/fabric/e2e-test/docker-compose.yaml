@@ -43,7 +43,7 @@ services:
       - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
-      - ./configs/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./configs/config_${NETWORK_MODE}.json:/opt/explorer/app/platform/fabric/config.json
       - ./configs/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
       - ./specs/crypto-config:/tmp/crypto
       - walletstore:/opt/wallet

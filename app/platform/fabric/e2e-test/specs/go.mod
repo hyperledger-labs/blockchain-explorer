@@ -1,4 +1,4 @@
-module apitest_test
+module apitest
 
 // SPDX-License-Identifier: Apache-2.0
 
