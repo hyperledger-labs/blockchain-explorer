@@ -43,10 +43,6 @@ class FabricEvent {
 			}
 
 			this.createChannelEventHub(channel);
-			logger.debug(
-				'initialize() - Successfully created channel event hub for [%s]',
-				channel_name
-			);
 		}
 	}
 
@@ -73,6 +69,10 @@ class FabricEvent {
 		this.connectChannelEventHub(channel.getName(), eventHub);
 		// Set channel event hub to map
 		FabricEvent.channelEventHubs.set(channel.getName(), eventHub);
+		logger.debug(
+			'Successfully created channel event hub for [%s]',
+			channel.getName()
+		);
 	}
 	/* eslint-disable */
 	/**

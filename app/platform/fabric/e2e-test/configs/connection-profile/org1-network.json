@@ -6,7 +6,7 @@
 		"tlsEnable": true,
 		"adminUser": "admin",
 		"adminPassword": "adminpw",
-		"enableAuthentication": true,
+		"enableAuthentication": false,
 		"organization": "org1",
 		"connection": {
 			"timeout": {
@@ -40,6 +40,7 @@
 			"adminPrivateKey": {
 				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
+			"certificateAuthorities": ["ca0"],
 			"signedCert": {
 				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
@@ -54,6 +55,18 @@
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0-org1"
 			}
+		}
+	},
+	"certificateAuthorities": {
+		"ca0": {
+			"url": "https://ca0-org1:7054",
+			"httpOptions": {
+				"verify": false
+			},
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/org1/ca/ca.org1-cert.pem"
+			},
+			"caName": "ca0-org1"
 		}
 	}
 }

@@ -56,7 +56,7 @@ installChaincode:
     metadataPath: ""
 
 instantiateChaincode:
-  - channelName: testorgschannel0
+  - channelName: commonchannel
     name: samplecc
     version: v1
     args: ""
@@ -74,7 +74,7 @@ upgradeChaincode:
     collectionPath: ""
 
 invokes:
-  - channelName: testorgschannel0
+  - channelName: commonchannel
     name: samplecc
     targetPeers: OrgAnchor
     nProcPerOrg: 2
@@ -99,7 +99,7 @@ invokes:
     args: "put,a1,1"
 
 queries:
-  - channelName: testorgschannel0
+  - channelName: commonchannel
     name: samplecc
     targetPeers: OrgAnchor
     nProcPerOrg: 2

@@ -58,18 +58,18 @@ kafka:
 ordererOrganizations:
 - name: ordererorg1
   mspId: OrdererOrgExampleCom
-  numOderers: 1
+  numOderers: 5
   numCa: 0
 
 peerOrganizations:
 - name: org1
   mspId: Org1ExampleCom
-  numPeers: 1
+  numPeers: 2
   numCa: 1
 
 - name: org2
   mspId: Org2ExampleCom
-  numPeers: 1
+  numPeers: 2
   numCa: 1
 
 #! Capabilites for Orderer, Channel, Application groups
