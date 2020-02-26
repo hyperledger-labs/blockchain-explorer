@@ -15,17 +15,17 @@ const chaincode = require('./chaincode/chaincode_view.js');
 describe('GUI e2e test', () => {
 	before(async function() {
 		this.timeout(180000);
-		cwd = process.cwd();
-		fabric_test_path = path.join(
+		const cwd = process.cwd();
+		const fabric_test_path = path.join(
 			process.env.GOPATH,
 			'/src/github.com/hyperledger/fabric-test',
 			'/tools/operator'
 		);
-		network_spec_path = path.join(
+		const network_spec_path = path.join(
 			cwd,
 			'e2e-test/specs/gui-e2e-test-network-spec.yml'
 		);
-		test_input_path = path.join(cwd, 'e2e-test/specs/smoke-test-input.yml');
+		const test_input_path = path.join(cwd, 'e2e-test/specs/smoke-test-input.yml');
 
 		process.chdir(fabric_test_path);
 
