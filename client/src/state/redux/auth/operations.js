@@ -33,8 +33,7 @@ const login = ({ user, password }, network) => dispatch =>
 const network = () => dispatch =>
 	get('/auth/networklist', {})
 		.then(({ networkList }) => {
-			const networks = networkList.map(network => network[0]);
-			dispatch(networkAction({ networks }));
+			dispatch(networkAction({ networks: networkList }));
 		})
 		.catch(error => {
 			// eslint-disable-next-line no-console
