@@ -93,6 +93,7 @@ export class Login extends Component {
 				error: null,
 				value: ''
 			},
+			autoLogin: false,
 			error: '',
 			networks,
 			isLoading: false
@@ -140,6 +141,32 @@ export class Login extends Component {
 			return true;
 		}
 	};
+
+	async componentDidUpdate() {
+		const { networks, autoLogin } = this.state;
+		const { login } = this.props;
+
+		// If we have only one network and it doesn't have auth enabled, perform a login
+		if (networks.length === 1 && !networks[0].authEnabled && !autoLogin) {
+			// We used made-up user info since login is disabled
+			const info = await login(
+				{
+					user: "user",
+					password: "password"
+				},
+				networks[0].name
+			);
+
+			this.setState(() => ({
+				info,
+				autoLogin: true
+			}));
+			if (info.status === "Success") {
+				const { history } = this.props;
+				history.replace("/");
+			}
+		}
+	}
 
 	render() {
 		const { info, user, password, network, networks, isLoading } = this.state;
