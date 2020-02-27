@@ -93,6 +93,7 @@ export class Login extends Component {
 				error: null,
 				value: ''
 			},
+			autoLoginAttempted: false,
 			error: '',
 			networks,
 			authEnabled: false,
@@ -149,6 +150,33 @@ export class Login extends Component {
 			return true;
 		}
 	};
+
+	async componentDidUpdate() {
+		const { networks, autoLoginAttempted } = this.state;
+		const { login } = this.props;
+
+		// If we have only one network and it doesn't have auth enabled, perform a login
+		// autoLoginAttempted is a safety to prevent multiple tries
+		if (networks.length === 1 && !networks[0].authEnabled && !autoLoginAttempted) {
+			// We use made-up user info since login is disabled
+			const info = await login(
+				{
+					user: 'dummy-user',
+					password: 'dummy-password',
+				},
+				networks[0].name
+			);
+
+			this.setState(() => ({
+				info,
+				autoLoginAttempted: true
+			}));
+			if (info.status === "Success") {
+				const { history } = this.props;
+				history.replace("/");
+			}
+		}
+	}
 
 	render() {
 		const { info, user, password, network, networks, authEnabled, isLoading } = this.state;
