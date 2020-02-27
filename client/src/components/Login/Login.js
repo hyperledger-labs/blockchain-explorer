@@ -91,7 +91,7 @@ export class Login extends Component {
 			},
 			network: {
 				error: null,
-				value: networks[0] || ''
+				value: ''
 			},
 			error: '',
 			networks,
@@ -105,7 +105,7 @@ export class Login extends Component {
 			networks,
 			network: {
 				error: null,
-				value: networks[0] || ''
+				value: networks[0].name || ''
 			}
 		}));
 	}
@@ -144,6 +144,9 @@ export class Login extends Component {
 	render() {
 		const { info, user, password, network, networks, isLoading } = this.state;
 		const { classes, error } = this.props;
+
+		const authEnabled = (networks.find(({ name }) => name === network.value) || {}).authEnabled;
+
 		return (
 			<div className={classes.container}>
 				<Paper className={classes.paper}>
@@ -176,8 +179,8 @@ export class Login extends Component {
 								}}
 							>
 								{networks.map(item => (
-									<MenuItem key={item} value={item}>
-										{item}
+									<MenuItem key={item.name} value={item.name}>
+										{item.name}
 									</MenuItem>
 								))}
 							</TextField>
@@ -187,61 +190,65 @@ export class Login extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
-							<TextField
-								error={!!user.error}
-								required
-								fullWidth
-								id="user"
-								name="user"
-								label="User"
-								disabled={isLoading}
-								value={user.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<PersonIcon />
-										</InputAdornment>
-									),
-									shrink: 'true'
-								}}
-							/>
-							{user.error && (
-								<FormHelperText id="component-error-text" error>
-									{user.error}
-								</FormHelperText>
+						{authEnabled && (
+							<FormControl margin="normal" required fullWidth>
+								<TextField
+									error={!!user.error}
+									required
+									fullWidth
+									id="user"
+									name="user"
+									label="User"
+									disabled={isLoading}
+									value={user.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<PersonIcon />
+											</InputAdornment>
+										),
+										shrink: 'true'
+									}}
+								/>
+								{user.error && (
+									<FormHelperText id="component-error-text" error>
+										{user.error}
+									</FormHelperText>
+								)}
+							</FormControl>
 							)}
-						</FormControl>
-						<FormControl margin="normal" required fullWidth>
-							<TextField
-								required
-								fullWidth
-								error={!!password.error}
-								id="password"
-								type="password"
-								name="password"
-								label="Password"
-								disabled={isLoading}
-								value={password.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<LockOutlinedIcon />
-										</InputAdornment>
-									),
-									shrink: 'true'
-								}}
-							/>
-							{password.error && (
-								<FormHelperText id="component-error-text" error>
-									{password.error}
-								</FormHelperText>
-							)}
-						</FormControl>
+							{authEnabled && (
+							<FormControl margin="normal" required fullWidth>
+								<TextField
+									required
+									fullWidth
+									error={!!password.error}
+									id="password"
+									type="password"
+									name="password"
+									label="Password"
+									disabled={isLoading}
+									value={password.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+									InputProps={{
+										startAdornment: (
+											<InputAdornment position="start">
+												<LockOutlinedIcon />
+											</InputAdornment>
+										),
+										shrink: 'true'
+									}}
+								/>
+								{password.error && (
+									<FormHelperText id="component-error-text" error>
+										{password.error}
+									</FormHelperText>
+								)}
+							</FormControl>
+						)}
 						{error && (
 							<FormHelperText id="component-error-text" error>
 								{error}
@@ -259,7 +266,7 @@ export class Login extends Component {
 							color="primary"
 							className={classes.submit}
 						>
-							Sign in
+							{authEnabled ? "Sign in" : "Connect"}
 						</Button>
 					</form>
 				</Paper>

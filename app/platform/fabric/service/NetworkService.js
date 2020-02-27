@@ -31,9 +31,13 @@ class NetworkService {
 		// Get the list of the networks from the  configuration that was loaded from the config.json
 		const networklist = [];
 		const networks = this.platform.getNetworks();
-		const iterator = networks.entries();
-		for (const value of iterator) {
-			networklist.push(value);
+		for (const [networkName, network] of networks.entries()) {
+			for (const [, client] of network.entries()) {
+				networklist.push({
+					name: networkName,
+					authEnabled: client.fabricGateway.getEnableAuthentication()
+				});
+			}
 		}
 
 		logger.log('Network list ', networklist);
