@@ -129,18 +129,16 @@ export class Login extends Component {
 		this.setState(newState);
 	};
 
-	submitForm = async e => {
-		e.preventDefault();
-
+	async performLogin({ user, password, network}) {
 		const { login } = this.props;
-		const { user, password, network, authEnabled } = this.state;
+		const { authEnabled } = this.state;
 
 		const info = await login(
 			{
-				user: authEnabled ? user.value : 'dummy-user',
-				password: authEnabled ? password.value : 'dummy-password',
+				user: authEnabled ? user : 'dummy-user',
+				password: authEnabled ? password : 'dummy-password',
 			},
-			network.value
+			network
 		);
 
 		this.setState(() => ({ info }));
@@ -149,32 +147,30 @@ export class Login extends Component {
 			history.replace('/');
 			return true;
 		}
+	}
+
+	submitForm = async e => {
+		e.preventDefault();
+
+		const { user, password, network } = this.state;
+
+		await this.performLogin({
+			user: user.value,
+			password: password.value,
+			network: network.value
+		});
 	};
 
 	async componentDidUpdate() {
 		const { networks, autoLoginAttempted } = this.state;
-		const { login } = this.props;
 
 		// If we have only one network and it doesn't have auth enabled, perform a login
 		// autoLoginAttempted is a safety to prevent multiple tries
 		if (networks.length === 1 && !networks[0].authEnabled && !autoLoginAttempted) {
-			// We use made-up user info since login is disabled
-			const info = await login(
-				{
-					user: 'dummy-user',
-					password: 'dummy-password',
-				},
-				networks[0].name
-			);
-
 			this.setState(() => ({
-				info,
 				autoLoginAttempted: true
 			}));
-			if (info.status === "Success") {
-				const { history } = this.props;
-				history.replace("/");
-			}
+			await this.performLogin({ network: networks[0].name })
 		}
 	}
 
