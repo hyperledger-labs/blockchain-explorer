@@ -1,17 +1,17 @@
 #!/bin/bash
 
-go get -d github.com/hyperledger/fabric-test
-
 echo "#### Downloaded fabric-test repo"
 
-# An error that we can ignore is raised when getting fabric-test package
-# So we need to enable the error abort option after getting fabric-test pkg
 set -e
 
-pushd $GOPATH/src/github.com/hyperledger/fabric-test
-git checkout release-1.4
-git submodule update --init --recursive
-git submodule foreach git checkout release-1.4
+mkdir -p $GOPATH/src/github.com/hyperledger
+
+pushd $GOPATH/src/github.com/hyperledger
+if [ ! -d fabric-test ]; then
+  git clone https://github.com/hyperledger/fabric-test.git -b release-1.4
+fi
+cd fabric-test
+git checkout 45799a2ee4eefa49ae705cc57ed415270c35d60a
 echo "#### Updated each sub-module under fabric-test repo"
 popd
 
