@@ -3,11 +3,25 @@
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: '8.11'
+      versionSpec: $(NODE_VER)
     displayName: Install NodeJs
-  - task: UsePythonVersion@0
+  - task: GoTool@0
     inputs:
-      versionSpec: '2.7'
-    displayName: Install Python
-  - script: pip install virtualenv
-    displayName: Install Virtualenv
+      version: $(GO_VER)
+      goPath: $(GOPATH)
+  - task: Go@0
+    inputs:
+      command: 'get'
+      arguments: '-u github.com/onsi/ginkgo/ginkgo'
+  - task: Go@0
+    inputs:
+      command: 'get'
+      arguments: '-u github.com/onsi/gomega/...'
+  - task: Go@0
+    inputs:
+      command: 'get'
+      arguments: '-u gopkg.in/yaml.v2'
+  - task: Go@0
+    inputs:
+      command: 'get'
+      arguments: '-u github.com/pkg/errors'

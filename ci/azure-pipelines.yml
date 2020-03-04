@@ -4,11 +4,18 @@ name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.rrr)
 trigger:
 - master
 
+variables:
+  GOPATH: $(Agent.BuildDirectory)/go
+  PATH: $(Agent.BuildDirectory)/go/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+  GO_VER: 1.13.8
+  NODE_VER: 8.11
+
 jobs:
 - job: TestsWithCoverage
   pool:
     vmImage: ubuntu-16.04
   steps:
+
   - template: install_deps.yml
   - checkout: self
   - script: |
@@ -42,7 +49,7 @@ jobs:
   - checkout: self
   - script: |
       npm install
-      npm run e2e-test-sanitycheck:ci
+      npm run e2e-api-test:ci
     displayName: Run Sanity Checks
 
 - job: GUITests
