@@ -23,7 +23,7 @@ services:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
-				healthcheck:
+    healthcheck:
       test: "pg_isready -h localhost -p 5432 -q -U postgres"
       interval: 3s
       timeout: 5s
@@ -55,7 +55,7 @@ services:
     command: sh -c "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"
     ports:
       - 8090:8080
-				depends_on:
+    depends_on:
       explorerdb.mynetwork.com:
         condition: service_healthy
     networks:
