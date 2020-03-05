@@ -23,6 +23,11 @@ services:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWORD=password
+    healthcheck:
+      test: "pg_isready -h localhost -p 5432 -q -U postgres"
+      interval: 30s
+      timeout: 10s
+      retries: 5
     volumes:
       - ./app/persistence/fabric/postgreSQL/db/createdb.sh:/docker-entrypoint-initdb.d/createdb.sh
       - pgdata:/var/lib/postgresql/data
@@ -47,9 +52,12 @@ services:
       - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
       - ./examples/net1/crypto:/tmp/crypto
       - walletstore:/opt/wallet
-    command: sh -c "sleep 16&& node /opt/explorer/main.js && tail -f /dev/null"
+    command: sh -c "node /opt/explorer/main.js && tail -f /dev/null"
     ports:
       - 8090:8080
+    depends_on:
+      explorerdb.mynetwork.com:
+        condition: service_healthy
     networks:
       - mynetwork.com
 
