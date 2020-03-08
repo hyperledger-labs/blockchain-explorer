@@ -11,6 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"github.com/hyperledger/fabric-test/tools/operator/launcher"
 	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 	"github.com/hyperledger/fabric-test/tools/operator/testclient"
 )
@@ -53,8 +54,39 @@ type ChannelsResponse struct {
 	Channels []string `json:"channels"`
 }
 
+type BlockData struct {
+	Blocknum    int      `json:"blocknum"`
+	Txcount     int      `json:"txcount"`
+	Datahash    string   `json:"datahash"`
+	Blockhash   string   `json:"blockhash"`
+	Prehash     string   `json:"prehash"`
+	Createdt    string   `json:"createdt"`
+	Txhash      []string `json:"txhash"`
+	Channelname string   `json:"channelname"`
+}
+
+type BlockActivityResp struct {
+	Status int         `json:"status"`
+	Row    []BlockData `json:"row"`
+}
+
+type BlockResp struct {
+	Status       int           `json:"status"`
+	Number       string        `json:"number"`
+	PreviousHash string        `json:"previous_hash"`
+	DataHash     string        `json:"data_hash"`
+	Transactions []interface{} `json:"transactions"`
+}
+
+type PeersStatusResp struct {
+	Status int           `json:"status"`
+	Peers  []interface{} `json:"peers"`
+}
+
 var (
-	channelMonitored string
+	channelMonitored    string
+	org1CurrentBlockNum int
+	org2CurrentBlockNum int
 )
 
 func CheckHowManyEventHubRegistered() int {
@@ -87,7 +119,19 @@ func StopNode(nodeName string) {
 	}
 }
 
-var _ = Describe("REST API Test Suite", func() {
+var _ = XDescribe("REST API Test Suite - Single profile", func() {
+
+	BeforeEach(func() {
+		networkSpecPath := "apitest-network-spec.yml"
+		err := launcher.Launcher("up", "docker", "", networkSpecPath)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	AfterEach(func() {
+		networkSpecPath := "apitest-network-spec.yml"
+		err := launcher.Launcher("down", "docker", "", networkSpecPath)
+		Expect(err).NotTo(HaveOccurred())
+	})
 
 	Describe("Running REST API Test Suite in fabric-test", func() {
 		var (
@@ -241,13 +285,6 @@ var _ = Describe("REST API Test Suite", func() {
 		})
 
 		It("get block info", func() {
-			type BlockResp struct {
-				Status       int           `json:"status"`
-				Number       string        `json:"number"`
-				PreviousHash string        `json:"previous_hash"`
-				DataHash     string        `json:"data_hash"`
-				Transactions []interface{} `json:"transactions"`
-			}
 
 			client := resty.New()
 			client.SetAuthToken(token)
@@ -264,10 +301,6 @@ var _ = Describe("REST API Test Suite", func() {
 		})
 
 		It("get status of peers within commonchannel", func() {
-			type PeersStatusResp struct {
-				Status int           `json:"status"`
-				Peers  []interface{} `json:"peers"`
-			}
 
 			client := resty.New()
 			client.SetAuthToken(token)
@@ -283,21 +316,6 @@ var _ = Describe("REST API Test Suite", func() {
 		})
 
 		It("get block activity", func() {
-			type BlockData struct {
-				Blocknum    int      `json:"blocknum"`
-				Txcount     int      `json:"txcount"`
-				Datahash    string   `json:"datahash"`
-				Blockhash   string   `json:"blockhash"`
-				Prehash     string   `json:"prehash"`
-				Createdt    string   `json:"createdt"`
-				Txhash      []string `json:"txhash"`
-				Channelname string   `json:"channelname"`
-			}
-
-			type BlockActivityResp struct {
-				Status int         `json:"status"`
-				Row    []BlockData `json:"row"`
-			}
 
 			client := resty.New()
 			client.SetAuthToken(token)
@@ -314,10 +332,6 @@ var _ = Describe("REST API Test Suite", func() {
 		})
 
 		It("register user", func() {
-			type RegisterResp struct {
-				Status  int    `json:"status"`
-				Message string `json:"message"`
-			}
 
 			client := resty.New()
 			client.SetAuthToken(token)
@@ -451,4 +465,388 @@ var _ = Describe("REST API Test Suite", func() {
 		})
 
 	})
+})
+
+var _ = Describe("REST API Test Suite - Multiple profile", func() {
+
+	Describe("Running REST API Test Suite in fabric-test", func() {
+		var (
+			action             string
+			networkSpecPath    string
+			inputSpecPath      string
+			token              string
+			channelGenesisHash string
+			blockHeight        int
+		)
+
+		XIt("Starting fabric network", func() {
+			networkSpecPath = "apitest-network-spec.yml"
+			err := launcher.Launcher("up", "docker", "", networkSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		XIt("Setup fabric network", func() {
+
+			inputSpecPath = "apitest-input-multiprofile.yml"
+
+			By("0) Generating channel artifacts")
+			_, err := networkclient.ExecuteCommand("./genchannelartifacts.sh", []string{}, true)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("1) Creating channel")
+			action = "create"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("2) Joining Peers to channel")
+			action = "join"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("3) Updating channel with anchor peers")
+			action = "anchorpeer"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("4) Installing Chaincode on Peers")
+			action = "install"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("5) Instantiating Chaincode")
+			action = "instantiate"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			By("6) Sending Invokes")
+			action = "invoke"
+			err = testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+		})
+
+		XIt("launch explorer", func() {
+			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"multi"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		XIt("get network list", func() {
+			type NetworklistInfo struct {
+				NetworkList [][]interface{} `json:"networkList"`
+			}
+
+			// Create a Resty Client
+			client := resty.New()
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&NetworklistInfo{}).
+				Get("http://localhost:8090/auth/networklist")
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			result := resp.Result().(*NetworklistInfo)
+			list := []string{}
+			for _, val := range result.NetworkList {
+				list = append(list, val[0].(string))
+			}
+			Expect(list).Should(HaveLen(2))
+			Expect(list).Should(ContainElements([]string{"org1-network", "org2-network"}))
+
+		})
+
+		It("login to org2-network", func() {
+
+			client := resty.New()
+
+			resp, err := client.R().
+				EnableTrace().
+				SetHeader("Content-Type", "application/json").
+				SetBody(map[string]interface{}{"user": "admin", "password": "org2adminpw", "network": "org2-network"}).
+				SetResult(&LoginResponse{}).
+				Post("http://localhost:8090/auth/login")
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			result := resp.Result().(*LoginResponse)
+			token = result.Token
+
+			Expect(result.User.Message).Should(Equal("logged in"))
+			Expect(result.User.Name).Should(Equal("admin"))
+		})
+
+		XIt("get channels", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&ChannelsResponse{}).
+				Get("http://localhost:8090/api/channels")
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			result := resp.Result().(*ChannelsResponse)
+
+			Expect(result.Channels).Should(ContainElements([]string{"org2channel", "commonchannel"}))
+
+		})
+
+		It("get channels info", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&ChannelsInfoResp{}).
+				Get("http://localhost:8090/api/channels/info")
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			result := resp.Result().(*ChannelsInfoResp)
+			chList := []string{}
+			for _, ch := range result.Channels {
+				chList = append(chList, ch.Channelname)
+				if ch.Channelname == "org2channel" {
+					channelGenesisHash = ch.ChannelGenesisHash
+					blockHeight = ch.Blocks - 1
+				}
+			}
+			// Expect(result.Channels[0].Channelname).Should(Equal("commonchannel"))
+			Expect(chList).Should(ContainElements([]string{"commonchannel", "org2channel"}))
+			Expect(blockHeight).Should(Equal(2))
+
+		})
+
+		It("get block info", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&BlockResp{}).
+				Get("http://localhost:8090/api/block/" + channelGenesisHash + "/" + strconv.Itoa(blockHeight))
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*BlockResp)
+			Expect(result.Status).Should(Equal(200))
+
+		})
+
+		It("get status of peers within org2channel", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&PeersStatusResp{}).
+				Get("http://localhost:8090/api/peersStatus/" + "org2channel")
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*PeersStatusResp)
+			Expect(result.Status).Should(Equal(200))
+		})
+
+		It("get block activity", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&BlockActivityResp{}).
+				Get("http://localhost:8090/api/blockActivity/" + channelGenesisHash)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*BlockActivityResp)
+			Expect(result.Status).Should(Equal(200))
+			Expect(result.Row[0].Channelname).Should(Equal("org2channel"))
+			org2CurrentBlockNum = result.Row[0].Blocknum
+		})
+
+		It("Update block on org1channel and should not have any changes on org2channel", func() {
+			action = "invoke"
+			inputSpecPath = "apitest-input-multiprofile-invoke-org1.yml"
+			err := testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&BlockActivityResp{}).
+				Get("http://localhost:8090/api/blockActivity/" + channelGenesisHash)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*BlockActivityResp)
+			Expect(result.Status).Should(Equal(200))
+			Expect(result.Row[0].Channelname).Should(Equal("org2channel"))
+			Expect(result.Row[0].Blocknum).Should(Equal(org2CurrentBlockNum))
+		})
+
+		It("Update block on org2channel and should have some changes on org2channel", func() {
+			action = "invoke"
+			inputSpecPath = "apitest-input-multiprofile-invoke-org2.yml"
+			err := testclient.Testclient(action, inputSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetResult(&BlockActivityResp{}).
+				Get("http://localhost:8090/api/blockActivity/" + channelGenesisHash)
+
+			Expect(err).ShouldNot(HaveOccurred())
+			result := resp.Result().(*BlockActivityResp)
+			Expect(result.Status).Should(Equal(200))
+			Expect(result.Row[0].Channelname).Should(Equal("org2channel"))
+			Expect(result.Row[0].Blocknum).Should(Equal(org2CurrentBlockNum + 1))
+		})
+
+		XIt("register user", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+			resp, err := client.R().
+				EnableTrace().
+				SetHeader("Content-Type", "application/json").
+				SetBody(map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}).
+				SetResult(&RegisterResp{}).
+				Post("http://localhost:8090/api/register")
+
+			Expect(err).ShouldNot(HaveOccurred())
+			resultRegister := resp.Result().(*RegisterResp)
+			Expect(resultRegister.Status).Should(Equal(200))
+		})
+
+		XIt("login with newly registered user", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+
+			resp, err := client.R().
+				EnableTrace().
+				SetHeader("Content-Type", "application/json").
+				SetBody(map[string]interface{}{"user": "test", "password": "test", "network": "org2-network"}).
+				SetResult(&LoginResponse{}).
+				Post("http://localhost:8090/auth/login")
+
+			Expect(err).ShouldNot(HaveOccurred())
+
+			resultLogin := resp.Result().(*LoginResponse)
+
+			Expect(resultLogin.User.Message).Should(Equal("logged in"))
+			Expect(resultLogin.User.Name).Should(Equal("test"))
+		})
+
+		XIt("fail to register duplicate user", func() {
+
+			client := resty.New()
+			client.SetAuthToken(token)
+			resp, err := client.R().
+				EnableTrace().
+				SetHeader("Content-Type", "application/json").
+				SetBody(map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}).
+				SetResult(&RegisterResp{}).
+				Post("http://localhost:8090/api/register")
+
+			Expect(err).ShouldNot(HaveOccurred())
+			resultRegister := resp.Result().(*RegisterResp)
+			Expect(resultRegister.Status).Should(Equal(400))
+			Expect(resultRegister.Message).Should(Equal("Error: already exists"))
+		})
+
+		XDescribe("Bugfix check:", func() {
+
+			It("Add new channel to org1 and explorer should detect it", func() {
+				inputSpecPath = "apitest-input-singleprofile_addnewch.yml"
+
+				By("1) Creating channel")
+				action := "create"
+				err := testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("2) Joining Peers to channel")
+				action = "join"
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("3) Updating channel with anchor peers")
+				action = "anchorpeer"
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("4) Instantiating Chaincode")
+				action = "instantiate"
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("5) Sending Queries")
+				action = "query"
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("6) Sending Invokes")
+				action = "invoke"
+				err = testclient.Testclient(action, inputSpecPath)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("7) Retrieving channels again")
+				client := resty.New()
+				client.SetAuthToken(token)
+
+			})
+
+			It("Should include the newly added channel when retrieving channels again", func() {
+
+				client := resty.New()
+				client.SetAuthToken(token)
+
+				resp, err := client.R().
+					EnableTrace().
+					SetResult(&ChannelsResponse{}).
+					Get("http://localhost:8090/api/channels")
+				Expect(err).ShouldNot(HaveOccurred())
+
+				result := resp.Result().(*ChannelsResponse)
+				Expect(result.Channels).Should(ContainElements([]string{"org1channel", "commonchannel", "channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422"}))
+
+			})
+
+			It("Should create a new event hub for the newly added channel within 60s", func() {
+				channelMonitored = "channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422"
+				Eventually(CheckHowManyEventHubRegistered, 70, 5).Should(Equal(1))
+				channelMonitored = "commonchannel"
+				Expect(CheckHowManyEventHubRegistered()).Should(Equal(1))
+				channelMonitored = "org1channel"
+				Expect(CheckHowManyEventHubRegistered()).Should(Equal(1))
+			})
+
+			It("Should keep running fine even after removing one of orderer peers", func() {
+				StopNode("orderer0-ordererorg1")
+				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(1))
+				StopNode("orderer1-ordererorg1")
+				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(2))
+			})
+
+		})
+
+		XIt("stop explorer", func() {
+			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		XIt("Shutdown network", func() {
+			err := launcher.Launcher("down", "docker", "", networkSpecPath)
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
+
 })
