@@ -236,12 +236,17 @@ class Proxy {
 	async getBlockByNumber(network_name, channel_genesis_hash, number) {
 		const client = this.platform.getClient(network_name);
 		const channel = client.getChannelByHash(channel_genesis_hash);
+		let block;
 
-		const block = channel.queryBlock(
-			parseInt(number),
-			client.getDefaultPeer(),
-			true
-		);
+		try {
+			block = await channel.queryBlock(
+				parseInt(number),
+				client.getDefaultPeer(),
+				true
+			);
+		} catch (e) {
+			logger.debug('queryBlock >> ', e);
+		}
 
 		if (block) {
 			return block;

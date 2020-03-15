@@ -93,13 +93,17 @@ const platformroutes = async function(router, platform) {
 			proxy
 				.getBlockByNumber(req.network, channel_genesis_hash, number)
 				.then(block => {
-					res.send({
-						status: 200,
-						number: block.header.number.toString(),
-						previous_hash: block.header.previous_hash,
-						data_hash: block.header.data_hash,
-						transactions: block.data.data
-					});
+					if (typeof block === 'string') {
+						res.send({ status: 500, error: block });
+					} else {
+						res.send({
+							status: 200,
+							number: block.header.number.toString(),
+							previous_hash: block.header.previous_hash,
+							data_hash: block.header.data_hash,
+							transactions: block.data.data
+						});
+					}
 				});
 		} else {
 			return requtil.invalidRequest(req, res);

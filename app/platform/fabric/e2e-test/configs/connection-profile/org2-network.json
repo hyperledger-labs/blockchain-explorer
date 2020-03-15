@@ -5,7 +5,7 @@
 	"client": {
 		"tlsEnable": true,
 		"adminUser": "admin",
-		"adminPassword": "org2adminpw",
+		"adminPassword": "adminpw",
 		"organization": "org2",
 		"enableAuthentication": false,
 		"connection": {
