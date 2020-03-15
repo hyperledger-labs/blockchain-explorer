@@ -1079,6 +1079,21 @@ to
 
 ``` host all all 127.0.0.1/32 md5 ```
 
+#### Problem Description: Hypeledger Explorer fails to start, not assigned to this channel
+
+##### Background Information:
+
+```bash
+error: [Channel.js]: Error: Peer with name "peer0.example.com" not assigned to this channel
+error: [Remote.js]: Error: Failed to connect before the deadline URL:grpcs://peer0.example.com:7051
+```
+
+##### Possible cause:
+
+    Invalid peer name in "channels.<channel name>.peers.<peer name>" or "peers.<peer name>" defined in connection.json file.
+
+##### Possible solution:
+    Fix and match to the valid peer name in this channels or peers in connection.json
 
 
 #### Related Information:
