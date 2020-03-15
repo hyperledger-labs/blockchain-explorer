@@ -3,6 +3,8 @@
 name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.rrr)
 trigger:
 - master
+pr:
+- master
 
 variables:
   GOPATH: $(Agent.BuildDirectory)/go
