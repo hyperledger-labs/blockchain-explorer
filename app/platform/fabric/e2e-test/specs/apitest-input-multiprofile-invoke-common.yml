@@ -1,0 +1,31 @@
+organizations:
+  - name: org1
+#! For smoke test suite, connection-profile are read from smoke directory
+    connProfilePath: ./connection-profile/connection_profile_org1.yaml
+  - name: org2
+    connProfilePath: ./connection-profile/connection_profile_org2.yaml
+
+invokes:
+  - channelName: commonchannel
+    name: samplecc
+    targetPeers: OrgAnchor
+    nProcPerOrg: 1
+    nRequest: 1
+    runDur: 0
+    organizations: org1
+    txnOpt:
+      - mode: constant
+        options:
+          constFreq: 0
+          devFreq: 0
+    queryCheck: 100
+    eventOpt:
+      type: FilteredBlock
+      listener:  Block
+      timeout: 240000
+    ccOpt:
+      ccType: ccchecker
+      keyStart: 0
+      payLoadMin: 1024
+      payLoadMax: 2048
+    args: "put,a1,1"
