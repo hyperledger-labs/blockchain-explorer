@@ -6,8 +6,8 @@
 		"tlsEnable": true,
 		"adminUser": "admin",
 		"adminPassword": "adminpw",
-		"enableAuthentication": true,
 		"organization": "org2",
+		"enableAuthentication": false,
 		"connection": {
 			"timeout": {
 				"peer": {
@@ -18,7 +18,7 @@
 		}
 	},
 	"channels": {
-		"testorgschannel0": {
+		"commonchannel": {
 			"peers": {
 				"peer0-org2": {}
 			},
@@ -40,6 +40,7 @@
 			"adminPrivateKey": {
 				"path": "/tmp/crypto/peerOrganizations/org2/users/Admin@org2/msp/keystore/priv_sk"
 			},
+			"certificateAuthorities": ["ca0"],
 			"signedCert": {
 				"path": "/tmp/crypto/peerOrganizations/org2/users/Admin@org2/msp/signcerts/Admin@org2-cert.pem"
 			}
@@ -50,10 +51,22 @@
 			"tlsCACerts": {
 				"path": "/tmp/crypto/peerOrganizations/org2/peers/peer0-org2.org2/tls/ca.crt"
 			},
-			"url": "grpcs://peer0-org2:31000",
+			"url": "grpcs://peer0-org2:31002",
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0-org2"
 			}
+		}
+	},
+	"certificateAuthorities": {
+		"ca0": {
+			"url": "https://ca0-org2:7054",
+			"httpOptions": {
+				"verify": false
+			},
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/org2/ca/ca.org2-cert.pem"
+			},
+			"caName": "ca0-org2"
 		}
 	}
 }

@@ -4,12 +4,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
 	. "github.com/onsi/gomega"
-
-	"github.com/hyperledger/fabric-test/tools/operator/launcher"
-	"github.com/hyperledger/fabric-test/tools/operator/networkclient"
 )
 
 func TestRestApi(t *testing.T) {
@@ -20,17 +18,11 @@ func TestRestApi(t *testing.T) {
 
 // Bringing up network using BeforeSuite
 var _ = BeforeSuite(func() {
-	networkSpecPath := "apitest-network-spec.yml"
-	err := launcher.Launcher("up", "docker", "", networkSpecPath)
-	Expect(err).NotTo(HaveOccurred())
 })
 
 // Cleaning up network launched from BeforeSuite and removing all chaincode containers
 // and chaincode container images using AfterSuite
 var _ = AfterSuite(func() {
-	networkSpecPath := "apitest-network-spec.yml"
-	err := launcher.Launcher("down", "docker", "", networkSpecPath)
-	Expect(err).NotTo(HaveOccurred())
 
 	dockerList := []string{"ps", "-aq", "-f", "status=exited"}
 	containerList, _ := networkclient.ExecuteCommand("docker", dockerList, false)

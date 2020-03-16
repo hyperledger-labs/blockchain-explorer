@@ -106,7 +106,7 @@ class Platform {
 		}
 
 		for (const network_name in this.network_configs) {
-			this.networks.set(network_name, new Map());
+			// this.networks.set(network_name, new Map());
 			const client_configs = this.network_configs[network_name];
 			// Console.log('network_name ', network_name, ' client_configs ', client_configs)
 			if (!this.defaultNetwork) {
@@ -138,6 +138,7 @@ class Platform {
 				logger.info('FabricUtils.createFabricClient ');
 				client = await FabricUtils.createFabricClient(
 					client_configs,
+					network_name,
 					client_name,
 					this.persistence
 				);
@@ -145,16 +146,15 @@ class Platform {
 				logger.info('FabricUtils.createDetachClient ');
 				client = await FabricUtils.createDetachClient(
 					client_configs,
+					network_name,
 					client_name,
 					this.persistence
 				);
 			}
 			if (client) {
 				// Set client into clients map
-				logger.info('FabricUtils.createDetachClient ');
-				const clients = this.networks.get(network_name);
-				clients.set(client_name, client);
-				// Console.log('clients ', clients);
+				const clientObj = { name: client_name, instance: client };
+				this.networks.set(network_name, clientObj);
 			}
 			//  }
 		}
@@ -168,19 +168,19 @@ class Platform {
 	 */
 	initializeListener(syncconfig) {
 		/* eslint-disable */
-		for (const [network_name, clients] of this.networks.entries()) {
-			for (const [client_name, client] of clients.entries()) {
-				logger.info(
-					'initializeListener, client_name, client ',
-					client_name,
-					client.client_config
-				);
-				if (this.getClient(network_name, client_name).getStatus()) {
-					const explorerListener = new ExplorerListener(this, syncconfig);
-					explorerListener.initialize([network_name, client_name, '1']);
-					explorerListener.send('Successfully send a message to child process');
-					this.explorerListeners.push(explorerListener);
-				}
+		for (const [network_name, clientObj] of this.networks.entries()) {
+			const client_name = clientObj.name;
+			const client = clientObj.instance;
+			logger.info(
+				'initializeListener, client_name, client ',
+				client_name,
+				client.client_config
+			);
+			if (this.getClient(network_name).getStatus()) {
+				const explorerListener = new ExplorerListener(this, syncconfig);
+				explorerListener.initialize([network_name, client_name, '1']);
+				explorerListener.send('Successfully send a message to child process');
+				this.explorerListeners.push(explorerListener);
 			}
 		}
 		/* eslint-enable */
@@ -210,25 +210,11 @@ class Platform {
 	 * @returns
 	 * @memberof Platform
 	 */
-	changeNetwork(network_name, client_name, channel_name) {
-		const network = this.networks.get(network_name);
-		if (network) {
+	changeNetwork(network_name, channel_name) {
+		const clientObj = this.networks.get(network_name);
+		if (clientObj) {
 			this.defaultNetwork = network_name;
-			let client;
-			if (client_name) {
-				client = network.get(client_name);
-				if (client) {
-					this.defaultClient = client_name;
-				} else {
-					return `Client [${network_name}] is not found in network`;
-				}
-			} else {
-				const iterator = network.values();
-				client = iterator.next().value;
-				if (!client) {
-					return `Client [${network_name}] is not found in network`;
-				}
-			}
+			const client = clientObj.instance;
 			if (channel_name) {
 				client.setDefaultChannel(channel_name);
 			}
@@ -255,10 +241,9 @@ class Platform {
 	 * @returns
 	 * @memberof Platform
 	 */
-	getClient(network_name, client_name) {
-		return this.networks
-			.get(network_name || this.defaultNetwork)
-			.get(client_name || this.defaultClient);
+	getClient(network_name) {
+		const clientObj = this.networks.get(network_name || this.defaultNetwork);
+		return clientObj.instance;
 	}
 
 	/**

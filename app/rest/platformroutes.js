@@ -25,7 +25,7 @@ const platformroutes = async function(router, platform) {
 
 		if (channel_genesis_hash) {
 			proxy
-				.getTxByOrgs(channel_genesis_hash)
+				.getTxByOrgs(req.network, channel_genesis_hash)
 				.then(rows => res.send({ status: 200, rows }));
 		} else {
 			return requtil.invalidRequest(req, res);
@@ -47,7 +47,7 @@ const platformroutes = async function(router, platform) {
 	 */
 	router.get('/channels/info', (req, res) => {
 		proxy
-			.getChannelsInfo()
+			.getChannelsInfo(req.network)
 			.then(data => {
 				data.forEach(element => {
 					element.createdat = new Date(element.createdat).toISOString();
@@ -72,7 +72,7 @@ const platformroutes = async function(router, platform) {
 	router.get('/peersStatus/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {
-			proxy.getPeersStatus(channelName).then(data => {
+			proxy.getPeersStatus(req.network, channelName).then(data => {
 				res.send({ status: 200, peers: data });
 			});
 		} else {
@@ -90,15 +90,21 @@ const platformroutes = async function(router, platform) {
 		const number = parseInt(req.params.number);
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (!isNaN(number) && channel_genesis_hash) {
-			proxy.getBlockByNumber(channel_genesis_hash, number).then(block => {
-				res.send({
-					status: 200,
-					number: block.header.number.toString(),
-					previous_hash: block.header.previous_hash,
-					data_hash: block.header.data_hash,
-					transactions: block.data.data
+			proxy
+				.getBlockByNumber(req.network, channel_genesis_hash, number)
+				.then(block => {
+					if (typeof block === 'string') {
+						res.send({ status: 500, error: block });
+					} else {
+						res.send({
+							status: 200,
+							number: block.header.number.toString(),
+							previous_hash: block.header.previous_hash,
+							data_hash: block.header.data_hash,
+							transactions: block.data.data
+						});
+					}
 				});
-			});
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
@@ -118,7 +124,7 @@ const platformroutes = async function(router, platform) {
 	 * }
 	 */
 	router.get('/channels', (req, res) => {
-		proxy.getChannels().then(channels => {
+		proxy.getChannels(req.network).then(channels => {
 			const response = {
 				status: 200
 			};
@@ -133,7 +139,7 @@ const platformroutes = async function(router, platform) {
 	 * curl -i 'http://<host>:<port>/curChannel'
 	 */
 	router.get('/curChannel', (req, res) => {
-		proxy.getCurrentChannel().then(data => {
+		proxy.getCurrentChannel(req.network).then(data => {
 			res.send(data);
 		});
 	});
@@ -145,35 +151,11 @@ const platformroutes = async function(router, platform) {
 	 */
 	router.get('/changeChannel/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
-		proxy.changeChannel(channel_genesis_hash).then(data => {
+		proxy.changeChannel(req.network, channel_genesis_hash).then(data => {
 			res.send({
 				currentChannel: data
 			});
 		});
-	});
-
-	/**
-	 * *Peer Status List
-	 * GET /peerlist -> /peersStatus
-	 * curl -i 'http://<host>:<port>/peersStatus/<channel>'
-	 * Response:
-	 * [
-	 * {
-	 * 'requests': 'grpcs://127.0.0.1:7051',
-	 * 'server_hostname': 'peer0.org1.example.com'
-	 * }
-	 * ]
-	 */
-
-	router.get('/peersStatus/:channel', (req, res) => {
-		const channelName = req.params.channel;
-		if (channelName) {
-			proxy.getPeersStatus(channelName).then(data => {
-				res.send({ status: 200, peers: data });
-			});
-		} else {
-			return requtil.invalidRequest(req, res);
-		}
 	});
 }; // End platformroutes()
 

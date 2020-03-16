@@ -23,7 +23,7 @@ RUN apk update \
 WORKDIR /opt
 
 # Copy files
-COPY app/persistence/fabric/postgreSQL/db/explorerpg.sql 	/opt/explorerpg.sql
-COPY app/persistence/fabric/postgreSQL/db/updatepg.sql 	    /opt/updatepg.sql
-COPY app/persistence/fabric/postgreSQL/db/createdb.sh   	/opt/createdb.sh
-COPY app/persistence/fabric/postgreSQL/db/processenv.js   	/opt/processenv.js
+COPY app/persistence/fabric/postgreSQL/db/explorerpg.sql  /opt/explorerpg.sql
+COPY app/persistence/fabric/postgreSQL/db/updatepg.sql    /opt/updatepg.sql
+COPY app/persistence/fabric/postgreSQL/db/createdb.sh     /docker-entrypoint-initdb.d/createdb.sh
+COPY app/persistence/fabric/postgreSQL/db/processenv.js   /opt/processenv.js

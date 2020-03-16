@@ -15,9 +15,14 @@ const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('FabricUtils');
 
-async function createFabricClient(client_configs, client_name, persistence) {
+async function createFabricClient(
+	client_configs,
+	network_name,
+	client_name,
+	persistence
+) {
 	// Create new FabricClient
-	const client = new FabricClient(client_name);
+	const client = new FabricClient(network_name, client_name);
 	// Initialize fabric client
 	logger.debug(
 		'************ Initializing fabric client for [%s]************',
@@ -31,11 +36,16 @@ async function createFabricClient(client_configs, client_name, persistence) {
 	}
 }
 
-async function createDetachClient(client_configs, client_name, persistence) {
+async function createDetachClient(
+	client_configs,
+	network_name,
+	client_name,
+	persistence
+) {
 	// Clone global.hfc.config configuration
 	const client_config = cloneConfig(client_configs, client_name);
 
-	const client = new FabricClient(client_name);
+	const client = new FabricClient(network_name, client_name);
 	await client.initializeDetachClient(client_config, persistence);
 	return client;
 }

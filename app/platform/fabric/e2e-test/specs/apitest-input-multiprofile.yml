@@ -62,12 +62,26 @@ installChaincode:
     metadataPath: ""
 
 instantiateChaincode:
-  - channelName: testorgschannel0
+  - channelName: commonchannel
     name: samplecc
     version: v1
     args: ""
     organizations: org1
     endorsementPolicy: 2of(org1,org2)
+    collectionPath: ""
+  - channelName: org1channel
+    name: samplecc
+    version: v1
+    args: ""
+    organizations: org1
+    endorsementPolicy: 1of(org1)
+    collectionPath: ""
+  - channelName: org2channel
+    name: samplecc
+    version: v1
+    args: ""
+    organizations: org2
+    endorsementPolicy: 1of(org2)
     collectionPath: ""
 
 upgradeChaincode:
@@ -80,11 +94,11 @@ upgradeChaincode:
     collectionPath: ""
 
 invokes:
-  - channelName: testorgschannel0
+  - channelName: commonchannel
     name: samplecc
     targetPeers: OrgAnchor
-    nProcPerOrg: 2
-    nRequest: 10
+    nProcPerOrg: 1
+    nRequest: 1
     runDur: 0
     organizations: org1,org2
     txnOpt:
