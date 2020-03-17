@@ -109,6 +109,11 @@ type PeersStatusResp struct {
 	Peers  []interface{} `json:"peers"`
 }
 
+type Network struct {
+	Name     string      `json:"name"`
+	Instance interface{} `json:"instance"`
+}
+
 type NetworklistInfo struct {
-	NetworkList [][]interface{} `json:"networkList"`
+	NetworkList []Network `json:"networkList"`
 }
