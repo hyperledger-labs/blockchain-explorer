@@ -64,8 +64,23 @@ const register = user => dispatch =>
 			dispatch(errorAction(error));
 		});
 
+const logout = () => dispatch =>
+	post('/auth/logout', {})
+		.then(resp => {
+			console.log(resp);
+			Auth.deauthenticateUser();
+			dispatch(errorAction(null));
+			return { status: 'Success' };
+		})
+		.catch(error => {
+			console.error(error);
+			dispatch(actions.getErroMessage(error));
+			return { status: 'Error', message: 'Invalid User token' };
+		});
+
 export default {
 	login,
 	network,
-	register
+	register,
+	logout
 };

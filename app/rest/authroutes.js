@@ -63,6 +63,12 @@ const authroutes = async function(router, platform) {
 			});
 		})(req, res, next);
 	});
+
+	router.post('/logout', async (req, res) => {
+		logger.debug('req.body', req.body);
+		req.logout();
+		res.send();
+	});
 };
 
 module.exports = authroutes;
