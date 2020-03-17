@@ -32,11 +32,12 @@ class NetworkService {
 		const networklist = [];
 		const networks = this.platform.getNetworks();
 		logger.debug('Network list ', networks);
-		const iterator = networks.entries();
-		for (const value of iterator) {
-			const network_name = value[0];
-			logger.debug('Network list ', network_name);
-			networklist.push([network_name]);
+		for (const [networkName, clientObj] of networks.entries()) {
+			logger.debug('Network list ', networkName);
+			networklist.push({
+				name: networkName,
+				authEnabled: clientObj.instance.fabricGateway.getEnableAuthentication()
+			});
 		}
 
 		logger.debug('Network list ', networklist);
