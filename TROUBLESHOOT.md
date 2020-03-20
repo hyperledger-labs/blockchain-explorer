@@ -26,7 +26,7 @@
     $pkill node
     Before killing the node , check that same port is running `“ps -ef | grep node”` if yes kill the particular port “ kill -9 ‘number’” . if no change the port in config.json
 
-#### Related Information:
+##### Related Information:
 
 #### Problem Description: Hypeledger Explorer fails to start, ENOENT: no such file or directory, scandir
 
@@ -1079,7 +1079,7 @@ to
 
 ``` host all all 127.0.0.1/32 md5 ```
 
-#### Related Information:
+##### Related Information:
  Full error info at https://pastebin.com/fyNSp66K
 
 #### Problem Description: Hypeledger Explorer fails to start, not assigned to this channel
