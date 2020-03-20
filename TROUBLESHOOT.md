@@ -1079,6 +1079,9 @@ to
 
 ``` host all all 127.0.0.1/32 md5 ```
 
+#### Related Information:
+ Full error info at https://pastebin.com/fyNSp66K
+
 #### Problem Description: Hypeledger Explorer fails to start, not assigned to this channel
 
 ##### Background Information:
@@ -1095,9 +1098,7 @@ error: [Remote.js]: Error: Failed to connect before the deadline URL:grpcs://pee
 ##### Possible solution:
     Fix and match to the valid peer name in this channels or peers in connection.json
 
-
-#### Related Information:
- Full error info at https://pastebin.com/fyNSp66K
+##### Related Information:
 
 ### Docker Troubleshooting commands
 
