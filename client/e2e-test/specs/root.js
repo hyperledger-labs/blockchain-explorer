@@ -13,10 +13,12 @@ const network = require('./network/network_view.js');
 const chaincode = require('./chaincode/chaincode_view.js');
 
 describe('GUI e2e test', () => {
+	var fabric_test_path;
+
 	before(async function() {
 		this.timeout(180000);
 		const cwd = process.cwd();
-		const fabric_test_path = path.join(
+		fabric_test_path = path.join(
 			process.env.GOPATH,
 			'/src/github.com/hyperledger/fabric-test',
 			'/tools/operator'
@@ -35,10 +37,7 @@ describe('GUI e2e test', () => {
 			{ cwd: fabric_test_path, env: process.env, shell: true }
 		);
 		if (child.error) console.log('network up', child.stderr.toString());
-		if (child.stdout) console.log('network up(stdout)', child.stdout.toString());
-		if (child.stderr) console.log('network up(stderr)', child.stderr.toString());
-
-		console.log('Network started');
+		else console.log('Network started');
 
 		child = spawnSync(
 			'go',
