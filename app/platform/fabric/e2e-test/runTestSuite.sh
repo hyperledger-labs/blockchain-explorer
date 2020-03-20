@@ -16,8 +16,8 @@ echo "#### Updated each sub-module under fabric-test repo"
 popd
 
 pushd $GOPATH/src/github.com/hyperledger/fabric-test/tools/PTE
-npm install fabric-client@1.4.5
-npm install fabric-ca-client@1.4.5
+npm install fabric-client@1.4.8
+npm install fabric-ca-client@1.4.8
 echo "#### Installed required node packages"
 popd
 

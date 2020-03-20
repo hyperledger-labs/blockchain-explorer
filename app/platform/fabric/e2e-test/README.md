@@ -34,8 +34,8 @@ git submodule foreach git checkout release-1.4
 
 ```
 cd $GOPATH/src/github.com/hyperledger/fabric-test/tools/PTE
-npm install fabric-client@1.4.5
-npm install fabric-ca-client@1.4.5
+npm install fabric-client@1.4.8
+npm install fabric-ca-client@1.4.8
 ```
 
 ## Create symboric link to PTE tool 

@@ -6,8 +6,8 @@
 		"tlsEnable": true,
 		"adminUser": "admin",
 		"adminPassword": "adminpw",
-		"enableAuthentication": false,
-		"organization": "Org1",
+		"enableAuthentication": true,
+		"organization": "Org1MSP",
 		"connection": {
 			"timeout": {
 				"peer": {
@@ -51,7 +51,6 @@
 				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://localhost:7051",
-			"eventUrl": "grpcs://localhost:7053",
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0.org1.example.com"
 			}
