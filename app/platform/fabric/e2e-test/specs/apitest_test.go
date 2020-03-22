@@ -3,6 +3,7 @@ package apitest
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -24,24 +25,30 @@ var (
 )
 
 func CheckHowManyEventHubRegistered() int {
-	arg := fmt.Sprintf(`docker logs explorer.mynetwork.com | grep "Successfully created channel event hub for \[%s\]" | wc -l`, channelMonitored)
+	cwd, _ := os.Getwd()
+	os.Chdir("../../../../..")
+	arg := fmt.Sprintf(`cat logs/console/console.log | grep "Successfully created channel event hub for \[%s\]" | wc -l`, channelMonitored)
 	cmd := exec.Command("sh", "-c", arg)
 	result, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 	ret, _ := strconv.Atoi(strings.TrimSuffix(string(result), "\n"))
+	os.Chdir(cwd)
 	return ret
 }
 
 func CheckIfSwitchedToNewOrderer() int {
-	arg := `docker logs explorer.mynetwork.com | grep "Succeeded to switch default orderer to" | wc -l`
+	cwd, _ := os.Getwd()
+	os.Chdir("../../../../..")
+	arg := `cat logs/console/console.log | grep "Succeeded to switch default orderer to" | wc -l`
 	cmd := exec.Command("sh", "-c", arg)
 	result, err := cmd.Output()
 	if err != nil {
 		log.Fatal(err)
 	}
 	ret, _ := strconv.Atoi(strings.TrimSuffix(string(result), "\n"))
+	os.Chdir(cwd)
 	return ret
 }
 
@@ -66,7 +73,7 @@ func restGetWithToken(path string, data interface{}, token string) *resty.Respon
 	resp, err := client.R().
 		EnableTrace().
 		SetResult(data).
-		Get("http://localhost:8090" + path)
+		Get("http://localhost:8080" + path)
 
 	Expect(err).ShouldNot(HaveOccurred())
 	return resp
@@ -90,6 +97,25 @@ func compareChannelsInfoTxCount(before *ChannelsInfoResp, after *ChannelsInfoRes
 	Expect(diff).Should(Equal(expectDiff))
 }
 
+func isExplorerReady() bool {
+	cwd, _ := os.Getwd()
+	os.Chdir("../../../../..")
+	cmd := exec.Command("sh", "-c", `cat logs/console/console.log | grep "SyncServices.synchNetworkConfigToDB client" | wc -l`)
+	result, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ret, _ := strconv.Atoi(strings.TrimSuffix(string(result), "\n"))
+
+	os.Chdir(cwd)
+
+	if ret != 0 {
+		log.Println("Synced. Get ready to start")
+		return true
+	}
+	return false
+}
+
 func restPost(path string, body interface{}, data interface{}) *resty.Response {
 	return restPostWithToken(path, body, data, "")
 }
@@ -104,7 +130,7 @@ func restPostWithToken(path string, body interface{}, data interface{}, token st
 		SetHeader("Content-Type", "application/json").
 		SetBody(body).
 		SetResult(data).
-		Post("http://localhost:8090" + path)
+		Post("http://localhost:8080" + path)
 
 	Expect(err).ShouldNot(HaveOccurred())
 	return resp
@@ -178,8 +204,15 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 		})
 
 		It("launch explorer", func() {
-			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"single"}, true)
+			cwd, _ := os.Getwd()
+			os.Chdir("../../../../../")
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("./runexplorer.sh", "single")
+			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
 		})
 
 		It("get network list", func() {
@@ -316,8 +349,6 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			It("Should keep running fine even after removing one of orderer peers", func() {
 				StopNode("orderer0-ordererorg1")
 				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(1))
-				StopNode("orderer1-ordererorg1")
-				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(2))
 			})
 
 		})
@@ -408,8 +439,15 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		})
 
 		It("launch explorer", func() {
-			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"multi"}, true)
+			cwd, _ := os.Getwd()
+			os.Chdir("../../../../../")
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("./runexplorer.sh", "single")
+			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
 		})
 
 		Context("/auth/networklist", func() {

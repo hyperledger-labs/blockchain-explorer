@@ -26,5 +26,5 @@ ln -s $GOPATH/src/github.com/hyperledger/fabric-test/tools/PTE ./PTE
 
 pushd specs
 echo "#### Starting Ginkgo based test suite"
-ginkgo -v
+ginkgo -v -stream
 popd
