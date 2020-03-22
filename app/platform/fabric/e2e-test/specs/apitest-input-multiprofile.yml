@@ -106,7 +106,7 @@ invokes:
         options:
           constFreq: 0
           devFreq: 0
-    queryCheck: 100
+    queryCheck: 1
     eventOpt:
       type: FilteredBlock
       listener:  Block
@@ -122,8 +122,8 @@ queries:
   - channelName: testorgschannel0
     name: samplecc
     targetPeers: OrgAnchor
-    nProcPerOrg: 2
-    nRequest: 10
+    nProcPerOrg: 1
+    nRequest: 1
     runDur: 0
     organizations: org1,org2
     ccOpt:
