@@ -38,20 +38,20 @@
 			"mspid": "Org1ExampleCom",
 			"fullpath": true,
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
 			"certificateAuthorities": ["ca0"],
 			"signedCert": {
-				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0-org1": {
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
 			},
-			"url": "grpcs://peer0-org1:31000",
+			"url": "grpcs://localhost:31000",
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0-org1"
 			}
@@ -59,12 +59,12 @@
 	},
 	"certificateAuthorities": {
 		"ca0": {
-			"url": "https://ca0-org1:7054",
+			"url": "https://localhost:32000",
 			"httpOptions": {
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1/ca/ca.org1-cert.pem"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/ca/ca.org1-cert.pem"
 			},
 			"caName": "ca0-org1"
 		}
