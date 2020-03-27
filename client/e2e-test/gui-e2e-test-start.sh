@@ -34,17 +34,11 @@ popd
 # Start selenium standalone server
 #
 pushd $ROOTDIR/client/e2e-test
-export NETWORK_ID=configfiles_default
-network_check=$(docker network ls --filter name=${NETWORK_ID} -q | wc -l)
-if [ $network_check -eq 0 ]; then
-  docker network create configfiles_default
-fi
-echo "#### Created network : ${NETWORK_ID}"
-
 docker-compose down -v
 docker-compose -f docker-compose-explorer.yaml down -v
 docker-compose up -d
-echo "#### Starting selenium containers ..."
+docker-compose -f docker-compose-explorer.yaml up -d explorerdb.mynetwork.com
+echo "#### Starting selenium containers & explorer-db container ..."
 
 rc=1
 starttime=$(date +%s)
@@ -52,12 +46,12 @@ while
   [[ "$(($(date +%s) - starttime))" -lt "$TIMEOUT" ]] && [[ $rc -ne 0 ]];
 do
   sleep $DELAY
-  set -x
-  docker logs selenium-chrome | grep -q "The node is registered to the hub and ready to use"
+  set -x +e
+  docker logs explorerdb.mynetwork.com 2>/dev/null | grep -q "database system is ready to accept connections"
   rc=$?
-  set +x
+  set +x -e
 done
-echo "#### Started selenium containers"
+echo "#### Started explorer-db container"
 popd
 
 pushd $ROOTDIR/client

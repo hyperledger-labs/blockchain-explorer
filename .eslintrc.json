@@ -436,7 +436,9 @@
 					"ordererorg1",
 					"samplecc",
 					"testorgschannel0",
-					"mynetwork"
+					"mynetwork",
+					"guitest",
+					"configfiles"
 				],
 				"skipIfMatch": ["http://[^s]*"],
 				"skipWordIfMatch": ["^foobar.*$"],

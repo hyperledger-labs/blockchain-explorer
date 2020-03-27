@@ -105,7 +105,6 @@ function test() {
 
 				displayTooltip = tooltip.isExisting();
 				expect(displayTooltip).to.be.true;
-				console.log(tooltip.getText());
 			});
 		});
 	});

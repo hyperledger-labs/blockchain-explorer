@@ -26,7 +26,7 @@ var (
 const (
 	relativePahtToRoot = "../../../../.."
 	explorerURL        = "http://localhost:8080"
-	waitSyncInterval   = 5
+	waitSyncInterval   = 7
 )
 
 var _ = Describe("REST API Test Suite - Single profile", func() {
@@ -94,6 +94,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		It("launch explorer", func() {
@@ -222,6 +223,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 				action = "invoke"
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
+
+				time.Sleep(waitSyncInterval * time.Second)
 			})
 
 			It("Should include the newly added channel when retrieving channels again", func() {
@@ -328,6 +331,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			action = "invoke"
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
+
+			time.Sleep(waitSyncInterval * time.Second)
 
 		})
 
