@@ -38,19 +38,19 @@
 			"mspid": "Org1ExampleCom",
 			"fullpath": true,
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
+				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
 			"signedCert": {
-				"path": "/tmp/crypto/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
+				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0-org1": {
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
+				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
 			},
-			"url": "grpcs://peer0-org1:31000",
+			"url": "grpcs://localhost:31000",
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0-org1"
 			}

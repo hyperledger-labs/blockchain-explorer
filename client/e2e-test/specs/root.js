@@ -7,21 +7,26 @@
 require('chai').should();
 var path = require('path');
 
-const { spawnSync } = require('child_process');
+const { spawnSync, spawn } = require('child_process');
 const dashboard = require('./dashboard/dashboard.js');
 const network = require('./network/network_view.js');
 const chaincode = require('./chaincode/chaincode_view.js');
 
 describe('GUI e2e test', () => {
+	var fabric_test_path;
+	var rootdir;
+	var network_spec_path;
+
 	before(async function() {
 		this.timeout(180000);
 		const cwd = process.cwd();
-		const fabric_test_path = path.join(
+		rootdir = path.join(cwd, '..');
+		fabric_test_path = path.join(
 			process.env.GOPATH,
 			'/src/github.com/hyperledger/fabric-test',
 			'/tools/operator'
 		);
-		const network_spec_path = path.join(
+		network_spec_path = path.join(
 			cwd,
 			'e2e-test/specs/gui-e2e-test-network-spec.yml'
 		);
@@ -35,10 +40,7 @@ describe('GUI e2e test', () => {
 			{ cwd: fabric_test_path, env: process.env, shell: true }
 		);
 		if (child.error) console.log('network up', child.stderr.toString());
-		if (child.stdout) console.log('network up(stdout)', child.stdout.toString());
-		if (child.stderr) console.log('network up(stderr)', child.stderr.toString());
-
-		console.log('Network started');
+		else console.log('Network started');
 
 		child = spawnSync(
 			'go',
@@ -88,12 +90,53 @@ describe('GUI e2e test', () => {
 		if (child.error) console.log('cc invoke', child.stderr.toString());
 		else console.log('Invoked chaincode');
 
-		process.chdir(cwd);
+		process.chdir(rootdir);
 		child = spawnSync(
-			'docker-compose',
-			['-f', path.join(cwd, 'e2e-test/docker-compose-explorer.yaml'), 'up', '-d'],
-			{ cwd: fabric_test_path, env: process.env, shell: true }
+			'cp',
+			[
+				'-f',
+				path.join(cwd, 'e2e-test/configs/config_guitest.json'),
+				path.join(rootdir, 'app/platform/fabric/config.json')
+			],
+			{ cwd: rootdir, env: process.env, shell: true }
 		);
+		if (child.error) console.log('copy config.json', child.stderr.toString());
+
+		child = spawnSync(
+			'cp',
+			[
+				'-f',
+				path.join(cwd, 'e2e-test/configs/connection-profile/*'),
+				path.join(rootdir, 'app/platform/fabric/connection-profile/')
+			],
+			{ cwd: rootdir, env: process.env, shell: true }
+		);
+		if (child.error)
+			console.log('copy connection profiles', child.stderr.toString());
+
+		child = spawnSync(
+			'sed',
+			[
+				'-i',
+				'-e',
+				`'s|GOPATH|` + process.env.GOPATH + `|'`,
+				path.join(
+					rootdir,
+					'app/platform/fabric/connection-profile/org1-network-for-guitest.json'
+				)
+			],
+			{ cwd: rootdir, env: process.env, shell: true }
+		);
+		if (child.error)
+			console.log('replace GOPATH with actual path', child.stderr.toString());
+		else console.log('copy config.json');
+
+		process.env.LOG_LEVEL_CONSOLE = 'debug';
+		child = spawn('./start.sh', [], {
+			cwd: rootdir,
+			env: process.env,
+			shell: true
+		});
 		if (child.error) console.log('launch explorer', child.stderr.toString());
 		else console.log('Launched explorer');
 
@@ -104,7 +147,7 @@ describe('GUI e2e test', () => {
 	describe('Run each test suite', () => {
 		before(function() {
 			// runs before all tests in this block
-			browser.url('http://explorer.mynetwork.com:8080');
+			browser.url('http://127.0.0.1:8080');
 			// Login
 			console.log('before all');
 			var userInput = browser.$('#user');
@@ -122,8 +165,9 @@ describe('GUI e2e test', () => {
 					console.log('docker ps (stdout)', child.stdout.toString());
 				if (child.stderr)
 					console.log('docker ps (stderr)', child.stderr.toString());
-				child = spawnSync('docker', ['logs', 'explorer.mynetwork.com'], {
-					cwd: fabric_test_path,
+
+				child = spawnSync('cat', [path.join(rootdir, 'logs/console/console.log')], {
+					cwd: rootdir,
 					env: process.env,
 					shell: true
 				});
@@ -131,6 +175,7 @@ describe('GUI e2e test', () => {
 					console.log('docker logs (stdout)', child.stdout.toString());
 				if (child.stderr)
 					console.log('docker logs (stderr)', child.stderr.toString());
+
 				child = spawnSync(
 					'find',
 					['${GOPATH}/src/github.com/hyperledger/fabric-test/tools/operator'],
@@ -146,6 +191,7 @@ describe('GUI e2e test', () => {
 					console.log('find crypto-config (stderr)', child.stderr.toString());
 				return;
 			}
+
 			var signinBtn = browser.$('#root > div > div > div > form > button > span');
 
 			signinBtn.click();
@@ -156,6 +202,28 @@ describe('GUI e2e test', () => {
 			dashboard.test();
 			network.test();
 			chaincode.test();
+		});
+
+		after(function() {
+			process.chdir(fabric_test_path);
+
+			let child = spawnSync(
+				'go',
+				['run', 'main.go', '-i', network_spec_path, '-a', 'down'],
+				{ cwd: fabric_test_path, env: process.env, shell: true }
+			);
+			if (child.error) console.log('network down', child.stderr.toString());
+			else console.log('Network down');
+
+			process.chdir(rootdir);
+
+			child = spawnSync('./stop.sh', [], {
+				cwd: rootdir,
+				env: process.env,
+				shell: true
+			});
+			if (child.error) console.log('stop explorer', child.stderr.toString());
+			else console.log('stop explorer');
 		});
 	});
 });

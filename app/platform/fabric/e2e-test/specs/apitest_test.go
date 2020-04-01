@@ -3,12 +3,12 @@ package apitest
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/go-resty/resty/v2"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
@@ -23,92 +23,11 @@ var (
 	org2CurrentBlockNum int
 )
 
-func CheckHowManyEventHubRegistered() int {
-	arg := fmt.Sprintf(`docker logs explorer.mynetwork.com | grep "Successfully created channel event hub for \[%s\]" | wc -l`, channelMonitored)
-	cmd := exec.Command("sh", "-c", arg)
-	result, err := cmd.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	ret, _ := strconv.Atoi(strings.TrimSuffix(string(result), "\n"))
-	return ret
-}
-
-func CheckIfSwitchedToNewOrderer() int {
-	arg := `docker logs explorer.mynetwork.com | grep "Succeeded to switch default orderer to" | wc -l`
-	cmd := exec.Command("sh", "-c", arg)
-	result, err := cmd.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-	ret, _ := strconv.Atoi(strings.TrimSuffix(string(result), "\n"))
-	return ret
-}
-
-func StopNode(nodeName string) {
-	cmd := exec.Command("docker", "rm", "-f", nodeName)
-	_, err := cmd.Output()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func restGet(path string, data interface{}) *resty.Response {
-	return restGetWithToken(path, data, "")
-}
-
-func restGetWithToken(path string, data interface{}, token string) *resty.Response {
-	client := resty.New()
-	if len(token) != 0 {
-		client.SetAuthToken(token)
-	}
-
-	resp, err := client.R().
-		EnableTrace().
-		SetResult(data).
-		Get("http://localhost:8090" + path)
-
-	Expect(err).ShouldNot(HaveOccurred())
-	return resp
-}
-
-func compareChannelsInfoBlockCount(before *ChannelsInfoResp, after *ChannelsInfoResp, channel string, expectDiff int) {
-	beforeData := before.getChannelData(channel)
-	Expect(beforeData).ShouldNot(Equal(nil))
-	afterData := after.getChannelData(channel)
-	Expect(afterData).ShouldNot(Equal(nil))
-	diff := afterData.Blocks - beforeData.Blocks
-	Expect(diff).Should(Equal(expectDiff))
-}
-
-func compareChannelsInfoTxCount(before *ChannelsInfoResp, after *ChannelsInfoResp, channel string, expectDiff int) {
-	beforeData := before.getChannelData(channel)
-	Expect(beforeData).ShouldNot(Equal(nil))
-	afterData := after.getChannelData(channel)
-	Expect(afterData).ShouldNot(Equal(nil))
-	diff := afterData.Transactions - beforeData.Transactions
-	Expect(diff).Should(Equal(expectDiff))
-}
-
-func restPost(path string, body interface{}, data interface{}) *resty.Response {
-	return restPostWithToken(path, body, data, "")
-}
-
-func restPostWithToken(path string, body interface{}, data interface{}, token string) *resty.Response {
-	client := resty.New()
-	if len(token) != 0 {
-		client.SetAuthToken(token)
-	}
-	resp, err := client.R().
-		EnableTrace().
-		SetHeader("Content-Type", "application/json").
-		SetBody(body).
-		SetResult(data).
-		Post("http://localhost:8090" + path)
-
-	Expect(err).ShouldNot(HaveOccurred())
-	return resp
-}
+const (
+	relativePahtToRoot = "../../../../.."
+	explorerURL        = "http://localhost:8080"
+	waitSyncInterval   = 7
+)
 
 var _ = Describe("REST API Test Suite - Single profile", func() {
 
@@ -175,11 +94,19 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		It("launch explorer", func() {
-			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"single"}, true)
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("./runexplorer.sh", "single")
+			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
 		})
 
 		It("get network list", func() {
@@ -296,6 +223,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 				action = "invoke"
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
+
+				time.Sleep(waitSyncInterval * time.Second)
 			})
 
 			It("Should include the newly added channel when retrieving channels again", func() {
@@ -306,18 +235,16 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 
 			It("Should create a new event hub for the newly added channel within 60s", func() {
 				channelMonitored = "channel2422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422422"
-				Eventually(CheckHowManyEventHubRegistered, 70, 5).Should(Equal(1))
+				Eventually(CheckHowManyEventHubRegistered, 70, 5).Should(Equal(true))
 				channelMonitored = "commonchannel"
-				Expect(CheckHowManyEventHubRegistered()).Should(Equal(1))
+				Expect(CheckHowManyEventHubRegistered()).Should(Equal(true))
 				channelMonitored = "org1channel"
-				Expect(CheckHowManyEventHubRegistered()).Should(Equal(1))
+				Expect(CheckHowManyEventHubRegistered()).Should(Equal(true))
 			})
 
 			It("Should keep running fine even after removing one of orderer peers", func() {
 				StopNode("orderer0-ordererorg1")
-				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(1))
-				StopNode("orderer1-ordererorg1")
-				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(2))
+				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(true))
 			})
 
 		})
@@ -405,11 +332,20 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			err = testclient.Testclient(action, inputSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 
+			time.Sleep(waitSyncInterval * time.Second)
+
 		})
 
 		It("launch explorer", func() {
-			_, err := networkclient.ExecuteCommand("./runexplorer.sh", []string{"multi"}, true)
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("./runexplorer.sh", "multi")
+			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
 		})
 
 		Context("/auth/networklist", func() {
@@ -478,6 +414,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
 
+				time.Sleep(waitSyncInterval * time.Second)
+
 				resp2 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result2 := resp2.Result().(*ChannelsInfoResp)
 				chList := result2.getChannelList()
@@ -489,7 +427,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err := testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
@@ -504,7 +442,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result4 := resp4.Result().(*ChannelsInfoResp)
@@ -519,7 +457,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
@@ -536,6 +474,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
 
+				time.Sleep(waitSyncInterval * time.Second)
+
 				resp2 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result2 := resp2.Result().(*ChannelsInfoResp)
 				chList := result2.getChannelList()
@@ -547,7 +487,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err := testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
@@ -562,7 +502,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result4 := resp4.Result().(*ChannelsInfoResp)
@@ -577,7 +517,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				err = testclient.Testclient(action, inputSpecPath)
 				Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(2 * time.Second)
+				time.Sleep(waitSyncInterval * time.Second)
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
@@ -722,25 +662,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		})
 
 		It("Shutdown network", func() {
-			err := launcher.Launcher("down", "docker", "", networkSpecPath)
-			Expect(err).NotTo(HaveOccurred())
-
-			dockerList := []string{"ps", "-aq", "-f", "status=exited"}
-			containerList, _ := networkclient.ExecuteCommand("docker", dockerList, false)
-			if containerList != "" {
-				list := strings.Split(containerList, "\n")
-				containerArgs := []string{"rm", "-f"}
-				containerArgs = append(containerArgs, list...)
-				networkclient.ExecuteCommand("docker", containerArgs, true)
-			}
-			ccimagesList := []string{"images", "-q", "--filter=reference=dev*"}
-			images, _ := networkclient.ExecuteCommand("docker", ccimagesList, false)
-			if images != "" {
-				list := strings.Split(images, "\n")
-				imageArgs := []string{"rmi", "-f"}
-				imageArgs = append(imageArgs, list...)
-				networkclient.ExecuteCommand("docker", imageArgs, true)
-			}
+			cleanupContainers(networkSpecPath)
 		})
 	})
 

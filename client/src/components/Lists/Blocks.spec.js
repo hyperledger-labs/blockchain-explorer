@@ -442,11 +442,12 @@ describe('Blocks', () => {
 	test('Simulate onClick when a tansaction is clicked the TransactionView modal should exist', async () => {
 		const { wrapper } = setup();
 		expect(wrapper.find(TransactionView).exists()).toBe(false);
-		await wrapper
+		wrapper
 			.find('TdComponent')
 			.find('a')
 			.at(1)
 			.simulate('click');
+		await Promise.resolve();
 		wrapper.update();
 		expect(wrapper.find(TransactionView).exists()).toBe(true);
 	});

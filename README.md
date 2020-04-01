@@ -106,7 +106,7 @@ blockchain-explorer
 # 3.0 Dependencies    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 Following are the software dependencies required to install and run hyperledger explorer:
-* Nodejs 8.11.x (Note that v9.x is not yet supported)
+* Nodejs 10.19+
 * PostgreSQL 9.5 or greater
 * [jq](https://stedolan.github.io/jq)
 * Linux-based operating system, such as Ubuntu or MacOS
