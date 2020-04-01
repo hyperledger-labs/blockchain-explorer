@@ -1,3 +1,24 @@
+## v1.0.0-rc3
+
+* [abf707b](https://github.com/hyperledger/blockchain-explorer/commit/abf707b) [BE-735](https://jira.hyperledger.org/browse/BE-735) Update node.js version to 10.19 supported by fabric-sdk-node (#95)
+* [806c426](https://github.com/hyperledger/blockchain-explorer/commit/806c426) Fix "Related Information" heading tag level 4 to 5 (#93)
+* [5734ad4](https://github.com/hyperledger/blockchain-explorer/commit/5734ad4) [BE-734](https://jira.hyperledger.org/browse/BE-734) Upgrade for fabric v1.4.6 support (#92)
+* [96c38fd](https://github.com/hyperledger/blockchain-explorer/commit/96c38fd) Append troubleshoot about explorer failes to start (#91)
+* [aaab589](https://github.com/hyperledger/blockchain-explorer/commit/aaab589) [BE-733](https://jira.hyperledger.org/browse/BE-733) Implement logout (#90)
+* [09b9cf9](https://github.com/hyperledger/blockchain-explorer/commit/09b9cf9) Fix enableAuthentication bug and enable auto-login (#83)
+* [f31684d](https://github.com/hyperledger/blockchain-explorer/commit/f31684d) Update docker-compose.yaml (#88)
+* [003c9c9](https://github.com/hyperledger/blockchain-explorer/commit/003c9c9) Bump acorn from 6.1.1 to 6.4.1 (#86)
+* [cbed774](https://github.com/hyperledger/blockchain-explorer/commit/cbed774) Bump acorn from 5.7.3 to 5.7.4 in /client (#85)
+* [0a97490](https://github.com/hyperledger/blockchain-explorer/commit/0a97490) [BE-730](https://jira.hyperledger.org/browse/BE-730) Multi profile support  (#87)
+* [4b00206](https://github.com/hyperledger/blockchain-explorer/commit/4b00206) explorer exits due to ECONNREFUSED to port 5432 (#84)
+* [d2af48b](https://github.com/hyperledger/blockchain-explorer/commit/d2af48b) Reimplement e2e-test for API & GUI with fabric operator (#81)
+* [cd55792](https://github.com/hyperledger/blockchain-explorer/commit/cd55792) Added info on Iroha support (#80)
+* [8a3d0a2](https://github.com/hyperledger/blockchain-explorer/commit/8a3d0a2) Update Azure badge pointer (#74)
+* [d2dfa5d](https://github.com/hyperledger/blockchain-explorer/commit/d2dfa5d) Update instructions (#73)
+* [6b2393d](https://github.com/hyperledger/blockchain-explorer/commit/6b2393d) Be 720 update log4js (#72)
+* [4819c9b](https://github.com/hyperledger/blockchain-explorer/commit/4819c9b) [BE-723](https://jira.hyperledger.org/browse/BE-723) Fix files detected by license scan (#71)
+* [faed74d](https://github.com/hyperledger/blockchain-explorer/commit/faed74d) [BE-722](https://jira.hyperledger.org/browse/BE-722) Update troubleshoot doc (#70)
+
 ## v1.0.0-rc2
 
 * [96134fa](https://github.com/hyperledger/blockchain-explorer/commit/96134fa) [BE-719](https://jira.hyperledger.org/browse/BE-719) Fix parameter tampering (#68)
