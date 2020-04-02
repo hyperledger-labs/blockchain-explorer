@@ -53,9 +53,7 @@
 	},
 	"license": "Apache-2.0",
 	"devDependencies": {
-		"babel-eslint": "10.0.1",
 		"cross-env": "^5.2.0",
-		"eslint": "^5.16.0",
 		"eslint-config-airbnb": "^17.0.0",
 		"eslint-plugin-import": "^2.13.0",
 		"eslint-plugin-jsx-a11y": "^6.1.0",
