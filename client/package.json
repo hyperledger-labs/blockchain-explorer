@@ -37,7 +37,7 @@
 		"react-refetch": "^1.0.4",
 		"react-router": "^4.2.0",
 		"react-router-dom": "^4.2.2",
-		"react-scripts": "3.0.0",
+		"react-scripts": "^3.4.1",
 		"react-select": "^1.2.1",
 		"react-slick": "^0.18.1",
 		"react-swipeable-views": "^0.12.12",
