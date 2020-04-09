@@ -30,6 +30,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 - [7.0 Configure Hyperledger Fabric ](#Configure-Hyperledger-Fabric)
 - [7.1 Optional: Configure Fabcar Sample ](#Configure-Fabcar-Sample)
 - [7.2 Optional: Configure Balance Transfer Sample ](#Configure-Balance-Transfer-Sample)
+- [7.3 Optional: Configure for monitoring multiple organizations](#Configure-Multiple-Organization)
 - [8.0 Hyperledger Composer Setup ](#Hyperledger-Composer-Setup)
   - [8.1 Configure Hyperledger Explorer for Composer ](#Configure-Hyperledger-Explorer-for-Composer)
 - [9.0 Optional: Hyperledger Cello Setup ](#Hyperledger-Cello-Setup)
@@ -267,6 +268,27 @@ Setup Fabcar sample network by following [Fabcar Sample Network](https://hyperle
 - Balance Transfer Sample network based on this link [CONFIG-BALANCE-TRANSFER-HLEXPLORER.md](CONFIG-BALANCE-TRANSFER-HLEXPLORER.md)
 
 
+<a name="Configure-Multiple-Organization" />
+
+# 7.3 Optional: Configure for monitoring multiple organizations    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+
+You can also configure multiple profiles in `config.json` for monitoring multiple organizations in a single Explorer instance. It's quite straightforward. You just need to prepare config.json as below and connection profile for each organization (for example: org1-network.json & org1-network.json). Note that you need to initialize your backend database once when applying v1.0.0-rc3 and above first time in your local environment. Because we've changed database schema in backend database since this version.
+
+```json
+{
+	"network-configs": {
+		"org1-network": {
+			"name": "org1-network",
+			"profile": "./connection-profile/org1-network.json"
+		},
+		"org2-network": {
+			"name": "org2-network",
+			"profile": "./connection-profile/org2-network.json"
+		}
+	},
+	"license": "Apache-2.0"
+}
+```
 
 <a name="Hyperledger-Composer-Setup" />
 
