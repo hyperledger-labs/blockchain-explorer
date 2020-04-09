@@ -1,3 +1,9 @@
+## v1.0.0
+
+* [e9dad2a](https://github.com/hyperledger/blockchain-explorer/commit/e9dad2a) [BE-740](https://jira.hyperledger.org/browse/BE-740) Update the document for multi-org (#99)
+* [1b85f7d](https://github.com/hyperledger/blockchain-explorer/commit/1b85f7d) BE 727 Security vulnerability in "react-scripts" (#98)
+* [3cf378b](https://github.com/hyperledger/blockchain-explorer/commit/3cf378b) [BE-738](https://jira.hyperledger.org/browse/BE-738) Update info regarding required environment (#97)
+
 ## v1.0.0-rc3
 
 * [abf707b](https://github.com/hyperledger/blockchain-explorer/commit/abf707b) [BE-735](https://jira.hyperledger.org/browse/BE-735) Update node.js version to 10.19 supported by fabric-sdk-node (#95)
