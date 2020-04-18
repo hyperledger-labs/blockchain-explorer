@@ -741,7 +741,6 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
     organizations:
     { Org1MSP:
         { mspid: 'Org1MSP',
-            fullpath: true,
             adminPrivateKey: [Object],
             signedCert: [Object] } },
     peers:
@@ -901,7 +900,6 @@ adminPrivateKeyPath  /Users/USER_ID/workspace/fabric-1.3/fabric-samples/balance-
     organizations:
     { Org1MSP:
         { mspid: 'Org1MSP',
-            fullpath: true,
             adminPrivateKey: [Object],
             signedCert: [Object] } },
     peers:

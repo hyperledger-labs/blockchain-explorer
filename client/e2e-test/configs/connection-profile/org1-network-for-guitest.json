@@ -36,7 +36,6 @@
 	"organizations": {
 		"org1": {
 			"mspid": "Org1ExampleCom",
-			"fullpath": true,
 			"adminPrivateKey": {
 				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
