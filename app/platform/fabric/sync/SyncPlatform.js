@@ -94,9 +94,7 @@ class SyncPlatform {
 		global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
 		global.hfc.config.set('initialize-with-discovery', true);
 
-		const client_configs = network_configs[this.network_name];
-
-		this.client_configs = await FabricUtils.setOrgEnrolmentPath(client_configs);
+		this.client_configs = network_configs[this.network_name];
 
 		this.client = await FabricUtils.createFabricClient(
 			this.client_configs,

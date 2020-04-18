@@ -95,15 +95,7 @@ class Platform {
 
 		// Setting organization enrolment files
 		logger.debug('Setting admin organization enrolment files');
-		try {
-			this.network_configs = await FabricUtils.setAdminEnrolmentPath(
-				network_configs
-			);
-		} catch (e) {
-			logger.error(e);
-			clientstatus = false;
-			this.network_configs = network_configs;
-		}
+		this.network_configs = network_configs;
 
 		for (const network_name in this.network_configs) {
 			// this.networks.set(network_name, new Map());
