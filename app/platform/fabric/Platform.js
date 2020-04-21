@@ -122,7 +122,7 @@ class Platform {
 			}
 
 			// Create client instance
-			logger.debug('Creating client [%s] >> ', client_configs, client_name);
+			logger.debug('Creating client [%s] >> ', client_name, client_configs);
 
 			let client;
 
