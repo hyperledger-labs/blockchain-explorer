@@ -98,75 +98,6 @@ function processTLS_URL(client_config) {
 /**
  *
  *
- * @param {*} network_configs
- * @returns
- */
-async function setAdminEnrolmentPath(network_configs) {
-	for (const network_name in network_configs) {
-		network_configs[network_name] = setOrgEnrolmentPath(
-			network_configs[network_name]
-		);
-	}
-	return network_configs;
-}
-
-/**
- *
- *
- * @param {*} network_config
- * @returns
- */
-function setOrgEnrolmentPath(network_config) {
-	if (network_config && network_config.organizations) {
-		for (const organization_name in network_config.organizations) {
-			/*
-			 * Checking files path is defined as full path or directory
-			 * If directory, then it will consider the first file
-			 */
-			const organization = network_config.organizations[organization_name];
-			if (!organization.fullpath) {
-				// Setting admin private key as first file from keystore dir
-				logger.debug(
-					'Organization [%s] enrolment files path defined as directory',
-					organization_name
-				);
-				if (organization.adminPrivateKey) {
-					const privateKeyPath = organization.adminPrivateKey.path;
-					try {
-						const files = fs.readdirSync(privateKeyPath);
-						if (files && files.length > 0) {
-							organization.adminPrivateKey.path = path.join(privateKeyPath, files[0]);
-						}
-					} catch (err) {
-						logger.error(err);
-					}
-				}
-				// Setting admin private key as first file from signcerts dir
-				if (organization.signedCert) {
-					const signedCertPath = organization.signedCert.path;
-					try {
-						const files = fs.readdirSync(signedCertPath);
-						if (files && files.length > 0) {
-							organization.signedCert.path = path.join(signedCertPath, files[0]);
-						}
-					} catch (err) {
-						logger.error(err);
-					}
-				}
-			} else {
-				logger.debug(
-					'Organization [%s] enrolment files path defined as full path',
-					organization_name
-				);
-			}
-		}
-	}
-	return network_config;
-}
-
-/**
- *
- *
  * @param {*} dateStr
  * @returns
  */
@@ -259,8 +190,6 @@ function readFileSync(config_path) {
 	}
 }
 
-exports.setAdminEnrolmentPath = setAdminEnrolmentPath;
-exports.setOrgEnrolmentPath = setOrgEnrolmentPath;
 exports.generateBlockHash = generateBlockHash;
 exports.createFabricClient = createFabricClient;
 exports.getBlockTimeStamp = getBlockTimeStamp;
