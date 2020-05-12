@@ -105,12 +105,12 @@ CREATE TABLE peer
   id SERIAL PRIMARY KEY,
   org integer DEFAULT NULL,
   channel_genesis_hash character varying(256) DEFAULT NULL,
-  mspid varchar(64) DEFAULT NULL,
-  requests varchar(64) DEFAULT NULL,
-  events varchar(64) DEFAULT NULL,
-  server_hostname varchar(64) DEFAULT NULL,
+  mspid varchar(256) DEFAULT NULL,
+  requests varchar(256) DEFAULT NULL,
+  events varchar(256) DEFAULT NULL,
+  server_hostname varchar(256) DEFAULT NULL,
   createdt timestamp DEFAULT NULL,
-  peer_type character varying(64) DEFAULT NULL,
+  peer_type character varying(256) DEFAULT NULL,
   network_name varchar(255)
 );
 ALTER table peer owner to :user;
