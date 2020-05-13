@@ -80,7 +80,7 @@ class FabricGateway {
 		);
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		this.mspId = orgMsp[0];
+		this.mspId = orgMsp;
 		let caURL = [];
 		let serverCertPath = null;
 		({ caURL, serverCertPath } = this.fabricConfig.getCertificateAuthorities());
