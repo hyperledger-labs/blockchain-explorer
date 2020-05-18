@@ -3,12 +3,9 @@
  */
 
 const Fabric_Client = require('fabric-client');
+const { BlockDecoder, User } = require('fabric-common');
 const path = require('path');
 
-const Constants = require('fabric-client/lib/Constants.js');
-
-const BlockDecoder = require('fabric-client/lib/BlockDecoder');
-const User = require('fabric-client/lib/User.js');
 const ExplorerError = require('../../common/ExplorerError');
 const FabricUtils = require('./utils/FabricUtils.js');
 const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
@@ -16,8 +13,6 @@ const FabricConfig = require('../fabric/FabricConfig');
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('FabricClient');
-
-const ROLES = Constants.NetworkConfig.ROLES;
 
 const explorer_mess = require('../../common/ExplorerMessage').explorer;
 
@@ -44,13 +39,9 @@ class FabricClient {
 		this.channelsGenHash = new Map();
 		this.client_config = null;
 		this.config = null;
-		this.peerroles = {};
 		this.status = false;
 		this.tls = false;
-		this.asLocalhost = null;
-		for (const role of ROLES) {
-			this.peerroles[role] = role;
-		}
+		this.asLocalhost = false;
 	}
 
 	/**
@@ -79,13 +70,7 @@ class FabricClient {
 			// Use Gateway to connect to fabric network
 			this.fabricGateway = new FabricGateway(configPath);
 			await this.fabricGateway.initialize();
-			this.hfc_client = await this.fabricGateway.getClient();
-			this.hfc_client.setConfigSetting('initialize-with-discovery', true);
-			/* eslint-disable */
-			this.asLocalhost =
-				String(
-					this.hfc_client.getConfigSetting('discovery-as-localhost', 'true')
-				) === 'true';
+			this.hfc_client = Fabric_Client.loadFromConfig(this.fabricGateway.config);
 			/* eslint-enable */
 			const channel_name = this.fabricGateway.getDefaultChannelName();
 			this.defaultPeer = this.fabricGateway.getDefaultPeer();
@@ -104,6 +89,10 @@ class FabricClient {
 			} else {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
+			this.asLocalhost =
+				String(
+					this.hfc_client.getConfigSetting('discovery-as-localhost', 'true')
+				) === 'true';
 			// Enable discover service
 			await this.defaultChannel.initialize({
 				discover: true,
@@ -286,72 +275,6 @@ class FabricClient {
 		}
 		if (this.defaultPeer === undefined) {
 			throw new ExplorerError(explorer_mess.error.ERROR_2005);
-		}
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} client_config
-	 * @returns
-	 * @memberof FabricClient
-	 */
-	async getRegisteredUser(client_config) {
-		let username = null;
-		try {
-			username = Fabric_Client.getConfigSetting('enroll-id', 'dflt_hlbeuser');
-			const userOrg = client_config.client.organization;
-
-			logger.debug('Successfully initialized the credential stores');
-
-			/*
-			 * Client can now act as an agent for the specified organization
-			 * First check to see if the user is already enrolled
-			 */
-			let user = await this.hfc_client.getUserContext(username, true);
-			if (user && user.isEnrolled()) {
-				logger.info('Successfully loaded member from persistence [%s]', username);
-			} else {
-				// User was not enrolled, so we will need an admin user object to register
-				logger.info(
-					'User %s was not enrolled, so we will need an admin user object to register',
-					username
-				);
-
-				const adminUserObj = await this.hfc_client.setUserContext({
-					username: Fabric_Client.getConfigSetting('admin-username', 'admin'),
-					password: Fabric_Client.getConfigSetting('admin-secret', 'adminpw')
-				});
-				const caClient = this.hfc_client.getCertificateAuthority();
-				const secret = await caClient.register(
-					{
-						enrollmentID: username,
-						affiliation:
-							userOrg.toLowerCase() +
-							Fabric_Client.getConfigSetting('enroll-affiliation', '')
-					},
-					adminUserObj
-				);
-				logger.debug('Successfully got the secret for user %s', username);
-				user = await this.hfc_client.setUserContext({
-					username: username,
-					password: secret
-				});
-				logger.debug(
-					'Successfully enrolled username %s  and setUserContext on the client object',
-					username
-				);
-			}
-			if (!user || !user.isEnrolled) {
-				throw new Error('User was not enrolled ');
-			}
-		} catch (error) {
-			logger.error(
-				'Failed to get registered user: %s with error: %s',
-				username,
-				error.toString()
-			);
-			return 'failed ' + error.toString();
 		}
 	}
 
