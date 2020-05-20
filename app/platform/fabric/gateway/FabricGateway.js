@@ -62,7 +62,7 @@ class FabricGateway {
 		const peers = this.fabricConfig.getPeers();
 		this.defaultPeer = peers[0].name;
 		this.defaultPeerUrl = peers[0].url;
-		let orgMsp = [];
+		let orgMsp;
 		let signedCertPath;
 		let adminPrivateKeyPath;
 		logger.log('========== > defaultPeer ', this.defaultPeer);
