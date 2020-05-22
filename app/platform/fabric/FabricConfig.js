@@ -63,6 +63,16 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
+	getOrganization() {
+		return this.config.client.organization;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getTls() {
 		logger.info('config.client.tlsEnable ', this.config.client.tlsEnable);
 		return this.config.client.tlsEnable;
@@ -172,20 +182,12 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getOrganizationsConfig() {
-		const orgMsp = [];
-		let adminPrivateKeyPath;
-		let signedCertPath;
-		for (const x in this.config.organizations) {
-			if (this.config.organizations[x].mspid) {
-				orgMsp.push(this.config.organizations[x].mspid);
-			}
-			if (this.config.organizations[x].adminPrivateKey) {
-				adminPrivateKeyPath = this.config.organizations[x].adminPrivateKey.path;
-			}
-			if (this.config.organizations[x].signedCert) {
-				signedCertPath = this.config.organizations[x].signedCert.path;
-			}
-		}
+		const organization = this.config.organizations[this.getOrganization()];
+
+		const orgMsp = organization.mspid;
+		const adminPrivateKeyPath = organization.adminPrivateKey.path;
+		const signedCertPath = organization.signedCert.path;
+
 		return { orgMsp, adminPrivateKeyPath, signedCertPath };
 	}
 
