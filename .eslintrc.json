@@ -431,7 +431,7 @@
 					"guitest",
 					"configfiles"
 				],
-				"skipIfMatch": ["http://[^s]*"],
+				"skipIfMatch": ["http://[^s]*", "[a-z]scc"],
 				"skipWordIfMatch": ["^foobar.*$"],
 				"minLength": 3
 			}

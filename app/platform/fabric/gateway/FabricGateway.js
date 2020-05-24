@@ -4,6 +4,7 @@
 
 const { Wallets, Gateway } = require('fabric-network');
 const { Client } = require('fabric-common');
+const fabprotos = require('fabric-protos');
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -251,6 +252,17 @@ class FabricGateway {
 			logger.error(error);
 		}
 		return identityInfo;
+	}
+
+	async queryChannels() {
+		const network = await this.gateway.getNetwork(this.defaultChannelName);
+
+		// Get the contract from the network.
+		const contract = network.getContract('cscc');
+		const result = await contract.evaluateTransaction('GetChannels');
+		const resultJson = fabprotos.protos.ChannelQueryResponse.decode(result);
+		logger.info('queryChannels :', resultJson);
+		return resultJson;
 	}
 }
 
