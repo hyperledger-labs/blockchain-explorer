@@ -388,10 +388,10 @@ class SyncServices {
 		if (results) {
 			for (const result of results) {
 				// Get block by number
-				const block = await client
-					.getHFC_Client()
-					.getChannel(channel_name)
-					.queryBlock(result.missing_id, client.getDefaultPeer(), true);
+				const block = await client.fabricGateway.queryBlock(
+					channel_name,
+					result.missing_id
+				);
 				await this.processBlockEvent(client, block);
 			}
 		} else {
@@ -414,6 +414,9 @@ class SyncServices {
 		const _self = this;
 		// Get the first transaction
 		const first_tx = block.data.data[0];
+		logger.info('processBlockEvent: block ', block);
+		logger.info('processBlockEvent: block.data.data', block.data.data);
+		logger.info('processBlockEvent: first_tx ', first_tx);
 		// The 'header' object contains metadata of the transaction
 		const header = first_tx.payload.header;
 		const channel_name = header.channel_header.channel_id;
