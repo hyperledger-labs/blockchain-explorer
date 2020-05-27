@@ -197,6 +197,17 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
+	getMspId() {
+		const organization = this.config.organizations[this.getOrganization()];
+		return organization.mspid;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getServerCertPath() {
 		let serverCertPath = null;
 		if (this.config.certificateAuthorities) {

@@ -105,15 +105,6 @@
 		"react/prefer-stateless-function": ["off"],
 		"react/sort-comp": ["off"],
 		"react/jsx-one-expression-per-line": ["off"],
-
-		"overrides": [
-			{
-				"files": ["*.spec.js", "**/app/test/**"],
-				"rules": {
-					"no-unused-expressions": "off"
-				}
-			}
-		],
 		"padded-blocks": "off",
 		"camelcase": ["off"],
 		"no-magic-numbers": ["off"],
@@ -445,5 +436,13 @@
 				"minLength": 3
 			}
 		]
-	}
+	},
+	"overrides": [
+		{
+			"files": ["*.spec.js", "**/app/test/**"],
+			"rules": {
+				"no-unused-expressions": "off"
+			}
+		}
+	]
 }

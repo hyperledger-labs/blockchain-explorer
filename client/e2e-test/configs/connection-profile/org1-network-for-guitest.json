@@ -39,6 +39,7 @@
 			"adminPrivateKey": {
 				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
+			"peers": ["peer0-org1"],
 			"signedCert": {
 				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
