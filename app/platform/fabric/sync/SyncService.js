@@ -2,8 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const grpc = require('grpc');
 const convertHex = require('convert-hex');
+const fabprotos = require('fabric-protos');
+
 const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('SyncServices');
@@ -14,18 +15,13 @@ const fabric_const = require('../../../platform/fabric/utils/FabricConst')
 const explorer_error = require('../../../common/ExplorerMessage').explorer
 	.error;
 
-const _transProto = grpc.load(
-	`${__dirname}/../../../../node_modules/fabric-client/lib/protos/peer/transaction.proto`
-).protos;
-
 const blocksInProcess = [];
 
 // Transaction validation code
 const _validation_codes = {};
-const keys = Object.keys(_transProto.TxValidationCode);
-for (let i = 0; i < keys.length; i++) {
-	const new_key = _transProto.TxValidationCode[keys[i]];
-	_validation_codes[new_key] = keys[i];
+for (const key in fabprotos.protos.TxValidationCode) {
+	const new_key = fabprotos.protos.TxValidationCode[key];
+	_validation_codes[new_key] = key;
 }
 
 /**
@@ -679,9 +675,7 @@ class SyncServices {
 					channel_name,
 					title: `Block ${block.header.number} added to Channel: ${channel_name}`,
 					type: 'block',
-					message: `Block ${block.header.number} established with ${
-						block.data.data.length
-					} tx`,
+					message: `Block ${block.header.number} established with ${block.data.data.length} tx`,
 					time: createdt,
 					txcount: block.data.data.length,
 					datahash: block.header.data_hash,

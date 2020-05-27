@@ -38,6 +38,7 @@
 			"adminPrivateKey": {
 				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/d30992c2b7799bc5c65bf6e4839369c7dd3edf0b786eecd4a9d3a3b207d8863f_sk"
 			},
+			"peers": ["peer0.org1.example.com"],
 			"signedCert": {
 				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
 			}

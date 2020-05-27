@@ -39,6 +39,7 @@
 			"adminPrivateKey": {
 				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
+			"peers": ["peer0-org1"],
 			"certificateAuthorities": ["ca0"],
 			"signedCert": {
 				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"

@@ -2,11 +2,8 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const {
-	FileSystemWallet,
-	Gateway,
-	X509WalletMixin
-} = require('fabric-network');
+const { Wallets, Gateway } = require('fabric-network');
+const { Client } = require('fabric-common');
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -24,10 +21,7 @@ class FabricGateway {
 		this.networkConfig = networkConfig;
 		this.config = null;
 		this.gateway = null;
-		this.userName = null;
 		this.enrollmentSecret = null;
-		this.identityLabel = null;
-		this.mspId = null;
 		this.wallet = null;
 		this.tlsEnable = false;
 		this.defaultChannelName = null;
@@ -40,6 +34,7 @@ class FabricGateway {
 		this.client = null;
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
+		this.asLocalhost = false;
 	}
 
 	async initialize() {
@@ -49,11 +44,9 @@ class FabricGateway {
 		this.config = this.fabricConfig.getConfig();
 		this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
 		this.tlsEnable = this.fabricConfig.getTls();
-		this.userName = this.fabricConfig.getAdminUser();
 		this.enrollmentSecret = this.fabricConfig.getAdminPassword();
 		this.enableAuthentication = this.fabricConfig.getEnableAuthentication();
 		this.networkName = this.fabricConfig.getNetworkName();
-		this.identityLabel = this.userName;
 		this.FSWALLET = 'wallet/' + this.networkName;
 
 		const info = `Loading configuration  ${this.config}`;
@@ -73,74 +66,64 @@ class FabricGateway {
 			signedCertPath
 		} = this.fabricConfig.getOrganizationsConfig());
 		logger.log(
-			'signedCertPath ',
+			'orgMsp :',
+			orgMsp,
+			'\n',
+			'signedCertPath :',
 			signedCertPath,
-			' \nadminPrivateKeyPath ',
+			'\n',
+			'adminPrivateKeyPath ',
 			adminPrivateKeyPath
 		);
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		this.mspId = orgMsp;
-		let caURL = [];
-		let serverCertPath = null;
-		({ caURL, serverCertPath } = this.fabricConfig.getCertificateAuthorities());
+		const caURLs = this.fabricConfig.getCertificateAuthorities();
 		/* eslint-enable */
 		let identity;
-		let enrollment;
-
 		try {
 			// Create a new file system based wallet for managing identities.
 			const walletPath = path.join(process.cwd(), this.FSWALLET);
-			this.wallet = new FileSystemWallet(walletPath);
+			this.wallet = await Wallets.newFileSystemWallet(walletPath);
 			// Check to see if we've already enrolled the admin user.
-			const adminExists = await this.wallet.exists(this.userName);
-			if (adminExists) {
+			identity = await this.wallet.get(this.fabricConfig.getAdminUser());
+			if (identity) {
 				logger.debug(
-					`An identity for the admin user: ${
-						this.userName
-					} already exists in the wallet`
+					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
 				);
-				await this.wallet.export(this.userName);
-			} else if (!adminExists) {
-				if (this.fabricCaEnabled) {
-					({ enrollment, identity } = await this._enrollCaIdentity(
-						caURL,
-						enrollment,
-						identity
-					));
-				} else {
-					/*
-					 * Identity credentials to be stored in the wallet
-					 * Look for signedCert in first-network-connection.json
-					 */
-					identity = await this._enrollUserIdentity(
-						signedCertPath,
-						adminPrivateKeyPath,
-						identity
-					);
-				}
+			} else if (this.fabricCaEnabled) {
+				identity = await this.enrollCaIdentity(
+					this.fabricConfig.getAdminUser(),
+					this.fabricConfig.getAdminPassword()
+				);
+			} else {
+				/*
+				 * Identity credentials to be stored in the wallet
+				 * Look for signedCert in first-network-connection.json
+				 */
+				identity = this.enrollUserIdentity(
+					this.fabricConfig.getAdminUser(),
+					signedCertPath,
+					adminPrivateKeyPath
+				);
 			}
 
 			// Set connection options; identity and wallet
+			this.asLocalhost =
+				String(Client.getConfigSetting('discovery-as-localhost', 'true')) ===
+				'true';
+
 			const connectionOptions = {
-				identity: this.userName,
-				mspId: this.mspId,
+				identity: this.fabricConfig.getAdminUser(),
 				wallet: this.wallet,
 				discovery: {
-					enabled: true
-				},
-				clientTlsIdentity: this.userName,
-				eventHandlerOptions: {
-					commitTimeout: 100
+					enabled: true,
+					asLocalhost: this.asLocalhost
 				}
 			};
 
 			// Connect to gateway
-			await this.gateway.connect(
-				this.config,
-				connectionOptions
-			);
-			this.client = this.gateway.getClient();
+			await this.gateway.connect(this.config, connectionOptions);
+			// this.client = this.gateway.getClient();
 		} catch (error) {
 			logger.error(` ${error}`);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
@@ -162,10 +145,10 @@ class FabricGateway {
 	}
 
 	getDefaultMspId() {
-		return this.mspId;
+		return this.fabricConfig.getMspId();
 	}
 	async getClient() {
-		return this.gateway.getClient();
+		return this.client;
 	}
 
 	getTls() {
@@ -180,15 +163,22 @@ class FabricGateway {
 	 * @private method
 	 *
 	 */
-	async _enrollUserIdentity(signedCertPath, adminPrivateKeyPath, identity) {
+	async enrollUserIdentity(userName, signedCertPath, adminPrivateKeyPath) {
 		const _signedCertPath = signedCertPath;
 		const _adminPrivateKeyPath = adminPrivateKeyPath;
 		const cert = fs.readFileSync(_signedCertPath, 'utf8');
 		// See in first-network-connection.json adminPrivateKey key
 		const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
-		identity = X509WalletMixin.createIdentity(this.mspId, cert, key);
-		logger.log('this.identityLabel ', this.identityLabel);
-		await this.wallet.import(this.identityLabel, identity);
+		const identity = {
+			credentials: {
+				certificate: cert,
+				privateKey: key
+			},
+			mspId: this.fabricConfig.getMspId(),
+			type: 'X.509'
+		};
+		logger.log('enrollUserIdentity: userName :', userName);
+		await this.wallet.put(userName, identity);
 		return identity;
 	}
 
@@ -196,42 +186,57 @@ class FabricGateway {
 	 * @private method
 	 *
 	 */
-	async _enrollCaIdentity(caURL, enrollment, identity) {
-		try {
-			logger.log(
-				'this.fabricCaEnabled ',
-				this.fabricCaEnabled,
-				' caURL[0] ',
-				caURL
-			);
-			if (this.fabricCaEnabled) {
-				const ca = new FabricCAServices(caURL[0]);
-				enrollment = await ca.enroll({
-					enrollmentID: this.userName,
-					enrollmentSecret: this.fabricConfig.getAdminPassword()
-				});
-				logger.log('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment ', enrollment);
-				identity = X509WalletMixin.createIdentity(
-					this.mspId,
-					enrollment.certificate,
-					enrollment.key.toBytes()
-				);
-				logger.log('identity ', identity);
-				// Import identity wallet
-				await this.wallet.import(this.identityLabel, identity);
-			}
-		} catch (error) {
-			/*
-			 * TODO add explanation for message 'Calling enrollment endpoint failed with error [Error: connect ECONNREFUSED 127.0.0.1:7054]'
-			 * Reason : no fabric running, check your network
-			 */
-			logger.error('Error instantiating FabricCAServices ', error);
-			// TODO decide how to proceed if error
+	async enrollCaIdentity(id, secret) {
+		if (!this.fabricCaEnabled) {
+			logger.error('CA server is not configured');
+			return null;
 		}
-		return {
-			enrollment,
-			identity
-		};
+
+		try {
+			const caConfig = this.fabricConfig.getCertificateAuthorities();
+			const tlsCACert = fs.readFileSync(caConfig.serverCertPath, 'utf8');
+
+			const ca = new FabricCAServices(caConfig.caURL[0], {
+				trustedRoots: tlsCACert,
+				verify: false
+			});
+
+			const enrollment = await ca.enroll({
+				enrollmentID: id,
+				enrollmentSecret: secret
+			});
+			logger.log('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment ', enrollment);
+
+			const identity = {
+				credentials: {
+					certificate: enrollment.certificate,
+					privateKey: enrollment.key.toBytes()
+				},
+				mspId: this.fabricConfig.getMspId(),
+				type: 'X.509'
+			};
+			logger.log('identity ', identity);
+			// Import identity wallet
+			await this.wallet.put(id, identity);
+			logger.debug('Successfully get user enrolled and imported to wallet, ', id);
+
+			return identity;
+		} catch (error) {
+			// TODO decide how to proceed if error
+			logger.error('Error instantiating FabricCAServices ', error);
+			return null;
+		}
+	}
+
+	async getUserContext(user) {
+		const identity = await this.wallet.get(user);
+		if (!identity) {
+			logger.error('Not exist user :', user);
+			return null;
+		}
+		const provider = this.wallet.getProviderRegistry().getProvider(identity.type);
+		const userContext = await provider.getUserContext(identity, user);
+		return userContext;
 	}
 
 	async getIdentityInfo(label) {
