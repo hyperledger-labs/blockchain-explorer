@@ -788,6 +788,21 @@ class FabricClient {
 	/**
 	 *
 	 *
+	 * @param {*} channel_genesis_hash
+	 * @returns
+	 * @memberof FabricClient
+	 */
+	getChannelNameByHash(channel_genesis_hash) {
+		for (const [channel_name, hash_name] of this.channelsGenHash.entries()) {
+			if (channel_genesis_hash === hash_name) {
+				return channel_name;
+			}
+		}
+	}
+
+	/**
+	 *
+	 *
 	 * @param {*} channel_name
 	 * @returns
 	 * @memberof FabricClient

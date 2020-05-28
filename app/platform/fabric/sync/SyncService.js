@@ -388,10 +388,10 @@ class SyncServices {
 		if (results) {
 			for (const result of results) {
 				// Get block by number
-				const block = await client
-					.getHFC_Client()
-					.getChannel(channel_name)
-					.queryBlock(result.missing_id, client.getDefaultPeer(), true);
+				const block = await client.fabricGateway.queryBlock(
+					channel_name,
+					result.missing_id
+				);
 				await this.processBlockEvent(client, block);
 			}
 		} else {
