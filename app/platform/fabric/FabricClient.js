@@ -108,7 +108,7 @@ class FabricClient {
 		let channels;
 		try {
 			logger.debug('this.defaultPeer ', this.defaultPeer);
-			channels = await this.hfc_client.queryChannels(this.defaultPeer, true);
+			channels = await this.fabricGateway.queryChannels();
 		} catch (e) {
 			logger.error(e);
 		}

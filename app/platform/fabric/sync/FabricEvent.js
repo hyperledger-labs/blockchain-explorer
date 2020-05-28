@@ -186,9 +186,7 @@ class FabricEvent {
 	 */
 	async synchBlocks() {
 		// getting all channels list from client ledger
-		const channels = await this.client
-			.getHFC_Client()
-			.queryChannels(this.client.getDefaultPeer().getName(), true);
+		const channels = await this.client.fabricGateway.queryChannels();
 
 		for (const channel of channels.channels) {
 			const channel_name = channel.channel_id;
