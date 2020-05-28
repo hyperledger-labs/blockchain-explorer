@@ -261,7 +261,6 @@ class FabricGateway {
 		const contract = network.getContract('cscc');
 		const result = await contract.evaluateTransaction('GetChannels');
 		const resultJson = fabprotos.protos.ChannelQueryResponse.decode(result);
-		logger.info('queryChannels :', resultJson);
 		return resultJson;
 	}
 
@@ -276,7 +275,6 @@ class FabricGateway {
 			String(blockNum)
 		);
 		const resultJson = BlockDecoder.decode(resultByte);
-		logger.info('queryBlock :', resultJson);
 		return resultJson;
 	}
 }

@@ -414,9 +414,6 @@ class SyncServices {
 		const _self = this;
 		// Get the first transaction
 		const first_tx = block.data.data[0];
-		logger.info('processBlockEvent: block ', block);
-		logger.info('processBlockEvent: block.data.data', block.data.data);
-		logger.info('processBlockEvent: first_tx ', first_tx);
 		// The 'header' object contains metadata of the transaction
 		const header = first_tx.payload.header;
 		const channel_name = header.channel_header.channel_id;
