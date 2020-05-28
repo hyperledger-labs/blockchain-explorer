@@ -235,15 +235,11 @@ class Proxy {
 	 */
 	async getBlockByNumber(network_name, channel_genesis_hash, number) {
 		const client = this.platform.getClient(network_name);
-		const channel = client.getChannelByHash(channel_genesis_hash);
+		const channelName = client.getChannelNameByHash(channel_genesis_hash);
 		let block;
 
 		try {
-			block = await channel.queryBlock(
-				parseInt(number),
-				client.getDefaultPeer(),
-				true
-			);
+			block = await client.fabricGateway.queryBlock(channelName, parseInt(number));
 		} catch (e) {
 			logger.debug('queryBlock >> ', e);
 		}
