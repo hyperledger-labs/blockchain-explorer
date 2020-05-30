@@ -61,6 +61,11 @@ class SyncServices {
 	async synchNetworkConfigToDB(client) {
 		const channels = client.getChannels();
 		const channels_query = await client.fabricGateway.queryChannels();
+		if (!channels_query) {
+			logger.error('Not found any channels');
+			return false;
+		}
+
 		for (const channel of channels_query.channels) {
 			const channel_name = channel.channel_id;
 			if (!channels.get(channel_name)) {
@@ -75,7 +80,7 @@ class SyncServices {
 				' channel_name ',
 				channel_name
 			);
-			const block = await client.getGenesisBlock(channel);
+			const block = await client.getGenesisBlock(channel_name);
 			const channel_genesis_hash = await FabricUtils.generateBlockHash(
 				block.header
 			);
@@ -392,7 +397,9 @@ class SyncServices {
 					channel_name,
 					result.missing_id
 				);
-				await this.processBlockEvent(client, block);
+				if (block) {
+					await this.processBlockEvent(client, block);
+				}
 			}
 		} else {
 			logger.debug('Missing blocks not found for %s', channel_name);
