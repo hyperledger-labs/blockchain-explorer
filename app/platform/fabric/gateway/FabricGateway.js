@@ -292,7 +292,7 @@ class FabricGateway {
 	}
 
 	getPeer_pem(pemPath) {
-		const data = fs.readFileSync(path.resolve(__dirname, pemPath));
+		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
 		const pem = Buffer.from(data).toString();
 		return pem;
 	}
