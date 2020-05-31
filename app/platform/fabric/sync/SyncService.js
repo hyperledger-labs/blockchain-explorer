@@ -80,10 +80,13 @@ class SyncServices {
 				' channel_name ',
 				channel_name
 			);
+
 			const block = await client.getGenesisBlock(channel_name);
 			const channel_genesis_hash = await FabricUtils.generateBlockHash(
 				block.header
 			);
+			client.setChannelGenHash(channel_name, channel_genesis_hash);
+
 			const res = await this.insertNewChannel(
 				client,
 				channel,

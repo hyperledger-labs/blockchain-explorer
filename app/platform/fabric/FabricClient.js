@@ -89,16 +89,6 @@ class FabricClient {
 			} else {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
-			this.asLocalhost =
-				String(
-					this.hfc_client.getConfigSetting('discovery-as-localhost', 'true')
-				) === 'true';
-			// Enable discover service
-			await this.defaultChannel.initialize({
-				discover: true,
-				target: this.defaultPeer,
-				asLocalhost: this.asLocalhost
-			});
 		} catch (error) {
 			// TODO in case of the failure, should terminate explorer?
 			logger.error(error);
@@ -126,41 +116,6 @@ class FabricClient {
 					logger.error('Failed to initialize new channel: ', channel.channel_id);
 				}
 			}
-
-			try {
-				// Load default channel network details from discovery
-				const result = await this.defaultChannel.getDiscoveryResults();
-				logger.debug(
-					'Channel Discovery, getDiscoveryResults returned result ',
-					result
-				);
-			} catch (e) {
-				logger.debug('Channel Discovery >>  %s', e);
-				throw new ExplorerError(
-					explorer_mess.error.ERROR_2001,
-					this.defaultChannel.getName(),
-					this.client_name
-				);
-			}
-
-			/*
-			 * Setting default orderer
-			 * The new channel may not be in the configuration, let's use this.defaultChannel.getName()
-			 */
-			const defaultChannelName = this.defaultChannel.getName();
-			const channel = await this.hfc_client.getChannel(defaultChannelName);
-			const temp_orderers = await channel.getOrderers();
-			if (temp_orderers && temp_orderers.length > 0) {
-				this.defaultOrderer = temp_orderers[0];
-			} else {
-				logger.error(' No orderrers found ', temp_orderers);
-				throw new ExplorerError(explorer_mess.error.ERROR_2002);
-			}
-			logger.debug(
-				'Set client [%s] default orderer as  >> %s',
-				this.client_name,
-				this.defaultOrderer.getName()
-			);
 		} else if (persistence) {
 			logger.info('********* call to initializeDetachClient **********');
 			this.initializeDetachClient(this.client_config, persistence);
@@ -317,14 +272,7 @@ class FabricClient {
 		// Setting channel_genesis_hash to map
 		this.setChannelGenHash(channel_name, channel_genesis_hash);
 		logger.debug(
-			'Channel genesis hash for channel [%s] >> %s',
-			channel_name,
-			channel_genesis_hash
-		);
-		logger.debug(
-			'Channel genesis hash for channel [%s] >> %s',
-			channel_name,
-			channel_genesis_hash
+			`Channel genesis hash for channel [${channel_name}] >> ${channel_genesis_hash}`
 		);
 	}
 
@@ -348,17 +296,13 @@ class FabricClient {
 			} else {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
-			await channel.initialize({
-				discover: true,
-				target: this.defaultPeer,
-				asLocalhost: this.asLocalhost
-			});
 		}
 
-		const discover_results = await this.getChannelDiscover(channel);
+		const discover_results = await this.fabricGateway.getDiscoveryResult(
+			channel_name
+		);
 		logger.debug(
-			'Discover results for client [%s] >> %j',
-			this.client_name,
+			`Discover results for channel [${channel_name}] >>`,
 			discover_results
 		);
 
@@ -388,7 +332,7 @@ class FabricClient {
 				for (const msp_id in discover_results.orderers) {
 					const endpoints = discover_results.orderers[msp_id].endpoints;
 					for (const endpoint of endpoints) {
-						logger.info(' FabricClient.discover_results  endpoint ', endpoint);
+						logger.info('FabricClient.discover_results  endpoint ', endpoint);
 						const discoveryProtocol = this.hfc_client.getConfigSetting(
 							'discovery-protocol'
 						);
@@ -671,16 +615,6 @@ class FabricClient {
 	 */
 	getDefaultChannel() {
 		return this.defaultChannel;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricClient
-	 */
-	getDefaultOrderer() {
-		return this.defaultOrderer;
 	}
 
 	/**
