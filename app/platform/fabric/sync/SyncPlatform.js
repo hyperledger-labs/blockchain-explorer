@@ -139,11 +139,11 @@ class SyncPlatform {
 	 * @memberof SyncPlatform
 	 */
 	async isChannelEventHubConnected() {
-		for (const [channel_name, channel] of this.client.getChannels().entries()) {
+		for (const channel_name of this.client.getChannels()) {
 			// Validate channel event is connected
 			const status = this.eventHub.isChannelEventHubConnected(channel_name);
 			if (status) {
-				await this.syncService.synchBlocks(this.client, channel);
+				await this.syncService.synchBlocks(this.client, channel_name);
 			} else {
 				// Channel client is not connected then it will reconnect
 				this.eventHub.connectChannelEventHub(channel_name);
@@ -152,11 +152,8 @@ class SyncPlatform {
 	}
 
 	setBlocksSyncTime(blocksSyncTime) {
-		if (blocksSyncTime) {
-			const time = parseInt(blocksSyncTime, 10);
-			if (!isNaN(time)) {
-				this.blocksSyncTime = time * 60 * 1000;
-			}
+		if (!isNaN(blocksSyncTime)) {
+			this.blocksSyncTime = blocksSyncTime * 1000;
 		}
 	}
 

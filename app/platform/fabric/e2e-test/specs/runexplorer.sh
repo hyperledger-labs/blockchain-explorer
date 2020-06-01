@@ -47,6 +47,7 @@ echo "#### Started DB container"
 rm -rf logs wallet
  
 export LOG_LEVEL_CONSOLE=debug
+export EXPLORER_SYNC_BLOCKSYNCTIME_SEC=5
 ./start.sh
 echo "#### Starting Explorer process ..."
 

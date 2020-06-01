@@ -78,8 +78,8 @@ class Proxy {
 		logger.debug('getCurrentChannel: network_name', network_name);
 
 		const client = await this.platform.getClient(network_name);
-		const channel = client.getDefaultChannel();
-		const channel_genesis_hash = client.getChannelGenHash(channel.getName());
+		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
+		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		let respose;
 		if (channel_genesis_hash) {
 			respose = {
@@ -105,16 +105,14 @@ class Proxy {
 	 */
 	async getPeersStatus(network_name, channel_genesis_hash) {
 		const client = await this.platform.getClient(network_name);
-		const channel = client.getDefaultChannel();
+		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
 		const nodes = await this.persistence
 			.getMetricService()
 			.getPeerList(network_name, channel_genesis_hash);
 		let discover_results;
 		if (client.status) {
 			try {
-				discover_results = await client.initializeChannelFromDiscover(
-					channel._name
-				);
+				discover_results = await client.initializeChannelFromDiscover(channel_name);
 			} catch (e) {
 				logger.debug('getPeersStatus >> ', e);
 			}

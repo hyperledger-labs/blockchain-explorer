@@ -30,8 +30,7 @@ class FabricEvent {
 	async initialize() {
 		// Creating channel event hub
 		const channels = this.client.getChannels();
-		for (const channelEntry of channels) {
-			const channel_name = channelEntry[0];
+		for (const channel_name of channels) {
 			const listener = FabricEvent.channelEventHubs.get(channel_name);
 
 			if (listener) {
@@ -66,7 +65,7 @@ class FabricEvent {
 					}
 				},
 				{
-					startBlock: 0,
+					startBlock: 1,
 					type: 'full'
 				}
 			);

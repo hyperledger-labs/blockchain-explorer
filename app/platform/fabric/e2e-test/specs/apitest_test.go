@@ -107,6 +107,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		It("get network list", func() {
@@ -341,6 +343,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		Context("/auth/networklist", func() {
@@ -405,9 +409,6 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org1", func() {
 
-				// Need to make sure synchBlocks has already run once (depends on the configuration blocksSyncTime in explorerconfig.json)
-				time.Sleep(70 * time.Second)
-
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
@@ -471,9 +472,6 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			})
 
 			It("get channels info for org2", func() {
-
-				// Need to make sure synchBlocks has already run once (depends on the configuration blocksSyncTime in explorerconfig.json)
-				time.Sleep(70 * time.Second)
 
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
