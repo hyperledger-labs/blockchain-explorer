@@ -265,17 +265,25 @@ class FabricGateway {
 	}
 
 	async queryBlock(channelName, blockNum) {
-		const network = await this.gateway.getNetwork(this.defaultChannelName);
+		try {
+			const network = await this.gateway.getNetwork(this.defaultChannelName);
 
-		// Get the contract from the network.
-		const contract = network.getContract('qscc');
-		const resultByte = await contract.evaluateTransaction(
-			'GetBlockByNumber',
-			channelName,
-			String(blockNum)
-		);
-		const resultJson = BlockDecoder.decode(resultByte);
-		return resultJson;
+			// Get the contract from the network.
+			const contract = network.getContract('qscc');
+			const resultByte = await contract.evaluateTransaction(
+				'GetBlockByNumber',
+				channelName,
+				String(blockNum)
+			);
+			const resultJson = BlockDecoder.decode(resultByte);
+			return resultJson;
+		} catch (error) {
+			logger.error(
+				`Failed to get block ${blockNum} from channel ${channelName} : `,
+				error
+			);
+			return null;
+		}
 	}
 }
 

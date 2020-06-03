@@ -187,6 +187,10 @@ class FabricEvent {
 	async synchBlocks() {
 		// getting all channels list from client ledger
 		const channels = await this.client.fabricGateway.queryChannels();
+		if (!channels) {
+			logger.error('Not found any channels');
+			return;
+		}
 
 		for (const channel of channels.channels) {
 			const channel_name = channel.channel_id;
