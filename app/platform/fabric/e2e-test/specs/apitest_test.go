@@ -242,11 +242,6 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 				Expect(CheckHowManyEventHubRegistered()).Should(Equal(true))
 			})
 
-			It("Should keep running fine even after removing one of orderer peers", func() {
-				StopNode("orderer0-ordererorg1")
-				Eventually(CheckIfSwitchedToNewOrderer, 60, 5).Should(Equal(true))
-			})
-
 		})
 
 		It("stop explorer", func() {

@@ -3,7 +3,7 @@
  */
 
 const Fabric_Client = require('fabric-client');
-const { BlockDecoder, User } = require('fabric-common');
+const { User } = require('fabric-common');
 const path = require('path');
 
 const ExplorerError = require('../../common/ExplorerError');
@@ -164,6 +164,8 @@ class FabricClient {
 		} else if (persistence) {
 			logger.info('********* call to initializeDetachClient **********');
 			this.initializeDetachClient(this.client_config, persistence);
+		} else {
+			logger.error('Not found any channels');
 		}
 	}
 
@@ -296,11 +298,8 @@ class FabricClient {
 		 * Get channel, if the channel is not exist in the hfc client context,
 		 * Then it will create new channel from the network configuration
 		 */
-		let channel;
 		try {
-			channel = await this.hfc_client.getChannel(channel_name);
 			// Enable discover
-
 			await this.initializeChannelFromDiscover(channel_name);
 		} catch (error) {
 			logger.error(
@@ -309,7 +308,7 @@ class FabricClient {
 			);
 		}
 		// Get genesis block for the channel
-		const block = await this.getGenesisBlock(channel);
+		const block = await this.getGenesisBlock(channel_name);
 		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
 
 		const channel_genesis_hash = await FabricUtils.generateBlockHash(
@@ -516,88 +515,12 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async getGenesisBlock(channel) {
-		const orderer = this.getDefaultOrderer();
-		let genesisBlock = await this.getGenesisBlockFromOrderer(channel, orderer);
+		const genesisBlock = await this.fabricGateway.queryBlock(channel, 0);
 		if (!genesisBlock) {
-			if (orderer) {
-				this.setOffline(channel, orderer);
-			}
-
-			let neworderer = this.switchOrderer(channel);
-			while (neworderer != null) {
-				this.setDefaultOrderer(neworderer);
-				genesisBlock = await this.getGenesisBlockFromOrderer(channel, neworderer);
-				if (genesisBlock) {
-					logger.info(
-						'Succeeded to switch default orderer to ' + neworderer.getName()
-					);
-					break;
-				} else {
-					logger.error('Failed to get genesis block with ' + neworderer.getName());
-					this.setOffline(channel, neworderer);
-					neworderer = this.switchOrderer(channel);
-					continue;
-				}
-			}
-		}
-
-		if (genesisBlock) {
-			return BlockDecoder.decodeBlock(genesisBlock);
-		}
-
-		logger.error('Failed to get genesis block');
-		return null;
-	}
-
-	async getGenesisBlockFromOrderer(channel, orderer) {
-		try {
-			const request = {
-				orderer: orderer,
-				txId: this.getHFC_Client().newTransactionID(true) // Get an admin based transactionID
-			};
-			const genesisBlock = await channel.getGenesisBlock(request);
-			return genesisBlock;
-		} catch (error) {
-			logger.error(
-				'Failed to get genesis block with ' + orderer ? orderer.getName() : 'null'
-			);
+			logger.error('Failed to get genesis block');
 			return null;
 		}
-	}
-
-	setOffline(channel, orderer) {
-		if (!channel._discovery_results || !channel._discovery_results.orderers) {
-			return;
-		}
-		for (const mspid in channel._discovery_results.orderers) {
-			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
-			for (let i = 0; i < endpoints.length; i++) {
-				const value = endpoints[i];
-				if (orderer.getName().split(':')[0] === value.host) {
-					logger.debug('Toggle offline : ', value.host);
-					channel._discovery_results.orderers[mspid].endpoints[i]._offline = true;
-					break;
-				}
-			}
-		}
-	}
-
-	switchOrderer(channel) {
-		if (!channel._discovery_results || !channel._discovery_results.orderers) {
-			return null;
-		}
-		let neworderer = null;
-		for (const mspid in channel._discovery_results.orderers) {
-			const endpoints = channel._discovery_results.orderers[mspid].endpoints;
-			for (const value of endpoints) {
-				if (value._offline === undefined) {
-					logger.debug('Switch orderer : ', value.host);
-					neworderer = channel.getOrderer(`${value.host}:${value.port}`);
-					break;
-				}
-			}
-		}
-		return neworderer;
+		return genesisBlock;
 	}
 
 	/**
