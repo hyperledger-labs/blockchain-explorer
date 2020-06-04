@@ -86,13 +86,11 @@ class SyncPlatform {
 			this.client_name
 		);
 
-		// Setting the block synch interval time
-		await this.setBlocksSyncTime(all_config);
-
 		logger.debug('Blocks synch interval time >> %s', this.blocksSyncTime);
+
 		// Update the discovery-cache-life as block synch interval time in global config
 		global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
-		global.hfc.config.set('initialize-with-discovery', true);
+		// global.hfc.config.set('initialize-with-discovery', true);
 
 		this.client_configs = network_configs[this.network_name];
 
