@@ -3,7 +3,12 @@
  */
 
 const { Wallets, Gateway } = require('fabric-network');
-const { BlockDecoder, Client } = require('fabric-common');
+const {
+	Discoverer,
+	DiscoveryService,
+	Client,
+	BlockDecoder
+} = require('fabric-common');
 const fabprotos = require('fabric-protos');
 
 const FabricCAServices = require('fabric-ca-client');
@@ -284,6 +289,62 @@ class FabricGateway {
 			);
 			return null;
 		}
+	}
+
+	getPeer_pem(pemPath) {
+		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
+		const pem = Buffer.from(data).toString();
+		return pem;
+	}
+
+	async getDiscoveryResult(channelName) {
+		try {
+			const network = await this.gateway.getNetwork(channelName);
+			const channel = network.getChannel();
+			const ds = new DiscoveryService('be discovery service', channel);
+
+			const client = new Client('discovery client');
+			client.setTlsClientCertAndKey();
+
+			const mspID = this.config.client.organization;
+			const targets = [];
+			for (const peer of this.config.organizations[mspID].peers) {
+				const discoverer = new Discoverer(`be discoverer ${peer}`, client);
+				const url = this.config.peers[peer].url;
+				const pemPath = this.config.peers[peer].tlsCACerts.path;
+				let grpcOpt = {};
+				if ('grpcOptions' in this.config.peers[peer]) {
+					grpcOpt = this.config.peers[peer].grpcOptions;
+				}
+				const peer_endpoint = client.newEndpoint(
+					Object.assign(grpcOpt, {
+						url: url,
+						pem: this.getPeer_pem(pemPath)
+					})
+				);
+				await discoverer.connect(peer_endpoint);
+				targets.push(discoverer);
+			}
+
+			const idx = this.gateway.identityContext;
+			// do the three steps
+			ds.build(idx);
+			ds.sign(idx);
+			await ds.send({
+				asLocalhost: true,
+				refreshAge: 15000,
+				targets: targets
+			});
+
+			const result = await ds.getDiscoveryResults(true);
+			return result;
+		} catch (error) {
+			logger.error(
+				`Failed to get discovery result from channel ${channelName} : `,
+				error
+			);
+		}
+		return null;
 	}
 }
 
