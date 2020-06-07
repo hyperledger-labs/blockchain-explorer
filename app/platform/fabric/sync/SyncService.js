@@ -381,10 +381,7 @@ class SyncServices {
 		this.synchInProcess.push(synch_key);
 
 		// Get channel information from ledger
-		const channelInfo = await client
-			.getHFC_Client()
-			.getChannel(channel_name)
-			.queryInfo(client.getDefaultPeer(), true);
+		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
 		// Query missing blocks from DB

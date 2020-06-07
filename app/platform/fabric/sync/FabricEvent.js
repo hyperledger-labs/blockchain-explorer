@@ -66,9 +66,8 @@ class FabricEvent {
 					}
 				},
 				{
-					startBlock: 1,
+					startBlock: 0,
 					type: 'full'
-					// type: 'filtered'
 				}
 			);
 

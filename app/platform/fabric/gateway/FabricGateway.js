@@ -305,6 +305,27 @@ class FabricGateway {
 		}
 		return resultJson;
 	}
+	
+	async queryChainInfo(channelName) {
+		try {
+			const network = await this.gateway.getNetwork(this.defaultChannelName);
+
+			// Get the contract from the network.
+			const contract = network.getContract('qscc');
+			const resultByte = await contract.evaluateTransaction(
+				'GetChainInfo',
+				channelName
+			);
+			const resultJson = fabprotos.common.BlockchainInfo.decode(resultByte);
+			return resultJson;
+		} catch (error) {
+			logger.error(
+				`Failed to get chain info from channel ${channelName} : `,
+				error
+			);
+			return null;
+		}
+	}
 
 	getPeer_pem(pemPath) {
 		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
