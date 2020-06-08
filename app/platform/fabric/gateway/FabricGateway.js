@@ -291,6 +291,14 @@ class FabricGateway {
 		}
 	}
 
+	async queryInstantiatedChaincodes() {
+		const network = await this.gateway.getNetwork(this.defaultChannelName);
+		const contract = network.getContract('lscc');
+		const result = await contract.evaluateTransaction('GetChaincodes');
+		const resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
+		return resultJson;
+	}
+
 	getPeer_pem(pemPath) {
 		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
 		const pem = Buffer.from(data).toString();
