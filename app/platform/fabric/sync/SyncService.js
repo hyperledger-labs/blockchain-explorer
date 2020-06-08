@@ -197,7 +197,6 @@ class SyncServices {
 		// Insert chaincode
 		await this.insertNewChannelChaincode(
 			client,
-			channel,
 			channel_genesis_hash,
 			discoveryResults
 		);
@@ -298,15 +297,11 @@ class SyncServices {
 	 */
 	async insertNewChannelChaincode(
 		client,
-		channel,
 		channel_genesis_hash,
 		discoveryResults
 	) {
 		const network_name = client.network_name;
-		const chaincodes = await channel.queryInstantiatedChaincodes(
-			client.getDefaultPeer(),
-			true
-		);
+		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes();
 		for (const chaincode of chaincodes.chaincodes) {
 			const chaincode_row = {
 				name: chaincode.name,
