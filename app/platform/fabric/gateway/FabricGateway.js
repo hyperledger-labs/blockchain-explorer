@@ -293,9 +293,16 @@ class FabricGateway {
 
 	async queryInstantiatedChaincodes() {
 		const network = await this.gateway.getNetwork(this.defaultChannelName);
-		const contract = network.getContract('lscc');
-		const result = await contract.evaluateTransaction('GetChaincodes');
-		const resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
+		let contract = network.getContract('lscc');
+		let result = await contract.evaluateTransaction('GetChaincodes');
+		let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
+		if (resultJson.chaincodes.length <= 0) {
+			contract = network.getContract('_lifecycle');
+			result = await contract.evaluateTransaction('QueryInstalledChaincodes', '');
+			resultJson = fabprotos.lifecycle.QueryInstalledChaincodeResult.References.decode(
+				result
+			);
+		}
 		return resultJson;
 	}
 

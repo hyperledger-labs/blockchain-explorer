@@ -170,6 +170,7 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
+		logger.info('insertFromDiscoveryResults');
 		const channel_name = channel.getName();
 		const discoveryResults = await client.initializeChannelFromDiscover(
 			channel_name
@@ -302,11 +303,16 @@ class SyncServices {
 	) {
 		const network_name = client.network_name;
 		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes();
+		logger.info('chaincode result --', chaincodes);
 		for (const chaincode of chaincodes.chaincodes) {
+			let path = '-';
+			if (chaincode.path !== undefined) {
+				path = chaincode.path;
+			}
 			const chaincode_row = {
 				name: chaincode.name,
 				version: chaincode.version,
-				path: chaincode.path,
+				path: path,
 				txcount: 0,
 				createdt: new Date(),
 				channel_genesis_hash

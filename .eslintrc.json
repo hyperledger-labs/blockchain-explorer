@@ -429,7 +429,8 @@
 					"testorgschannel0",
 					"mynetwork",
 					"guitest",
-					"configfiles"
+					"configfiles",
+					"_lifecycle"
 				],
 				"skipIfMatch": ["http://[^s]*", "[a-z]scc"],
 				"skipWordIfMatch": ["^foobar.*$"],
