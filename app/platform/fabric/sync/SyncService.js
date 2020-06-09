@@ -303,7 +303,6 @@ class SyncServices {
 	) {
 		const network_name = client.network_name;
 		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes();
-		logger.info('chaincode result --', chaincodes);
 		for (const chaincode of chaincodes.chaincodes) {
 			let path = '-';
 			if (chaincode.path !== undefined) {
