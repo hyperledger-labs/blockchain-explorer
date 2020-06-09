@@ -170,7 +170,6 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
-		logger.info('insertFromDiscoveryResults');
 		const channel_name = channel.getName();
 		const discoveryResults = await client.initializeChannelFromDiscover(
 			channel_name
