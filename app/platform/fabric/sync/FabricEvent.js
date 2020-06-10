@@ -135,10 +135,8 @@ class FabricEvent {
 		logger.debug('disconnectEventHubs()');
 
 		// disconnect all event hubs
-		for (const [
-			channel_name,
-			listener
-		] of FabricEvent.channelEventHubs.entries()) {
+		for (const listenerEntry of FabricEvent.channelEventHubs) {
+			const channel_name = listenerEntry[0];
 			const status = this.isChannelEventHubConnected(channel_name);
 			if (status) {
 				this.disconnectChannelEventHub(channel_name);
