@@ -107,6 +107,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		It("get network list", func() {
@@ -341,6 +343,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		Context("/auth/networklist", func() {
@@ -404,6 +408,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		Context("/api/channels/info", func() {
 
 			It("get channels info for org1", func() {
+
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
@@ -416,7 +421,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				chList := result2.getChannelList()
 				Expect(chList).Should(ContainElements([]string{"commonchannel", "org1channel"}))
 				Expect(len(chList)).Should(Equal(2))
-
+				fmt.Fprintf(GinkgoWriter, "Info: result2 %+v\n", result2)
 				action := "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-org1.yml"
 				err := testclient.Testclient(action, inputSpecPath)
@@ -426,6 +431,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result3 %+v\n", result3)
 
 				compareChannelsInfoBlockCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result2, result3, "org1channel", 1)
@@ -441,6 +447,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result4 := resp4.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result4 %+v\n", result4)
 
 				compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result3, result4, "org1channel", 0)
@@ -456,6 +463,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result5 %+v\n", result5)
 
 				compareChannelsInfoBlockCount(result4, result5, "commonchannel", 1)
 				compareChannelsInfoBlockCount(result4, result5, "org1channel", 0)
@@ -464,6 +472,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			})
 
 			It("get channels info for org2", func() {
+
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
@@ -476,6 +485,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				chList := result2.getChannelList()
 				Expect(chList).Should(ContainElements([]string{"commonchannel", "org2channel"}))
 				Expect(len(chList)).Should(Equal(2))
+				fmt.Fprintf(GinkgoWriter, "Info: result2 %+v\n", result2)
 
 				action := "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-org1.yml"
@@ -486,6 +496,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result3 %+v\n", result3)
 
 				compareChannelsInfoBlockCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result2, result3, "org2channel", 0)
@@ -501,6 +512,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result4 := resp4.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result4 %+v\n", result4)
 
 				compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result3, result4, "org2channel", 1)
@@ -516,6 +528,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result5 %+v\n", result5)
 
 				compareChannelsInfoBlockCount(result4, result5, "commonchannel", 1)
 				compareChannelsInfoBlockCount(result4, result5, "org2channel", 0)

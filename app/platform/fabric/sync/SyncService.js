@@ -4,6 +4,7 @@
 
 const convertHex = require('convert-hex');
 const fabprotos = require('fabric-protos');
+const includes = require('lodash/includes');
 
 const helper = require('../../../common/helper');
 
@@ -68,12 +69,12 @@ class SyncServices {
 
 		for (const channel of channels_query.channels) {
 			const channel_name = channel.channel_id;
-			if (!channels.get(channel_name)) {
+			if (!includes(channels, channel_name)) {
 				await client.initializeNewChannel(channel_name);
 			}
 		}
 
-		for (const [channel_name, channel] of channels.entries()) {
+		for (const channel_name of channels) {
 			logger.info(
 				'SyncServices.synchNetworkConfigToDB client ',
 				client.client_name,
@@ -89,14 +90,14 @@ class SyncServices {
 
 			const res = await this.insertNewChannel(
 				client,
-				channel,
+				channel_name,
 				block,
 				channel_genesis_hash
 			);
 			if (res) {
 				await this.insertFromDiscoveryResults(
 					client,
-					channel,
+					channel_name,
 					channel_genesis_hash
 				);
 			} else {
@@ -117,8 +118,7 @@ class SyncServices {
 	 * @returns
 	 * @memberof SyncServices
 	 */
-	async insertNewChannel(client, channel, block, channel_genesis_hash) {
-		const channel_name = channel.getName();
+	async insertNewChannel(client, channel_name, block, channel_genesis_hash) {
 		const network_name = client.network_name;
 		const channelInfo = await this.persistence
 			.getCrudService()
@@ -169,8 +169,7 @@ class SyncServices {
 	 * @param {*} channel_genesis_hash
 	 * @memberof SyncServices
 	 */
-	async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
-		const channel_name = channel.getName();
+	async insertFromDiscoveryResults(client, channel_name, channel_genesis_hash) {
 		const discoveryResults = await client.initializeChannelFromDiscover(
 			channel_name
 		);
@@ -368,10 +367,9 @@ class SyncServices {
 			.saveChaincodPeerRef(network_name, chaincode_peer_row);
 	}
 
-	async synchBlocks(client, channel) {
+	async synchBlocks(client, channel_name) {
 		const network_name = client.network_name;
 		const client_name = client.getClientName();
-		const channel_name = channel.getName();
 
 		const synch_key = `${client_name}_${channel_name}`;
 		if (this.synchInProcess.includes(synch_key)) {
@@ -381,10 +379,7 @@ class SyncServices {
 		this.synchInProcess.push(synch_key);
 
 		// Get channel information from ledger
-		const channelInfo = await client
-			.getHFC_Client()
-			.getChannel(channel_name)
-			.queryInfo(client.getDefaultPeer(), true);
+		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
 		// Query missing blocks from DB
@@ -444,12 +439,11 @@ class SyncServices {
 					await client.initializeNewChannel(channel_name);
 					channel_genesis_hash = client.getChannelGenHash(channel_name);
 					// inserting new channel details to DB
-					const channel = client.hfc_client.getChannel(channel_name);
 					await _self.insertNewChannel(client, channel, block, channel_genesis_hash);
 					await _self.insertFromDiscoveryResults(
 						client,
-						channel,
-						channel_genesis_hash
+						channel_name,
+						channel_name_genesis_hash
 					);
 
 					const notify = {
@@ -472,11 +466,10 @@ class SyncServices {
 			setTimeout(
 				async (client, channel_name, channel_genesis_hash) => {
 					// get discovery and insert new peer, orders details to db
-					const channel = client.hfc_client.getChannel(channel_name);
 					await client.initializeChannelFromDiscover(channel_name);
 					await _self.insertFromDiscoveryResults(
 						client,
-						channel,
+						channel_name,
 						channel_genesis_hash
 					);
 					const notify = {
@@ -608,11 +601,10 @@ class SyncServices {
 				) {
 					setTimeout(
 						async (client, channel_name, channel_genesis_hash) => {
-							const channel = client.hfc_client.getChannel(channel_name);
 							// get discovery and insert chaincode details to db
 							await _self.insertFromDiscoveryResults(
 								client,
-								channel,
+								channel_name,
 								channel_genesis_hash
 							);
 

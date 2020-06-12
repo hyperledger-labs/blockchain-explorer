@@ -9,8 +9,7 @@
 			"experimentalObjectRestSpread": true
 		}
 	},
-	"plugins": ["react"],
-	"extends": ["eslint:recommended", "plugin:react/recommended"],
+	"extends": ["eslint:recommended"],
 	"rules": {
 		"no-unexpected-multiline": "error",
 		"no-unused-expressions": "error",

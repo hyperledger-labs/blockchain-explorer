@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-expressions */
 
 require('chai').should();
-var path = require('path');
+const path = require('path');
 
 const { spawnSync, spawn } = require('child_process');
 const dashboard = require('./dashboard/dashboard.js');
@@ -13,9 +13,9 @@ const network = require('./network/network_view.js');
 const chaincode = require('./chaincode/chaincode_view.js');
 
 describe('GUI e2e test', () => {
-	var fabric_test_path;
-	var rootdir;
-	var network_spec_path;
+	let fabric_test_path;
+	let rootdir;
+	let network_spec_path;
 
 	before(async function() {
 		this.timeout(180000);
@@ -111,15 +111,16 @@ describe('GUI e2e test', () => {
 			],
 			{ cwd: rootdir, env: process.env, shell: true }
 		);
-		if (child.error)
+		if (child.error) {
 			console.log('copy connection profiles', child.stderr.toString());
+		}
 
 		child = spawnSync(
 			'sed',
 			[
 				'-i',
 				'-e',
-				`'s|GOPATH|` + process.env.GOPATH + `|'`,
+				`'s|GOPATH|${process.env.GOPATH}|'`,
 				path.join(
 					rootdir,
 					'app/platform/fabric/connection-profile/org1-network-for-guitest.json'
@@ -127,11 +128,14 @@ describe('GUI e2e test', () => {
 			],
 			{ cwd: rootdir, env: process.env, shell: true }
 		);
-		if (child.error)
+		if (child.error) {
 			console.log('replace GOPATH with actual path', child.stderr.toString());
-		else console.log('copy config.json');
+		} else {
+			console.log('copy config.json');
+		}
 
 		process.env.LOG_LEVEL_CONSOLE = 'debug';
+		process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC = '10';
 		child = spawn('./start.sh', [], {
 			cwd: rootdir,
 			env: process.env,
@@ -145,13 +149,13 @@ describe('GUI e2e test', () => {
 	});
 
 	describe('Run each test suite', () => {
-		before(function() {
+		before(() => {
 			// runs before all tests in this block
 			browser.url('http://127.0.0.1:8080');
 			// Login
 			console.log('before all');
-			var userInput = browser.$('#user');
-			var passInput = browser.$('#password');
+			const userInput = browser.$('#user');
+			const passInput = browser.$('#password');
 			try {
 				userInput.setValue('admin');
 				passInput.setValue('adminpw');
@@ -161,23 +165,28 @@ describe('GUI e2e test', () => {
 					env: process.env,
 					shell: true
 				});
-				if (child.stdout)
+				if (child.stdout) {
 					console.log('docker ps (stdout)', child.stdout.toString());
-				if (child.stderr)
+				}
+				if (child.stderr) {
 					console.log('docker ps (stderr)', child.stderr.toString());
+				}
 
 				child = spawnSync('cat', [path.join(rootdir, 'logs/console/console.log')], {
 					cwd: rootdir,
 					env: process.env,
 					shell: true
 				});
-				if (child.stdout)
+				if (child.stdout) {
 					console.log('docker logs (stdout)', child.stdout.toString());
-				if (child.stderr)
+				}
+				if (child.stderr) {
 					console.log('docker logs (stderr)', child.stderr.toString());
+				}
 
 				child = spawnSync(
 					'find',
+					// eslint-disable-next-line no-template-curly-in-string
 					['${GOPATH}/src/github.com/hyperledger/fabric-test/tools/operator'],
 					{
 						cwd: fabric_test_path,
@@ -185,14 +194,18 @@ describe('GUI e2e test', () => {
 						shell: true
 					}
 				);
-				if (child.stdout)
+				if (child.stdout) {
 					console.log('find crypto-config (stdout)', child.stdout.toString());
-				if (child.stderr)
+				}
+				if (child.stderr) {
 					console.log('find crypto-config (stderr)', child.stderr.toString());
+				}
 				return;
 			}
 
-			var signinBtn = browser.$('#root > div > div > div > form > button > span');
+			const signinBtn = browser.$(
+				'#root > div > div > div > form > button > span'
+			);
 
 			signinBtn.click();
 			browser.pause(1000);
@@ -204,7 +217,7 @@ describe('GUI e2e test', () => {
 			chaincode.test();
 		});
 
-		after(function() {
+		after(() => {
 			process.chdir(fabric_test_path);
 
 			let child = spawnSync(

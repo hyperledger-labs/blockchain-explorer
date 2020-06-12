@@ -91,7 +91,6 @@ class Platform {
 		/* eslint-disable */
 		const _self = this;
 		/* eslint-enable */
-		let clientstatus = true;
 
 		// Setting organization enrolment files
 		logger.debug('Setting admin organization enrolment files');
@@ -124,25 +123,12 @@ class Platform {
 			// Create client instance
 			logger.debug('Creating client [%s] >> ', client_name, client_configs);
 
-			let client;
-
-			if (clientstatus) {
-				logger.info('FabricUtils.createFabricClient ');
-				client = await FabricUtils.createFabricClient(
-					client_configs,
-					network_name,
-					client_name,
-					this.persistence
-				);
-			} else {
-				logger.info('FabricUtils.createDetachClient ');
-				client = await FabricUtils.createDetachClient(
-					client_configs,
-					network_name,
-					client_name,
-					this.persistence
-				);
-			}
+			const client = await FabricUtils.createFabricClient(
+				client_configs,
+				network_name,
+				client_name,
+				this.persistence
+			);
 			if (client) {
 				// Set client into clients map
 				const clientObj = { name: client_name, instance: client };
