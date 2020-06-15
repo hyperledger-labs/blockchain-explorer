@@ -1,0 +1,131 @@
+#! Copyright IBM Corp. All Rights Reserved.
+#!
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ config = data.values
+#@ peerUniquePort = 31000
+#@ for i in range(0, len(config.peerOrganizations)):
+#@   organization = config.peerOrganizations[i]
+#@   for j in range(0, organization.numCa):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "ca{}-{}".format(j, organization.name)
+  name: #@ "ca{}-{}".format(j, organization.name)
+spec:
+  selector:
+    k8s-app: #@ "ca{}-{}".format(j, organization.name)
+  type: #@ config.k8s.serviceType
+  ports:
+    - name: port1
+      port: 7054
+#@   end
+#@   for j in range(0, organization.numPeers):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "peer{}-{}".format(j, organization.name)
+  name: #@ "peer{}-{}".format(j, organization.name)
+spec:
+  selector:
+    k8s-app: #@ "peer{}-{}".format(j, organization.name)
+  type: #@ config.k8s.serviceType
+  ports:
+    - name: port1
+      port: #@ peerUniquePort
+#@    if config.k8s.serviceType == "NodePort":
+      nodePort: #@ peerUniquePort
+#@    end
+    - name: port2
+      port: 9443
+#@   peerUniquePort += 1
+#@ end
+#@ end
+#@ num_ordererOrgs = len(config.ordererOrganizations)
+#@ ordererUniquePort = 30000
+#@ for i in range(0, num_ordererOrgs):
+#@   organization = config.ordererOrganizations[i]
+#@   numOderers = organization.numOderers
+#@ for j in range(0, organization.numCa):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "ca{}-{}".format(i, organization.name)
+  name: #@ "ca{}-{}".format(i, organization.name)
+spec:
+  selector:
+    k8s-app: #@ "ca{}-{}".format(i, organization.name)
+  type: #@ config.k8s.serviceType
+  ports:
+    - name: port1
+      port: 7054
+#@ end
+#@ for j in range(0, numOderers):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "orderer{}-{}".format(j, organization.name)
+  name: #@ "orderer{}-{}".format(j, organization.name)
+spec:
+  selector:
+    k8s-app: #@ "orderer{}-{}".format(j, organization.name)
+  type: #@ config.k8s.serviceType
+  ports:
+    - name: port1
+      port: #@ ordererUniquePort
+#@    if config.k8s.serviceType == "NodePort":
+      nodePort: #@ ordererUniquePort
+#@    end
+    - name: port2
+      port: 8443
+#@    ordererUniquePort += 1
+#@ end
+#@ end
+
+#@ if config.orderer.ordererType == "kafka":
+#@   for i in range(0, config.kafka.numKafka):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "kafka{}".format(i)
+  name: #@ "kafka{}".format(i)
+spec:
+  selector:
+    k8s-app: #@ "kafka{}".format(i)
+  ports:
+    - name: port1
+      port: 9092
+    - name: port2
+      port: 9093
+#@   end
+#@   for j in range(0, config.kafka.numZookeepers):
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: #@ "zookeeper{}".format(j)
+  name: #@ "zookeeper{}".format(j)
+spec:
+  selector:
+    k8s-app: #@ "zookeeper{}".format(j)
+  ports:
+    - name: port1
+      port: 2888
+    - name: port2
+      port: 3888
+    - name: port3
+      port: 2181
+#@   end
+#@ end

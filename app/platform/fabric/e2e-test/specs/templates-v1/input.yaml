@@ -1,0 +1,134 @@
+#@data/values 
+#! Copyright IBM Corp. All Rights Reserved.
+#!
+#! SPDX-License-Identifier: Apache-2.0
+---
+  dockerOrg: hyperledger
+  dockerTag: 2.1.1
+  
+  #! peer database ledger type (couchdb, goleveldb)
+  dbType: couchdb
+  #! This parameter is used to define fabric logging spec in peers
+  peerFabricLoggingSpec: error
+  #! This parameter is used to define fabric logging spec in orderers
+  ordererFabricLoggingSpec: error
+  #! tls in the network (true, false or mutual(mutualtls))
+  tls: true
+  #! fabric metrics with prometheus (true/false)
+  metrics: false
+  #! true - enable gossip and dynamic leader election
+  #! false - disable gossip and set all peers as org leaders
+  gossipEnable: false
+  #! enable node ou's in fabric network (true/false)
+  enableNodeOUs: true
+  
+  #! For smoke test suite, crypto-config, connection-profile and channel-artifacts are stored
+  #! in smoke directory
+  orderer: 
+
+  #! Consensus type
+    ordererType: etcdraft
+    batchSize:
+      maxMessageCount: 100
+      absoluteMaxBytes: 10 MB
+      preferredMaxBytes: 2 MB
+    batchTimeOut: 2s
+  #! Etcd raft options and this will be used when ordererType is
+  #! selected as etcdraft
+    etcdraftOptions:
+      tickInterval: 500ms
+      electionTick: 10
+      heartbeatTick: 1
+      maxInflightBlocks: 5
+      snapshotIntervalSize: 100 MB
+  
+  #! Not being used for smoke test suite
+  #! Number of kafka and zookeeper to be launched in network
+  #! when ordererType is kafka
+  kafka:
+    numKafka: 5
+    #! number of kafka replications for each channel
+    numKafkaReplications: 3
+    numZookeepers: 3
+  
+  ordererOrganizations:
+  - name: ordererorg1
+    mspId: OrdererOrgExampleCom
+    numOderers: 1
+    numCa: 0
+  
+  peerOrganizations:
+  - name: org1
+    mspId: Org1ExampleCom
+    numPeers: 1
+    numCa: 1
+  
+  - name: org2
+    mspId: Org2ExampleCom
+    numPeers: 1
+    numCa: 1
+  
+  #! Capabilites for Orderer, Channel, Application groups
+  ordererCapabilities: V2_0
+  
+  channelCapabilities: V2_0
+  
+  applicationCapabilities: V2_0
+  
+  #! Create the channel creation transactions; every org will be included in every channel
+  #! This used testorgschannel as the prefix and channels are used like testorgschannel0,
+  #! testorgschannel1.... based on number of channels passed
+  #! (note: client will need to submit the transactions to create channels)
+  numChannels: 1
+  
+  #! Not being used for smoke test suite
+  k8s:
+    serviceType: NodePort
+    #! dataPersistence is used to store the data from fabric containers
+    #! It can take values of true, false and local
+    #! When true is used, it uses storageClass and storageCapacity to create
+    #! persistent volumes. When false is used, backup will not be configured.
+    #! When local is used, hostPath will be used to store the data from fabric containers
+    #! to worker nodes on which pods are running.
+    dataPersistence: false
+    storageClass: default
+    storageCapacity: 20Gi
+    resources:
+      orderers:
+        limits:
+           cpu: "1"
+           memory: 1Gi
+        requests:
+           cpu: "0.5"
+           memory: 1Gi
+      peers:
+        limits:
+           cpu: "0.5"
+           memory: 2Gi
+        requests:
+           cpu: "0.5"
+           memory: 2Gi
+  #! dind will be used to run all chaincode containers of a peer
+      dind:
+        limits:
+           cpu: "1"
+           memory: 1Gi
+        requests:
+           cpu: "1"
+           memory: 1Gi
+      couchdb:
+        limits:
+           cpu: "0.2"
+           memory: 1Gi
+        requests:
+           cpu: "0.1"
+           memory: 1Gi
+      kafka:
+        limits:
+           cpu: "0.2"
+           memory: 1Gi
+        requests:
+           cpu: "0.1"
+           memory: 1Gi
+  artifactsLocation: /home/atsushi/dev/hyperledger/blockchain-explorer/app/platform/fabric/e2e-test/specs
+nodeportIP: 

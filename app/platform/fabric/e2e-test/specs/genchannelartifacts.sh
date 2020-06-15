@@ -6,7 +6,7 @@ function genChTx()
   ch=$1
   pushd ${SCRIPTPATH}/configFiles
   mkdir -p ../channel-artifacts/$ch
-  configtxgen -profile ${CHPROFILE} -outputCreateChannelTx ../channel-artifacts/${ch}/${ch}.tx -channelID ${ch} 
+  configtxgen -configPath . -profile ${CHPROFILE} -outputCreateChannelTx ../channel-artifacts/${ch}/${ch}.tx -channelID ${ch} 
   popd
 }
 
@@ -16,7 +16,7 @@ function genAnchorTx()
   org=$2
   pushd ${SCRIPTPATH}/configFiles
   mkdir -p ../channel-artifacts/$ch
-  configtxgen -profile ${CHPROFILE} -outputAnchorPeersUpdate ../channel-artifacts/${ch}/${ch}org${org}anchor.tx -channelID ${ch} -asOrg org${org}
+  configtxgen -configPath . -profile ${CHPROFILE} -outputAnchorPeersUpdate ../channel-artifacts/${ch}/${ch}org${org}anchor.tx -channelID ${ch} -asOrg org${org}
   popd
 }
 
