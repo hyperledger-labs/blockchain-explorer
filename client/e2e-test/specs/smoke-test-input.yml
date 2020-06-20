@@ -37,13 +37,6 @@ installChaincode:
     language: golang
     metadataPath: ""
 
-  - name: samplecc
-    version: v2
-    path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
-    organizations: org1,org2
-    language: golang
-    metadataPath: ""
-
 instantiateChaincode:
   - channelName: testorgschannel0
     sdk: cli
@@ -52,15 +45,6 @@ instantiateChaincode:
     args: ""
     organizations: org1
     endorsementPolicy: 2of(org1,org2)
-    collectionPath: ""
-
-upgradeChaincode:
-  - channelName: testorgschannel0
-    name: samplecc
-    version: v2
-    args: ""
-    organizations: org1
-    endorsementPolicy: 1of(org1,org2)
     collectionPath: ""
 
 invokes:

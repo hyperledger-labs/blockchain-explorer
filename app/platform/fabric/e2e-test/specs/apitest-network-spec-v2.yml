@@ -7,7 +7,7 @@ dockerOrg: hyperledger
 dockerTag: 2.1.1
 
 #! peer database ledger type (couchdb, goleveldb)
-dbType: couchdb
+dbType: goleveldb
 #! This parameter is used to define fabric logging spec in peers
 peerFabricLoggingSpec: info
 #! This parameter is used to define fabric logging spec in orderers

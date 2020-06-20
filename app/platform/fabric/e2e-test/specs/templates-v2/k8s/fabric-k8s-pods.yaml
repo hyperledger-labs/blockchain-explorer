@@ -186,9 +186,9 @@
 #@     env.append({"name": "CORE_CHAINCODE_JAVA_RUNTIME", "value": "{}/fabric-javaenv:{}".format(config.dockerOrg, config.dockerTag)})
 #@   end
 #@   if validateAttributeExists(config, "nodeenv"):
-#@     env.append({"name": "CORE_CHAINCODE_NODEENV_RUNTIME", "value": "{}".format(config.dockerImages.nodeenv)})
+#@     env.append({"name": "CORE_CHAINCODE_NODE_RUNTIME", "value": "{}".format(config.dockerImages.nodeenv)})
 #@   else:
-#@     env.append({"name": "CORE_CHAINCODE_NODEENV_RUNTIME", "value": "{}/fabric-nodeenv:{}".format(config.dockerOrg, config.dockerTag)})
+#@     env.append({"name": "CORE_CHAINCODE_NODE_RUNTIME", "value": "{}/fabric-nodeenv:{}".format(config.dockerOrg, config.dockerTag)})
 #@   end
 
 #@   if config.dbType == "couchdb":

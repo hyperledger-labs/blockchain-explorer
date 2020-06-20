@@ -86,7 +86,9 @@
 		"e2e-api-test-v2-run": "cd app/platform/fabric/e2e-test; ./runTestSuite.sh -2",
 		"e2e-api-test-v1": "run-s e2e-test-build-src e2e-api-test-v1-run",
 		"e2e-api-test-v2": "run-s e2e-test-build-src e2e-api-test-v2-run",
-		"e2e-gui-test-run": "cd client/e2e-test; ./gui-e2e-test-start.sh",
-		"e2e-gui-test": "run-s e2e-test-build-src e2e-gui-test-run"
+		"e2e-gui-test-v1-run": "cd client/e2e-test; ./gui-e2e-test-start.sh -1",
+		"e2e-gui-test-v2-run": "cd client/e2e-test; ./gui-e2e-test-start.sh -2",
+		"e2e-gui-test-v1": "run-s e2e-test-build-src e2e-gui-test-v1-run",
+		"e2e-gui-test-v2": "run-s e2e-test-build-src e2e-gui-test-v2-run"
 	}
 }

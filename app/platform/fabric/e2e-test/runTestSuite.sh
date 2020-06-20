@@ -26,7 +26,7 @@ while getopts "12" opt; do
   2)
     SDKVER=2.0.0-beta.2
     export FABRIC_VERSION=2
-    CHECKOUT_HASH=8130ea524534b32ee7575aef7e258af503b3deda
+    CHECKOUT_HASH=09680bea5aa0ec464982f7979fd99a777e8c1fed
     export FABRIC_CFG_PATH=$GOPATH/src/github.com/hyperledger/fabric-test/config
     export PATH=$GOPATH/src/github.com/hyperledger/fabric-test/bin:$PATH
     PULL_PEER_IMAGE_VERSION=${FABRIC_V2_VERSION}

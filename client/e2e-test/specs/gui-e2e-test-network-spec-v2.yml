@@ -7,20 +7,22 @@
 #! Released images are pulled from docker hub hyperledger/, e.g. 1.4.5 or 2.0.0
 #! Development stream images are pulled from
 #! hyperledger-fabric.jfrog.io/, e.g. 1.4.5-stable or 2.0.0-stable
-fabricVersion: 1.4.6
+dockerOrg: hyperledger
+dockerTag: 2.1.1
+
 #! peer database ledger type (couchdb, goleveldb)
 dbType: goleveldb
 #! This parameter is used to define fabric logging spec in peers
-peerFabricLoggingSpec: error
+peerFabricLoggingSpec: info
 #! This parameter is used to define fabric logging spec in orderers
-ordererFabricLoggingSpec: error
+ordererFabricLoggingSpec: info
 #! tls in the network (true, false or mutual(mutualtls))
 tls: true
 #! fabric metrics with prometheus (true/false)
 metrics: false
 #! true - enable gossip and dynamic leader election
 #! false - disable gossip and set all peers as org leaders
-gossipEnable: false
+gossipEnable: true
 #! enable node ou's in fabric network (true/false)
 enableNodeOUs: true
 
@@ -73,14 +75,11 @@ peerOrganizations:
   numCa: 1
 
 #! Capabilites for Orderer, Channel, Application groups
-ordererCapabilities:
-  V1_4_2: true
+ordererCapabilities: V2_0
 
-channelCapabilities:
-  V1_4_3: true
+channelCapabilities: V2_0
 
-applicationCapabilities:
-  V1_4_2: true
+applicationCapabilities: V2_0
 
 #! Create the channel creation transactions; every org will be included in every channel
 #! This used testorgschannel as the prefix and channels are used like testorgschannel0,
