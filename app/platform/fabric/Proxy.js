@@ -125,6 +125,9 @@ class Proxy {
 				node.status = 'DOWN';
 				if (discover_results && discover_results.peers_by_org) {
 					const org = discover_results.peers_by_org[node.mspid];
+					if (org === undefined) {
+						continue;
+					}
 					for (const peer of org.peers) {
 						if (peer.endpoint.indexOf(node.server_hostname) > -1) {
 							node.ledger_height_low = peer.ledger_height.low;
