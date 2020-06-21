@@ -83,7 +83,6 @@ class FabricGateway {
 		);
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		const caURLs = this.fabricConfig.getCertificateAuthorities();
 		/* eslint-enable */
 		let identity;
 		try {
@@ -95,11 +94,6 @@ class FabricGateway {
 			if (identity) {
 				logger.debug(
 					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
-				);
-			} else if (this.fabricCaEnabled) {
-				identity = await this.enrollCaIdentity(
-					this.fabricConfig.getAdminUser(),
-					this.fabricConfig.getAdminPassword()
 				);
 			} else {
 				/*
@@ -305,7 +299,7 @@ class FabricGateway {
 		}
 		return resultJson;
 	}
-	
+
 	async queryChainInfo(channelName) {
 		try {
 			const network = await this.gateway.getNetwork(this.defaultChannelName);

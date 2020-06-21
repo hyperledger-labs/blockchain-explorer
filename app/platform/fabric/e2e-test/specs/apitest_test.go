@@ -170,13 +170,13 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(result.Row[0].Channelname).Should(Equal("commonchannel"))
 		})
 
-		It("register user", func() {
+		XIt("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(200))
 		})
 
-		It("login with newly registered user", func() {
+		XIt("login with newly registered user", func() {
 			resp := restPost("/auth/login", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &LoginResponse{})
 			resultLogin := resp.Result().(*LoginResponse)
 
@@ -184,7 +184,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(resultLogin.User.Name).Should(Equal("test"))
 		})
 
-		It("fail to register duplicate user", func() {
+		XIt("fail to register duplicate user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(400))
