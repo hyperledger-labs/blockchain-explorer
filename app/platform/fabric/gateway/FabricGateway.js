@@ -10,6 +10,7 @@ const {
 	BlockDecoder
 } = require('fabric-common');
 const fabprotos = require('fabric-protos');
+const concat = require('lodash/concat');
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -266,6 +267,7 @@ class FabricGateway {
 		const contract = network.getContract('cscc');
 		const result = await contract.evaluateTransaction('GetChannels');
 		const resultJson = fabprotos.protos.ChannelQueryResponse.decode(result);
+		logger.debug('queryChannels', resultJson);
 		return resultJson;
 	}
 
@@ -281,6 +283,7 @@ class FabricGateway {
 				String(blockNum)
 			);
 			const resultJson = BlockDecoder.decode(resultByte);
+			logger.debug('queryBlock', resultJson);
 			return resultJson;
 		} catch (error) {
 			logger.error(
@@ -291,21 +294,29 @@ class FabricGateway {
 		}
 	}
 
-	async queryInstantiatedChaincodes() {
+	async queryInstantiatedChaincodes(channelName) {
 		const network = await this.gateway.getNetwork(this.defaultChannelName);
 		let contract = network.getContract('lscc');
 		let result = await contract.evaluateTransaction('GetChaincodes');
 		let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
 		if (resultJson.chaincodes.length <= 0) {
+			resultJson = { chaincodes: [] };
 			contract = network.getContract('_lifecycle');
 			result = await contract.evaluateTransaction('QueryInstalledChaincodes', '');
-			resultJson = fabprotos.lifecycle.QueryInstalledChaincodeResult.References.decode(
+			const decodedReult = fabprotos.lifecycle.QueryInstalledChaincodesResult.decode(
 				result
 			);
+			for (const cc of decodedReult.installed_chaincodes) {
+				const ccInfo = cc.references.get(channelName);
+				if (ccInfo !== undefined) {
+					resultJson.chaincodes = concat(resultJson.chaincodes, ccInfo.chaincodes);
+				}
+			}
 		}
+		logger.debug('queryInstantiatedChaincodes', resultJson);
 		return resultJson;
 	}
-	
+
 	async queryChainInfo(channelName) {
 		try {
 			const network = await this.gateway.getNetwork(this.defaultChannelName);
@@ -317,6 +328,7 @@ class FabricGateway {
 				channelName
 			);
 			const resultJson = fabprotos.common.BlockchainInfo.decode(resultByte);
+			logger.debug('queryChainInfo', resultJson);
 			return resultJson;
 		} catch (error) {
 			logger.error(

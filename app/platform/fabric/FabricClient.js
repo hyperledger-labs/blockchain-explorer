@@ -276,6 +276,12 @@ class FabricClient {
 			discover_results
 		);
 
+		if ('peers_by_org' in discover_results) {
+			for (const org in discover_results.peers_by_org) {
+				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
+			}
+		}
+
 		return discover_results;
 	}
 
