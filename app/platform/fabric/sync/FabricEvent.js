@@ -54,9 +54,7 @@ class FabricEvent {
 	async createChannelEventHub(channel_name) {
 		// Create channel event hub
 		try {
-			const network = await this.client.fabricGateway.gateway.getNetwork(
-				channel_name
-			);
+			const network = await this.client.gateway.getNetwork(channel_name);
 			const listener = await network.addBlockListener(
 				async event => {
 					// Skip first block, it is process by peer event hub

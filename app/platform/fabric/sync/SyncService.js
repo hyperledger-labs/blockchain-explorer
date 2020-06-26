@@ -61,7 +61,7 @@ class SyncServices {
 	 */
 	async synchNetworkConfigToDB(client) {
 		const channels = client.getChannels();
-		const channels_query = await client.fabricGateway.queryChannels();
+		const channels_query = await client.queryChannels();
 		if (!channels_query) {
 			logger.error('Not found any channels');
 			return false;
@@ -81,7 +81,6 @@ class SyncServices {
 				' channel_name ',
 				channel_name
 			);
-
 			const block = await client.getGenesisBlock(channel_name);
 			const channel_genesis_hash = await FabricUtils.generateBlockHash(
 				block.header
@@ -257,9 +256,7 @@ class SyncServices {
 	 */
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
 		const network_name = client.network_name;
-		const discoveryProtocol = client.hfc_client.getConfigSetting(
-			'discovery-protocol'
-		);
+		const discoveryProtocol = client.getDiscoverConfigSetting();
 		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
 		logger.debug(
 			'insertNewOrderers discoveryProtocol ',
@@ -301,9 +298,7 @@ class SyncServices {
 	) {
 		const network_name = client.network_name;
 		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
-		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes(
-			channel_name
-		);
+		const chaincodes = await client.queryInstantiatedChaincodes(channel_name);
 		for (const chaincode of chaincodes.chaincodes) {
 			let path = '-';
 			if (chaincode.path !== undefined) {

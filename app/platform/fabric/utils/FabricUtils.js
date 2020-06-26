@@ -7,7 +7,7 @@ const fs = require('fs-extra');
 const sha = require('js-sha256');
 const asn = require('asn1.js');
 const utils = require('fabric-client/lib/utils');
-const FabricClient = require('./../FabricClient.js');
+const FabricGateway = require('../gateway/FabricGateway');
 const ExplorerError = require('../../../common/ExplorerError');
 const explorer_error = require('../../../common/ExplorerMessage').explorer
 	.error;
@@ -21,8 +21,8 @@ async function createFabricClient(
 	client_name,
 	persistence
 ) {
-	// Create new FabricClient
-	const client = new FabricClient(network_name, client_name);
+	// Create new FabricGateway
+	const client = new FabricGateway(network_name, client_name);
 	// Initialize fabric client
 	logger.debug(
 		'************ Initializing fabric client for [%s]************',
@@ -45,7 +45,7 @@ async function createDetachClient(
 	// Clone global.hfc.config configuration
 	const client_config = cloneConfig(client_configs, client_name);
 
-	const client = new FabricClient(network_name, client_name);
+	const client = new FabricGateway(network_name, client_name);
 	await client.initializeDetachClient(client_config, persistence);
 	return client;
 }
