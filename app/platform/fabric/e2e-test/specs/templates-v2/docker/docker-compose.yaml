@@ -1,0 +1,262 @@
+#! Copyright IBM Corp. All Rights Reserved.
+#!
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ services = {}
+
+#@ def validateAttributeExists(config, image):
+#@   return hasattr(config, "dockerImages") and hasattr(config.dockerImages, image)
+#@ end
+
+#@ def caList(config):
+#@   caUniquePort = 32000
+#@   for i in range(0, len(config.peerOrganizations)):
+#@     org = config.peerOrganizations[i]
+#@     for j in range(0, org.numCa):
+#@       container_name = "ca{}-{}".format(j, org.name)
+#@       services[container_name] = ca(container_name, caUniquePort, "peer", org.name, config)
+#@       caUniquePort += 1
+#@     end
+#@   end
+#@   for i in range(0, len(config.ordererOrganizations)):
+#@     org = config.ordererOrganizations[i]
+#@     for j in range(0, org.numCa):
+#@       container_name = "ca{}-{}".format(j, org.name)
+#@       services[container_name] = ca(container_name, caUniquePort, "orderer", org.name, config)
+#@       caUniquePort += 1
+#@     end
+#@   end
+#@ end
+
+#@ def couchDB(config):
+#@   couchDBUniquePort = 33000
+#@   for i in range(0, len(config.peerOrganizations)):
+#@     org = config.peerOrganizations[i]
+#@     for j in range(0, org.numPeers):
+#@       container_name = "couchdb-peer{}-{}".format(j, org.name)
+#@       services[container_name] = {"container_name":container_name, "image":"hyperledger/fabric-couchdb", "ports":["{}:5984".format(couchDBUniquePort)]}   
+#@       couchDBUniquePort += 1
+#@     end
+#@   end
+#@ end
+
+#@ def ca(container_name, caUniquePort, type, orgName, config):
+#@   orgType = "{}Organizations".format(type)
+#@   image = ""
+#@   if validateAttributeExists(config, "ca"):
+#@     image = config.dockerImages.ca
+#@   else:
+#@     image = "{}/fabric-ca:{}".format(config.dockerOrg, config.dockerTag)
+#@   end
+#@   env = ["FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server"]
+#@   env.append("FABRIC_CA_SERVER_CA_NAME={}".format(container_name))
+#@   env.append("FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca/ca.{}-cert.pem".format(orgName))
+#@   env.append("FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ca/ca-priv_sk")
+#@   if config.tls == "mutual":
+#@     env.append("FABRIC_CA_SERVER_TLS_ENABLED=true")
+#@   else:
+#@     env.append("FABRIC_CA_SERVER_TLS_ENABLED={}".format(config.tls))
+#@   end
+#@   env.append("FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/tlsca/tlsca.{}-cert.pem".format(orgName))
+#@   env.append("FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/tlsca/tlsca-priv_sk")
+#@   ports = ["{}:{}".format(caUniquePort, 7054)]
+#@   command = "sh -c 'fabric-ca-server start -b admin:adminpw -d'"
+#@   volumes = ["{}crypto-config/{}/{}/ca/:/etc/hyperledger/fabric-ca-server-config/ca".format(artifactsLocation, orgType, orgName)]
+#@   volumes.append("{}crypto-config/{}/{}/tlsca/:/etc/hyperledger/fabric-ca-server-config/tlsca".format(artifactsLocation, orgType, orgName))
+#@   ca = {"image":image, "environment":env, "ports":ports, "command":command, "volumes":volumes, "container_name":container_name}
+#@   return ca
+#@ end
+
+#@ def kafka_zookeepers(kafka):
+#@   (zookeepers, kafka_zookeeper_connect) = ([], [])
+#@   kafkaUniquePort = 2181
+#@   for i in range(0, kafka.numZookeepers):
+#@     env = ["ZOO_MY_ID={}".format(i+1), "ZOO_PORT={}".format(kafkaUniquePort), "ZOO_SERVERS={}".format(zookeeper_servers(kafka.numZookeepers))]
+#@     expose = [kafkaUniquePort, kafkaUniquePort+1, kafkaUniquePort+2]
+#@     container_name = "zookeeper{}".format(i)
+#@     zookeepers.append(container_name)
+#@     kafka_zookeeper_connect.append("{}:{}".format(container_name, kafkaUniquePort))
+#@     services[container_name] = {"image":"hyperledger/fabric-zookeeper", "environment":env, "expose":expose, "container_name":container_name}
+#@     kafkaUniquePort += 1000
+#@   end
+#@   kafkaUniquePort = 9092
+#@   for i in range(0, kafka.numKafka):
+#@     container_name = "kafka{}".format(i)
+#@     env = ["KAFKA_BROKER_ID={}".format(i), "KAFKA_DEFAULT_REPLICATION_FACTOR={}".format(kafka.numKafkaReplications), "KAFKA_MESSAGE_MAX_BYTES=103809024", "KAFKA_REPLICA_FETCH_MAX_BYTES=103809024"]
+#@     env.append("KAFKA_ZOOKEEPER_CONNECT={}".format(",".join(kafka_zookeeper_connect)))
+#@     env.append("KAFKA_MIN_INSYNC_REPLICAS=2")
+#@     env.append("KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false")
+#@     services[container_name] = {"image":"hyperledger/fabric-kafka", "environment":env, "depends_on":zookeepers, "container_name":container_name, "ports":["{}:{}".format(kafkaUniquePort+i,kafkaUniquePort)]}
+#@   end
+#@ end
+
+#@ def zookeeper_servers(numZookeepers):
+#@   servers = []
+#@   zookeeperUniquePort = 2181
+#@   for i in range(0, numZookeepers):
+#@     servers.append("server.{}=zookeeper{}:{}:{}:participant".format(i+1, i, zookeeperUniquePort+1, zookeeperUniquePort+2))
+#@     zookeeperUniquePort += 1000
+#@   end
+#@   return " ".join(servers)
+#@ end
+
+#@ def kafkaList(numKafka):
+#@   kafka_list = []
+#@   for i in range(0, numKafka):
+#@     kafka_list.append("kafka{}".format(i))
+#@   end
+#@   return kafka_list
+#@ end
+
+#@ def mutualTLS(config):
+#@   output = []
+#@     for i in range(0, len(config.peerOrganizations)):
+#@       organization = config.peerOrganizations[i]
+#@       output.append("/etc/hyperledger/fabric/artifacts/msp/crypto-config/peerOrganizations/{}/ca/ca.{}-cert.pem".format(organization.name, organization.name))
+#@     end
+#@     for j in range(0, len(config.ordererOrganizations)):
+#@       organization = config.ordererOrganizations[j]
+#@       output.append("/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/ca/ca.{}-cert.pem".format(organization.name, organization.name))
+#@     end
+#@   return output
+#@ end
+
+#@ def orderers(config):
+#@   (ordererUniquerPort, ordererHealthCheckPort) = (30000, 30100)
+#@   for i in range(0, len(config.ordererOrganizations)):
+#@     org = config.ordererOrganizations[i]
+#@     for j in range(0, org.numOderers):
+#@       env = ["FABRIC_LOGGING_SPEC={}".format(config.ordererFabricLoggingSpec), "ORDERER_GENERAL_LISTENADDRESS=0.0.0.0", "ORDERER_GENERAL_LISTENPORT={}".format(ordererUniquerPort), "ORDERER_GENERAL_GENESISMETHOD=file"]
+#@       env.append("ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/fabric/artifacts/msp/channel-artifacts/genesis.block")
+#@       env.append("ORDERER_GENERAL_LOCALMSPID={}".format(org.mspId))
+#@       env.append("ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/msp".format(org.name, j, org.name, org.name))
+#@       if config.tls == "mutual":
+#@         env.append("ORDERER_GENERAL_TLS_CLIENTROOTCAS=[{}]".format(", ".join(mutualTLS(config))))
+#@         env.append("ORDERER_GENERAL_TLS_CLIENTAUTHREQUIRED=true")
+#@         env.append("ORDERER_GENERAL_TLS_ENABLED=true")
+#@       else:
+#@         env.append("ORDERER_GENERAL_TLS_ENABLED={}".format(config.tls))
+#@       end
+#@       env.append("ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:8443")
+#@       env.append("ORDERER_GENERAL_TLS_PRIVATEKEY=/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/tls/server.key".format(org.name, j, org.name, org.name))
+#@       env.append("ORDERER_GENERAL_TLS_CERTIFICATE=/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/tls/server.crt".format(org.name, j, org.name, org.name))
+#@       env.append("ORDERER_GENERAL_TLS_ROOTCAS=[/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/tls/server.crt]".format(org.name, j, org.name, org.name))
+#@       env.append("ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/tls/server.key".format(org.name, j, org.name, org.name))
+#@       env.append("ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/etc/hyperledger/fabric/artifacts/msp/crypto-config/ordererOrganizations/{}/orderers/orderer{}-{}.{}/tls/server.crt".format(org.name, j, org.name, org.name))
+#@       volumes = ["{}:/etc/hyperledger/fabric/artifacts/msp/".format(artifactsLocation)]
+#@       volumes.append("{}/backup/orderer{}-{}:/var/hyperledger/production/orderer".format(artifactsLocation, j, org.name))
+#@       container_name = "orderer{}-{}".format(j,org.name)
+#@       image = ""
+#@       if validateAttributeExists(config, "orderer"):
+#@         image = config.dockerImages.orderer
+#@       else:
+#@         image = "{}/fabric-orderer:{}".format(config.dockerOrg, config.dockerTag)
+#@       end
+#@       ports = ["{}:{}".format(ordererUniquerPort,ordererUniquerPort), "{}:{}".format(ordererHealthCheckPort,8443)]
+#@       services[container_name] = {"image":image, "environment":env, "working_dir":"/opt/gopath/src/github.com/hyperledger/fabric", "command":"orderer", "volumes":volumes, "ports":ports, "container_name":container_name}
+#@       if config.orderer.ordererType == "kafka":
+#@         services[container_name] = {"image":image, "environment":env, "working_dir":"/opt/gopath/src/github.com/hyperledger/fabric", "command":"orderer", "volumes":volumes, "ports":ports, "container_name":container_name, "depends_on":kafkaList(config.kafka.numKafka)}
+#@       end
+#@       ordererUniquerPort += 1
+#@       ordererHealthCheckPort += 1
+#@     end
+#@   end
+#@ end
+
+#@ def peers(config):
+#@   (peerUniquerPort, peerHealthCheckPort) = (31000, 31100)
+#@   for i in range(0, len(config.peerOrganizations)):
+#@     org = config.peerOrganizations[i]
+#@     for j in range(0, org.numPeers):
+#@       env = ["CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock", "FABRIC_LOGGING_SPEC={}".format(config.peerFabricLoggingSpec), "CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=configfiles_default"]
+#@       if config.gossipEnable == True:
+#@         env.append("CORE_PEER_GOSSIP_STATE_ENABLED=true")
+#@         env.append("CORE_PEER_GOSSIP_ORGLEADER=false")
+#@         env.append("CORE_PEER_GOSSIP_USELEADERELECTION=true")
+#@       else:
+#@         env.append("CORE_PEER_GOSSIP_STATE_ENABLED=false")
+#@         env.append("CORE_PEER_GOSSIP_ORGLEADER=true")
+#@         env.append("CORE_PEER_GOSSIP_USELEADERELECTION=false")
+#@       end
+#@       env.append("CORE_PEER_GOSSIP_BOOTSTRAP=127.0.0.1:{}".format(peerUniquerPort))
+#@       env.append("CORE_PEER_GOSSIP_ENDPOINT=peer{}-{}:{}".format(j, org.name, peerUniquerPort))
+#@       env.append("CORE_PEER_LISTENADDRESS=0.0.0.0:{}".format(peerUniquerPort))
+#@       env.append("CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:{}".format(7052))
+#@       env.append("CORE_CHAINCODE_EXECUTETIMEOUT=1500s")
+#@       env.append("CORE_PEER_ID=peer{}-{}".format(j, org.name))
+#@       env.append("CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/artifacts/msp/crypto-config/peerOrganizations/{}/peers/peer{}-{}.{}/msp".format(org.name, j, org.name, org.name))
+#@       env.append("CORE_PEER_LOCALMSPID={}".format(org.mspId))
+#@       env.append("CORE_PEER_ADDRESS=peer{}-{}:{}".format(j, org.name, peerUniquerPort))
+#@       env.append("CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:9443")
+#@       env.append("CORE_PEER_CHAINCODEADDRESS=peer{}-{}:{}".format(j, org.name, 7052))
+#@       env.append("CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer{}-{}:{}".format(j, org.name, peerUniquerPort))
+#@       if config.tls == "mutual":
+#@         env.append("CORE_PEER_TLS_CLIENTROOTCAS_FILES={}".format(" ".join(mutualTLS(config))))
+#@         env.append("CORE_PEER_TLS_CLIENTAUTHREQUIRED=true")
+#@         env.append("CORE_PEER_TLS_ENABLED=true")
+#@       else:
+#@         env.append("CORE_PEER_TLS_ENABLED={}".format(config.tls))
+#@       end
+#@       env.append("CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/artifacts/msp/crypto-config/peerOrganizations/{}/peers/peer{}-{}.{}/tls/server.crt".format(org.name, j, org.name, org.name))
+#@       env.append("CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/artifacts/msp/crypto-config/peerOrganizations/{}/peers/peer{}-{}.{}/tls/server.key".format(org.name, j, org.name, org.name))
+#@       env.append("CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/artifacts/msp/crypto-config/peerOrganizations/{}/peers/peer{}-{}.{}/tls/ca.crt".format(org.name, j, org.name, org.name))
+#@       container_name = "peer{}-{}".format(j, org.name)
+#@       volumes = ["{}:/etc/hyperledger/fabric/artifacts/msp/".format(artifactsLocation)]
+#@       volumes.append("/var/run/:/host/var/run/")
+#@       volumes.append("{}/backup/peer{}-{}:/var/hyperledger/production".format(artifactsLocation,j, org.name))
+#@       image = ""
+#@       if validateAttributeExists(config, "peer"):
+#@         image = config.dockerImages.peer
+#@       else:
+#@         image = "{}/fabric-peer:{}".format(config.dockerOrg, config.dockerTag)
+#@       end
+#@       if validateAttributeExists(config, "ccenv"):
+#@         env.append("CORE_CHAINCODE_BUILDER={}".format(config.dockerImages.ccenv))
+#@       else:
+#@         env.append("CORE_CHAINCODE_BUILDER={}/fabric-ccenv:{}".format(config.dockerOrg, config.dockerTag))
+#@       end
+#@       if validateAttributeExists(config, "baseos"):
+#@         env.append("CORE_CHAINCODE_GOLANG_RUNTIME={}".format(config.dockerImages.baseos))
+#@       else:
+#@         env.append("CORE_CHAINCODE_GOLANG_RUNTIME={}/fabric-baseos:{}".format(config.dockerOrg, config.dockerTag))
+#@       end
+#@       if validateAttributeExists(config, "javaenv"):
+#@         env.append("CORE_CHAINCODE_JAVA_RUNTIME={}".format(config.dockerImages.javaenv))
+#@       else:
+#@         env.append("CORE_CHAINCODE_JAVA_RUNTIME={}/fabric-javaenv:{}".format(config.dockerOrg, config.dockerTag))
+#@       end
+#@       if validateAttributeExists(config, "nodeenv"):
+#@         env.append("CORE_CHAINCODE_NODE_RUNTIME={}".format(config.dockerImages.nodeenv))
+#@       else:
+#@         env.append("CORE_CHAINCODE_NODE_RUNTIME={}/fabric-nodeenv:{}".format(config.dockerOrg, config.dockerTag))
+#@       end
+#@       ports = ["7051", "{}:{}".format(peerUniquerPort,peerUniquerPort), "{}:{}".format(peerHealthCheckPort,9443)]
+#@       services[container_name] = {"image":image, "environment":env, "volumes":volumes, "ports":ports, "working_dir":"/opt/gopath/src/github.com/hyperledger/fabric/peer", "command":"peer node start", "container_name":container_name}
+#@       if config.dbType == "couchdb":
+#@         env.append("CORE_LEDGER_STATE_STATEDATABASE=CouchDB")
+#@         env.append("CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb-{}:5984".format(container_name))
+#@         services[container_name] = {"image":image, "environment":env, "volumes":volumes, "ports":ports, "working_dir":"/opt/gopath/src/github.com/hyperledger/fabric/peer", "command":"peer node start", "container_name":container_name, "depends_on":["couchdb-{}".format(container_name)]}
+#@       end
+#@       peerUniquerPort += 1
+#@       peerHealthCheckPort += 1
+#@     end
+#@   end
+#@ end
+
+#@ config = data.values
+#@ artifactsLocation = config.artifactsLocation
+#@ if artifactsLocation.endswith("/") == False:
+#@   artifactsLocation = artifactsLocation + "/"
+#@ end
+version: '2'
+#@ caList(config)
+#@ if config.orderer.ordererType == "kafka":
+#@   kafka_zookeepers(config.kafka)
+#@ end
+#@ if config.dbType == "couchdb":
+#@   couchDB(config)
+#@ end
+#@ peers(config)
+#@ orderers(config)
+services: #@ services

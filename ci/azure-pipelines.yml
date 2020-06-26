@@ -43,7 +43,7 @@ jobs:
       summaryFileLocation: $(System.DefaultWorkingDirectory)/output.xml
       pathToSources: $(System.DefaultWorkingDirectory)/client
 
-- job: SanityChecks
+- job: SanityChecks_v1_4
   pool:
     vmImage: ubuntu-16.04
   steps:
@@ -51,10 +51,10 @@ jobs:
   - checkout: self
   - script: |
       npm install
-      npm run e2e-api-test:ci
-    displayName: Run Sanity Checks
+      npm run e2e-api-test-v1
+    displayName: Run Sanity Checks for v1.4
 
-- job: GUITests
+- job: SanityChecks_v2_1
   pool:
     vmImage: ubuntu-16.04
   steps:
@@ -62,5 +62,28 @@ jobs:
   - checkout: self
   - script: |
       npm install
-      npm run e2e-gui-test:ci
-    displayName: Run GUI Tests
+      npm run e2e-api-test-v2
+    displayName: Run Sanity Checks for v2.1
+
+- job: GUITests_v1_4
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - template: install_deps.yml
+  - checkout: self
+  - script: |
+      npm install
+      npm run e2e-gui-test-v1
+    displayName: Run GUI Tests for v1.4
+
+- job: GUITests_v2_1
+  pool:
+    vmImage: ubuntu-16.04
+  steps:
+  - template: install_deps.yml
+  - checkout: self
+  - script: |
+      npm install
+      npm run e2e-gui-test-v2
+    displayName: Run GUI Tests for v2.1
+  

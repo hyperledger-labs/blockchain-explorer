@@ -48,14 +48,8 @@ joinChannel:
 installChaincode:
 # installs chaincode with specified name on all peers in listed organziations
   - name: samplecc
+    sdk: cli
     version: v1
-    path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
-    organizations: org1,org2
-    language: golang
-    metadataPath: ""
-
-  - name: samplecc
-    version: v2
     path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
     organizations: org1,org2
     language: golang
@@ -64,6 +58,7 @@ installChaincode:
 instantiateChaincode:
   - channelName: commonchannel
     name: samplecc
+    sdk: cli
     version: v1
     args: ""
     organizations: org1
@@ -71,26 +66,11 @@ instantiateChaincode:
     collectionPath: ""
   - channelName: org1channel
     name: samplecc
+    sdk: cli
     version: v1
     args: ""
     organizations: org1
     endorsementPolicy: 1of(org1)
-    collectionPath: ""
-  - channelName: org2channel
-    name: samplecc
-    version: v1
-    args: ""
-    organizations: org2
-    endorsementPolicy: 1of(org2)
-    collectionPath: ""
-
-upgradeChaincode:
-  - channelName: testorgschannel0
-    name: samplecc
-    version: v2
-    args: ""
-    organizations: org1
-    endorsementPolicy: 1of(org1,org2)
     collectionPath: ""
 
 invokes:
@@ -117,21 +97,3 @@ invokes:
       payLoadMin: 1024
       payLoadMax: 2048
     args: "put,a1,1"
-
-queries:
-  - channelName: testorgschannel0
-    name: samplecc
-    targetPeers: OrgAnchor
-    nProcPerOrg: 1
-    nRequest: 1
-    runDur: 0
-    organizations: org1,org2
-    ccOpt:
-      ccType: ccchecker
-      keyStart: 0
-    txnOpt:
-      - mode: constant
-        options:
-          constFreq: 0
-          devFreq: 0
-    args: "get,a1"

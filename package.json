@@ -81,16 +81,14 @@
 		"linter": "eslint",
 		"lint:fix": "eslint . --fix",
 		"precommit": "lint-staged && ./scripts/verify-license.sh",
-		"e2e-test-check-tool": "/bin/bash -c 'if [[ -z $(which configtxgen) ]]; then echo \"### Need to install tools ###\n\"; exit -1; fi'",
-		"e2e-test-check-img": "/bin/bash -c 'if [[ -z $(docker images -q hyperledger/fabric-peer:latest) ]]; then echo \"### Need to pull fabric images ###\n\"; exit -1; fi'",
-		"e2e-test-setup-tool:ci": "/bin/bash -c 'which configtxgen >/dev/null; if [[ $? -eq 0 ]] && [[ $(configtxgen -version | grep Version: | sed -e \"s/^.*:\\s*//\") == \"1.4.6\" ]]; then echo Found; else echo Not found; curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s -- 1.4.6 1.4.6 0.4.18 -s; fi'",
-		"e2e-test-setup-img": "./build_docker_image.sh -d",
 		"e2e-test-build-src": "npm install; cd client; npm install; npm run build",
-		"e2e-api-test-run": "cd app/platform/fabric/e2e-test; ./runTestSuite.sh",
-		"e2e-api-test": "run-s e2e-test-check-tool e2e-test-check-img e2e-test-setup-img e2e-test-build-src e2e-api-test-run",
-		"e2e-api-test:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-setup-img e2e-test-build-src e2e-api-test-run",
-		"e2e-gui-test-run": "cd client/e2e-test; ./gui-e2e-test-start.sh",
-		"e2e-gui-test": "run-s e2e-test-build-src e2e-gui-test-run",
-		"e2e-gui-test:ci": "cross-env PATH=$PATH:$PWD/bin run-s e2e-test-setup-tool:ci e2e-test-check-tool e2e-test-setup-img e2e-test-build-src e2e-gui-test-run"
+		"e2e-api-test-v1-run": "cd app/platform/fabric/e2e-test; ./runTestSuite.sh -1",
+		"e2e-api-test-v2-run": "cd app/platform/fabric/e2e-test; ./runTestSuite.sh -2",
+		"e2e-api-test-v1": "run-s e2e-test-build-src e2e-api-test-v1-run",
+		"e2e-api-test-v2": "run-s e2e-test-build-src e2e-api-test-v2-run",
+		"e2e-gui-test-v1-run": "cd client/e2e-test; ./gui-e2e-test-start.sh -1",
+		"e2e-gui-test-v2-run": "cd client/e2e-test; ./gui-e2e-test-start.sh -2",
+		"e2e-gui-test-v1": "run-s e2e-test-build-src e2e-gui-test-v1-run",
+		"e2e-gui-test-v2": "run-s e2e-test-build-src e2e-gui-test-v2-run"
 	}
 }

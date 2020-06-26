@@ -26,10 +26,12 @@ describe('GUI e2e test', () => {
 			'/src/github.com/hyperledger/fabric-test',
 			'/tools/operator'
 		);
-		network_spec_path = path.join(
-			cwd,
-			'e2e-test/specs/gui-e2e-test-network-spec.yml'
-		);
+		const fabricVer = process.env.FABRIC_VERSION;
+		let networkSpec = 'gui-e2e-test-network-spec.yml';
+		if (fabricVer === '2') {
+			networkSpec = 'gui-e2e-test-network-spec-v2.yml';
+		}
+		network_spec_path = path.join(cwd, 'e2e-test/specs', networkSpec);
 		const test_input_path = path.join(cwd, 'e2e-test/specs/smoke-test-input.yml');
 
 		process.chdir(fabric_test_path);

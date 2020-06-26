@@ -58,7 +58,7 @@ kafka:
 ordererOrganizations:
 - name: ordererorg1
   mspId: OrdererOrgExampleCom
-  numOderers: 3
+  numOderers: 1
   numCa: 0
 
 peerOrganizations:
