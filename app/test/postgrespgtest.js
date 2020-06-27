@@ -74,12 +74,12 @@ describe('Test explorerpg.sql for DDL statements syntax verification', () => {
 				sb.append(line);
 				isMergeline = true;
 			} else if (isMergeline && line.endsWith(';')) {
-				line = line.replace(/:user/i, 'testuser');
-				line = line.replace(/:passwd/, "'password'");
-				line = line.replace(/:dbname/, 'pgtestdb');
-				list.add(line);
-				sb.append(line);
-				list.add(sb.toString());
+				sb.append(' ').append(line);
+				let appendLine = sb.toString();
+				appendLine = appendLine.replace(/:user/i, 'testuser');
+				appendLine = appendLine.replace(/:passwd/, "'password'");
+				appendLine = appendLine.replace(/:dbname/, 'pgtestdb');
+				list.add(appendLine);
 				sb = new StringBuilder('');
 				isMergeline = false;
 			} else if (isMergeline) {
