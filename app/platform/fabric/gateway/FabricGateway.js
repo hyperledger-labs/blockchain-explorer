@@ -146,35 +146,6 @@ class FabricGateway {
 		}
 	}
 
-	getDefaultChannelName() {
-		return this.defaultChannelName;
-	}
-	getEnableAuthentication() {
-		return this.enableAuthentication;
-	}
-
-	getDefaultPeer() {
-		return this.defaultPeer;
-	}
-	getDefaultPeerUrl() {
-		return this.defaultPeerUrl;
-	}
-
-	getDefaultMspId() {
-		return this.fabricConfig.getMspId();
-	}
-	async getClient() {
-		return this.client;
-	}
-
-	getTls() {
-		return this.tlsEnable;
-	}
-
-	getConfig() {
-		return this.config;
-	}
-
 	/**
 	 * @private method
 	 *
@@ -304,6 +275,7 @@ class FabricGateway {
 	}
 
 	async queryInstantiatedChaincodes(channelName) {
+		logger.info('queryInstantiatedChaincodes', channelName);
 		const network = await this.gateway.getNetwork(this.defaultChannelName);
 		let contract = network.getContract('lscc');
 		let result = await contract.evaluateTransaction('GetChaincodes');
@@ -316,8 +288,10 @@ class FabricGateway {
 				result
 			);
 			for (const cc of decodedReult.installed_chaincodes) {
+				logger.info('1:', cc);
 				const ccInfo = cc.references.get(channelName);
 				if (ccInfo !== undefined) {
+					logger.info('2:', ccInfo);
 					resultJson.chaincodes = concat(resultJson.chaincodes, ccInfo.chaincodes);
 				}
 			}
@@ -435,43 +409,6 @@ class FabricGateway {
 		}
 	}
 
-	async initializeChannelFromDiscover(channel_name) {
-		logger.debug('initializeChannelFromDiscover ', channel_name);
-		if (!includes(this.getChannels(), channel_name)) {
-			await this.initializeNewChannel(channel_name);
-		}
-		const discover_results = await this.getDiscoveryResult(channel_name);
-		logger.debug(
-			`Discover results for channel [${channel_name}] >>`,
-			discover_results
-		);
-
-		if ('peers_by_org' in discover_results) {
-			for (const org in discover_results.peers_by_org) {
-				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
-			}
-		}
-
-		return discover_results;
-	}
-
-	async initializeNewChannel(channel_name) {
-		// Get genesis block for the channel
-		const block = await this.getGenesisBlock(channel_name);
-		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
-
-		const channel_genesis_hash = await FabricUtils.generateBlockHash(
-			block.header
-		);
-		// Setting channel_genesis_hash to map
-		this.setChannelGenHash(channel_name, channel_genesis_hash);
-
-		this.addChannel(channel_name);
-		logger.debug(
-			`Channel genesis hash for channel [${channel_name}] >> ${channel_genesis_hash}`
-		);
-	}
-
 	async initializeDetachClient(client_config, persistence) {
 		const name = client_config.name;
 		logger.debug(
@@ -497,13 +434,9 @@ class FabricGateway {
 		logger.info(
 			'************************************** initializeDetachClient ************************************************'
 		);
-		const defaultPeerConfig = fabricConfig.getDefaultPeerConfig();
-		const default_peer_name = defaultPeerConfig.name;
 		const channels = await persistence
 			.getCrudService()
-			.getChannelsInfo(this.network_name, default_peer_name);
-
-		const default_channel_name = fabricConfig.getDefaultChannel();
+			.getChannelsInfo(this.network_name);
 
 		if (channels.length === 0) {
 			throw new ExplorerError(explorer_mess.error.ERROR_2003);
@@ -516,12 +449,12 @@ class FabricGateway {
 				.getPeerList(this.network_name, channel.channel_genesis_hash);
 			let newchannel;
 			try {
-				newchannel = this.getChannel(channel.channelname);
+				newchannel = this.Client.getChannel(channel.channelname);
 			} catch (e) {
 				logger.error('Failed to get channel from client ', e);
 			}
 			if (newchannel === undefined) {
-				newchannel = this.newChannel(channel.channelname);
+				newchannel = this.Client.newChannel(channel.channelname);
 			}
 			for (const node of nodes) {
 				const peer_config = peers[node.server_hostname];
@@ -540,30 +473,56 @@ class FabricGateway {
 					logger.error(e);
 				}
 			}
+		}
+	}
 
-			try {
-				newchannel.getPeer(default_peer_name);
-			} catch (e) {
-				logger.error(
-					'Failed to connect to default peer: ',
-					default_peer_name,
-					' \n',
-					e
-				);
+	async initializeNewChannel(channel_name) {
+		// Get genesis block for the channel
+		const block = await this.getGenesisBlock(channel_name);
+		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
+
+		const channel_genesis_hash = await FabricUtils.generateBlockHash(
+			block.header
+		);
+		// Setting channel_genesis_hash to map
+		this.setChannelGenHash(channel_name, channel_genesis_hash);
+		this.addChannel(channel_name);
+		logger.debug(
+			`Channel genesis hash for channel [${channel_name}] >> ${channel_genesis_hash}`
+		);
+	}
+
+	async initializeChannelFromDiscover(channel_name) {
+		logger.debug('initializeChannelFromDiscover ', channel_name);
+		if (!includes(this.getChannels(), channel_name)) {
+			await this.initializeNewChannel(channel_name);
+		}
+
+		const discover_results = await this.getDiscoveryResult(channel_name);
+		logger.debug(
+			`Discover results for channel [${channel_name}] >>`,
+			discover_results
+		);
+
+		if ('peers_by_org' in discover_results) {
+			for (const org in discover_results.peers_by_org) {
+				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
 			}
 		}
 
-		this.defaultChannel = this.getChannel(default_channel_name);
-		if (this.defaultChannel.getPeers().length > 0) {
-			this.defaultPeer = this.defaultChannel.getPeer(default_peer_name);
-		}
+		return discover_results;
+	}
 
-		if (this.defaultChannel === undefined) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2004);
-		}
-		if (this.defaultPeer === undefined) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2005);
-		}
+	getEnableAuthentication() {
+		return this.enableAuthentication;
+	}
+
+	getTls() {
+		return this.tlsEnable;
+	}
+
+	getConfig() {
+		return this.config;
 	}
 
 	getDiscoverConfigSetting() {
@@ -576,8 +535,13 @@ class FabricGateway {
 		return Client.getConfigSetting('discovery-protocol', discover);
 	}
 
-	setChannelGenHash(name, channel_genesis_hash) {
-		this.channelsGenHash.set(name, channel_genesis_hash);
+	async getGenesisBlock(channel) {
+		const genesisBlock = await this.queryBlock(channel, 0);
+		if (!genesisBlock) {
+			logger.error('Failed to get genesis block');
+			return null;
+		}
+		return genesisBlock;
 	}
 
 	getChannelNames() {
@@ -588,8 +552,20 @@ class FabricGateway {
 		return this.channels; // Return Array
 	}
 
+	addChannel(channelName) {
+		this.channels.push(channelName);
+	}
+
 	getChannelGenHash(channel_name) {
 		return this.channelsGenHash.get(channel_name);
+	}
+
+	setChannelGenHash(name, channel_genesis_hash) {
+		this.channelsGenHash.set(name, channel_genesis_hash);
+	}
+
+	getClientName() {
+		return this.client_name;
 	}
 
 	getChannelNameByHash(channel_genesis_hash) {
@@ -600,25 +576,12 @@ class FabricGateway {
 		}
 	}
 
-	async getGenesisBlock(channel) {
-		const genesisBlock = await this.queryBlock(channel, 0);
-		if (!genesisBlock) {
-			logger.error('Failed to get genesis block');
-			return null;
-		}
-		return genesisBlock;
-	}
-
-	addChannel(channelName) {
-		this.channels.push(channelName);
+	getDefaultMspId() {
+		return this.fabricConfig.getMspId();
 	}
 
 	getStatus() {
 		return this.status;
-	}
-
-	setDefaultChannel(channel_name) {
-		this.defaultChannel = this.getChannel(channel_name);
 	}
 }
 

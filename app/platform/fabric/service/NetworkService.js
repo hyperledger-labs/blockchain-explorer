@@ -36,7 +36,7 @@ class NetworkService {
 			logger.debug('Network list ', networkName);
 			networklist.push({
 				name: networkName,
-				authEnabled: clientObj.instance.enableAuthentication
+				authEnabled: clientObj.instance.getEnableAuthentication()
 			});
 		}
 

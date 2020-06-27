@@ -182,28 +182,6 @@ class Platform {
 	/**
 	 *
 	 *
-	 * @param {*} network_name
-	 * @param {*} client_name
-	 * @param {*} channel_name
-	 * @returns
-	 * @memberof Platform
-	 */
-	changeNetwork(network_name, channel_name) {
-		const clientObj = this.networks.get(network_name);
-		if (clientObj) {
-			this.defaultNetwork = network_name;
-			const client = clientObj.instance;
-			if (channel_name) {
-				client.setDefaultChannel(channel_name);
-			}
-		} else {
-			return `Network [${network_name}] is not found`;
-		}
-	}
-
-	/**
-	 *
-	 *
 	 * @returns
 	 * @memberof Platform
 	 */

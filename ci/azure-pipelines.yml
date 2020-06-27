@@ -23,6 +23,8 @@ jobs:
   - script: |
       npm config set prefix ~/npm && npm install -g mocha
       npm install chai && npm install
+      ./build_docker_image.sh -d
+      docker-compose -f docker-compose-testdb.yaml up -d
       cd app/test && npm install
       npm run test
       cd ../../client && npm install
