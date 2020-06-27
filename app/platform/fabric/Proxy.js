@@ -165,10 +165,7 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async changeChannel(network_name, channel_genesis_hash) {
-		const client = this.platform.getClient(network_name);
-		const respose = client.setDefaultChannelByHash(channel_genesis_hash);
-		logger.debug('changeChannel >> %s', respose);
-		return respose;
+		return channel_genesis_hash;
 	}
 
 	/**
@@ -181,7 +178,7 @@ class Proxy {
 		const client = this.platform.getClient(network_name);
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name, client.getDefaultPeer());
+			.getChannelsInfo(network_name);
 		const currentchannels = [];
 		for (const channel of channels) {
 			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -274,7 +271,7 @@ class Proxy {
 		const client_channels = client.getChannelNames();
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name, client.getDefaultPeer());
+			.getChannelsInfo(network_name);
 		const respose = [];
 
 		for (let i = 0; i < channels.length; i++) {

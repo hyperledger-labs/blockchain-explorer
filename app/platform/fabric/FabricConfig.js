@@ -154,21 +154,6 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
-	getDefaultPeerConfig() {
-		let defaultPeerConfig = [];
-		const peers = this.getPeersConfig();
-		if (peers) {
-			defaultPeerConfig = peers[0];
-		}
-		return defaultPeerConfig;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricConfig
-	 */
 	getPeersConfig() {
 		const peers = [];
 		for (const x in this.config.peers) {

@@ -131,25 +131,12 @@ class FabricGateway {
 		}
 	}
 
-	getDefaultChannelName() {
-		return this.defaultChannelName;
-	}
 	getEnableAuthentication() {
 		return this.enableAuthentication;
 	}
 
-	getDefaultPeer() {
-		return this.defaultPeer;
-	}
-	getDefaultPeerUrl() {
-		return this.defaultPeerUrl;
-	}
-
 	getDefaultMspId() {
 		return this.fabricConfig.getMspId();
-	}
-	async getClient() {
-		return this.client;
 	}
 
 	getTls() {
@@ -289,6 +276,7 @@ class FabricGateway {
 	}
 
 	async queryInstantiatedChaincodes(channelName) {
+		logger.info('queryInstantiatedChaincodes', channelName);
 		const network = await this.gateway.getNetwork(this.defaultChannelName);
 		let contract = network.getContract('lscc');
 		let result = await contract.evaluateTransaction('GetChaincodes');
@@ -301,8 +289,10 @@ class FabricGateway {
 				result
 			);
 			for (const cc of decodedReult.installed_chaincodes) {
+				logger.info('1:', cc);
 				const ccInfo = cc.references.get(channelName);
 				if (ccInfo !== undefined) {
+					logger.info('2:', ccInfo);
 					resultJson.chaincodes = concat(resultJson.chaincodes, ccInfo.chaincodes);
 				}
 			}
