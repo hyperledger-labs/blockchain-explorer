@@ -424,7 +424,7 @@ class SyncServices {
 		// The 'header' object contains metadata of the transaction
 		const header = first_tx.payload.header;
 		const channel_name = header.channel_header.channel_id;
-		const blockPro_key = `${channel_name}_${block.header.number}`;
+		const blockPro_key = `${channel_name}_${block.header.number.toString()}`;
 
 		if (blocksInProcess.includes(blockPro_key)) {
 			return 'Block already in processing';
@@ -497,9 +497,9 @@ class SyncServices {
 		const blockhash = await FabricUtils.generateBlockHash(block.header);
 		if (channel_genesis_hash) {
 			const block_row = {
-				blocknum: block.header.number,
-				datahash: block.header.data_hash,
-				prehash: block.header.previous_hash,
+				blocknum: block.header.number.toString(),
+				datahash: block.header.data_hash.toString('hex'),
+				prehash: block.header.previous_hash.toString('hex'),
 				txcount: block.data.data.length,
 				createdt,
 				prev_blockhash: '',
@@ -555,7 +555,7 @@ class SyncServices {
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
 							.extension.response.status;
 					mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(
-						i => i.endorser.Mspid
+						i => i.endorser.mspid
 					);
 					rwset =
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
@@ -584,9 +584,9 @@ class SyncServices {
 					if (endorser_signature !== undefined) {
 						endorser_signature = convertHex.bytesToHex(endorser_signature);
 					}
-					payload_proposal_hash =
-						txObj.payload.data.actions[0].payload.action.proposal_response_payload
-							.proposal_hash;
+					payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
+						'hex'
+					);
 					endorser_id_bytes =
 						txObj.payload.data.actions[0].payload.action.endorsements[0].endorser
 							.IdBytes;
@@ -628,13 +628,13 @@ class SyncServices {
 				}
 				/* eslint-enable */
 				const transaction_row = {
-					blockid: block.header.number,
+					blockid: block.header.number.toString(),
 					txhash: txObj.payload.header.channel_header.tx_id,
 					createdt,
 					chaincodename: chaincode,
 					chaincode_id,
 					status,
-					creator_msp_id: txObj.payload.header.signature_header.creator.Mspid,
+					creator_msp_id: txObj.payload.header.signature_header.creator.mspid,
 					endorser_msp_id: mspId,
 					type: txObj.payload.header.channel_header.typeString,
 					read_set,
@@ -674,19 +674,20 @@ class SyncServices {
 					network_name: _self.platform.network_name,
 					client_name: client.client_name,
 					channel_name,
-					title: `Block ${block.header.number} added to Channel: ${channel_name}`,
+					title: `Block ${block.header.number.toString()} added to Channel: ${channel_name}`,
 					type: 'block',
-					message: `Block ${block.header.number} established with ${block.data.data.length} tx`,
+					message: `Block ${block.header.number.toString()} established with ${
+						block.data.data.length
+					} tx`,
 					time: createdt,
 					txcount: block.data.data.length,
-					datahash: block.header.data_hash,
+					datahash: block.header.data_hash.toString('hex'),
 					blksize: block_row.blksize
 				};
 
 				_self.platform.send(notify);
 			}
 		} else {
-			logger.error('Failed to process the block %j', block);
 			logger.error('Failed to process the block %j', block);
 		}
 		const index = blocksInProcess.indexOf(blockPro_key);
