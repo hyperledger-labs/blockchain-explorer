@@ -290,7 +290,7 @@ class FabricGateway {
 			);
 			for (const cc of decodedReult.installed_chaincodes) {
 				logger.info('1:', cc);
-				const ccInfo = cc.references.get(channelName);
+				const ccInfo = cc.references[channelName];
 				if (ccInfo !== undefined) {
 					logger.info('2:', ccInfo);
 					resultJson.chaincodes = concat(resultJson.chaincodes, ccInfo.chaincodes);

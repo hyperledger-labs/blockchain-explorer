@@ -130,9 +130,9 @@ class Proxy {
 					}
 					for (const peer of org.peers) {
 						if (peer.endpoint.indexOf(node.server_hostname) > -1) {
-							node.ledger_height_low = peer.ledger_height.low;
-							node.ledger_height_high = peer.ledger_height.high;
-							node.ledger_height_unsigned = peer.ledger_height.unsigned;
+							node.ledger_height_low = peer.ledgerHeight.low;
+							node.ledger_height_high = peer.ledgerHeight.high;
+							node.ledger_height_unsigned = peer.ledgerHeight.unsigned;
 						}
 					}
 				}
