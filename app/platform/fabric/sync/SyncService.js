@@ -378,7 +378,7 @@ class SyncServices {
 		this.synchInProcess.push(synch_key);
 
 		// Get channel information from ledger
-		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
+		const channelInfo = await client.queryChainInfo(channel_name);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
 		// Query missing blocks from DB
@@ -389,10 +389,7 @@ class SyncServices {
 		if (results) {
 			for (const result of results) {
 				// Get block by number
-				const block = await client.fabricGateway.queryBlock(
-					channel_name,
-					result.missing_id
-				);
+				const block = await client.queryBlock(channel_name, result.missing_id);
 				if (block) {
 					await this.processBlockEvent(client, block);
 				}

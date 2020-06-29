@@ -116,9 +116,7 @@ class FabricEvent {
 	async disconnectChannelEventHub(channel_name) {
 		logger.debug('disconnectChannelEventHub(' + channel_name + ')');
 		const listener = FabricEvent.channelEventHubs.get(channel_name);
-		const network = await this.client.fabricGateway.gateway.getNetwork(
-			channel_name
-		);
+		const network = await this.client.gateway.getNetwork(channel_name);
 		network.removeBlockListener(listener);
 		FabricEvent.channelEventHubs.delete(channel_name);
 		return;

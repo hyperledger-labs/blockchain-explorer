@@ -237,7 +237,7 @@ class Proxy {
 		let block;
 
 		try {
-			block = await client.fabricGateway.queryBlock(channelName, parseInt(number));
+			block = await client.queryBlock(channelName, parseInt(number));
 		} catch (e) {
 			logger.debug('queryBlock >> ', e);
 		}
