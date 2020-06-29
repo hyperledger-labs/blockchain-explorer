@@ -5,8 +5,7 @@
 	"private": true,
 	"main": "main.js",
 	"keywords": [
-		"fabric-client sample app",
-		"v1.4.0 fabric nodesdk sample"
+		"fabric nodesdk"
 	],
 	"dependencies": {
 		"ajv": "^5.5.2",
@@ -23,7 +22,6 @@
 		"express": "^4.15.3",
 		"express-rate-limit": "^5.0.0",
 		"fabric-ca-client": "^2.1.0",
-		"fabric-client": "^1.4.4",
 		"fabric-network": "^2.1.0",
 		"fast-stats": "0.0.3",
 		"fs-extra": "^6.0.1",

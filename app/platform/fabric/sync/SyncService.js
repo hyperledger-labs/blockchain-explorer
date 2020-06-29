@@ -5,10 +5,10 @@
 const convertHex = require('convert-hex');
 const fabprotos = require('fabric-protos');
 const includes = require('lodash/includes');
-
 const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('SyncServices');
+
 const ExplorerError = require('../../../common/ExplorerError');
 const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
 const fabric_const = require('../../../platform/fabric/utils/FabricConst')
@@ -257,9 +257,7 @@ class SyncServices {
 	 */
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
 		const network_name = client.network_name;
-		const discoveryProtocol = client.hfc_client.getConfigSetting(
-			'discovery-protocol'
-		);
+		const discoveryProtocol = client.fabricGateway.getDiscoveryProtocol();
 		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
 		logger.debug(
 			'insertNewOrderers discoveryProtocol ',
