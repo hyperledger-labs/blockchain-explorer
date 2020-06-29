@@ -11,6 +11,7 @@ const {
 } = require('fabric-common');
 const fabprotos = require('fabric-protos');
 const concat = require('lodash/concat');
+const includes = require('lodash/includes');
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -22,10 +23,12 @@ const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../../common/ExplorerError');
 const FabricConfig = require('../FabricConfig');
+const FabricUtils = require('../../fabric/utils/FabricUtils.js');
 
 class FabricGateway {
-	constructor(networkConfig) {
-		this.networkConfig = networkConfig;
+	constructor(network_name, client_name) {
+		this.network_name = network_name;
+		this.client_name = client_name;
 		this.config = null;
 		this.gateway = null;
 		this.enrollmentSecret = null;
@@ -42,10 +45,15 @@ class FabricGateway {
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
 		this.asLocalhost = false;
+		this.channelsGenHash = new Map();
+		this.channels = [];
+		this.client_config = null;
 	}
 
-	async initialize() {
-		const configPath = path.resolve(__dirname, this.networkConfig);
+	async initialize(client_config, persistence) {
+		this.client_config = client_config;
+		const profileConnection = this.client_config.profile;
+		const configPath = path.resolve(__dirname, '../', profileConnection);
 		this.fabricConfig = new FabricConfig();
 		this.fabricConfig.initialize(configPath);
 		this.config = this.fabricConfig.getConfig();
@@ -125,26 +133,11 @@ class FabricGateway {
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
 			// this.client = this.gateway.getClient();
+			await this.initializeClient(persistence);
 		} catch (error) {
 			logger.error(` ${error}`);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
 		}
-	}
-
-	getEnableAuthentication() {
-		return this.enableAuthentication;
-	}
-
-	getDefaultMspId() {
-		return this.fabricConfig.getMspId();
-	}
-
-	getTls() {
-		return this.tlsEnable;
-	}
-
-	getConfig() {
-		return this.config;
 	}
 
 	/**
@@ -377,6 +370,212 @@ class FabricGateway {
 			);
 		}
 		return null;
+	}
+
+	async initializeClient(persistence) {
+		// Getting channels from queryChannels
+		let channels;
+		try {
+			logger.debug('this.defaultPeer ', this.defaultPeer);
+			channels = await this.queryChannels();
+		} catch (e) {
+			logger.error(e);
+		}
+
+		if (channels) {
+			this.status = true;
+			logger.debug('Client channels >> %j', channels.channels);
+			// Initialize channel network information from Discover
+			for (const channel of channels.channels) {
+				logger.debug('Initializing channel ', channel.channel_id);
+				try {
+					await this.initializeNewChannel(channel.channel_id);
+					logger.debug('Initialized channel >> %s', channel.channel_id);
+				} catch (error) {
+					logger.error('Failed to initialize new channel: ', channel.channel_id);
+				}
+			}
+		} else if (persistence) {
+			logger.info('********* call to initializeDetachClient **********');
+			this.initializeDetachClient(this.client_config, persistence);
+		} else {
+			logger.error('Not found any channels');
+		}
+	}
+
+	async initializeDetachClient(client_config, persistence) {
+		const name = client_config.name;
+		logger.debug(
+			'initializeDetachClient --> client_config ',
+			client_config,
+			' name ',
+			name
+		);
+		const profileConnection = client_config.profile;
+		const configPath = path.resolve(__dirname, '../', profileConnection);
+		const fabricConfig = new FabricConfig();
+		fabricConfig.initialize(configPath);
+		const config = fabricConfig.getConfig();
+		this.userName = fabricConfig.getAdminUser();
+		const peers = fabricConfig.getPeersConfig();
+
+		logger.info('initializeDetachClient, network config) ', config);
+		logger.info(
+			'************************************* initializeDetachClient *************************************************'
+		);
+		logger.info('Error :', explorer_mess.error.ERROR_1009);
+		logger.info('Info : ', explorer_mess.message.MESSAGE_1001);
+		logger.info(
+			'************************************** initializeDetachClient ************************************************'
+		);
+		const channels = await persistence
+			.getCrudService()
+			.getChannelsInfo(this.network_name);
+
+		if (channels.length === 0) {
+			throw new ExplorerError(explorer_mess.error.ERROR_2003);
+		}
+
+		for (const channel of channels) {
+			this.setChannelGenHash(channel.channelname, channel.channel_genesis_hash);
+			const nodes = await persistence
+				.getMetricService()
+				.getPeerList(this.network_name, channel.channel_genesis_hash);
+			let newchannel;
+			try {
+				newchannel = this.Client.getChannel(channel.channelname);
+			} catch (e) {
+				logger.error('Failed to get channel from client ', e);
+			}
+			if (newchannel === undefined) {
+				newchannel = this.Client.newChannel(channel.channelname);
+			}
+			for (const node of nodes) {
+				const peer_config = peers[node.server_hostname];
+				let pem;
+				try {
+					if (peer_config && peer_config.tlsCACerts) {
+						pem = FabricUtils.getPEMfromConfig(peer_config.tlsCACerts);
+						const msps = {
+							[node.mspid]: {
+								tls_root_certs: pem
+							}
+						};
+						logger.debug('msps ', msps);
+					}
+				} catch (e) {
+					logger.error(e);
+				}
+			}
+		}
+	}
+
+	async initializeNewChannel(channel_name) {
+		// Get genesis block for the channel
+		const block = await this.getGenesisBlock(channel_name);
+		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
+
+		const channel_genesis_hash = await FabricUtils.generateBlockHash(
+			block.header
+		);
+		// Setting channel_genesis_hash to map
+		this.setChannelGenHash(channel_name, channel_genesis_hash);
+		this.addChannel(channel_name);
+		logger.debug(
+			`Channel genesis hash for channel [${channel_name}] >> ${channel_genesis_hash}`
+		);
+	}
+
+	async initializeChannelFromDiscover(channel_name) {
+		logger.debug('initializeChannelFromDiscover ', channel_name);
+		if (!includes(this.getChannels(), channel_name)) {
+			await this.initializeNewChannel(channel_name);
+		}
+
+		const discover_results = await this.getDiscoveryResult(channel_name);
+		logger.debug(
+			`Discover results for channel [${channel_name}] >>`,
+			discover_results
+		);
+
+		if ('peers_by_org' in discover_results) {
+			for (const org in discover_results.peers_by_org) {
+				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
+			}
+		}
+
+		return discover_results;
+	}
+
+	getEnableAuthentication() {
+		return this.enableAuthentication;
+	}
+
+	getTls() {
+		return this.tlsEnable;
+	}
+
+	getConfig() {
+		return this.config;
+	}
+
+	getDiscoverConfigSetting() {
+		let discover;
+		if (!this.getTls()) {
+			discover = 'grpc';
+		} else {
+			discover = 'grpcs';
+		}
+		return Client.getConfigSetting('discovery-protocol', discover);
+	}
+
+	async getGenesisBlock(channel) {
+		const genesisBlock = await this.queryBlock(channel, 0);
+		if (!genesisBlock) {
+			logger.error('Failed to get genesis block');
+			return null;
+		}
+		return genesisBlock;
+	}
+
+	getChannelNames() {
+		return Array.from(this.channelsGenHash.keys());
+	}
+
+	getChannels() {
+		return this.channels; // Return Array
+	}
+
+	addChannel(channelName) {
+		this.channels.push(channelName);
+	}
+
+	getChannelGenHash(channel_name) {
+		return this.channelsGenHash.get(channel_name);
+	}
+
+	setChannelGenHash(name, channel_genesis_hash) {
+		this.channelsGenHash.set(name, channel_genesis_hash);
+	}
+
+	getClientName() {
+		return this.client_name;
+	}
+
+	getChannelNameByHash(channel_genesis_hash) {
+		for (const [channel_name, hash_name] of this.channelsGenHash.entries()) {
+			if (channel_genesis_hash === hash_name) {
+				return channel_name;
+			}
+		}
+	}
+
+	getDefaultMspId() {
+		return this.fabricConfig.getMspId();
+	}
+
+	getStatus() {
+		return this.status;
 	}
 }
 

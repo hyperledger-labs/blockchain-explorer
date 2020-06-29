@@ -78,7 +78,7 @@ class Proxy {
 		logger.debug('getCurrentChannel: network_name', network_name);
 
 		const client = await this.platform.getClient(network_name);
-		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
+		const channel_name = Object.keys(client.config.channels)[0];
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		let respose;
 		if (channel_genesis_hash) {
