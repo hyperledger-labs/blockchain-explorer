@@ -91,7 +91,6 @@ class Platform {
 		/* eslint-disable */
 		const _self = this;
 		/* eslint-enable */
-		let clientstatus = true;
 
 		// Setting organization enrolment files
 		logger.debug('Setting admin organization enrolment files');
@@ -124,25 +123,12 @@ class Platform {
 			// Create client instance
 			logger.debug('Creating client [%s] >> ', client_name, client_configs);
 
-			let client;
-
-			if (clientstatus) {
-				logger.info('FabricUtils.createFabricClient ');
-				client = await FabricUtils.createFabricClient(
-					client_configs,
-					network_name,
-					client_name,
-					this.persistence
-				);
-			} else {
-				logger.info('FabricUtils.createDetachClient ');
-				client = await FabricUtils.createDetachClient(
-					client_configs,
-					network_name,
-					client_name,
-					this.persistence
-				);
-			}
+			const client = await FabricUtils.createFabricClient(
+				client_configs,
+				network_name,
+				client_name,
+				this.persistence
+			);
 			if (client) {
 				// Set client into clients map
 				const clientObj = { name: client_name, instance: client };
@@ -191,28 +177,6 @@ class Platform {
 		this.persistence.setCrudService(
 			new CRUDService(this.persistence.getPGService())
 		);
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} network_name
-	 * @param {*} client_name
-	 * @param {*} channel_name
-	 * @returns
-	 * @memberof Platform
-	 */
-	changeNetwork(network_name, channel_name) {
-		const clientObj = this.networks.get(network_name);
-		if (clientObj) {
-			this.defaultNetwork = network_name;
-			const client = clientObj.instance;
-			if (channel_name) {
-				client.setDefaultChannel(channel_name);
-			}
-		} else {
-			return `Network [${network_name}] is not found`;
-		}
 	}
 
 	/**

@@ -1,0 +1,91 @@
+#! Copyright IBM Corp. All Rights Reserved.
+#!
+#! SPDX-License-Identifier: Apache-2.0
+
+#@ load("@ytt:data", "data")
+#@ config = data.values
+#@ if config.k8s.dataPersistence == True:
+#@   if config.orderer.ordererType == "kafka":
+#@     for i in range(0, config.kafka.numKafka):
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: #@ "kafka{}-data".format(i)
+spec:
+  storageClassName: #@ config.k8s.storageClass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: #@ config.k8s.storageCapacity
+#@ end
+
+#@ for i in range(0, config.kafka.numZookeepers):
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: #@ "zookeeper{}-data".format(i)
+spec:
+  storageClassName: #@ config.k8s.storageClass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: #@ config.k8s.storageCapacity
+#@ end
+#@ end
+
+
+#@ for i in range(0, len(config.peerOrganizations)):
+#@ organization = config.peerOrganizations[i]
+#@   for j in range(0, organization.numPeers):
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: #@ "peer{}-{}-data".format(j,organization.name)
+spec:
+  storageClassName: #@ config.k8s.storageClass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: #@ config.k8s.storageCapacity
+#@     if config.dbType == "couchdb":
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: #@ "couchdb-peer{}-{}-data".format(j,organization.name)
+spec:
+  storageClassName: #@ config.k8s.storageClass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: #@ config.k8s.storageCapacity
+#@     end
+#@ end
+#@ end
+#@ num_ordererOrgs = len(config.ordererOrganizations)
+#@ for i in range(0, num_ordererOrgs):
+#@   organization = config.ordererOrganizations[i]
+#@   numOderers = organization.numOderers
+#@   for j in range(0, numOderers):
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: #@ "orderer{}-{}-data".format(j,organization.name)
+spec:
+  storageClassName: #@ config.k8s.storageClass
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: #@ config.k8s.storageCapacity
+#@   end
+#@ end
+#@ end

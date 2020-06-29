@@ -1,55 +1,41 @@
 organizations:
   - name: org1
-#! For smoke test suite, connection-profile are read from smoke directory
     connProfilePath: ./connection-profile/connection_profile_org1.yaml
   - name: org2
     connProfilePath: ./connection-profile/connection_profile_org2.yaml
 
 createChannel:
   - channelName: commonchannel
-#! For smoke test suite, channel-artifacts are read from smoke directory
     channelTxPath: ./channel-artifacts/commonchannel/commonchannel.tx
     organizations: org1
   - channelName: org1channel
-#! For smoke test suite, channel-artifacts are read from smoke directory
     channelTxPath: ./channel-artifacts/org1channel/org1channel.tx
     organizations: org1
   - channelName: org2channel
-#! For smoke test suite, channel-artifacts are read from smoke directory
     channelTxPath: ./channel-artifacts/org2channel/org2channel.tx
     organizations: org2
 
 anchorPeerUpdate:
   - channelName: commonchannel
     organizations: org1
-#! For smoke test suite, channel-artifacts are read from smoke directory
     anchorPeerUpdateTxPath: ./channel-artifacts/commonchannel/commonchannelorg1anchor.tx
   - channelName: commonchannel
     organizations: org2
     anchorPeerUpdateTxPath: ./channel-artifacts/commonchannel/commonchannelorg2anchor.tx
   - channelName: org1channel
     organizations: org1
-#! For smoke test suite, channel-artifacts are read from smoke directory
     anchorPeerUpdateTxPath: ./channel-artifacts/org1channel/org1channelorg1anchor.tx
 
 joinChannel:
-# joins all peers in listed organziations to all channels based on channelPrefix and numChannels
   - channelName: commonchannel
     organizations: org1,org2
   - channelName: org1channel
     organizations: org1
 
 installChaincode:
-# installs chaincode with specified name on all peers in listed organziations
   - name: samplecc
+    sdk: cli
     version: v1
-    path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
-    organizations: org1,org2
-    language: golang
-    metadataPath: ""
-
-  - name: samplecc
-    version: v2
     path: github.com/hyperledger/fabric-test/chaincodes/samplecc/go
     organizations: org1,org2
     language: golang
@@ -57,20 +43,12 @@ installChaincode:
 
 instantiateChaincode:
   - channelName: commonchannel
+    sdk: cli
     name: samplecc
     version: v1
     args: ""
     organizations: org1
     endorsementPolicy: 2of(org1,org2)
-    collectionPath: ""
-
-upgradeChaincode:
-  - channelName: testorgschannel0
-    name: samplecc
-    version: v2
-    args: ""
-    organizations: org1
-    endorsementPolicy: 1of(org1,org2)
     collectionPath: ""
 
 invokes:

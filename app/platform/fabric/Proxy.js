@@ -78,8 +78,8 @@ class Proxy {
 		logger.debug('getCurrentChannel: network_name', network_name);
 
 		const client = await this.platform.getClient(network_name);
-		const channel = client.getDefaultChannel();
-		const channel_genesis_hash = client.getChannelGenHash(channel.getName());
+		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
+		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		let respose;
 		if (channel_genesis_hash) {
 			respose = {
@@ -105,16 +105,14 @@ class Proxy {
 	 */
 	async getPeersStatus(network_name, channel_genesis_hash) {
 		const client = await this.platform.getClient(network_name);
-		const channel = client.getDefaultChannel();
+		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
 		const nodes = await this.persistence
 			.getMetricService()
 			.getPeerList(network_name, channel_genesis_hash);
 		let discover_results;
 		if (client.status) {
 			try {
-				discover_results = await client.initializeChannelFromDiscover(
-					channel._name
-				);
+				discover_results = await client.initializeChannelFromDiscover(channel_name);
 			} catch (e) {
 				logger.debug('getPeersStatus >> ', e);
 			}
@@ -127,11 +125,14 @@ class Proxy {
 				node.status = 'DOWN';
 				if (discover_results && discover_results.peers_by_org) {
 					const org = discover_results.peers_by_org[node.mspid];
+					if (org === undefined) {
+						continue;
+					}
 					for (const peer of org.peers) {
 						if (peer.endpoint.indexOf(node.server_hostname) > -1) {
-							node.ledger_height_low = peer.ledger_height.low;
-							node.ledger_height_high = peer.ledger_height.high;
-							node.ledger_height_unsigned = peer.ledger_height.unsigned;
+							node.ledger_height_low = peer.ledgerHeight.low;
+							node.ledger_height_high = peer.ledgerHeight.high;
+							node.ledger_height_unsigned = peer.ledgerHeight.unsigned;
 						}
 					}
 				}
@@ -164,10 +165,7 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async changeChannel(network_name, channel_genesis_hash) {
-		const client = this.platform.getClient(network_name);
-		const respose = client.setDefaultChannelByHash(channel_genesis_hash);
-		logger.debug('changeChannel >> %s', respose);
-		return respose;
+		return channel_genesis_hash;
 	}
 
 	/**
@@ -180,7 +178,7 @@ class Proxy {
 		const client = this.platform.getClient(network_name);
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name, client.getDefaultPeer());
+			.getChannelsInfo(network_name);
 		const currentchannels = [];
 		for (const channel of channels) {
 			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -273,7 +271,7 @@ class Proxy {
 		const client_channels = client.getChannelNames();
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name, client.getDefaultPeer());
+			.getChannelsInfo(network_name);
 		const respose = [];
 
 		for (let i = 0; i < channels.length; i++) {

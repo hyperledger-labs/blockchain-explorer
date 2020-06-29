@@ -4,6 +4,7 @@
 
 const convertHex = require('convert-hex');
 const fabprotos = require('fabric-protos');
+const includes = require('lodash/includes');
 
 const helper = require('../../../common/helper');
 
@@ -68,12 +69,12 @@ class SyncServices {
 
 		for (const channel of channels_query.channels) {
 			const channel_name = channel.channel_id;
-			if (!channels.get(channel_name)) {
+			if (!includes(channels, channel_name)) {
 				await client.initializeNewChannel(channel_name);
 			}
 		}
 
-		for (const [channel_name, channel] of channels.entries()) {
+		for (const channel_name of channels) {
 			logger.info(
 				'SyncServices.synchNetworkConfigToDB client ',
 				client.client_name,
@@ -89,14 +90,14 @@ class SyncServices {
 
 			const res = await this.insertNewChannel(
 				client,
-				channel,
+				channel_name,
 				block,
 				channel_genesis_hash
 			);
 			if (res) {
 				await this.insertFromDiscoveryResults(
 					client,
-					channel,
+					channel_name,
 					channel_genesis_hash
 				);
 			} else {
@@ -117,8 +118,7 @@ class SyncServices {
 	 * @returns
 	 * @memberof SyncServices
 	 */
-	async insertNewChannel(client, channel, block, channel_genesis_hash) {
-		const channel_name = channel.getName();
+	async insertNewChannel(client, channel_name, block, channel_genesis_hash) {
 		const network_name = client.network_name;
 		const channelInfo = await this.persistence
 			.getCrudService()
@@ -169,8 +169,7 @@ class SyncServices {
 	 * @param {*} channel_genesis_hash
 	 * @memberof SyncServices
 	 */
-	async insertFromDiscoveryResults(client, channel, channel_genesis_hash) {
-		const channel_name = channel.getName();
+	async insertFromDiscoveryResults(client, channel_name, channel_genesis_hash) {
 		const discoveryResults = await client.initializeChannelFromDiscover(
 			channel_name
 		);
@@ -301,12 +300,19 @@ class SyncServices {
 		discoveryResults
 	) {
 		const network_name = client.network_name;
-		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes();
+		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
+		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes(
+			channel_name
+		);
 		for (const chaincode of chaincodes.chaincodes) {
+			let path = '-';
+			if (chaincode.path !== undefined) {
+				path = chaincode.path;
+			}
 			const chaincode_row = {
 				name: chaincode.name,
 				version: chaincode.version,
-				path: chaincode.path,
+				path: path,
 				txcount: 0,
 				createdt: new Date(),
 				channel_genesis_hash
@@ -364,10 +370,9 @@ class SyncServices {
 			.saveChaincodPeerRef(network_name, chaincode_peer_row);
 	}
 
-	async synchBlocks(client, channel) {
+	async synchBlocks(client, channel_name) {
 		const network_name = client.network_name;
 		const client_name = client.getClientName();
-		const channel_name = channel.getName();
 
 		const synch_key = `${client_name}_${channel_name}`;
 		if (this.synchInProcess.includes(synch_key)) {
@@ -377,10 +382,7 @@ class SyncServices {
 		this.synchInProcess.push(synch_key);
 
 		// Get channel information from ledger
-		const channelInfo = await client
-			.getHFC_Client()
-			.getChannel(channel_name)
-			.queryInfo(client.getDefaultPeer(), true);
+		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
 		// Query missing blocks from DB
@@ -422,7 +424,7 @@ class SyncServices {
 		// The 'header' object contains metadata of the transaction
 		const header = first_tx.payload.header;
 		const channel_name = header.channel_header.channel_id;
-		const blockPro_key = `${channel_name}_${block.header.number}`;
+		const blockPro_key = `${channel_name}_${block.header.number.toString()}`;
 
 		if (blocksInProcess.includes(blockPro_key)) {
 			return 'Block already in processing';
@@ -440,12 +442,11 @@ class SyncServices {
 					await client.initializeNewChannel(channel_name);
 					channel_genesis_hash = client.getChannelGenHash(channel_name);
 					// inserting new channel details to DB
-					const channel = client.hfc_client.getChannel(channel_name);
 					await _self.insertNewChannel(client, channel, block, channel_genesis_hash);
 					await _self.insertFromDiscoveryResults(
 						client,
-						channel,
-						channel_genesis_hash
+						channel_name,
+						channel_name_genesis_hash
 					);
 
 					const notify = {
@@ -468,11 +469,10 @@ class SyncServices {
 			setTimeout(
 				async (client, channel_name, channel_genesis_hash) => {
 					// get discovery and insert new peer, orders details to db
-					const channel = client.hfc_client.getChannel(channel_name);
 					await client.initializeChannelFromDiscover(channel_name);
 					await _self.insertFromDiscoveryResults(
 						client,
-						channel,
+						channel_name,
 						channel_genesis_hash
 					);
 					const notify = {
@@ -497,9 +497,9 @@ class SyncServices {
 		const blockhash = await FabricUtils.generateBlockHash(block.header);
 		if (channel_genesis_hash) {
 			const block_row = {
-				blocknum: block.header.number,
-				datahash: block.header.data_hash,
-				prehash: block.header.previous_hash,
+				blocknum: block.header.number.toString(),
+				datahash: block.header.data_hash.toString('hex'),
+				prehash: block.header.previous_hash.toString('hex'),
 				txcount: block.data.data.length,
 				createdt,
 				prev_blockhash: '',
@@ -555,7 +555,7 @@ class SyncServices {
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
 							.extension.response.status;
 					mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(
-						i => i.endorser.Mspid
+						i => i.endorser.mspid
 					);
 					rwset =
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
@@ -584,9 +584,9 @@ class SyncServices {
 					if (endorser_signature !== undefined) {
 						endorser_signature = convertHex.bytesToHex(endorser_signature);
 					}
-					payload_proposal_hash =
-						txObj.payload.data.actions[0].payload.action.proposal_response_payload
-							.proposal_hash;
+					payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
+						'hex'
+					);
 					endorser_id_bytes =
 						txObj.payload.data.actions[0].payload.action.endorsements[0].endorser
 							.IdBytes;
@@ -604,11 +604,10 @@ class SyncServices {
 				) {
 					setTimeout(
 						async (client, channel_name, channel_genesis_hash) => {
-							const channel = client.hfc_client.getChannel(channel_name);
 							// get discovery and insert chaincode details to db
 							await _self.insertFromDiscoveryResults(
 								client,
-								channel,
+								channel_name,
 								channel_genesis_hash
 							);
 
@@ -629,13 +628,13 @@ class SyncServices {
 				}
 				/* eslint-enable */
 				const transaction_row = {
-					blockid: block.header.number,
+					blockid: block.header.number.toString(),
 					txhash: txObj.payload.header.channel_header.tx_id,
 					createdt,
 					chaincodename: chaincode,
 					chaincode_id,
 					status,
-					creator_msp_id: txObj.payload.header.signature_header.creator.Mspid,
+					creator_msp_id: txObj.payload.header.signature_header.creator.mspid,
 					endorser_msp_id: mspId,
 					type: txObj.payload.header.channel_header.typeString,
 					read_set,
@@ -675,19 +674,20 @@ class SyncServices {
 					network_name: _self.platform.network_name,
 					client_name: client.client_name,
 					channel_name,
-					title: `Block ${block.header.number} added to Channel: ${channel_name}`,
+					title: `Block ${block.header.number.toString()} added to Channel: ${channel_name}`,
 					type: 'block',
-					message: `Block ${block.header.number} established with ${block.data.data.length} tx`,
+					message: `Block ${block.header.number.toString()} established with ${
+						block.data.data.length
+					} tx`,
 					time: createdt,
 					txcount: block.data.data.length,
-					datahash: block.header.data_hash,
+					datahash: block.header.data_hash.toString('hex'),
 					blksize: block_row.blksize
 				};
 
 				_self.platform.send(notify);
 			}
 		} else {
-			logger.error('Failed to process the block %j', block);
 			logger.error('Failed to process the block %j', block);
 		}
 		const index = blocksInProcess.indexOf(blockPro_key);

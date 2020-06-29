@@ -5,6 +5,7 @@
 const Fabric_Client = require('fabric-client');
 const { User } = require('fabric-common');
 const path = require('path');
+const includes = require('lodash/includes');
 
 const ExplorerError = require('../../common/ExplorerError');
 const FabricUtils = require('./utils/FabricUtils.js');
@@ -32,9 +33,7 @@ class FabricClient {
 		this.client_name = client_name;
 		this.hfc_client = null;
 		this.fabricGateway = null;
-		this.defaultPeer = {};
 		this.defaultMspId = {};
-		this.defaultChannel = {};
 		this.defaultOrderer = null;
 		this.channelsGenHash = new Map();
 		this.client_config = null;
@@ -42,6 +41,7 @@ class FabricClient {
 		this.status = false;
 		this.tls = false;
 		this.asLocalhost = false;
+		this.channels = [];
 	}
 
 	/**
@@ -72,17 +72,9 @@ class FabricClient {
 			await this.fabricGateway.initialize();
 			this.hfc_client = Fabric_Client.loadFromConfig(this.fabricGateway.config);
 			/* eslint-enable */
-			const channel_name = this.fabricGateway.getDefaultChannelName();
-			this.defaultPeer = this.fabricGateway.getDefaultPeer();
 			this.defaultMspId = this.fabricGateway.getDefaultMspId();
-			this.defaultChannel = this.hfc_client.getChannel(channel_name);
 			this.tls = this.fabricGateway.getTls();
 			this.config = this.fabricGateway.getConfig();
-			logger.debug(
-				'Set client [%s] default channel as  >> %s',
-				this.client_name,
-				this.defaultChannel.getName()
-			);
 			// Set discovery protocol
 			if (!this.tls) {
 				this.hfc_client.setConfigSetting('discovery-protocol', 'grpc');
@@ -97,7 +89,7 @@ class FabricClient {
 		// Getting channels from queryChannels
 		let channels;
 		try {
-			logger.debug('this.defaultPeer ', this.defaultPeer);
+			// logger.debug('this.defaultPeer ', this.defaultPeer);
 			channels = await this.fabricGateway.queryChannels();
 		} catch (e) {
 			logger.error(e);
@@ -156,13 +148,9 @@ class FabricClient {
 		logger.info(
 			'************************************** initializeDetachClient ************************************************'
 		);
-		const defaultPeerConfig = fabricConfig.getDefaultPeerConfig();
-		const default_peer_name = defaultPeerConfig.name;
 		const channels = await persistence
 			.getCrudService()
-			.getChannelsInfo(this.network_name, default_peer_name);
-
-		const default_channel_name = fabricConfig.getDefaultChannel();
+			.getChannelsInfo(this.network_name);
 
 		if (channels.length === 0) {
 			throw new ExplorerError(explorer_mess.error.ERROR_2003);
@@ -199,39 +187,6 @@ class FabricClient {
 					logger.error(e);
 				}
 			}
-
-			try {
-				newchannel.getPeer(default_peer_name);
-			} catch (e) {
-				logger.error(
-					'Failed to connect to default peer: ',
-					default_peer_name,
-					' \n',
-					e
-				);
-
-				/*
-				 * Const url = 'grpc://localhost:7051';
-				 * const newpeer = this.hfc_client.newPeer(url, {
-				 * 'ssl-target-name-override': default_peer_name,
-				 * name: default_peer_name
-				 * });
-				 * newchannel.addPeer(newpeer);
-				 *
-				 */
-			}
-		}
-
-		this.defaultChannel = this.hfc_client.getChannel(default_channel_name);
-		if (this.defaultChannel.getPeers().length > 0) {
-			this.defaultPeer = this.defaultChannel.getPeer(default_peer_name);
-		}
-
-		if (this.defaultChannel === undefined) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2004);
-		}
-		if (this.defaultPeer === undefined) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2005);
 		}
 	}
 
@@ -242,26 +197,6 @@ class FabricClient {
 	 * @memberof FabricClient
 	 */
 	async initializeNewChannel(channel_name) {
-		// If the new channel is not defined in configuration, then use default channel configuration as new channel configuration
-		if (!this.config.channels[channel_name]) {
-			this.hfc_client._network_config._network_config.channels[
-				channel_name
-			] = this.config.channels[this.defaultChannel.getName()];
-		}
-
-		/*
-		 * Get channel, if the channel is not exist in the hfc client context,
-		 * Then it will create new channel from the network configuration
-		 */
-		try {
-			// Enable discover
-			await this.initializeChannelFromDiscover(channel_name);
-		} catch (error) {
-			logger.error(
-				'Failed to initialize Channel From Discover, channel ',
-				channel_name
-			);
-		}
 		// Get genesis block for the channel
 		const block = await this.getGenesisBlock(channel_name);
 		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
@@ -271,6 +206,7 @@ class FabricClient {
 		);
 		// Setting channel_genesis_hash to map
 		this.setChannelGenHash(channel_name, channel_genesis_hash);
+		this.addChannel(channel_name);
 		logger.debug(
 			`Channel genesis hash for channel [${channel_name}] >> ${channel_genesis_hash}`
 		);
@@ -285,17 +221,14 @@ class FabricClient {
 	 */
 	async initializeChannelFromDiscover(channel_name) {
 		logger.debug('initializeChannelFromDiscover ', channel_name);
-		let channel = this.hfc_client.getChannel(channel_name, false);
-		if (!channel) {
+		if (!includes(this.getChannels(), channel_name)) {
 			await this.initializeNewChannel(channel_name);
-			channel = this.getChannel(channel_name);
 		}
-		if (channel) {
-			if (!this.tls) {
-				this.hfc_client.setConfigSetting('discovery-protocol', 'grpc');
-			} else {
-				this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
-			}
+
+		if (!this.tls) {
+			this.hfc_client.setConfigSetting('discovery-protocol', 'grpc');
+		} else {
+			this.hfc_client.setConfigSetting('discovery-protocol', 'grpcs');
 		}
 
 		const discover_results = await this.fabricGateway.getDiscoveryResult(
@@ -306,65 +239,13 @@ class FabricClient {
 			discover_results
 		);
 
-		// Creating users for admin peers
-		if (discover_results) {
-			if (discover_results.msps) {
-				for (const msp_name in discover_results.msps) {
-					const msp = discover_results.msps[msp_name];
-
-					if (!channel._msp_manager.getMSP(msp.id)) {
-						const config = {
-							rootCerts: msp.rootCerts,
-							intermediateCerts: msp.intermediateCerts,
-							admins: msp.admins,
-							cryptoSuite: channel._clientContext._crytoSuite,
-							id: msp.id,
-							orgs: msp.orgs,
-							tls_root_certs: msp.tls_root_certs,
-							tls_intermediate_certs: msp.tls_intermediate_certs
-						};
-						channel._msp_manager.addMSP(config);
-					}
-				}
+		if ('peers_by_org' in discover_results) {
+			for (const org in discover_results.peers_by_org) {
+				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
 			}
-			// Creating orderers
-			if (discover_results.orderers) {
-				for (const msp_id in discover_results.orderers) {
-					const endpoints = discover_results.orderers[msp_id].endpoints;
-					for (const endpoint of endpoints) {
-						logger.info('FabricClient.discover_results  endpoint ', endpoint);
-						const discoveryProtocol = this.hfc_client.getConfigSetting(
-							'discovery-protocol'
-						);
-						const requesturl =
-							`${discoveryProtocol}://${endpoint.host}:` + endpoint.port;
-						logger.debug(
-							'initializeChannelFromDiscover.discoveryProtocol ',
-							discoveryProtocol,
-							' requesturl ',
-							requesturl
-						);
-
-						this.newOrderer(
-							channel,
-							requesturl,
-							msp_id,
-							endpoint.host,
-							discover_results.msps
-						);
-						logger.debug(
-							'Successfully created orderer [%s:%s] for client [%s]',
-							endpoint.host,
-							endpoint.port,
-							this.client_name
-						);
-					}
-				}
-			}
-
-			channel._discovery_results = discover_results;
-			return discover_results;
 		}
+
+		return discover_results;
 	}
 
 	/**
@@ -433,22 +314,6 @@ class FabricClient {
 			}
 		}
 		return newpeer;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} channel
-	 * @returns
-	 * @memberof FabricClient
-	 */
-	async getChannelDiscover(channel) {
-		const discover_request = {
-			target: this.defaultPeer,
-			config: true
-		};
-		const discover_results = await channel._discover(discover_request);
-		return discover_results;
 	}
 
 	/**
@@ -558,11 +423,22 @@ class FabricClient {
 	/**
 	 *
 	 *
+	 *
 	 * @returns
 	 * @memberof FabricClient
 	 */
 	getChannels() {
-		return this.hfc_client._channels; // Return Map
+		return this.channels; // Return Array
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} channelName
+	 * @memberof FabricClient
+	 */
+	addChannel(channelName) {
+		this.channels.push(channelName);
 	}
 
 	/**
@@ -593,38 +469,8 @@ class FabricClient {
 	 * @returns
 	 * @memberof FabricClient
 	 */
-	getDefaultPeer() {
-		return this.defaultPeer;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricClient
-	 */
 	getClientName() {
 		return this.client_name;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricClient
-	 */
-	getDefaultChannel() {
-		return this.defaultChannel;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} defaultPeer
-	 * @memberof FabricClient
-	 */
-	setDefaultPeer(defaultPeer) {
-		this.defaultPeer = defaultPeer;
 	}
 
 	/**
@@ -666,35 +512,6 @@ class FabricClient {
 	 */
 	getChannel(channel_name) {
 		return this.hfc_client.getChannel(channel_name);
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} channel_name
-	 * @memberof FabricClient
-	 */
-	setDefaultChannel(channel_name) {
-		this.defaultChannel = this.hfc_client.getChannel(channel_name);
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} new_channel_genesis_hash
-	 * @returns
-	 * @memberof FabricClient
-	 */
-	setDefaultChannelByHash(new_channel_genesis_hash) {
-		for (const [
-			channel_name,
-			channel_genesis_hash
-		] of this.channelsGenHash.entries()) {
-			if (new_channel_genesis_hash === channel_genesis_hash) {
-				this.defaultChannel = this.hfc_client.getChannel(channel_name);
-				return channel_genesis_hash;
-			}
-		}
 	}
 
 	/**

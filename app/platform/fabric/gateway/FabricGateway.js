@@ -10,6 +10,7 @@ const {
 	BlockDecoder
 } = require('fabric-common');
 const fabprotos = require('fabric-protos');
+const concat = require('lodash/concat');
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -83,7 +84,6 @@ class FabricGateway {
 		);
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		const caURLs = this.fabricConfig.getCertificateAuthorities();
 		/* eslint-enable */
 		let identity;
 		try {
@@ -95,11 +95,6 @@ class FabricGateway {
 			if (identity) {
 				logger.debug(
 					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
-				);
-			} else if (this.fabricCaEnabled) {
-				identity = await this.enrollCaIdentity(
-					this.fabricConfig.getAdminUser(),
-					this.fabricConfig.getAdminPassword()
 				);
 			} else {
 				/*
@@ -136,25 +131,12 @@ class FabricGateway {
 		}
 	}
 
-	getDefaultChannelName() {
-		return this.defaultChannelName;
-	}
 	getEnableAuthentication() {
 		return this.enableAuthentication;
 	}
 
-	getDefaultPeer() {
-		return this.defaultPeer;
-	}
-	getDefaultPeerUrl() {
-		return this.defaultPeerUrl;
-	}
-
 	getDefaultMspId() {
 		return this.fabricConfig.getMspId();
-	}
-	async getClient() {
-		return this.client;
 	}
 
 	getTls() {
@@ -266,6 +248,7 @@ class FabricGateway {
 		const contract = network.getContract('cscc');
 		const result = await contract.evaluateTransaction('GetChannels');
 		const resultJson = fabprotos.protos.ChannelQueryResponse.decode(result);
+		logger.debug('queryChannels', resultJson);
 		return resultJson;
 	}
 
@@ -281,6 +264,7 @@ class FabricGateway {
 				String(blockNum)
 			);
 			const resultJson = BlockDecoder.decode(resultByte);
+			logger.debug('queryBlock', resultJson);
 			return resultJson;
 		} catch (error) {
 			logger.error(
@@ -291,12 +275,52 @@ class FabricGateway {
 		}
 	}
 
-	async queryInstantiatedChaincodes() {
+	async queryInstantiatedChaincodes(channelName) {
+		logger.info('queryInstantiatedChaincodes', channelName);
 		const network = await this.gateway.getNetwork(this.defaultChannelName);
-		const contract = network.getContract('lscc');
-		const result = await contract.evaluateTransaction('GetChaincodes');
-		const resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
+		let contract = network.getContract('lscc');
+		let result = await contract.evaluateTransaction('GetChaincodes');
+		let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
+		if (resultJson.chaincodes.length <= 0) {
+			resultJson = { chaincodes: [] };
+			contract = network.getContract('_lifecycle');
+			result = await contract.evaluateTransaction('QueryInstalledChaincodes', '');
+			const decodedReult = fabprotos.lifecycle.QueryInstalledChaincodesResult.decode(
+				result
+			);
+			for (const cc of decodedReult.installed_chaincodes) {
+				logger.info('1:', cc);
+				const ccInfo = cc.references[channelName];
+				if (ccInfo !== undefined) {
+					logger.info('2:', ccInfo);
+					resultJson.chaincodes = concat(resultJson.chaincodes, ccInfo.chaincodes);
+				}
+			}
+		}
+		logger.debug('queryInstantiatedChaincodes', resultJson);
 		return resultJson;
+	}
+
+	async queryChainInfo(channelName) {
+		try {
+			const network = await this.gateway.getNetwork(this.defaultChannelName);
+
+			// Get the contract from the network.
+			const contract = network.getContract('qscc');
+			const resultByte = await contract.evaluateTransaction(
+				'GetChainInfo',
+				channelName
+			);
+			const resultJson = fabprotos.common.BlockchainInfo.decode(resultByte);
+			logger.debug('queryChainInfo', resultJson);
+			return resultJson;
+		} catch (error) {
+			logger.error(
+				`Failed to get chain info from channel ${channelName} : `,
+				error
+			);
+			return null;
+		}
 	}
 
 	getPeer_pem(pemPath) {

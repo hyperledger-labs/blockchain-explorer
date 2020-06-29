@@ -66,7 +66,12 @@ class Synchronizer {
 
 		this.platform.setPersistenceService();
 
-		this.platform.setBlocksSyncTime(syncconfig.sync.blocksSyncTime);
+		// For overriding sync interval(min) via environment variable(sec)
+		const syncIntervalSec = process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC
+			? parseInt(process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC, 10)
+			: parseInt(syncconfig.sync.blocksSyncTime, 10) * 60;
+		this.platform.setBlocksSyncTime(syncIntervalSec);
+		logger.info('initialize :', syncIntervalSec);
 
 		await this.platform.initialize(this.args);
 	}

@@ -42,7 +42,13 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 		)
 
 		It("Starting fabric network", func() {
-			networkSpecPath = "apitest-network-spec.yml"
+			var fabricVer = os.Getenv("FABRIC_VERSION")
+			if fabricVer == "1" {
+				networkSpecPath = "apitest-network-spec.yml"
+			} else {
+				networkSpecPath = "apitest-network-spec-v2.yml"
+			}
+			fmt.Printf("Network spec is %s\n", networkSpecPath)
 			err := launcher.Launcher("up", "docker", "", networkSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 		})
@@ -107,6 +113,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		It("get network list", func() {
@@ -168,13 +176,13 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(result.Row[0].Channelname).Should(Equal("commonchannel"))
 		})
 
-		It("register user", func() {
+		XIt("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(200))
 		})
 
-		It("login with newly registered user", func() {
+		XIt("login with newly registered user", func() {
 			resp := restPost("/auth/login", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &LoginResponse{})
 			resultLogin := resp.Result().(*LoginResponse)
 
@@ -182,7 +190,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(resultLogin.User.Name).Should(Equal("test"))
 		})
 
-		It("fail to register duplicate user", func() {
+		XIt("fail to register duplicate user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(400))
@@ -284,7 +292,12 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		)
 
 		It("Starting fabric network", func() {
-			networkSpecPath = "apitest-network-spec.yml"
+			var fabricVer = os.Getenv("FABRIC_VERSION")
+			if fabricVer == "1" {
+				networkSpecPath = "apitest-network-spec.yml"
+			} else {
+				networkSpecPath = "apitest-network-spec-v2.yml"
+			}
 			err := launcher.Launcher("up", "docker", "", networkSpecPath)
 			Expect(err).NotTo(HaveOccurred())
 		})
@@ -341,6 +354,8 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
 		})
 
 		Context("/auth/networklist", func() {
@@ -404,6 +419,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		Context("/api/channels/info", func() {
 
 			It("get channels info for org1", func() {
+
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
@@ -416,7 +432,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				chList := result2.getChannelList()
 				Expect(chList).Should(ContainElements([]string{"commonchannel", "org1channel"}))
 				Expect(len(chList)).Should(Equal(2))
-
+				fmt.Fprintf(GinkgoWriter, "Info: result2 %+v\n", result2)
 				action := "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-org1.yml"
 				err := testclient.Testclient(action, inputSpecPath)
@@ -426,26 +442,28 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result3 %+v\n", result3)
 
 				compareChannelsInfoBlockCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result2, result3, "org1channel", 1)
 				compareChannelsInfoTxCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoTxCount(result2, result3, "org1channel", 1)
 
-				action = "invoke"
-				inputSpecPath = "apitest-input-multiprofile-invoke-org2.yml"
-				err = testclient.Testclient(action, inputSpecPath)
-				Expect(err).NotTo(HaveOccurred())
+				// action = "invoke"
+				// inputSpecPath = "apitest-input-multiprofile-invoke-org2.yml"
+				// err = testclient.Testclient(action, inputSpecPath)
+				// Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(waitSyncInterval * time.Second)
+				// time.Sleep(waitSyncInterval * time.Second)
 
-				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
-				result4 := resp4.Result().(*ChannelsInfoResp)
+				// resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
+				// result4 := resp4.Result().(*ChannelsInfoResp)
+				// fmt.Fprintf(GinkgoWriter, "Info: result4 %+v\n", result4)
 
-				compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
-				compareChannelsInfoBlockCount(result3, result4, "org1channel", 0)
-				compareChannelsInfoTxCount(result3, result4, "commonchannel", 0)
-				compareChannelsInfoTxCount(result3, result4, "org1channel", 0)
+				// compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
+				// compareChannelsInfoBlockCount(result3, result4, "org1channel", 0)
+				// compareChannelsInfoTxCount(result3, result4, "commonchannel", 0)
+				// compareChannelsInfoTxCount(result3, result4, "org1channel", 0)
 
 				action = "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-common.yml"
@@ -456,14 +474,16 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result5 %+v\n", result5)
 
-				compareChannelsInfoBlockCount(result4, result5, "commonchannel", 1)
-				compareChannelsInfoBlockCount(result4, result5, "org1channel", 0)
-				compareChannelsInfoTxCount(result4, result5, "commonchannel", 1)
-				compareChannelsInfoTxCount(result4, result5, "org1channel", 0)
+				compareChannelsInfoBlockCount(result3, result5, "commonchannel", 1)
+				compareChannelsInfoBlockCount(result3, result5, "org1channel", 0)
+				compareChannelsInfoTxCount(result3, result5, "commonchannel", 1)
+				compareChannelsInfoTxCount(result3, result5, "org1channel", 0)
 			})
 
 			It("get channels info for org2", func() {
+
 				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
@@ -476,6 +496,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				chList := result2.getChannelList()
 				Expect(chList).Should(ContainElements([]string{"commonchannel", "org2channel"}))
 				Expect(len(chList)).Should(Equal(2))
+				fmt.Fprintf(GinkgoWriter, "Info: result2 %+v\n", result2)
 
 				action := "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-org1.yml"
@@ -486,26 +507,28 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp3 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result3 := resp3.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result3 %+v\n", result3)
 
 				compareChannelsInfoBlockCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoBlockCount(result2, result3, "org2channel", 0)
 				compareChannelsInfoTxCount(result2, result3, "commonchannel", 0)
 				compareChannelsInfoTxCount(result2, result3, "org2channel", 0)
 
-				action = "invoke"
-				inputSpecPath = "apitest-input-multiprofile-invoke-org2.yml"
-				err = testclient.Testclient(action, inputSpecPath)
-				Expect(err).NotTo(HaveOccurred())
+				// action = "invoke"
+				// inputSpecPath = "apitest-input-multiprofile-invoke-org2.yml"
+				// err = testclient.Testclient(action, inputSpecPath)
+				// Expect(err).NotTo(HaveOccurred())
 
-				time.Sleep(waitSyncInterval * time.Second)
+				// time.Sleep(waitSyncInterval * time.Second)
 
-				resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
-				result4 := resp4.Result().(*ChannelsInfoResp)
+				// resp4 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
+				// result4 := resp4.Result().(*ChannelsInfoResp)
+				// fmt.Fprintf(GinkgoWriter, "Info: result4 %+v\n", result4)
 
-				compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
-				compareChannelsInfoBlockCount(result3, result4, "org2channel", 1)
-				compareChannelsInfoTxCount(result3, result4, "commonchannel", 0)
-				compareChannelsInfoTxCount(result3, result4, "org2channel", 1)
+				// compareChannelsInfoBlockCount(result3, result4, "commonchannel", 0)
+				// compareChannelsInfoBlockCount(result3, result4, "org2channel", 1)
+				// compareChannelsInfoTxCount(result3, result4, "commonchannel", 0)
+				// compareChannelsInfoTxCount(result3, result4, "org2channel", 1)
 
 				action = "invoke"
 				inputSpecPath = "apitest-input-multiprofile-invoke-common.yml"
@@ -516,11 +539,12 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 				resp5 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result5 := resp5.Result().(*ChannelsInfoResp)
+				fmt.Fprintf(GinkgoWriter, "Info: result5 %+v\n", result5)
 
-				compareChannelsInfoBlockCount(result4, result5, "commonchannel", 1)
-				compareChannelsInfoBlockCount(result4, result5, "org2channel", 0)
-				compareChannelsInfoTxCount(result4, result5, "commonchannel", 1)
-				compareChannelsInfoTxCount(result4, result5, "org2channel", 0)
+				compareChannelsInfoBlockCount(result3, result5, "commonchannel", 1)
+				compareChannelsInfoBlockCount(result3, result5, "org2channel", 0)
+				compareChannelsInfoTxCount(result3, result5, "commonchannel", 1)
+				compareChannelsInfoTxCount(result3, result5, "org2channel", 0)
 			})
 		})
 

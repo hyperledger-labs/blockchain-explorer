@@ -51,10 +51,22 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	isFabricCaEnabled() {
-		if (this.config.certificateAuthorities) {
-			return true;
+		if (this.config.certificateAuthorities === undefined) {
+			return false;
 		}
-		return false;
+
+		const org = this.getOrganization();
+		const caArray = this.config.organizations[org].certificateAuthorities;
+		if (caArray === undefined) {
+			return false;
+		}
+
+		const caName = caArray[0];
+		if (this.config.certificateAuthorities[caName] === undefined) {
+			return false;
+		}
+		logger.info('Fabric CA: Enabled');
+		return true;
 	}
 
 	/**
@@ -134,21 +146,6 @@ class FabricConfig {
 			}
 		}
 		return defChannel;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricConfig
-	 */
-	getDefaultPeerConfig() {
-		let defaultPeerConfig = [];
-		const peers = this.getPeersConfig();
-		if (peers) {
-			defaultPeerConfig = peers[0];
-		}
-		return defaultPeerConfig;
 	}
 
 	/**
