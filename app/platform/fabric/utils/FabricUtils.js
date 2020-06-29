@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const sha = require('js-sha256');
 const asn = require('asn1.js');
-const utils = require('fabric-client/lib/utils');
+const { Utils } = require('fabric-common');
 const FabricClient = require('./../FabricClient.js');
 const ExplorerError = require('../../../common/ExplorerError');
 const explorer_error = require('../../../common/ExplorerMessage').explorer
@@ -164,7 +164,7 @@ function getPEMfromConfig(config) {
 			// Cert value is in a file
 			try {
 				result = readFileSync(config.path);
-				result = utils.normalizeX509(result);
+				result = Utils.normalizeX509(result);
 			} catch (e) {
 				logger.error(e);
 			}

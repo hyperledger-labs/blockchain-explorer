@@ -108,6 +108,12 @@ class FabricGateway {
 				);
 			}
 
+			if (!this.tlsEnable) {
+				Client.setConfigSetting('discovery-protocol', 'grpc');
+			} else {
+				Client.setConfigSetting('discovery-protocol', 'grpcs');
+			}
+
 			// Set connection options; identity and wallet
 			this.asLocalhost =
 				String(Client.getConfigSetting('discovery-as-localhost', 'true')) ===
@@ -133,6 +139,10 @@ class FabricGateway {
 
 	getEnableAuthentication() {
 		return this.enableAuthentication;
+	}
+
+	getDiscoveryProtocol() {
+		return Client.getConfigSetting('discovery-protocol');
 	}
 
 	getDefaultMspId() {
