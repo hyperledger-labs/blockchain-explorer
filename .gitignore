@@ -37,3 +37,5 @@ _build
 # _static
 _templates
 *.DS_Store
+app/platform/fabric/e2e-test/*
+app/platform/fabric/e2e-test/specs/*
