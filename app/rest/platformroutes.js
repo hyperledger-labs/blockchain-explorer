@@ -99,8 +99,8 @@ const platformroutes = async function(router, platform) {
 						res.send({
 							status: 200,
 							number: block.header.number.toString(),
-							previous_hash: block.header.previous_hash,
-							data_hash: block.header.data_hash,
+							previous_hash: block.header.previous_hash.toString('hex'),
+							data_hash: block.header.data_hash.toString('hex'),
 							transactions: block.data.data
 						});
 					}
