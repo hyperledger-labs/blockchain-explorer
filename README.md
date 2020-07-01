@@ -59,6 +59,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
+| <b>[v1.1.0](release_notes/v1.1.0.md)</b> (Jul 01, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0](release_notes/v1.0.0.md)</b> (Apr 09, 2020)  | [v1.4.0 to v1.4.8](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc3](release_notes/v1.0.0-rc3.md)</b> (Apr 01, 2020)  | [v1.4.0 to v1.4.6](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc2](release_notes/v1.0.0-rc2.md)</b> (Dec 10, 2019)  | [v1.4.0 to v1.4.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
@@ -294,7 +295,7 @@ You can also configure multiple profiles in `config.json` for monitoring multipl
 
 <a name="Hyperledger-Composer-Setup" />
 
-# 8.0 Hyperledger Composer Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# 8.0 Optional: Hyperledger Composer Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
  Setup your own network using Composer [Build your network](https://hyperledger.github.io/composer/latest/installing/development-tools) from Hyperledger Composer. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
 
@@ -302,7 +303,7 @@ You can also configure multiple profiles in `config.json` for monitoring multipl
 
 <a name="Configure-Hyperledger-Explorer-for-Composer" />
 
-## 8.1 Configure Hyperledger Explorer for Composer    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+## 8.1 Optional: Configure Hyperledger Explorer for Composer    <!-- do not remove this comment, ensure there is a blank line before each heading -->
 
 On another terminal.
 

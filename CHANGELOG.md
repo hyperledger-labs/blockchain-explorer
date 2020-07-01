@@ -1,3 +1,30 @@
+## v1.1.0
+
+* [05a714e](https://github.com/hyperledger/blockchain-explorer/commit/05a714e) [BE-747](https://jira.hyperledger.org/browse/BE-747) Removed fabric-client package … (#131)
+* [2e57b03](https://github.com/hyperledger/blockchain-explorer/commit/2e57b03) [BE-766](https://jira.hyperledger.org/browse/BE-766) Update fabric-sdk-node to v2.1.1 (#129)
+* [3d8f088](https://github.com/hyperledger/blockchain-explorer/commit/3d8f088) [BE-758](https://jira.hyperledger.org/browse/BE-758) Fix channel switch issue on dashboard (#127)
+* [f27d97c](https://github.com/hyperledger/blockchain-explorer/commit/f27d97c) [BE-759](https://jira.hyperledger.org/browse/BE-759) Fix vulnerability of package under api/test (#128)
+* [f4a38e9](https://github.com/hyperledger/blockchain-explorer/commit/f4a38e9) [BE-755](https://jira.hyperledger.org/browse/BE-755) Update e2e test (#124)
+* [2404718](https://github.com/hyperledger/blockchain-explorer/commit/2404718) [BE-757](https://jira.hyperledger.org/browse/BE-757) Disable CA server support (#121)
+* [114cc88](https://github.com/hyperledger/blockchain-explorer/commit/114cc88) [BE-756](https://jira.hyperledger.org/browse/BE-756) Fix tx count in Chaincode view (#120)
+* [96d4c7e](https://github.com/hyperledger/blockchain-explorer/commit/96d4c7e) Fix configuration for SonarCloud and add badge (#119)
+* [b9aec25](https://github.com/hyperledger/blockchain-explorer/commit/b9aec25) Add configuration for SonarCloud to narrow focus (#118)
+* [d00ee7c](https://github.com/hyperledger/blockchain-explorer/commit/d00ee7c) [BE-754](https://jira.hyperledger.org/browse/BE-754) Update block listener (#117)
+* [158ec00](https://github.com/hyperledger/blockchain-explorer/commit/158ec00) [BE-753](https://jira.hyperledger.org/browse/BE-753) Implement QueryInstalledChaincodes by using getchaincodes func on _lifecycle  (#116)
+* [9412cda](https://github.com/hyperledger/blockchain-explorer/commit/9412cda) [BE-750](https://jira.hyperledger.org/browse/BE-750) Implement queryInstantiatedChaincodes by using "getchaincodes" func on LSCC (#115)
+* [743d3c0](https://github.com/hyperledger/blockchain-explorer/commit/743d3c0) Bump websocket-extensions from 0.1.3 to 0.1.4 in /client (#112)
+* [71026be](https://github.com/hyperledger/blockchain-explorer/commit/71026be) [BE-748](https://jira.hyperledger.org/browse/BE-748) Change discovery service to make use of  DiscoveryService (#111)
+* [87bf02c](https://github.com/hyperledger/blockchain-explorer/commit/87bf02c) [BE-752](https://jira.hyperledger.org/browse/BE-752) Retrieve genesis block from peers, not orderer (#110)
+* [8e5af16](https://github.com/hyperledger/blockchain-explorer/commit/8e5af16) Implement queryBlock by using system chaincode for query (qscc) (#109)
+* [e60a7a4](https://github.com/hyperledger/blockchain-explorer/commit/e60a7a4) [BE-746](https://jira.hyperledger.org/browse/BE-746) Implement queryChannels by invoke "GetChannels" func in CSCC (#108)
+* [8600c89](https://github.com/hyperledger/blockchain-explorer/commit/8600c89) [BE-745](https://jira.hyperledger.org/browse/BE-745) Migrate wallet implementation to v2.1 (#107)
+* [dd00ce6](https://github.com/hyperledger/blockchain-explorer/commit/dd00ce6) [BE-742](https://jira.hyperledger.org/browse/BE-742) Fix return value about getOrganizationsConfig (#106)
+* [7b30821](https://github.com/hyperledger/blockchain-explorer/commit/7b30821) Making Hyperledger Explorer compatible to Amazon Managed Blockchain Network (#105)
+* [aafc203](https://github.com/hyperledger/blockchain-explorer/commit/aafc203) Bump jquery from 3.4.1 to 3.5.0 in /client (#104)
+* [84f6b82](https://github.com/hyperledger/blockchain-explorer/commit/84f6b82) [BE-743](https://jira.hyperledger.org/browse/BE-743) Fix segfault in Explorer container (#103)
+* [86636ee](https://github.com/hyperledger/blockchain-explorer/commit/86636ee) Fix variable position in logger (#102)
+* [b6fb32d](https://github.com/hyperledger/blockchain-explorer/commit/b6fb32d) [BE-741](https://jira.hyperledger.org/browse/BE-741) Remove fullpath option with function (#101)
+
 ## v1.0.0
 
 * [e9dad2a](https://github.com/hyperledger/blockchain-explorer/commit/e9dad2a) [BE-740](https://jira.hyperledger.org/browse/BE-740) Update the document for multi-org (#99)
