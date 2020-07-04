@@ -13,49 +13,14 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyperledger_blockchain-explorer&metric=alert_status)](https://sonarcloud.io/dashboard?id=hyperledger_blockchain-explorer)
 <!-- badges -->
 
+![](docs/source/images/Hyperledger_Explorer_Logo_Color.png)
+
 Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open source utility to browse activity on the underlying blockchain network. Users have the ability to configure and build Hyperledger Explorer on MacOS and Ubuntu.
 
 **Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it. 
 
-<a name="Table of Contents" />
 
-# Table of Contents    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- [1.0 Release Notes ](#Release-Notes)
-- [2.0 Directory Structure ](#Directory-Structure)
-- [3.0 Dependencies ](#Dependencies)
-- [4.0 Clone GIT Repository ](#Clone-GIT-Repository)
-- [5.0 Database Setup ](#Database-Setup)
-- [5.1 Authorization Configuration ](#Authorization-Configuration)
-- [6.0 Fabric Network Setup ](#Fabric-Network-Setup)
-- [7.0 Configure Hyperledger Fabric ](#Configure-Hyperledger-Fabric)
-- [7.1 Optional: Configure Fabcar Sample ](#Configure-Fabcar-Sample)
-- [7.2 Optional: Configure Balance Transfer Sample ](#Configure-Balance-Transfer-Sample)
-- [7.3 Optional: Configure for monitoring multiple organizations](#Configure-Multiple-Organization)
-- [8.0 Hyperledger Composer Setup ](#Hyperledger-Composer-Setup)
-  - [8.1 Configure Hyperledger Explorer for Composer ](#Configure-Hyperledger-Explorer-for-Composer)
-- [9.0 Optional: Hyperledger Cello Setup ](#Hyperledger-Cello-Setup)
-  - [9.1 Optional: Configure Hyperledger Explorer for Cello ](#Configure-Hyperledger-Explorer-for-Cello)
-- [10.0 Build Hyperledger Explorer ](#Build-Hyperledger-Explorer)
-- [10.1 Optional: Configure Hyperledger Explorer for HTTPS ](#Configure-Hyperledger-Explorer-for-HTTPS)
-- [11.0 Run Hyperledger Explorer ](#Run-Hyperledger-Explorer)
-  - [11.1 Configuration of logging ](#Run-Hyperledger-Explorer-Logging)
-- [12.0 Optional: Run Hyperledger Explorer Using Docker ](#Run-Hyperledger-Explorer-using-Docker)
-  - [12.1 Docker Repository ](#Docker-Repository)
-  - [12.2 Run Hyperledger Explorer Using Docker Compose ](#Run-Hyperledger-Explorer-using-Docker-Compose)
-  - [12.3 Docker Troubleshooting ](#Run-Hyperledger-Explorer-using-Docker-Compose-Troubleshooting)
-- [13.0 NPM Utility Scripts to Dockerize Application ](#NPM-Utility-Scripts-to-Dockerize-Application)
-- [14.0 Hyperledger Explorer Swagger ](#Hyperledger-Explorer-Swagger)
-- [15.0 Logs ](#Logs)
-- [16.0 Troubleshooting ](#Troubleshooting)
-- [17.0 Testing ](#Testing)
-- [18.0 License ](#License)
-
-
-
-<a name="Release-Notes" />
-
-# 1.0 Release Notes    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# Release Notes
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
@@ -66,565 +31,304 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 | <b>[v1.0.0-rc1](release_notes/v1.0.0-rc1.md)</b> (Nov 18, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.5](release_notes/v0.3.9.5.md)</b> (Sep 8, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v0.3.9.4](release_notes/v0.3.9.4.md)</b> (June 18, 2019) | [v1.4.1](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.9.3](release_notes/v0.3.9.3.md)</b> (May 24, 2019) | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.9.2](release_notes/v0.3.9.2.md)</b> (May 16, 2019) | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.9.1](release_notes/v0.3.9.1.md)</b> (Feb 28, 2019) | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.9](release_notes/v0.3.9.md)</b> (Feb 7, 2019)      | [v1.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.8](release_notes/v0.3.8.md)</b> (Dec 13, 2018)     | [v1.3](https://hyperledger-fabric.readthedocs.io/en/release-1.3) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.7](release_notes/v0.3.7.md)</b> (Sep 21, 2018)     | [v1.2](https://hyperledger-fabric.readthedocs.io/en/release-1.2) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.6.1](release_notes/v0.3.6.1.md)</b> (Sep 21, 2018) | [v1.2](https://hyperledger-fabric.readthedocs.io/en/release-1.2) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.6](release_notes/v0.3.6.md)</b> (Sep 6, 2018)      | [v1.2](https://hyperledger-fabric.readthedocs.io/en/release-1.2) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.5.1](release_notes/v0.3.5.1.md)</b> (Sep 21, 2018) | [v1.1](https://hyperledger-fabric.readthedocs.io/en/release-1.1) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.5](release_notes/v0.3.5.md)</b> (Aug 24, 2018)     | [v1.1](https://hyperledger-fabric.readthedocs.io/en/release-1.1) | [8.x.x](https://nodejs.org/en/download/releases)  |
-| <b>[v0.3.4](release_notes/v0.3.4.md)</b> (Jul 13, 2018)     | [v1.1](https://hyperledger-fabric.readthedocs.io/en/release-1.1) | [8.x.x](https://nodejs.org/en/download/releases)  |
+
+---
+
+There are 2 options to get Explorer started. Following are the software dependencies required for each option.
+
+# Quick start (using Docker)
+
+## Prerequisites
+
+* Docker
+* Docker Compose
+  * **Note:**
+    The following docker images are automatically pulled from Docker Hub when starting docker-compose.
+
+    * [Hyperledger Explorer docker repository](https://hub.docker.com/r/hyperledger/explorer/)
+    * [Hyperledger Explorer PostgreSQL docker repository](https://hub.docker.com/r/hyperledger/explorer-db)
+
+## Start Hyperledger Fabric network
+
+In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/master/test_network.html).
+
+## Configure
+
+* Copy the following files from repository
+
+  - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/master/docker-compose.yaml)
+  - [examples/net1/connection-profile/first-network.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/connection-profile/first-network.json)
+  - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/config.json)
+
+
+  ```
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/config.json
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/connection-profile/first-network.json -P connection-profile
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/docker-compose.yaml
+  ```
+
+* Copy entire crypto artifact directory (e.g. crypto-config/, organizations/) from your fabric network
+
+* Now you should have the following files and directory structure.
+
+    ```
+    docker-compose.yaml
+    config.json
+    connection-profile/first-network.json
+    organizations/ordererOrganizations/
+    organizations/peerOrganizations/
+    ```
+
+* Edit network name and path to volumes to be mounted on Explorer container (docker-compose.yaml) to align with your environment
+
+    ```yaml
+        networks:
+        mynetwork.com:
+            external:
+                name: net_test
+
+        ...
+
+        services:
+          explorer.mynetwork.com:
+
+            ...
+
+            volumes:
+              - ./config.json:/opt/explorer/app/platform/fabric/config.json
+              - ./connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+              - ./organizations:/tmp/crypto
+              - walletstore:/opt/wallet
+    ```
+
+* When you connect Explorer to your fabric network through bridge network, you need to set DISCOVERY_AS_LOCALHOST to false for disabling hostname mapping into localhost.
+
+    ```yaml
+    services:
+
+      ...
+
+      explorer.mynetwork.com:
+
+        ...
+
+        environment:
+          - DISCOVERY_AS_LOCALHOST=false
+    ```
+
+* Edit path to admin certificate and secret key in the connection profile (first-network.json). You need to specify with the absolute path on Explorer container.
+
+    ```json
+      "organizations": {
+        "Org1MSP": {
+          "adminPrivateKey": {
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+    ```
+
+## Start container services
+
+* Run the following to start up explore and explorer-db services after starting your fabric network:
+
+    ```shell
+    $ docker-compose up -d
+    ```
+
+## Clean up
+
+* To stop services without removing persistent data, run the following:
+
+    ```shell
+    $ docker-compose down
+    ```
+
+* In the docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet), if you would like to clear these named volumes up, run the following:
+
+    ```shell
+    $ docker-compose down -v
+    ```
 
 
 
-<a name="Directory-Structure" />
+# Quick start (using codebase)
 
-# 2.0 Directory Structure    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+## Prerequisites
 
-<pre>
-blockchain-explorer
-    |
-    ├── app                     Application backend root, Explorer configuration
-    |    ├── rest               REST API
-    |    ├── persistence        Persistence layer
-    |    ├── fabric             Persistence API (Hyperledger Fabric)
-    |    └── platform           Platforms
-    |    |    └── fabric        Explorer API (Hyperledger Fabric)
-    |    └── test               Application backend test
-    |
-    └── client         	        Web UI
-         ├── public             Assets
-         └── src                Front end source code
-              ├── components    React framework
-              ├── services      Request library for API calls
-              ├── state         Redux framework
-              └── static        Custom and Assets
-</pre>
-
-
-
-<a name="Dependencies" />
-
-# 3.0 Dependencies    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-Following are the software dependencies required to install and run hyperledger explorer:
 * Nodejs 10 and 12 (10.19 and 12.16 tested)
 * PostgreSQL 9.5 or greater
 * [jq](https://stedolan.github.io/jq)
 * Linux-based operating system, such as Ubuntu or MacOS
+* golang (optional)
+  * For e2e testing
 
-Verified Docker versions supported:
-* [Docker CE 18.09.2 or later](https://hub.docker.com/search/?type=edition&offering=community&operating_system=linux)
-* [Docker Compose 1.14.0](https://docs.docker.com/compose)
+## Start Hyperledger Fabric network
 
+In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/master/test_network.html).
 
-
-<a name="Clone-GIT-Repository" />
-
-# 4.0 Clone GIT Repository    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+## Clone GIT Repository
 
 Clone this repository to get the latest using the following command.
 
-- `git clone https://github.com/hyperledger/blockchain-explorer.git`
-- `cd blockchain-explorer`
+```shell
+$ git clone https://github.com/hyperledger/blockchain-explorer.git
+$ cd blockchain-explorer
+```
 
+## Database Setup
 
+```
+$ cd blockchain-explorer/app
+```
 
-<a name="Database-Setup" />
+* Modify `app/explorerconfig.json` to update PostgreSQL database settings.
 
-# 5.0 Database Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+    ```json
+    "postgreSQL": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "database": "fabricexplorer",
+        "username": "hppoc",
+        "passwd": "password"
+    }
+    ```
 
-- `cd blockchain-explorer/app`
-- Modify explorerconfig.json to update PostgreSQL database settings.
+  * Another alternative to configure database settings is to use environment variables, example of settings:
 
-<pre>
-"postgreSQL": {
-    "host": "127.0.0.1",
-    "port": "5432",
-    "database": "fabricexplorer",
-    "username": "hppoc",
-    "passwd": "password"
-}
-</pre>
+    ```shell
+    export DATABASE_HOST=127.0.0.1
+    export DATABASE_PORT=5432
+    export DATABASE_DATABASE=fabricexplorer
+    export DATABASE_USERNAME=hppoc
+    export DATABASE_PASSWD=pass12345
+    ```
+  **Important** repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
 
-Another alternative to configure database settings is to use environment variables, example of settings:
-<pre>
-	export DATABASE_HOST=127.0.0.1
-	export DATABASE_PORT=5432
-	export DATABASE_DATABASE=fabricexplorer
-	export DATABASE_USERNAME=hppoc
-	export DATABASE_PASSWD=pass12345
-</pre>
+## Update configuration
 
-**Important repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
+* Modify `app/platform/fabric/config.json` to define your fabric network connection profile:
 
+    ```json
+    {
+        "network-configs": {
+            "first-network": {
+                "name": "firstnetwork",
+                "profile": "./connection-profile/first-network.json",
+                "enableAuthentication": false
+            }
+        },
+        "license": "Apache-2.0"
+    }
+    ```
 
-Run create database script:
+  * `first-network` is the name of your connection profile, and can be changed to any name
+  * `name` is a name you want to give to your fabric network, you can change only value of the key `name`
+  * `profile` is the location of your connection profile, you can change only value of the key `profile`
 
-<b>Ubuntu</b>
+* Modify connection profile in the JSON file `app/platform/fabric/connection-profile/first-network.json`:
+  * Change `fabric-path` to your fabric network disk path in the first-network.json file:
+  * Provide the full disk path to the adminPrivateKey config option, it ussually ends with `_sk`, for example:
+    `/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/aaacd899a6362a5c8cc1e6f86d13bfccc777375365bbda9c710bb7119993d71c_sk`
+  * `adminUser` and `adminPassword` is the credential for user of Explorer to login the dashboard
+  * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
 
-- `cd blockchain-explorer/app/persistence/fabric/postgreSQL/db`
-- `sudo -u postgres ./createdb.sh`
+## Run create database script:
 
+* **Ubuntu**
 
-<b>MacOS</b>
+    ```
+    $ cd blockchain-explorer/app/persistence/fabric/postgreSQL/db
+    $ sudo -u postgres ./createdb.sh
+    ```
 
-- `cd blockchain-explorer/app/persistence/fabric/postgreSQL/db`
-- `./createdb.sh`
+* **MacOS**
 
+    ```
+    $ cd blockchain-explorer/app/persistence/fabric/postgreSQL/db
+    $ ./createdb.sh
+    ```
 
 Connect to the PostgreSQL database and run DB status commands:
 
-- `\l`  View created fabricexplorer database.
-- `\d`  View created tables.
+```shell
+$ sudo -u postgres psql -c '\l'
+                                List of databases
+      Name      |  Owner   | Encoding | Collate |  Ctype  |   Access privileges
+----------------+----------+----------+---------+---------+-----------------------
+ fabricexplorer | hppoc    | UTF8     | C.UTF-8 | C.UTF-8 |
+ postgres       | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
+ template0      | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                |          |          |         |         | postgres=CTc/postgres
+ template1      | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                |          |          |         |         | postgres=CTc/postgres
+(4 rows)
 
-If your Postgresql configured with TLS, read link [how to configure connection to Postgresql with TLS](./app/persistence/postgreSQL/CONFIGURE-TLS-CONNECTION-TO-POSTGRESQL.md)
+$ sudo -u postgres psql fabricexplorer -c '\d'
+                   List of relations
+ Schema |           Name            |   Type   | Owner
+--------+---------------------------+----------+-------
+ public | blocks                    | table    | hppoc
+ public | blocks_id_seq             | sequence | hppoc
+ public | chaincodes                | table    | hppoc
+ public | chaincodes_id_seq         | sequence | hppoc
+ public | channel                   | table    | hppoc
+ public | channel_id_seq            | sequence | hppoc
+ public | orderer                   | table    | hppoc
+ public | orderer_id_seq            | sequence | hppoc
+ public | peer                      | table    | hppoc
+ public | peer_id_seq               | sequence | hppoc
+ public | peer_ref_chaincode        | table    | hppoc
+ public | peer_ref_chaincode_id_seq | sequence | hppoc
+ public | peer_ref_channel          | table    | hppoc
+ public | peer_ref_channel_id_seq   | sequence | hppoc
+ public | transactions              | table    | hppoc
+ public | transactions_id_seq       | sequence | hppoc
+ public | write_lock                | table    | hppoc
+ public | write_lock_write_lock_seq | sequence | hppoc
+(18 rows)
 
-<a name="Authorization-Configuration" />
-
-# 5.1 Authorization Configuration    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- `cd blockchain-explorer/app`
-- Modify explorerconfig.json to update Authorization (JWT) settings.
-
-<pre>
-"jwt": {
-    "secret" : "a secret phrase!!",
-    "expiresIn": "2 days"
-}
-</pre>
-
-`jwt`:
-
-* `secret`: secret string to sign the payload.
-* `expiresIn`: expressed in seconds or a string describing a time span [zeit/ms](https://github.com/zeit/ms).
-  > Eg: `60`, `"2 days"`, `"10h"`, `"7d"`. A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default (`"120"` is equal to `"120ms"`).
-
-<a name="Fabric-Network-Setup" />
-
-# 6.0 Fabric Network Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- <b>Note: This section will take some time to complete.</b>
-- Setup your own network using the [Building Your First Network](http://hyperledger-fabric.readthedocs.io/en/latest/build_network.html) tutorial from Hyperledger. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
-- Hyperledger Explorer defaults to utilize [fabric-samples/first-network](https://github.com/hyperledger/fabric-samples).
-- Make sure to set the environment variables `CORE_PEER_GOSSIP_BOOTSTRAP` and `CORE_PEER_GOSSIP_EXTERNALENDPOINT` for each peer in the docker-compose.yaml file. These settings enable the Fabric discovery service, which is used by Hyperledger Explorer to discover the network topology.
-
-
-<a name ="Config-Operations-Service-Hyperledger-Explorer">
-
- # 6.1 Configure operations service Config-Operations-Service-Hyperledger-Explorer     <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- Please visit the [CONFIG-OPERATIONS-SERVICE-HLEXPLORER.md](CONFIG-OPERATIONS-SERVICE-HLEXPLORER.md) to configure operations service
-
-
-<a name="Configure-Hyperledger-Fabric" />
-
-# 7.0 Configure Hyperledger Fabric    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-On another terminal:
-
-- `cd blockchain-explorer/app/platform/fabric`
-- Modify config.json to define your fabric network connection profile:
-<pre>{
-    "network-configs": {
-        "first-network": {
-            "name": "firstnetwork",
-            "profile": "./connection-profile/first-network.json",
-            "enableAuthentication": false
-        }
-    },
-    "license": "Apache-2.0"
-}</pre>
-
-- "first-network" is the name of your connection profile, and can be changed to any name.
-- "name" is a name you want to give to your fabric network, you can change only value of the key "name".
-- "profile" is the location of your connection profile, you can change only value of the key "profile"
-
-- Modify connection profile in the JSON file first-network.json:
-	- Change "fabric-path" to your fabric network disk path in the first-network.json file: <br>`/blockchain-explorer/app/platform/fabric/connection-profile/first-network.json`
-	- Provide the full disk path to the adminPrivateKey config option, it ussually ends with "_sk", for example:<br>
-	`"/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/aaacd899a6362a5c8cc1e6f86d13bfccc777375365bbda9c710bb7119993d71c_sk"`
-	- "adminUser" is the the admin user of the network, in this case it's fabric CA or an identity user.
-    - "adminPassword" is the password for the admin user.
-	- "enableAuthentication" is a flag to enable authentication using a login page, setting to false will skip authentication.
-
-
-
-<a name="Configure-Fabcar-Sample" />
-
-# 7.1 Optional: Configure Fabcar Sample    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-Setup Fabcar sample network by following [Fabcar Sample Network](https://hyperledger-fabric.readthedocs.io/en/release-1.4/understand_fabcar_network.html) from Hyperledger fabric samples.
-- Make sure to set the environment variables ```CORE_PEER_GOSSIP_BOOTSTRAP``` and ```CORE_PEER_GOSSIP_EXTERNALENDPOINT``` for each peer in the docker-compose.yaml file. These settings enable the Fabric discovery service, which is used by Hyperledger Explorer to discover the network topology.
-- Configure Fabcar sample network based on this link [CONFIG-FABCAR-HLEXPLORER.md](CONFIG-FABCAR-HLEXPLORER.md)
-
-
-
-<a name="Configure-Balance-Transfer-Sample" />
-
-# 7.2 Optional: Configure Balance Transfer Sample    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
- Balance Transfer Sample network by following [Balance Transfer Sample](https://github.com/hyperledger/fabric-samples/tree/release-1.4/balance-transfer) from Hyperledger fabric samples.
-- Balance Transfer Sample network based on this link [CONFIG-BALANCE-TRANSFER-HLEXPLORER.md](CONFIG-BALANCE-TRANSFER-HLEXPLORER.md)
-
-
-<a name="Configure-Multiple-Organization" />
-
-# 7.3 Optional: Configure for monitoring multiple organizations    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-You can also configure multiple profiles in `config.json` for monitoring multiple organizations in a single Explorer instance. It's quite straightforward. You just need to prepare config.json as below and connection profile for each organization (for example: org1-network.json & org1-network.json). Note that you need to initialize your backend database once when applying v1.0.0-rc3 and above first time in your local environment. Because we've changed database schema in backend database since this version.
-
-```json
-{
-	"network-configs": {
-		"org1-network": {
-			"name": "org1-network",
-			"profile": "./connection-profile/org1-network.json"
-		},
-		"org2-network": {
-			"name": "org2-network",
-			"profile": "./connection-profile/org2-network.json"
-		}
-	},
-	"license": "Apache-2.0"
-}
 ```
 
-<a name="Hyperledger-Composer-Setup" />
+## Build Hyperledger Explorer
 
-# 8.0 Optional: Hyperledger Composer Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+**Important:** repeat the below steps after every git pull
 
- Setup your own network using Composer [Build your network](https://hyperledger.github.io/composer/latest/installing/development-tools) from Hyperledger Composer. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
-
-
-
-<a name="Configure-Hyperledger-Explorer-for-Composer" />
-
-## 8.1 Optional: Configure Hyperledger Explorer for Composer    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-On another terminal.
-
-- `git checkout v0.3.5.1`
-- `cd blockchain-explorer/app/platform/fabric`
-- Modify config.json to update network-config.
-	- Change "fabric-path" to your composer network path,
-	- Configure the Hyperledger composer based on this link [CONFIG-COMPOSER-HLEXPLORER.md](CONFIG-COMPOSER-HLEXPLORER.md)
-- Modify "syncStartDate" to filter data by block timestamp
-- Modify "channel" to your default channel
-
-If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
-
-
-
-
-<a name="Hyperledger-Cello-Setup" />
-
-# 9.0 Optional: Hyperledger Cello Setup    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
- Setup your fabric network using [Setup Cello Platform](https://cello.readthedocs.io/en/latest/setup/setup/) from Hyperledger Cello. Once you setup the network, please modify the values in `/blockchain-explorer/app/platform/fabric/config.json` accordingly.
-
-
-
-<a name="Configure-Hyperledger-Explorer-for-Cello" />
-
-## 9.1 Optional: Configure Hyperledger Explorer for Cello    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-On another terminal.
-
-- `git checkout v0.3.5.1`
-- `cd blockchain-explorer/app/platform/fabric`
-- Modify config.json to update network-config.
-	- Change "fabric-path" to your cello network path,
-	- Configure the Hyperledger cello based on this link [CONFIG-CELLO-HLEXPLORER.md](CONFIG-CELLO-HLEXPLORER.md)
-- Modify "syncStartDate" to filter data by block timestamp
-- Modify "channel" to your default channel
-
-If you are connecting to a non TLS fabric peer, please modify "network-id.clients.client-id.tlsEnable" (`true->false`) in config.json. Depending on this configuration, the application decides whether to go TLS or non TLS route.
-
-
-
-<a name="Build-Hyperledger-Explorer" />
-
-# 10.0 Build Hyperledger Explorer    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-**Important: repeat the below steps after every git pull.**
-
-On another terminal:
-
-- `./main.sh install`
-    - to install, run tests, and build project
+* `./main.sh install`
+  * To install, run tests, and build project
 - `./main.sh clean`
-    - to clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
+  * To clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
    directories
-- `./main.sh test`
-    - to test REST API, and UI components
-    - to generate code coverage report
-
 
 Or
 
-- `cd blockchain-explorer`
-- `npm install`
-- `cd blockchain-explorer/app/test`
-- `npm install`
-- `npm run test`
-- `cd client/`
-- `npm install`
-- `npm run test:ci -- -u --coverage`
-- `npm run build`
-
-<a name="Configure-Hyperledger-Explorer-for-HTTPS" />
-
-# 10.1 Optional: Configure Hyperledger Explorer for HTTPS    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
- - Configure Hyperledger Explorer for HTTPS based on this link [CONFIG-HTTPS-HLEXPLORER.md](CONFIG-HTTPS-HLEXPLORER.md)
-
-<a name="Run-Hyperledger-Explorer" />
-
-# 11.0 Run Hyperledger Explorer    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- `cd blockchain-explorer/app`
-- Modify explorerconfig.json to update sync properties
-	- sync type (local or host), platform, blocksSyncTime(in min) details.
-
-Sync Process Configuration
-
-- Please restart Explorer if any changes made to explorerconfig.json
-
-Host (Standalone)
-
-- Ensure same configuration in Explorer explorerconfig.json if sync process is running from different locations
-
-```json
- "sync": {
-    "type": "host"
- }
 ```
-Local (Run with Explorer)
-
-```json
- "sync": {
-    "type": "local"
- }
+$ cd blockchain-explorer
+$ npm install
+$ cd client/
+$ npm install
+$ npm run build
 ```
 
-From a new terminal:
+## Run Hyperledger Explorer
 
-- `cd blockchain-explorer/`
-- `./start.sh`  (it will have the backend up).
-- `./start.sh debug`  (it will have the backend in debug mode).
-- `./start.sh print`  (it will print help).
-- Launch the URL http(s)://localhost:8080 on a browser.
-- `./stop.sh`  (it will stop the node server).
+* `./start.sh`
+  * It will have the backend and GUI service up
 
-From new terminal (if Sync Process in Standalone).
+* `./stop.sh`
+  * It will stop the node server
 
-- `cd blockchain-explorer/`
-- `./syncstart.sh` (it will have the sync node up).
-- `./syncstop.sh`  (it will stop the sync node).
+**Note:** If Hyperledger Fabric network is deployed on other machine, please define the following environment variable
 
-- If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
-- If Hyperledger Fabric network is deployed on other machine, please toggle DISCOVERY_AS_LOCALHOST in start.sh / syncstart.sh to 'false'.
+```
+$ DISCOVERY_AS_LOCALHOST=false ./start.sh
+```
 
-<a name="Run-Hyperledger-Explorer-Logging" />
+# Logs
 
-# 11.1 Configuration of logging    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+* Please visit the `./logs/console` folder to view the logs relating to console and `./logs/app` to view the application logs and visit the `./logs/db` to view the database logs.
 
-By using the following environmet variables, you can control log level of each component (app, db and console). You can set these `ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF` string to each level. Each file is rolled by both date (7days) and size (8MB).
+# Troubleshooting
 
-* LOG_LEVEL_APP
-  * Log level regarding application layer. The logs are written to `logs/app/app.log`.
-  * default `DEBUG`
-* LOG_LEVEL_DB
-  * Log level regarding backend layer. The logs are written to `logs/db/db.log`.
-  * default `DEBUG`
-* LOG_LEVEL_CONSOLE
-  * Log level regarding console. The logs are written to `logs/console/console.log`.
-  * default `INFO`
-* LOG_CONSOLE_STDOUT
-  * You can switch the destination of console log from file to standard output.
-  * default `false`
+Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting TechNotes for Hyperledger Explorer.
 
-<a name="Run-Hyperledger-Explorer-using-Docker" />
-
-# 12.0 Optional: Run Hyperledger Explorer Using Docker    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-There is also an automated deployment of the **Hyperledger Explorer** available via **docker** given the following requirements are met:
-
-* **BASH** installed
-* **Docker** is installed on deployment machine.
-* **Docker Compose** is installed on deployment machine.
-
-<a name="Docker-Repository" />
-
-## 12.1 Docker Repository   <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-* Hyperledger Explorer docker repository `https://hub.docker.com/r/hyperledger/explorer/`
-* Hyperledger Explorer PostgreSQL docker repository `https://hub.docker.com/r/hyperledger/explorer-db`
-
-
-<a name="Run-Hyperledger-Explorer-using-Docker-Compose" />
-
-## 12.2 Run Hyperledger Explorer Using Docker Compose    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-* Modify an example of docker-compose.yaml to align with your environment
-    * networks > mynetwork.com > external > name
-    ```yaml
-    networks:
-        mynetwork.com:
-            external:
-                name: net_byfn
-    ```
-    * services > explorer.mynetwork.com > volumes
-      * Connection profile path (ex. ./examples/net1/config.json)
-      * Connection profile directory path (ex. ./examples/net1/connection-profile, which is referred from config.json)
-      * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
-    ```yaml
-        volumes:
-          - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
-          - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
-          - ./examples/net1/crypto:/tmp/crypto
-    ```
-    * When you connect the explorer to your fabric network through bridge network, you need to set `DISCOVERY_AS_LOCALHOST` to `false` for disabling hostname mapping into `localhost`.
-    ```yaml
-        explorer.mynetwork.com:
-            ...
-            environment:
-            ...
-            - DISCOVERY_AS_LOCALHOST=false
-    ```
-
-* Run the following to start up explore and explorer-db services after starting your fabric network:
-    ```
-    cd /blockchain-explorer
-    docker-compose up -d
-    ```
-
-* To stop services without removing persistent data, run the following:
-    ```
-    docker-compose down
-    ```
-
-* In this docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet), if you would like to clear these named volumes, run the following:
-    ```
-    docker-compose down -v
-    ```
-
-
-<a name="Run-Hyperledger-Explorer-using-Docker-Compose-Troubleshooting" />
-
-## 12.3 Docker Troubleshooting       <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-* If you have an error on Explorer container as below, the initialisation of database might fail in some reasons.
-    ```
-    postgres://hppoc:password@192.168.10.11:5432/fabricexplorer
-    error when connecting to db: { error: role "hppoc" does not exist
-    ```
-    In such a case, you need to clear the persistent data by running the following command.
-    ```
-    docker-compose down -v
-    docker-compose up -d
-    ```
-
-* If you have an error on Explorer container as below, the Explorer might not have connected the network which your fabric network is belonging.
-    ```
-    <<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>
-    Error : [ 'Default client peer is down and no channel details available database' ]
-    ```
-    In such a case, you need to check whether the explorer container has belonged to the same network with your fabric network or not, with the following command.
-    ```
-    docker network inspect net_byfn  | jq ".[].Containers[].Name" | sort
-    "cli"
-    "dev-peer0.org1.example.com-mycc-1.0"
-    "dev-peer0.org2.example.com-mycc-1.0"
-    "dev-peer1.org2.example.com-mycc-1.0"
-    "explorerdb.mynetwork.com"              <<---
-    "explorer.mynetwork.com"                <<---
-    "orderer.example.com"
-    "peer0.org1.example.com"
-    "peer0.org2.example.com"
-    "peer1.org1.example.com"
-    "peer1.org2.example.com"
-    ```
-    Or you need to check whether the explorer can ping to each peer on your fabric network or not, with the following command.
-    ```
-    docker exec explorer.mynetwork.com ping -c 1 peer0.org1.example.com
-    PING peer0.org1.example.com (172.18.0.3): 56 data bytes
-    64 bytes from 172.18.0.3: seq=0 ttl=64 time=0.064 ms
-
-    --- peer0.org1.example.com ping statistics ---
-    1 packets transmitted, 1 packets received, 0% packet loss
-    round-trip min/avg/max = 0.064/0.064/0.064 ms
-    ```
-
-<a name="NPM-Utility-Scripts-to-Dockerize-Application" />
-
-# 13.0 NPM Utility Scripts to Dockerize Application    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-Set the `DOCKER_REGISTRY` variable to the Container Registry you will use and login to that registry if you want to store your container there.
-
-To build the container (auto-tagged as `latest`), run:
-    ```
-    npm run docker_build
-    ```
-
-To tag the container with your registry and the NPM package version, run:
-    ```
-    npm run docker_tag
-    ```
-
-To push the container to your registry, run:
-    ```
-    npm run docker_push
-    ```
-
-<a name="Hyperledger-Explorer-Swagger" />
-
-# 14.0 Hyperledger Explorer Swagger    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- Once the Hyperledger Explorer has been launched go to http://localhost:8080/api-docs to view the Rust API description
-- Enter bearer token in Authorize dialog that is generated by the application when you login to Hyperledger Explorer
-  - Bearer token can be found using Chrome Developer Tools under the Network tab --> Name --> click on REST API request --> Request Headers --> Authorization: bearer
-
-
-<a name="Logs" />
-
-# 15.0 Logs    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- Please visit the `./logs/console` folder to view the logs relating to console and `./logs/app` to view the application logs and visit the `./logs/db` to view the database logs.
-- Logs rotate every 7 days.
-
-
-
-<a name="Troubleshooting" />
-
-# 16.0 Troubleshooting    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-- Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting TechNotes for Hyperledger Explorer.
-
-
-<a name="Testing" />
-
-# 17.0 Testing    <!-- do not remove this comment, ensure there is a blank line before each heading -->
-
-* Unit test
-
-* End-to-End test
-
-  * For REST API
-
-    - Please visit the [README.md](./app/platform/fabric/e2e-test/README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer REST API.
-
-  * For GUI
-
-    - Please visit the [README.md](./client/test/E2E-TEST-README.md) to view the End-To-End Testing TechNotes for Hyperledger Explorer GUI.
-
-
-<a name="License" />
-
-# 18.0 License    <!-- do not remove this comment, ensure there is a blank line before each heading -->
+# License
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.

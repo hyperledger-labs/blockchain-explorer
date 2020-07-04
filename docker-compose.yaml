@@ -5,8 +5,6 @@ version: '2.1'
 volumes:
   pgdata:
   walletstore:
-  grafana-storage:
-  prometheus-storage:
 
 networks:
   mynetwork.com:
@@ -54,32 +52,9 @@ services:
       - walletstore:/opt/wallet
     command: sh -c "node /opt/explorer/main.js && tail -f /dev/null"
     ports:
-      - 8090:8080
+      - 8080:8080
     depends_on:
       explorerdb.mynetwork.com:
         condition: service_healthy
-    networks:
-      - mynetwork.com
-
-  proms:
-    container_name: proms
-    image: prom/prometheus:latest
-    volumes:
-      - ./app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-storage:/prometheus
-    ports:
-      - '9090:9090'
-    networks:
-      - mynetwork.com
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    volumes:
-      - ./app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json:/var/lib/grafana/dashboards/mydashboard.json
-      - ./app/platform/fabric/artifacts/operations/grafana_conf/provisioning:/etc/grafana/provisioning
-      - grafana-storage:/var/lib/grafana
-    ports:
-      - '3000:3000'
     networks:
       - mynetwork.com

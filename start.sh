@@ -19,5 +19,5 @@ export LOG_LEVEL_DB=${LOG_LEVEL_DB:-debug}
 export LOG_LEVEL_CONSOLE=${LOG_LEVEL_CONSOLE:-info}
 export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-false}
 
-export DISCOVERY_AS_LOCALHOST=true
+export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
 node main.js name - hyperledger-explorer &
