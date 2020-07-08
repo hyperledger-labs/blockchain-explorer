@@ -107,7 +107,47 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getAdminUser() {
-		return this.config.client.adminUser;
+		return this.config.client.adminCredential.id;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getAdminPassword() {
+		return this.config.client.adminCredential.password;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getAdminAffiliation() {
+		return this.config.client.adminCredential.affiliation;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getCaAdminUser() {
+		return this.config.client.caCredential.id;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getCaAdminPassword() {
+		return this.config.client.caCredential.password;
 	}
 
 	/**
@@ -118,16 +158,6 @@ class FabricConfig {
 	 */
 	getNetworkName() {
 		return this.config.name;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricConfig
-	 */
-	getAdminPassword() {
-		return this.config.client.adminPassword;
 	}
 
 	/**
@@ -178,14 +208,20 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
-	getOrganizationsConfig() {
+	getOrgSignedCertPath() {
 		const organization = this.config.organizations[this.getOrganization()];
+		return organization.signedCert.path;
+	}
 
-		const orgMsp = organization.mspid;
-		const adminPrivateKeyPath = organization.adminPrivateKey.path;
-		const signedCertPath = organization.signedCert.path;
-
-		return { orgMsp, adminPrivateKeyPath, signedCertPath };
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getOrgAdminPrivateKeyPath() {
+		const organization = this.config.organizations[this.getOrganization()];
+		return organization.adminPrivateKey.path;
 	}
 
 	/**

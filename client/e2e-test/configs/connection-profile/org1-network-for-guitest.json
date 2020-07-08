@@ -4,8 +4,11 @@
 	"license": "Apache-2.0",
 	"client": {
 		"tlsEnable": true,
-		"adminUser": "admin",
-		"adminPassword": "adminpw",
+		"adminCredential": {
+			"id": "admin",
+			"password": "adminpw",
+			"affiliation": "org1.department1"
+		},
 		"enableAuthentication": true,
 		"organization": "org1",
 		"connection": {

@@ -4,8 +4,15 @@
 	"license": "Apache-2.0",
 	"client": {
 		"tlsEnable": true,
-		"adminUser": "admin",
-		"adminPassword": "adminpw",
+		"caCredential": {
+			"id": "admin",
+			"password": "adminpw"
+		},
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw",
+			"affiliation": "org1.department1"
+		},
 		"enableAuthentication": true,
 		"organization": "Org1MSP",
 		"connection": {
@@ -54,6 +61,18 @@
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0.org1.example.com"
 			}
+		}
+	},
+	"certificateAuthorities": {
+		"ca0": {
+			"url": "https://localhost:7054",
+			"httpOptions": {
+				"verify": false
+			},
+			"tlsCACerts": {
+				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1/ca/ca.org1-cert.pem"
+			},
+			"caName": "ca0-org1"
 		}
 	}
 }
