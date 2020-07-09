@@ -54,6 +54,7 @@ class FabricGateway {
 		this.networkName = this.fabricConfig.getNetworkName();
 		this.FSWALLET = 'wallet/' + this.networkName;
 
+		const explorerAdminId = this.fabricConfig.getAdminUser();
 		const info = `Loading configuration  ${this.config}`;
 		logger.debug(info.toUpperCase());
 
@@ -72,32 +73,31 @@ class FabricGateway {
 			const walletPath = path.join(process.cwd(), this.FSWALLET);
 			this.wallet = await Wallets.newFileSystemWallet(walletPath);
 			// Check to see if we've already enrolled the admin user.
-			identity = await this.wallet.get(this.fabricConfig.getAdminUser());
+			identity = await this.wallet.get(explorerAdminId);
 			if (identity) {
 				logger.debug(
-					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
+					`An identity for the admin user: ${explorerAdminId} already exists in the wallet`
+				);
+			} else if (this.fabricCaEnabled) {
+				logger.info('CA enabled');
+
+				identity = await this.enrollCaIdentity(
+					explorerAdminId,
+					this.fabricConfig.getAdminPassword()
 				);
 			} else {
-				logger.info('CA enabled');
-				if (this.fabricCaEnabled) {
-					identity = await this.enrollCaIdentity(
-						this.fabricConfig.getAdminUser(),
-						this.fabricConfig.getAdminPassword()
-					);
-				} else {
-					/*
-					 * Identity credentials to be stored in the wallet
-					 * Look for signedCert in first-network-connection.json
-					 */
+				/*
+				 * Identity credentials to be stored in the wallet
+				 * Look for signedCert in first-network-connection.json
+				 */
 
-					const signedCertPath = this.fabricConfig.getOrgSignedCertPath();
-					const adminPrivateKeyPath = this.fabricConfig.getOrgAdminPrivateKeyPath();
-					identity = this.enrollUserIdentity(
-						this.fabricConfig.getAdminUser(),
-						signedCertPath,
-						adminPrivateKeyPath
-					);
-				}
+				const signedCertPem = this.fabricConfig.getOrgSignedCertPem();
+				const adminPrivateKeyPem = this.fabricConfig.getOrgAdminPrivateKeyPem();
+				identity = this.enrollUserIdentity(
+					explorerAdminId,
+					signedCertPem,
+					adminPrivateKeyPem
+				);
 			}
 
 			if (!this.tlsEnable) {
@@ -112,7 +112,7 @@ class FabricGateway {
 				'true';
 
 			const connectionOptions = {
-				identity: this.fabricConfig.getAdminUser(),
+				identity: explorerAdminId,
 				wallet: this.wallet,
 				discovery: {
 					enabled: true,
@@ -122,7 +122,6 @@ class FabricGateway {
 
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
-			// this.client = this.gateway.getClient();
 		} catch (error) {
 			logger.error(`${error}`);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
@@ -153,16 +152,11 @@ class FabricGateway {
 	 * @private method
 	 *
 	 */
-	async enrollUserIdentity(userName, signedCertPath, adminPrivateKeyPath) {
-		const _signedCertPath = signedCertPath;
-		const _adminPrivateKeyPath = adminPrivateKeyPath;
-		const cert = fs.readFileSync(_signedCertPath, 'utf8');
-		// See in first-network-connection.json adminPrivateKey key
-		const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
+	async enrollUserIdentity(userName, signedCertPem, adminPrivateKeyPem) {
 		const identity = {
 			credentials: {
-				certificate: cert,
-				privateKey: key
+				certificate: signedCertPem,
+				privateKey: adminPrivateKeyPem
 			},
 			mspId: this.fabricConfig.getMspId(),
 			type: 'X.509'
@@ -359,12 +353,6 @@ class FabricGateway {
 		}
 	}
 
-	getPeer_pem(pemPath) {
-		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
-		const pem = Buffer.from(data).toString();
-		return pem;
-	}
-
 	async getDiscoveryResult(channelName) {
 		try {
 			const network = await this.gateway.getNetwork(channelName);
@@ -379,7 +367,7 @@ class FabricGateway {
 			for (const peer of this.config.organizations[mspID].peers) {
 				const discoverer = new Discoverer(`be discoverer ${peer}`, client);
 				const url = this.config.peers[peer].url;
-				const pemPath = this.config.peers[peer].tlsCACerts.path;
+				const pem = this.fabricConfig.getPeerTlsCACertsPem(peer);
 				let grpcOpt = {};
 				if ('grpcOptions' in this.config.peers[peer]) {
 					grpcOpt = this.config.peers[peer].grpcOptions;
@@ -387,7 +375,7 @@ class FabricGateway {
 				const peer_endpoint = client.newEndpoint(
 					Object.assign(grpcOpt, {
 						url: url,
-						pem: this.getPeer_pem(pemPath)
+						pem: pem
 					})
 				);
 				await discoverer.connect(peer_endpoint);
