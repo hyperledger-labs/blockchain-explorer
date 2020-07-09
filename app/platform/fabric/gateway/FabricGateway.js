@@ -28,7 +28,6 @@ class FabricGateway {
 		this.networkConfig = networkConfig;
 		this.config = null;
 		this.gateway = null;
-		this.enrollmentSecret = null;
 		this.wallet = null;
 		this.tlsEnable = false;
 		this.defaultChannelName = null;
@@ -51,7 +50,6 @@ class FabricGateway {
 		this.config = this.fabricConfig.getConfig();
 		this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
 		this.tlsEnable = this.fabricConfig.getTls();
-		this.enrollmentSecret = this.fabricConfig.getAdminPassword();
 		this.enableAuthentication = this.fabricConfig.getEnableAuthentication();
 		this.networkName = this.fabricConfig.getNetworkName();
 		this.FSWALLET = 'wallet/' + this.networkName;
@@ -62,26 +60,9 @@ class FabricGateway {
 		const peers = this.fabricConfig.getPeers();
 		this.defaultPeer = peers[0].name;
 		this.defaultPeerUrl = peers[0].url;
-		let orgMsp;
-		let signedCertPath;
-		let adminPrivateKeyPath;
-		logger.log('========== > defaultPeer ', this.defaultPeer);
+
+		logger.info('========== > defaultPeer ', this.defaultPeer);
 		/* eslint-disable */
-		({
-			orgMsp,
-			adminPrivateKeyPath,
-			signedCertPath
-		} = this.fabricConfig.getOrganizationsConfig());
-		logger.log(
-			'orgMsp :',
-			orgMsp,
-			'\n',
-			'signedCertPath :',
-			signedCertPath,
-			'\n',
-			'adminPrivateKeyPath ',
-			adminPrivateKeyPath
-		);
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
 		/* eslint-enable */
@@ -97,15 +78,26 @@ class FabricGateway {
 					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
 				);
 			} else {
-				/*
-				 * Identity credentials to be stored in the wallet
-				 * Look for signedCert in first-network-connection.json
-				 */
-				identity = this.enrollUserIdentity(
-					this.fabricConfig.getAdminUser(),
-					signedCertPath,
-					adminPrivateKeyPath
-				);
+				logger.info('CA enabled');
+				if (this.fabricCaEnabled) {
+					identity = await this.enrollCaIdentity(
+						this.fabricConfig.getAdminUser(),
+						this.fabricConfig.getAdminPassword()
+					);
+				} else {
+					/*
+					 * Identity credentials to be stored in the wallet
+					 * Look for signedCert in first-network-connection.json
+					 */
+
+					const signedCertPath = this.fabricConfig.getOrgSignedCertPath();
+					const adminPrivateKeyPath = this.fabricConfig.getOrgAdminPrivateKeyPath();
+					identity = this.enrollUserIdentity(
+						this.fabricConfig.getAdminUser(),
+						signedCertPath,
+						adminPrivateKeyPath
+					);
+				}
 			}
 
 			if (!this.tlsEnable) {
@@ -132,7 +124,7 @@ class FabricGateway {
 			await this.gateway.connect(this.config, connectionOptions);
 			// this.client = this.gateway.getClient();
 		} catch (error) {
-			logger.error(` ${error}`);
+			logger.error(`${error}`);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
 		}
 	}
@@ -200,10 +192,11 @@ class FabricGateway {
 			});
 
 			const enrollment = await ca.enroll({
-				enrollmentID: id,
-				enrollmentSecret: secret
+				enrollmentID: this.fabricConfig.getCaAdminUser(),
+				enrollmentSecret: this.fabricConfig.getCaAdminPassword()
 			});
-			logger.log('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment ', enrollment);
+
+			logger.info('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment : ca admin');
 
 			const identity = {
 				credentials: {
@@ -213,12 +206,45 @@ class FabricGateway {
 				mspId: this.fabricConfig.getMspId(),
 				type: 'X.509'
 			};
-			logger.log('identity ', identity);
+
 			// Import identity wallet
-			await this.wallet.put(id, identity);
+			await this.wallet.put(this.fabricConfig.getCaAdminUser(), identity);
+
+			const adminUser = await this.getUserContext(
+				this.fabricConfig.getCaAdminUser()
+			);
+			await ca.register(
+				{
+					affiliation: this.fabricConfig.getAdminAffiliation(),
+					enrollmentID: id,
+					enrollmentSecret: secret,
+					role: 'admin'
+				},
+				adminUser
+			);
+
+			const enrollmentBEAdmin = await ca.enroll({
+				enrollmentID: id,
+				enrollmentSecret: secret
+			});
+
+			logger.info(
+				'>>>>>>>>>>>>>>>>>>>>>>>>> registration & enrollment : BE admin'
+			);
+
+			const identityBEAdmin = {
+				credentials: {
+					certificate: enrollmentBEAdmin.certificate,
+					privateKey: enrollmentBEAdmin.key.toBytes()
+				},
+				mspId: this.fabricConfig.getMspId(),
+				type: 'X.509'
+			};
+			await this.wallet.put(id, identityBEAdmin);
+
 			logger.debug('Successfully get user enrolled and imported to wallet, ', id);
 
-			return identity;
+			return identityBEAdmin;
 		} catch (error) {
 			// TODO decide how to proceed if error
 			logger.error('Error instantiating FabricCAServices ', error);

@@ -132,12 +132,12 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 
 		It("login to org1-network", func() {
 
-			resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+			resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 			result := resp.Result().(*LoginResponse)
 			token = result.Token
 
 			Expect(result.User.Message).Should(Equal("logged in"))
-			Expect(result.User.Name).Should(Equal("admin"))
+			Expect(result.User.Name).Should(Equal("exploreradmin"))
 		})
 
 		It("get channels", func() {
@@ -374,24 +374,24 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 		Context("/auth/login", func() {
 			It("login to org1-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("admin"))
+				Expect(result.User.Name).Should(Equal("exploreradmin"))
 			})
 
 			It("login to org2-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("admin"))
+				Expect(result.User.Name).Should(Equal("exploreradmin"))
 			})
 		})
 
 		Context("/api/channels", func() {
 			It("get channels for Org1", func() {
 				// For org1
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				resultLogin := resp.Result().(*LoginResponse)
 				token := resultLogin.Token
 				Expect(resultLogin.User.Message).Should(Equal("logged in"))
@@ -404,7 +404,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels for Org2", func() {
 				// For org2
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				resultLogin := resp.Result().(*LoginResponse)
 				token := resultLogin.Token
 				Expect(resultLogin.User.Message).Should(Equal("logged in"))
@@ -420,7 +420,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -484,7 +484,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -552,7 +552,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -583,7 +583,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
