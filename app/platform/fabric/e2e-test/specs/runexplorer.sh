@@ -21,6 +21,30 @@ pushd ${SCRIPTPATH}/..
 
 cp ./configs/config_${NETWORK_MODE}.json ${ROOTPATH}/app/platform/fabric/config.json
 
+if [ ${NETWORK_MODE} == "single-pem" ]; then
+  tmpf=$(mktemp)
+  cat specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk | \
+  awk '{printf "%s\\n",$0} END {print ""}' | \
+  xargs -0 -I{} jq '.organizations.org1.adminPrivateKey.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  > "$tmpf"
+  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+
+  cat specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem | \
+  awk '{printf "%s\\n",$0} END {print ""}' | \
+  xargs -0 -I{} jq '.organizations.org1.signedCert.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  > "$tmpf"
+  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+
+  cat specs/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt | \
+  awk '{printf "%s\\n",$0} END {print ""}' | \
+  xargs -0 -I{} jq '.peers."peer0-org1".tlsCACerts.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  > "$tmpf"
+  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+
+  jq '.client.adminCredential.id = "exploreradmin2"' configs/connection-profile/org1-network-pem.json \
+  > "$tmpf"
+  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+fi
 popd
 
 
@@ -46,7 +70,7 @@ echo "#### Started DB container"
 
 rm -rf logs wallet
 
-export LOG_LEVEL_CONSOLE=debug
+# export LOG_LEVEL_CONSOLE=debug
 export EXPLORER_SYNC_BLOCKSYNCTIME_SEC=5
 ./start.sh
 echo "#### Starting Explorer process ..."

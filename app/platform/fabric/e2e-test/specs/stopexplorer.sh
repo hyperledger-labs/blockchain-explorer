@@ -9,5 +9,6 @@ pushd ${ROOTPATH}
 
 ./stop.sh
 docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml down -v
+rm -rf wallet/ logs/
 
 popd
