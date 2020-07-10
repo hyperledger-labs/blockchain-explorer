@@ -30,10 +30,10 @@ const FooterView = ({ classes }) => (
   <div className={classes.root}>
     <div>
       <div className={classes.footer}>
-        {'Hyperledger Explorer Client Version: '}
+        {'Deaking Explorer Client Version: '}
         {clientJson.version}
         &emsp;
-        {'Fabric Compatibility: '} {Version.map(v => v)}
+        {'Deaking Compatibility: '} {Version.map(v => v)}
       </div>
     </div>
   </div>
