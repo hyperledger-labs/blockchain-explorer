@@ -134,7 +134,7 @@ async function generateDir() {
 async function generateBlockHash(header) {
 	const headerAsn = asn.define('headerAsn', function() {
 		this.seq().obj(
-			this.key('Number').octstr(),
+			this.key('Number').int(),
 			this.key('PreviousHash').octstr(),
 			this.key('DataHash').octstr()
 		);
@@ -142,7 +142,7 @@ async function generateBlockHash(header) {
 	logger.info('generateBlockHash', header.number.toString());
 	const output = headerAsn.encode(
 		{
-			Number: header.number.toString(),
+			Number: parseInt(header.number),
 			PreviousHash: header.previous_hash.toString('hex'),
 			DataHash: header.data_hash.toString('hex')
 		},
