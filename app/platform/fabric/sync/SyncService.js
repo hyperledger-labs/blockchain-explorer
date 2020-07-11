@@ -429,7 +429,7 @@ class SyncServices {
 		}
 		blocksInProcess.push(blockPro_key);
 
-		logger.debug('New Block  >>>>>>> %j', block);
+		logger.debug('New Block  >>>>>>> %j', block.header.number);
 		let channel_genesis_hash = client.getChannelGenHash(channel_name);
 		// Checking block is channel CONFIG block
 		/* eslint-disable */
