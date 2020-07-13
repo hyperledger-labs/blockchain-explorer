@@ -120,6 +120,19 @@ class FabricGateway {
 				}
 			};
 
+			if ('clientTlsIdentity' in this.config.client) {
+				logger.info('client TLS enabled');
+				const mTlsIdLabel = this.config.client.clientTlsIdentity;
+				const mTlsId = await this.wallet.get(mTlsIdLabel);
+				if (mTlsId !== undefined) {
+					connectionOptions.clientTlsIdentity = mTlsIdLabel;
+				} else {
+					throw new ExplorerError(
+						`Not found Identity ${mTlsIdLabel} in your wallet`
+					);
+				}
+			}
+
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
 		} catch (error) {

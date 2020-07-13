@@ -4,6 +4,7 @@
 	"license": "Apache-2.0",
 	"client": {
 		"tlsEnable": true,
+		"clientTlsIdentity": "admin",
 		"caCredential": {
 			"id": "admin",
 			"password": "adminpw"
