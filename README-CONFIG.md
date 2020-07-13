@@ -1,0 +1,269 @@
+<!-- (SPDX-License-Identifier: CC-BY-4.0) -->
+
+## Configuration
+
+This document will describe about the detail of each configuration:
+
+## Database
+
+* Modify `app/explorerconfig.json` to update PostgreSQL database settings.
+  
+    ```json
+    "postgreSQL": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "database": "fabricexplorer",
+        "username": "hppoc",
+        "passwd": "password"
+    }
+    ```
+
+* Another alternative to configure database settings is to use environment variables, example of settings:
+
+    ```shell
+    export DATABASE_HOST=127.0.0.1
+    export DATABASE_PORT=5432
+    export DATABASE_DATABASE=fabricexplorer
+    export DATABASE_USERNAME=hppoc
+    export DATABASE_PASSWD=pass12345
+    ```
+
+## Authorization
+
+* Modify `app/explorerconfig.json` to update Authorization (JWT) settings.
+
+    ```json
+    "jwt": {
+        "secret" : "a secret phrase!!",
+        "expiresIn": "2 days"
+    }
+    ```
+  * `secret`: secret string to sign the payload.
+  * `expiresIn`: expressed in seconds or a string describing a time span [zeit/ms](https://github.com/zeit/ms).
+    Eg: `60`, `"2 days"`, `"10h"`, `"7d"`. A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default (`"120"` is equal to `"120ms"`).
+
+## Connection profile for Hyperledger Fabric network
+
+* Modify `app/platform/fabric/config.json` to define your fabric network connection profile:
+
+    ```json
+    {
+        "network-configs": {
+            "first-network": {
+                "name": "firstnetwork",
+                "profile": "./connection-profile/first-network.json",
+                "enableAuthentication": false
+            }
+        },
+        "license": "Apache-2.0"
+    }
+    ```
+  * `first-network` is the name of your connection profile, and can be changed to any name.
+  * `name` is a name you want to give to your fabric network, you can change only value of the key "name".
+  * `profile` is the location of your connection profile, you can change only value of the key "profile"
+  * Change `fabric-path` to your fabric network disk path in the `first-network.json` file 
+  * Provide the full disk path to the adminPrivateKey config option, it ussually ends with "_sk"\
+  e.g.
+    ```json
+    "adminPrivateKey": {
+      "path": "/opt/dev/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/aaacd899a6362a5c8cc1e6f86d13bfccc777375365bbda9c710bb7119993d71c_sk"
+    },
+    ```
+    or
+    Provide the pem string instead.
+    ```json
+    "adminPrivateKey": {
+      "pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMG ... utE5HtrGM\n-----END PRIVATE KEY-----\n"
+    },
+    ```
+  * `adminUser` is the the admin user of the network, in this case it's fabric CA or an identity user.
+  * `adminPassword` is the password for the admin user.
+  * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
+
+## Disable Explorer login authentication
+
+* If you want to disable login authentication, set `false` to  `enableAuthentication` in the connection profile
+    ```json
+    "client": {
+      "enableAuthentication": false
+    }
+    ```
+
+## Using Fabric-CA
+
+* You need to specify the following keys in the connection profile for using Fabric CA to retrieve certificate:
+  * client.caCredential
+    * id
+    * passowrd
+  * client.adminCredential
+    * affiliation
+  * organizations.[org name]
+    * certificateAuthorities
+
+    ```json
+    "client": {
+      "tlsEnable": true,
+      "caCredential": {
+        "id": "admin",
+        "password": "adminpw"
+      },
+      "adminCredential": {
+        "id": "exploreradmin",
+        "password": "exploreradminpw",
+        "affiliation": "org1.department1"
+      },
+      "enableAuthentication": true,
+    ```
+    ```json
+    "organizations": {
+      "org1": {
+        "mspid": "Org1ExampleCom",
+        "peers": ["peer0-org1"],
+        "certificateAuthorities": ["ca0"]
+      }
+    },
+    ```
+
+### Disable using Fabric CA
+
+* You need to specify the following keys:
+  * organizations.[org name]
+    * adminPrivateKey
+    * signedCert
+    ```json
+    "client": {
+      "tlsEnable": true,
+      "adminCredential": {
+        "id": "exploreradmin",
+        "password": "exploreradminpw",
+      },
+      "enableAuthentication": true,
+    ```
+    ```json
+    "organizations": {
+      "org1": {
+        "mspid": "Org1ExampleCom",
+        "adminPrivateKey": {
+          "path": "[path to private key]"
+        },
+        "peers": ["peer0-org1"],
+        "signedCert": {
+          "path": "[path to cert]"
+        }
+      }
+    },
+    ```
+
+## Using client TLS
+
+* When you set an identity label to `clientTlsIdentity` in the connection profile and store identity, which is correspondent with it, into the wallet (`EXPLORER_ROOTDIR/wallet`), client TLS (mutual TLS) is enabled.
+    ```json
+    "client": {
+      "clientTlsIdentity": "clientTlsId"
+    }
+    ```
+
+
+## Monitoring multiple organizations
+
+* You can also configure multiple profiles in `app/platform/fabric/config.json` for monitoring multiple organizations in a single Explorer instance. It's quite straightforward. You just need to prepare config.json as below and connection profile for each organization (e.g. `org1-network.json` & `org2-network.json`). Note that you need to initialize your backend database once when applying v1.0.0-rc3 and above first time in your local environment. Because we've changed database schema in backend database since this version.
+
+    ```json
+    {
+      "network-configs": {
+        "org1-network": {
+          "name": "org1-network",
+          "profile": "./connection-profile/org1-network.json"
+        },
+        "org2-network": {
+          "name": "org2-network",
+          "profile": "./connection-profile/org2-network.json"
+        }
+      },
+      "license": "Apache-2.0"
+    }
+    ```
+
+## Enable HTTPS access to Hyperledger Explorer
+
+* Configure Hyperledger Explorer for HTTPS based on this link [CONFIG-HTTPS-HLEXPLORER.md](CONFIG-HTTPS-HLEXPLORER.md)
+
+## Sync process mode
+
+* Modify `app/explorerconfig.json` to update sync properties
+* Please restart Explorer if any changes made to explorerconfig.json
+* Ensure same configuration in Explorer explorerconfig.json if sync process is running from different locations
+
+### Host (Standalone)
+
+```json
+"sync": {
+  "type": "host",
+  "platform": "fabric",
+  "blocksSyncTime": "1"
+},
+```
+
+### Local (Run with Explorer)
+
+```json
+"sync": {
+  "type": "local",
+  "platform": "fabric",
+  "blocksSyncTime": "1"
+},
+```
+
+* `sync`: sync type. `local`(run with Explorer) or `host`(standalone)
+* `platform`: platform name
+* `blocksSyncTime`: sync interval in minute
+
+## Logging
+
+* By using the following environmet variables, you can control log level of each component (app, db and console). You can set these `ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF` string to each level. Each file is rolled by both date (7days) and size (8MB).
+
+  * LOG_LEVEL_APP
+    * Log level regarding application layer. The logs are written to `logs/app/app.log`.
+    * default `DEBUG`
+  * LOG_LEVEL_DB
+    * Log level regarding backend layer. The logs are written to `logs/db/db.log`.
+    * default `DEBUG`
+  * LOG_LEVEL_CONSOLE
+    * Log level regarding console. The logs are written to `logs/console/console.log`.
+    * default `INFO`
+  * LOG_CONSOLE_STDOUT
+    * You can switch the destination of console log from file to standard output.
+    * default `false`
+
+## Run Hyperledger Explorer Using Docker Compose
+
+* Modify an example of `docker-compose.yaml` to align with your environment
+  * networks > mynetwork.com > external > name
+    ```yaml
+    networks:
+        mynetwork.com:
+            external:
+                name: net_byfn
+    ```
+  * services > explorer.mynetwork.com > volumes
+    * Connection config file path (ex. ./examples/net1/config.json)
+    * Connection profile directory path (ex. ./examples/net1/connection-profile, which is referred from config.json)
+    * Directory path for crypto artifacts of fabric network (ex. ./examples/net1/crypto)
+    ```yaml
+    volumes:
+      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+      - ./examples/net1/crypto:/tmp/crypto
+    ```
+  * When you connect the explorer to your fabric network through bridge network, you need to set `DISCOVERY_AS_LOCALHOST` to `false` for disabling hostname mapping into `localhost`.
+    ```yaml
+    explorer.mynetwork.com:
+        ...
+        environment:
+        ...
+        - DISCOVERY_AS_LOCALHOST=false
+    ```
+  * In this docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet), if you would like to clear these named volumes, run the following:
+    ```shell
+    docker-compose down -v
+    ```
