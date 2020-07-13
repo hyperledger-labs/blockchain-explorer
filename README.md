@@ -35,6 +35,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 ---
 
 There are 2 options to get Explorer started. Following are the software dependencies required for each option.
+And if you want to refer more detail of each configuration, please refer [README-CONFIG.md](README-CONFIG.md).
 
 # Quick start (using Docker)
 
@@ -320,6 +321,11 @@ $ npm run build
 ```
 $ DISCOVERY_AS_LOCALHOST=false ./start.sh
 ```
+
+# Configuration
+
+Please refer [README-CONFIG.md](README-CONFIG.md) for more detail of each configuration.
+
 
 # Logs
 
