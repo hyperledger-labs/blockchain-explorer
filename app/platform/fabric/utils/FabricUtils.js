@@ -139,12 +139,11 @@ async function generateBlockHash(header) {
 			this.key('DataHash').octstr()
 		);
 	});
-	logger.info('generateBlockHash', header.number.toString());
 	const output = headerAsn.encode(
 		{
 			Number: parseInt(header.number),
-			PreviousHash: header.previous_hash.toString('hex'),
-			DataHash: header.data_hash.toString('hex')
+			PreviousHash: Buffer.from(header.previous_hash, 'hex'),
+			DataHash: Buffer.from(header.data_hash, 'hex')
 		},
 		'der'
 	);
