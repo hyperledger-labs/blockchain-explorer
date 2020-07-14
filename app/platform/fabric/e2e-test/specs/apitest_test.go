@@ -35,7 +35,7 @@ const (
 	waitSyncInterval   = 7
 )
 
-func basicCheck() {
+func basicCheck(loginId string) {
 
 	It("get network list", func() {
 
@@ -52,12 +52,23 @@ func basicCheck() {
 
 	It("login to org1-network", func() {
 
-		resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
+		resp := restPost("/auth/login", map[string]interface{}{"user": loginId, "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 		result := resp.Result().(*LoginResponse)
 		token = result.Token
 
+		Expect(resp.StatusCode()).Should(Equal(200))
+		Expect(result.Success).Should(Equal(true))
 		Expect(result.User.Message).Should(Equal("logged in"))
-		Expect(result.User.Name).Should(Equal("exploreradmin"))
+		Expect(result.User.Name).Should(Equal(loginId))
+	})
+
+	It("fail to login with invalid credential", func() {
+
+		resp := restPost("/auth/login", map[string]interface{}{"user": loginId, "password": "invalid", "network": "org1-network"}, &LoginResponse{})
+		result := resp.Result().(*LoginResponse)
+
+		Expect(resp.StatusCode()).Should(Equal(400))
+		Expect(result.Success).Should(Equal(false))
 	})
 
 	It("get channels", func() {
@@ -169,7 +180,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			os.RemoveAll("./logs")
 			os.Chdir(cwd)
 
-			cmd := exec.Command("./runexplorer.sh", "single")
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single")
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
@@ -177,7 +188,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			time.Sleep(waitSyncInterval * time.Second)
 		})
 
-		basicCheck()
+		basicCheck("exploreradmin")
 
 		XIt("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
@@ -201,7 +212,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 		})
 
 		It("stop explorer", func() {
-			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -211,7 +222,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			os.RemoveAll("./logs")
 			os.Chdir(cwd)
 
-			cmd := exec.Command("./runexplorer.sh", "single-pem")
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-pem")
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
@@ -219,7 +230,28 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			time.Sleep(waitSyncInterval * time.Second)
 		})
 
-		basicCheck()
+		basicCheck("exploreradmin2")
+
+		It("stop explorer, but persist data and wallet", func() {
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh", "-k"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("restart explorer", func() {
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-pem", "-k")
+			err := cmd.Start()
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
+		})
+
+		basicCheck("exploreradmin2")
 
 		Describe("Bugfix check:", func() {
 
@@ -277,7 +309,35 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 		})
 
 		It("stop explorer", func() {
-			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("launch explorer - disable authentication", func() {
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-disable-auth")
+			err := cmd.Start()
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
+		})
+
+		It("succeed to login with invalid credential", func() {
+
+			resp := restPost("/auth/login", map[string]interface{}{"user": "invalid", "password": "invalid", "network": "org1-network"}, &LoginResponse{})
+			result := resp.Result().(*LoginResponse)
+
+			Expect(resp.StatusCode()).Should(Equal(200))
+			Expect(result.Success).Should(Equal(true))
+		})
+
+		It("stop explorer", func() {
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -326,7 +386,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			inputSpecPath = "apitest-input-multiprofile.yml"
 
 			By("0) Generating channel artifacts")
-			_, err := networkclient.ExecuteCommand("./genchannelartifacts.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./genchannelartifacts.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 
 			By("1) Creating channel")
@@ -369,7 +429,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			os.RemoveAll("./logs")
 			os.Chdir(cwd)
 
-			cmd := exec.Command("./runexplorer.sh", "multi")
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "multi")
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
@@ -695,7 +755,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		// })
 
 		It("stop explorer", func() {
-			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 		})
 

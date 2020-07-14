@@ -70,7 +70,6 @@ class FabricClient {
 		// Getting channels from queryChannels
 		let channels;
 		try {
-			// logger.debug('this.defaultPeer ', this.defaultPeer);
 			channels = await this.fabricGateway.queryChannels();
 		} catch (e) {
 			logger.error(e);

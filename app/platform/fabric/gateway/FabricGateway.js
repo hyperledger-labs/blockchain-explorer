@@ -31,8 +31,6 @@ class FabricGateway {
 		this.wallet = null;
 		this.tlsEnable = false;
 		this.defaultChannelName = null;
-		this.defaultPeer = null;
-		this.defaultPeerUrl = null;
 		this.gateway = new Gateway();
 		this.fabricConfig = new FabricConfig();
 		this.fabricCaEnabled = false;
@@ -55,18 +53,15 @@ class FabricGateway {
 		this.FSWALLET = 'wallet/' + this.networkName;
 
 		const explorerAdminId = this.fabricConfig.getAdminUser();
+		if (!explorerAdminId) {
+			logger.error('Failed to get admin ID from configuration file');
+			throw new ExplorerError(explorer_mess.error.ERROR_1010);
+		}
+
 		const info = `Loading configuration  ${this.config}`;
 		logger.debug(info.toUpperCase());
 
-		const peers = this.fabricConfig.getPeers();
-		this.defaultPeer = peers[0].name;
-		this.defaultPeerUrl = peers[0].url;
-
-		logger.info('========== > defaultPeer ', this.defaultPeer);
-		/* eslint-disable */
-
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		/* eslint-enable */
 		let identity;
 		try {
 			// Create a new file system based wallet for managing identities.
@@ -174,7 +169,7 @@ class FabricGateway {
 			mspId: this.fabricConfig.getMspId(),
 			type: 'X.509'
 		};
-		logger.log('enrollUserIdentity: userName :', userName);
+		logger.info('enrollUserIdentity: userName :', userName);
 		await this.wallet.put(userName, identity);
 		return identity;
 	}

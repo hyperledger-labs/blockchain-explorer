@@ -42,6 +42,45 @@ This document will describe about the detail of each configuration:
   * `expiresIn`: expressed in seconds or a string describing a time span [zeit/ms](https://github.com/zeit/ms).
     Eg: `60`, `"2 days"`, `"10h"`, `"7d"`. A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default (`"120"` is equal to `"120ms"`).
 
+* Modify the connection profile (e.g. `app/platform/fabric/connection-profile/first-network.json`) to configure authorization of login user.
+
+    ```json
+    "client": {
+      "adminCredential": {
+        "id": "exploreradmin",
+        "password": "exploreradminpw"
+      },
+      "enableAuthentication": true,
+    ```
+  * `adminCredential.id` is the the admin user to login Explorer. Currently Explorer only supports single user mode (can't add more users. We're working on it)
+  * `adminCredential.password` is the password for the admin user to login Explorer.
+  * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
+    * Even if disable user authentication, you still need to get `adminCredential.id` specified, because it's used to get access to the wallet.
+
+## Disable Explorer login authentication
+
+* If you want to disable login authentication, set `false` to  `enableAuthentication` in the connection profile
+    ```json
+    "client": {
+      "enableAuthentication": false
+    }
+    ```
+
+## Enable TLS
+
+* If your fabric network enables TLS, then set `true` to `client.tlsEnable` in the connection profile (e.g. `app/platform/fabric/connection-profile/first-network.json`).
+  And you also need to specify peer URL with `grpcs://`. If your fabrice network disables TLS, use `grpc://` instead.
+
+    ```json
+    "client": {
+      "tlsEnable": true,
+    ```
+    ```json
+    "peers": {
+      "peer0.org1.example.com": {
+        "url": "grpcs://localhost:7051",
+    ```
+
 ## Connection profile for Hyperledger Fabric network
 
 * Modify `app/platform/fabric/config.json` to define your fabric network connection profile:
@@ -51,8 +90,7 @@ This document will describe about the detail of each configuration:
         "network-configs": {
             "first-network": {
                 "name": "firstnetwork",
-                "profile": "./connection-profile/first-network.json",
-                "enableAuthentication": false
+                "profile": "./connection-profile/first-network.json"
             }
         },
         "license": "Apache-2.0"
@@ -75,18 +113,6 @@ This document will describe about the detail of each configuration:
     "adminPrivateKey": {
       "pem": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMG ... utE5HtrGM\n-----END PRIVATE KEY-----\n"
     },
-    ```
-  * `adminUser` is the the admin user of the network, in this case it's fabric CA or an identity user.
-  * `adminPassword` is the password for the admin user.
-  * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
-
-## Disable Explorer login authentication
-
-* If you want to disable login authentication, set `false` to  `enableAuthentication` in the connection profile
-    ```json
-    "client": {
-      "enableAuthentication": false
-    }
     ```
 
 ## Using Fabric-CA
