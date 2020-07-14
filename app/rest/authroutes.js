@@ -54,8 +54,7 @@ const authroutes = async function(router, platform) {
 					message: 'Could not process the form.'
 				});
 			}
-			return res.json({
-				status: 200,
+			return res.status(200).json({
 				success: true,
 				message: 'You have successfully logged in!',
 				token,

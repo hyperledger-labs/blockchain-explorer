@@ -45,17 +45,40 @@ class UserService {
 		let adminUser = null;
 		let adminPassword = null;
 		if (user.user && user.password && user.network) {
-			logger.log('user.network ', user.network);
+			logger.info('user.network ', user.network);
 			const clientObj = this.platform.getNetworks().get(user.network);
 
-			// TODO, need review maybe there is a better way to get the client config enableAuthentication
+			if (!clientObj) {
+				const errMsg = `Faied to get client object for ${user.network}`;
+				logger.error(errMsg);
+				return {
+					authenticated: false,
+					user: user.user,
+					message: `Internal error: ${errMsg}`,
+					enableAuthentication: enableAuth,
+					network: user.network
+				};
+			}
+
 			let client = clientObj.instance;
-			if (client.config && client.config.client) {
-				enableAuth = client.config.client.enableAuthentication;
-				if (typeof enableAuth !== 'undefined' && enableAuth !== null) {
-					logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
-					adminUser = client.config.client.adminUser;
-					adminPassword = client.config.client.adminPassword;
+			const fabricConfig = client.fabricGateway.fabricConfig;
+			enableAuth = fabricConfig.getEnableAuthentication();
+			if (enableAuth) {
+				logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
+				adminUser = fabricConfig.getAdminUser();
+				adminPassword = fabricConfig.getAdminPassword();
+
+				// Not authorized if credentials are incomplete in auth enabled mode
+				if (!adminUser || !adminPassword) {
+					const errMsg = `Faied authentication for ${user.network}`;
+					logger.error(errMsg);
+					return {
+						authenticated: false,
+						user: user.user,
+						message: `Internal error: ${errMsg}`,
+						enableAuthentication: enableAuth,
+						network: user.network
+					};
 				}
 			}
 
@@ -82,15 +105,17 @@ class UserService {
 					authenticated: false,
 					user: user.user,
 					message: 'Invalid user name, or password',
-					enableAuthentication: enableAuth
+					enableAuthentication: enableAuth,
+					network: user.network
 				};
 			}
 		} else {
 			return {
 				authenticated: false,
-				message: 'Invalid request, found ',
 				user: user.user,
-				enableAuthentication: enableAuth
+				message: 'Invalid request',
+				enableAuthentication: enableAuth,
+				network: user.network
 			};
 		}
 	}

@@ -14,7 +14,7 @@
 			"affiliation": "org2.department1"
 		},
 		"organization": "org2",
-		"enableAuthentication": false,
+		"enableAuthentication": true,
 		"connection": {
 			"timeout": {
 				"peer": {

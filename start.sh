@@ -8,8 +8,6 @@
 #Please visit ./logs/app to view the application logs and visit the ./logs/db to view the Database logs and visit the ./log/console for the console.log
 # Log rotating for every 7 days.
 
-rm -rf /tmp/fabric-client-kvs_peerOrg*
-
 echo "************************************************************************************"
 echo "**************************** Hyperledger Explorer **********************************"
 echo "************************************************************************************"

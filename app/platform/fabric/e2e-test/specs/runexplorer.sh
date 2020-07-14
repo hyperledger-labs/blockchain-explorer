@@ -4,13 +4,21 @@
 
 SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 ROOTPATH="$( cd "$(dirname "$0")/../../../../.." >/dev/null 2>&1 ; pwd -P )"
-export NETWORK_MODE=$1
+CLEANUP=1
 
-pushd ${ROOTPATH}
-# At first, need to clean up logs as test app is monitoring logs/console to detect completion of explorer setup
-rm -rf logs wallet
-popd
-
+while getopts "km:" opt; do
+  case "$opt" in
+  k)
+    echo "keep DB data and wallet"
+    CLEANUP=0
+    ;;
+  m)
+    NETWORK_MODE=$OPTARG
+    export NETWORK_MODE=$NETWORK_MODE
+    echo "Network mode : ${NETWORK_MODE}"
+    ;;
+  esac
+done
 
 echo $SCRIPTPATH
 echo $ROOTPATH
@@ -50,25 +58,27 @@ popd
 
 pushd ${ROOTPATH}
 
-./build_docker_image.sh -d
-docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml down -v
-docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml up -d explorerdb.mynetwork.com
-echo "#### Starting DB container ..."
+if [ $CLEANUP -eq 1 ]; then
+  ./build_docker_image.sh -d
+  docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml down -v
+  docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml up -d explorerdb.mynetwork.com
+  echo "#### Starting DB container ..."
 
-rc=1
-starttime=$(date +%s)
-while
-  [[ "$(($(date +%s) - starttime))" -lt "$TIMEOUT" ]] && [[ $rc -ne 0 ]];
-do
-  sleep $DELAY
-  set -x
-  docker logs explorerdb.mynetwork.com 2>/dev/null | grep -q "database system is ready to accept connections"
-  rc=$?
-  set +x
-done
-echo "#### Started DB container"
+  rc=1
+  starttime=$(date +%s)
+  while
+    [[ "$(($(date +%s) - starttime))" -lt "$TIMEOUT" ]] && [[ $rc -ne 0 ]];
+  do
+    sleep $DELAY
+    set -x
+    docker logs explorerdb.mynetwork.com 2>/dev/null | grep -q "database system is ready to accept connections"
+    rc=$?
+    set +x
+  done
+  echo "#### Started DB container"
 
-rm -rf logs wallet
+  rm -rf logs wallet
+fi
 
 # export LOG_LEVEL_CONSOLE=debug
 export EXPLORER_SYNC_BLOCKSYNCTIME_SEC=5

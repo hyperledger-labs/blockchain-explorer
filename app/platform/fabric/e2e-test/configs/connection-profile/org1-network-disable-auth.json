@@ -4,17 +4,10 @@
 	"license": "Apache-2.0",
 	"client": {
 		"tlsEnable": true,
-		"clientTlsIdentity": "admin",
-		"caCredential": {
-			"id": "admin",
-			"password": "adminpw"
-		},
 		"adminCredential": {
-			"id": "exploreradmin",
-			"password": "exploreradminpw",
-			"affiliation": "org1.department1"
+			"id": "exploreradmin3"
 		},
-		"enableAuthentication": true,
+		"enableAuthentication": false,
 		"organization": "org1",
 		"connection": {
 			"timeout": {
@@ -48,7 +41,6 @@
 				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
 			"peers": ["peer0-org1"],
-			"certificateAuthorities": ["ca0"],
 			"signedCert": {
 				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
@@ -63,18 +55,6 @@
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0-org1"
 			}
-		}
-	},
-	"certificateAuthorities": {
-		"ca0": {
-			"url": "https://localhost:32000",
-			"httpOptions": {
-				"verify": false
-			},
-			"tlsCACerts": {
-				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/ca/ca.org1-cert.pem"
-			},
-			"caName": "ca0-org1"
 		}
 	}
 }

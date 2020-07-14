@@ -4,7 +4,7 @@
 
 const helper = require('../../../common/helper');
 
-const logger = helper.getLogger('FabricGateway');
+const logger = helper.getLogger('User');
 
 /**
  *
@@ -20,10 +20,10 @@ class User {
 	constructor(user) {
 		// Put the user request in user object
 		this.userJson = {};
+		logger.debug(`User : ${user.user}`);
 		Object.keys(user).forEach(key => {
 			const value = user[key];
 			this.userJson[key] = value;
-			logger.log('User.constructor ', key, '= ', value);
 		});
 	}
 

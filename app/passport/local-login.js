@@ -39,7 +39,7 @@ const strategy = function(platform) {
 				network: userInfo.network
 			};
 
-			if (userInfo && !userInfo.authenticated) {
+			if (!userInfo || !userInfo.authenticated) {
 				const error = {
 					name: 'IncorrectCredentialsError',
 					message: userInfo.message
