@@ -395,7 +395,7 @@ class FabricGateway {
 			ds.build(idx);
 			ds.sign(idx);
 			await ds.send({
-				asLocalhost: true,
+				asLocalhost: this.asLocalhost,
 				refreshAge: 15000,
 				targets: targets
 			});
