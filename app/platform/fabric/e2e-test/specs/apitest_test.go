@@ -306,6 +306,13 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 				Expect(CheckHowManyEventHubRegistered()).Should(Equal(true))
 			})
 
+			It("should be able to validate hashchain correctly", func() {
+				_, err := exec.Command("bash", "./validate_hash.sh", "-c", "commonchannel").Output()
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = exec.Command("bash", "./validate_hash.sh", "-c", "org1channel").Output()
+				Expect(err).NotTo(HaveOccurred())
+			})
 		})
 
 		It("stop explorer", func() {
