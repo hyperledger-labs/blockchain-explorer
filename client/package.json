@@ -16,7 +16,7 @@
 		"immutable": "^3.8.1",
 		"jquery": "^3.5.0",
 		"js-beautify": "^1.7.5",
-		"lodash": "^4.17.15",
+		"lodash": "^4.17.19",
 		"match-sorter": "^2.2.1",
 		"moment": "^2.22.2",
 		"moment-timezone": "^0.5.16",
