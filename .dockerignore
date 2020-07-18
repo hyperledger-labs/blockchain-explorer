@@ -1,6 +1,13 @@
 
 #SPDX-License-Identifier: Apache-2.0
-node_modules
-client/node_modules
-app/platform/fabric/e2e-test
+**/node_modules/
+client/build/
 wallet/
+logs/
+**/e2e-test/
+**/test/
+*.md
+docs/
+examples/
+.dockerignore
+.git
