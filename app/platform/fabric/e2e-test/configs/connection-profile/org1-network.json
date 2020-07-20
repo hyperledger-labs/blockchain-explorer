@@ -4,9 +4,17 @@
 	"license": "Apache-2.0",
 	"client": {
 		"tlsEnable": true,
-		"adminUser": "admin",
-		"adminPassword": "adminpw",
-		"enableAuthentication": false,
+		"clientTlsIdentity": "admin",
+		"caCredential": {
+			"id": "admin",
+			"password": "adminpw"
+		},
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw",
+			"affiliation": "org1.department1"
+		},
+		"enableAuthentication": true,
 		"organization": "org1",
 		"connection": {
 			"timeout": {

@@ -1,3 +1,17 @@
+## v1.1.1
+
+* [851a9ba](https://github.com/hyperledger/blockchain-explorer/commit/851a9ba) Bump lodash from 4.17.15 to 4.17.19 in /client (#144)
+* [a61191d](https://github.com/hyperledger/blockchain-explorer/commit/a61191d) Bump lodash from 4.17.15 to 4.17.19 in /app/test (#145)
+* [c903aa4](https://github.com/hyperledger/blockchain-explorer/commit/c903aa4) Bump lodash from 4.17.15 to 4.17.19 (#143)
+* [6c38236](https://github.com/hyperledger/blockchain-explorer/commit/6c38236) [BE-776](https://jira.hyperledger.org/browse/BE-776) Fix calculation of block hash (#141)
+* [d635e39](https://github.com/hyperledger/blockchain-explorer/commit/d635e39) Use FabricGateway's "asLocalhost" when running discovery service (#142)
+* [d99a66d](https://github.com/hyperledger/blockchain-explorer/commit/d99a66d) [BE-777](https://jira.hyperledger.org/browse/BE-777) Fix an issue of authentication (#140)
+* [39ad972](https://github.com/hyperledger/blockchain-explorer/commit/39ad972) Add another README for detail of each configuration (#139)
+* [786429b](https://github.com/hyperledger/blockchain-explorer/commit/786429b) [BE-768](https://jira.hyperledger.org/browse/BE-768) Add mTLS ID to gateway connect option (#138)
+* [471d261](https://github.com/hyperledger/blockchain-explorer/commit/471d261) [BE-774](https://jira.hyperledger.org/browse/BE-774) Add pem format support (#137)
+* [864b622](https://github.com/hyperledger/blockchain-explorer/commit/864b622) [BE-773](https://jira.hyperledger.org/browse/BE-773) Add Fabric CA support (#135)
+* [8cccc2c](https://github.com/hyperledger/blockchain-explorer/commit/8cccc2c) [BE-722](https://jira.hyperledger.org/browse/BE-722) Make the landing page on Github simplified (#134)
+
 ## v1.1.0
 
 * [05a714e](https://github.com/hyperledger/blockchain-explorer/commit/05a714e) [BE-747](https://jira.hyperledger.org/browse/BE-747) Removed fabric-client package … (#131)

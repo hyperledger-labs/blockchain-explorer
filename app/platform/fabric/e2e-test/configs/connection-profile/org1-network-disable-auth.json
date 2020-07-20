@@ -5,11 +5,9 @@
 	"client": {
 		"tlsEnable": true,
 		"adminCredential": {
-			"id": "admin",
-			"password": "adminpw",
-			"affiliation": "org1.department1"
+			"id": "exploreradmin3"
 		},
-		"enableAuthentication": true,
+		"enableAuthentication": false,
 		"organization": "org1",
 		"connection": {
 			"timeout": {
@@ -21,7 +19,7 @@
 		}
 	},
 	"channels": {
-		"testorgschannel0": {
+		"commonchannel": {
 			"peers": {
 				"peer0-org1": {}
 			},
@@ -40,18 +38,18 @@
 		"org1": {
 			"mspid": "Org1ExampleCom",
 			"adminPrivateKey": {
-				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
 			},
 			"peers": ["peer0-org1"],
 			"signedCert": {
-				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0-org1": {
 			"tlsCACerts": {
-				"path": "GOPATH/src/github.com/hyperledger/fabric-test/tools/operator/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
+				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
 			},
 			"url": "grpcs://localhost:31000",
 			"grpcOptions": {

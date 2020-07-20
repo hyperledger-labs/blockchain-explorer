@@ -38,14 +38,8 @@ class Proxy {
 	 */
 	async authenticate(user) {
 		const userService = new UserService(this.platform);
-		let response = await userService.authenticate(user);
-		if (!response) {
-			response = {
-				status: false,
-				message: `Failed authentication for user: ${user} `
-			};
-		}
-		logger.debug('login >> %s', response);
+		const response = await userService.authenticate(user);
+		logger.debug('result of authentication >> %j', response);
 		return response;
 	}
 

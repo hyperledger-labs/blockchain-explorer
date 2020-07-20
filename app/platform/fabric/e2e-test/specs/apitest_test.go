@@ -21,6 +21,12 @@ var (
 	channelMonitored    string
 	org1CurrentBlockNum int
 	org2CurrentBlockNum int
+	action              string
+	networkSpecPath     string
+	inputSpecPath       string
+	token               string
+	channelGenesisHash  string
+	blockHeight         int
 )
 
 const (
@@ -29,17 +35,82 @@ const (
 	waitSyncInterval   = 7
 )
 
+func basicCheck(loginId string) {
+
+	It("get network list", func() {
+
+		resp := restGet("/auth/networklist", &NetworklistInfo{})
+
+		result := resp.Result().(*NetworklistInfo)
+		list := []string{}
+		for _, val := range result.NetworkList {
+			list = append(list, val.Name)
+		}
+		Expect(list).Should(HaveLen(1))
+		Expect(list).Should(ContainElements([]string{"org1-network"}))
+	})
+
+	It("login to org1-network", func() {
+
+		resp := restPost("/auth/login", map[string]interface{}{"user": loginId, "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
+		result := resp.Result().(*LoginResponse)
+		token = result.Token
+
+		Expect(resp.StatusCode()).Should(Equal(200))
+		Expect(result.Success).Should(Equal(true))
+		Expect(result.User.Message).Should(Equal("logged in"))
+		Expect(result.User.Name).Should(Equal(loginId))
+	})
+
+	It("fail to login with invalid credential", func() {
+
+		resp := restPost("/auth/login", map[string]interface{}{"user": loginId, "password": "invalid", "network": "org1-network"}, &LoginResponse{})
+		result := resp.Result().(*LoginResponse)
+
+		Expect(resp.StatusCode()).Should(Equal(400))
+		Expect(result.Success).Should(Equal(false))
+	})
+
+	It("get channels", func() {
+		resp := restGetWithToken("/api/channels", &ChannelsResponse{}, token)
+		result := resp.Result().(*ChannelsResponse)
+		Expect(result.Channels).Should(ContainElements([]string{"org1channel", "commonchannel"}))
+		Expect(len(result.Channels)).Should(Equal(2))
+	})
+
+	It("get channels info", func() {
+		resp := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
+		result := resp.Result().(*ChannelsInfoResp)
+		chList := result.getChannelList()
+		channelGenesisHash = result.getGenesisHash("commonchannel")
+		blockHeight = result.getBlockHeight("commonchannel") - 1
+		Expect(chList).Should(ContainElements([]string{"commonchannel", "org1channel"}))
+		Expect(len(chList)).Should(Equal(2))
+	})
+
+	It("get block info", func() {
+		resp := restGetWithToken("/api/block/"+channelGenesisHash+"/"+strconv.Itoa(blockHeight), &BlockResp{}, token)
+		result := resp.Result().(*BlockResp)
+		Expect(result.Status).Should(Equal(200))
+	})
+
+	It("get status of peers within commonchannel", func() {
+		resp := restGetWithToken("/api/peersStatus/"+"commonchannel", &PeersStatusResp{}, token)
+		result := resp.Result().(*PeersStatusResp)
+		Expect(result.Status).Should(Equal(200))
+	})
+
+	It("get block activity", func() {
+		resp := restGetWithToken("/api/blockActivity/"+channelGenesisHash, &BlockActivityResp{}, token)
+		result := resp.Result().(*BlockActivityResp)
+		Expect(result.Status).Should(Equal(200))
+		Expect(result.Row[0].Channelname).Should(Equal("commonchannel"))
+	})
+}
+
 var _ = Describe("REST API Test Suite - Single profile", func() {
 
 	Describe("Running REST API Test Suite in fabric-test", func() {
-		var (
-			action             string
-			networkSpecPath    string
-			inputSpecPath      string
-			token              string
-			channelGenesisHash string
-			blockHeight        int
-		)
 
 		It("Starting fabric network", func() {
 			var fabricVer = os.Getenv("FABRIC_VERSION")
@@ -109,7 +180,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			os.RemoveAll("./logs")
 			os.Chdir(cwd)
 
-			cmd := exec.Command("./runexplorer.sh", "single")
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single")
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
@@ -117,64 +188,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			time.Sleep(waitSyncInterval * time.Second)
 		})
 
-		It("get network list", func() {
-
-			resp := restGet("/auth/networklist", &NetworklistInfo{})
-
-			result := resp.Result().(*NetworklistInfo)
-			list := []string{}
-			for _, val := range result.NetworkList {
-				list = append(list, val.Name)
-			}
-			Expect(list).Should(HaveLen(1))
-			Expect(list).Should(ContainElements([]string{"org1-network"}))
-		})
-
-		It("login to org1-network", func() {
-
-			resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
-			result := resp.Result().(*LoginResponse)
-			token = result.Token
-
-			Expect(result.User.Message).Should(Equal("logged in"))
-			Expect(result.User.Name).Should(Equal("admin"))
-		})
-
-		It("get channels", func() {
-			resp := restGetWithToken("/api/channels", &ChannelsResponse{}, token)
-			result := resp.Result().(*ChannelsResponse)
-			Expect(result.Channels).Should(ContainElements([]string{"org1channel", "commonchannel"}))
-			Expect(len(result.Channels)).Should(Equal(2))
-		})
-
-		It("get channels info", func() {
-			resp := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
-			result := resp.Result().(*ChannelsInfoResp)
-			chList := result.getChannelList()
-			channelGenesisHash = result.getGenesisHash("commonchannel")
-			blockHeight = result.getBlockHeight("commonchannel") - 1
-			Expect(chList).Should(ContainElements([]string{"commonchannel", "org1channel"}))
-			Expect(len(chList)).Should(Equal(2))
-		})
-
-		It("get block info", func() {
-			resp := restGetWithToken("/api/block/"+channelGenesisHash+"/"+strconv.Itoa(blockHeight), &BlockResp{}, token)
-			result := resp.Result().(*BlockResp)
-			Expect(result.Status).Should(Equal(200))
-		})
-
-		It("get status of peers within commonchannel", func() {
-			resp := restGetWithToken("/api/peersStatus/"+"commonchannel", &PeersStatusResp{}, token)
-			result := resp.Result().(*PeersStatusResp)
-			Expect(result.Status).Should(Equal(200))
-		})
-
-		It("get block activity", func() {
-			resp := restGetWithToken("/api/blockActivity/"+channelGenesisHash, &BlockActivityResp{}, token)
-			result := resp.Result().(*BlockActivityResp)
-			Expect(result.Status).Should(Equal(200))
-			Expect(result.Row[0].Channelname).Should(Equal("commonchannel"))
-		})
+		basicCheck("exploreradmin")
 
 		XIt("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
@@ -196,6 +210,48 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(resultRegister.Status).Should(Equal(400))
 			Expect(resultRegister.Message).Should(Equal("Error: already exists"))
 		})
+
+		It("stop explorer", func() {
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("launch explorer - pem format", func() {
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-pem")
+			err := cmd.Start()
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
+		})
+
+		basicCheck("exploreradmin2")
+
+		It("stop explorer, but persist data and wallet", func() {
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh", "-k"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("restart explorer", func() {
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-pem", "-k")
+			err := cmd.Start()
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
+		})
+
+		basicCheck("exploreradmin2")
 
 		Describe("Bugfix check:", func() {
 
@@ -250,10 +306,45 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 				Expect(CheckHowManyEventHubRegistered()).Should(Equal(true))
 			})
 
+			It("should be able to validate hashchain correctly", func() {
+				_, err := exec.Command("bash", "./validate_hash.sh", "-c", "commonchannel").Output()
+				Expect(err).NotTo(HaveOccurred())
+
+				_, err = exec.Command("bash", "./validate_hash.sh", "-c", "org1channel").Output()
+				Expect(err).NotTo(HaveOccurred())
+			})
 		})
 
 		It("stop explorer", func() {
-			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
+			Expect(err).NotTo(HaveOccurred())
+		})
+
+		It("launch explorer - disable authentication", func() {
+			cwd, _ := os.Getwd()
+			os.Chdir(relativePahtToRoot)
+			os.RemoveAll("./logs")
+			os.Chdir(cwd)
+
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "single-disable-auth")
+			err := cmd.Start()
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
+
+			time.Sleep(waitSyncInterval * time.Second)
+		})
+
+		It("succeed to login with invalid credential", func() {
+
+			resp := restPost("/auth/login", map[string]interface{}{"user": "invalid", "password": "invalid", "network": "org1-network"}, &LoginResponse{})
+			result := resp.Result().(*LoginResponse)
+
+			Expect(resp.StatusCode()).Should(Equal(200))
+			Expect(result.Success).Should(Equal(true))
+		})
+
+		It("stop explorer", func() {
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 		})
 
@@ -285,11 +376,6 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 	Describe("Running REST API Test Suite in fabric-test", func() {
-		var (
-			action          string
-			networkSpecPath string
-			inputSpecPath   string
-		)
 
 		It("Starting fabric network", func() {
 			var fabricVer = os.Getenv("FABRIC_VERSION")
@@ -307,7 +393,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			inputSpecPath = "apitest-input-multiprofile.yml"
 
 			By("0) Generating channel artifacts")
-			_, err := networkclient.ExecuteCommand("./genchannelartifacts.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./genchannelartifacts.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 
 			By("1) Creating channel")
@@ -350,7 +436,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			os.RemoveAll("./logs")
 			os.Chdir(cwd)
 
-			cmd := exec.Command("./runexplorer.sh", "multi")
+			cmd := exec.Command("bash", "./runexplorer.sh", "-m", "multi")
 			err := cmd.Start()
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(isExplorerReady, 60, 5).Should(Equal(true))
@@ -374,24 +460,24 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 		Context("/auth/login", func() {
 			It("login to org1-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("admin"))
+				Expect(result.User.Name).Should(Equal("exploreradmin"))
 			})
 
 			It("login to org2-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("admin"))
+				Expect(result.User.Name).Should(Equal("exploreradmin"))
 			})
 		})
 
 		Context("/api/channels", func() {
 			It("get channels for Org1", func() {
 				// For org1
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				resultLogin := resp.Result().(*LoginResponse)
 				token := resultLogin.Token
 				Expect(resultLogin.User.Message).Should(Equal("logged in"))
@@ -404,7 +490,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels for Org2", func() {
 				// For org2
-				resp := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				resultLogin := resp.Result().(*LoginResponse)
 				token := resultLogin.Token
 				Expect(resultLogin.User.Message).Should(Equal("logged in"))
@@ -420,7 +506,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -484,7 +570,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -552,7 +638,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org1-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -583,7 +669,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "admin", "password": "adminpw", "network": "org2-network"}, &LoginResponse{})
+				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result1 := resp1.Result().(*LoginResponse)
 				token := result1.Token
 				Expect(result1.User.Message).Should(Equal("logged in"))
@@ -676,7 +762,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 		// })
 
 		It("stop explorer", func() {
-			_, err := networkclient.ExecuteCommand("./stopexplorer.sh", []string{}, true)
+			_, err := networkclient.ExecuteCommand("bash", []string{"./stopexplorer.sh"}, true)
 			Expect(err).NotTo(HaveOccurred())
 		})
 

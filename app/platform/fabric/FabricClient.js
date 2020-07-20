@@ -64,12 +64,12 @@ class FabricClient {
 		} catch (error) {
 			// TODO in case of the failure, should terminate explorer?
 			logger.error(error);
+			throw new ExplorerError(error);
 		}
 
 		// Getting channels from queryChannels
 		let channels;
 		try {
-			// logger.debug('this.defaultPeer ', this.defaultPeer);
 			channels = await this.fabricGateway.queryChannels();
 		} catch (e) {
 			logger.error(e);
@@ -170,7 +170,7 @@ class FabricClient {
 	async initializeNewChannel(channel_name) {
 		// Get genesis block for the channel
 		const block = await this.getGenesisBlock(channel_name);
-		logger.debug('Genesis Block for client [%s] >> %j', this.client_name, block);
+		logger.debug('Genesis Block for client [%s]', this.client_name);
 
 		const channel_genesis_hash = await FabricUtils.generateBlockHash(
 			block.header
@@ -198,10 +198,6 @@ class FabricClient {
 
 		const discover_results = await this.fabricGateway.getDiscoveryResult(
 			channel_name
-		);
-		logger.debug(
-			`Discover results for channel [${channel_name}] >>`,
-			discover_results
 		);
 
 		if ('peers_by_org' in discover_results) {

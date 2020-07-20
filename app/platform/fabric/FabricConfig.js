@@ -3,7 +3,10 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const helper = require('../../common/helper');
+const explorer_mess = require('../../common/ExplorerMessage').explorer;
+const ExplorerError = require('../../common/ExplorerError');
 
 const logger = helper.getLogger('FabricConfig');
 
@@ -107,7 +110,47 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getAdminUser() {
-		return this.config.client.adminUser;
+		return this.config.client.adminCredential.id;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getAdminPassword() {
+		return this.config.client.adminCredential.password;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getAdminAffiliation() {
+		return this.config.client.adminCredential.affiliation;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getCaAdminUser() {
+		return this.config.client.caCredential.id;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getCaAdminPassword() {
+		return this.config.client.caCredential.password;
 	}
 
 	/**
@@ -118,16 +161,6 @@ class FabricConfig {
 	 */
 	getNetworkName() {
 		return this.config.name;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricConfig
-	 */
-	getAdminPassword() {
-		return this.config.client.adminPassword;
 	}
 
 	/**
@@ -178,14 +211,75 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
-	getOrganizationsConfig() {
+	getOrgSignedCertPem() {
 		const organization = this.config.organizations[this.getOrganization()];
+		if (
+			organization.signedCert === undefined ||
+			(organization.signedCert.path === undefined &&
+				organization.signedCert.pem === undefined)
+		) {
+			logger.error('Not found signedCert configuration');
+			throw new ExplorerError(explorer_mess.error.ERROR_2015);
+		}
 
-		const orgMsp = organization.mspid;
-		const adminPrivateKeyPath = organization.adminPrivateKey.path;
-		const signedCertPath = organization.signedCert.path;
+		if (organization.signedCert.path !== undefined) {
+			return fs.readFileSync(
+				path.resolve(__dirname, '../../..', organization.signedCert.path),
+				'utf8'
+			);
+		}
+		return organization.signedCert.pem;
+	}
 
-		return { orgMsp, adminPrivateKeyPath, signedCertPath };
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getOrgAdminPrivateKeyPem() {
+		const organization = this.config.organizations[this.getOrganization()];
+		if (
+			organization.adminPrivateKey === undefined ||
+			(organization.adminPrivateKey.path === undefined &&
+				organization.adminPrivateKey.pem === undefined)
+		) {
+			logger.error('Not found adminPrivateKey configuration');
+			throw new ExplorerError(explorer_mess.error.ERROR_2015);
+		}
+
+		if (organization.adminPrivateKey.path !== undefined) {
+			return fs.readFileSync(
+				path.resolve(__dirname, '../../..', organization.adminPrivateKey.path),
+				'utf8'
+			);
+		}
+		return organization.adminPrivateKey.pem;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
+	getPeerTlsCACertsPem(peer) {
+		const tlsCACerts = this.config.peers[peer].tlsCACerts;
+		if (
+			tlsCACerts === undefined ||
+			(tlsCACerts.path === undefined && tlsCACerts.pem === undefined)
+		) {
+			logger.error(`Not found tlsCACerts configuration: ${peer.url}`);
+			return '';
+		}
+
+		if (tlsCACerts.path !== undefined) {
+			return fs.readFileSync(
+				path.resolve(__dirname, '../../..', tlsCACerts.path),
+				'utf8'
+			);
+		}
+		return tlsCACerts.pem;
 	}
 
 	/**
@@ -197,25 +291,6 @@ class FabricConfig {
 	getMspId() {
 		const organization = this.config.organizations[this.getOrganization()];
 		return organization.mspid;
-	}
-
-	/**
-	 *
-	 *
-	 * @returns
-	 * @memberof FabricConfig
-	 */
-	getServerCertPath() {
-		let serverCertPath = null;
-		if (this.config.certificateAuthorities) {
-			for (const x in this.config.certificateAuthorities) {
-				if (this.config.certificateAuthorities[x].tlsCACerts) {
-					serverCertPath = this.config.certificateAuthorities[x].tlsCACerts.path;
-				}
-			}
-		}
-
-		return serverCertPath;
 	}
 
 	/**

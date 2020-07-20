@@ -151,7 +151,7 @@ export class TransactionView extends Component {
 												<td>{transaction.creator_msp_id}</td>
 											</tr>
 											<tr>
-												<th>Endoser:</th>
+												<th>Endorser:</th>
 												<td>{transaction.endorser_msp_id}</td>
 											</tr>
 											<tr>

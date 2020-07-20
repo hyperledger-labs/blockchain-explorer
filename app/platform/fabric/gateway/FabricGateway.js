@@ -28,12 +28,9 @@ class FabricGateway {
 		this.networkConfig = networkConfig;
 		this.config = null;
 		this.gateway = null;
-		this.enrollmentSecret = null;
 		this.wallet = null;
 		this.tlsEnable = false;
 		this.defaultChannelName = null;
-		this.defaultPeer = null;
-		this.defaultPeerUrl = null;
 		this.gateway = new Gateway();
 		this.fabricConfig = new FabricConfig();
 		this.fabricCaEnabled = false;
@@ -51,60 +48,50 @@ class FabricGateway {
 		this.config = this.fabricConfig.getConfig();
 		this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
 		this.tlsEnable = this.fabricConfig.getTls();
-		this.enrollmentSecret = this.fabricConfig.getAdminPassword();
 		this.enableAuthentication = this.fabricConfig.getEnableAuthentication();
 		this.networkName = this.fabricConfig.getNetworkName();
 		this.FSWALLET = 'wallet/' + this.networkName;
 
+		const explorerAdminId = this.fabricConfig.getAdminUser();
+		if (!explorerAdminId) {
+			logger.error('Failed to get admin ID from configuration file');
+			throw new ExplorerError(explorer_mess.error.ERROR_1010);
+		}
+
 		const info = `Loading configuration  ${this.config}`;
 		logger.debug(info.toUpperCase());
 
-		const peers = this.fabricConfig.getPeers();
-		this.defaultPeer = peers[0].name;
-		this.defaultPeerUrl = peers[0].url;
-		let orgMsp;
-		let signedCertPath;
-		let adminPrivateKeyPath;
-		logger.log('========== > defaultPeer ', this.defaultPeer);
-		/* eslint-disable */
-		({
-			orgMsp,
-			adminPrivateKeyPath,
-			signedCertPath
-		} = this.fabricConfig.getOrganizationsConfig());
-		logger.log(
-			'orgMsp :',
-			orgMsp,
-			'\n',
-			'signedCertPath :',
-			signedCertPath,
-			'\n',
-			'adminPrivateKeyPath ',
-			adminPrivateKeyPath
-		);
-
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		/* eslint-enable */
 		let identity;
 		try {
 			// Create a new file system based wallet for managing identities.
 			const walletPath = path.join(process.cwd(), this.FSWALLET);
 			this.wallet = await Wallets.newFileSystemWallet(walletPath);
 			// Check to see if we've already enrolled the admin user.
-			identity = await this.wallet.get(this.fabricConfig.getAdminUser());
+			identity = await this.wallet.get(explorerAdminId);
 			if (identity) {
 				logger.debug(
-					`An identity for the admin user: ${this.fabricConfig.getAdminUser()} already exists in the wallet`
+					`An identity for the admin user: ${explorerAdminId} already exists in the wallet`
+				);
+			} else if (this.fabricCaEnabled) {
+				logger.info('CA enabled');
+
+				identity = await this.enrollCaIdentity(
+					explorerAdminId,
+					this.fabricConfig.getAdminPassword()
 				);
 			} else {
 				/*
 				 * Identity credentials to be stored in the wallet
 				 * Look for signedCert in first-network-connection.json
 				 */
+
+				const signedCertPem = this.fabricConfig.getOrgSignedCertPem();
+				const adminPrivateKeyPem = this.fabricConfig.getOrgAdminPrivateKeyPem();
 				identity = this.enrollUserIdentity(
-					this.fabricConfig.getAdminUser(),
-					signedCertPath,
-					adminPrivateKeyPath
+					explorerAdminId,
+					signedCertPem,
+					adminPrivateKeyPem
 				);
 			}
 
@@ -120,7 +107,7 @@ class FabricGateway {
 				'true';
 
 			const connectionOptions = {
-				identity: this.fabricConfig.getAdminUser(),
+				identity: explorerAdminId,
 				wallet: this.wallet,
 				discovery: {
 					enabled: true,
@@ -128,11 +115,23 @@ class FabricGateway {
 				}
 			};
 
+			if ('clientTlsIdentity' in this.config.client) {
+				logger.info('client TLS enabled');
+				const mTlsIdLabel = this.config.client.clientTlsIdentity;
+				const mTlsId = await this.wallet.get(mTlsIdLabel);
+				if (mTlsId !== undefined) {
+					connectionOptions.clientTlsIdentity = mTlsIdLabel;
+				} else {
+					throw new ExplorerError(
+						`Not found Identity ${mTlsIdLabel} in your wallet`
+					);
+				}
+			}
+
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
-			// this.client = this.gateway.getClient();
 		} catch (error) {
-			logger.error(` ${error}`);
+			logger.error(`${error}`);
 			throw new ExplorerError(explorer_mess.error.ERROR_1010);
 		}
 	}
@@ -161,21 +160,16 @@ class FabricGateway {
 	 * @private method
 	 *
 	 */
-	async enrollUserIdentity(userName, signedCertPath, adminPrivateKeyPath) {
-		const _signedCertPath = signedCertPath;
-		const _adminPrivateKeyPath = adminPrivateKeyPath;
-		const cert = fs.readFileSync(_signedCertPath, 'utf8');
-		// See in first-network-connection.json adminPrivateKey key
-		const key = fs.readFileSync(_adminPrivateKeyPath, 'utf8');
+	async enrollUserIdentity(userName, signedCertPem, adminPrivateKeyPem) {
 		const identity = {
 			credentials: {
-				certificate: cert,
-				privateKey: key
+				certificate: signedCertPem,
+				privateKey: adminPrivateKeyPem
 			},
 			mspId: this.fabricConfig.getMspId(),
 			type: 'X.509'
 		};
-		logger.log('enrollUserIdentity: userName :', userName);
+		logger.info('enrollUserIdentity: userName :', userName);
 		await this.wallet.put(userName, identity);
 		return identity;
 	}
@@ -200,10 +194,11 @@ class FabricGateway {
 			});
 
 			const enrollment = await ca.enroll({
-				enrollmentID: id,
-				enrollmentSecret: secret
+				enrollmentID: this.fabricConfig.getCaAdminUser(),
+				enrollmentSecret: this.fabricConfig.getCaAdminPassword()
 			});
-			logger.log('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment ', enrollment);
+
+			logger.info('>>>>>>>>>>>>>>>>>>>>>>>>> enrollment : ca admin');
 
 			const identity = {
 				credentials: {
@@ -213,12 +208,45 @@ class FabricGateway {
 				mspId: this.fabricConfig.getMspId(),
 				type: 'X.509'
 			};
-			logger.log('identity ', identity);
+
 			// Import identity wallet
-			await this.wallet.put(id, identity);
+			await this.wallet.put(this.fabricConfig.getCaAdminUser(), identity);
+
+			const adminUser = await this.getUserContext(
+				this.fabricConfig.getCaAdminUser()
+			);
+			await ca.register(
+				{
+					affiliation: this.fabricConfig.getAdminAffiliation(),
+					enrollmentID: id,
+					enrollmentSecret: secret,
+					role: 'admin'
+				},
+				adminUser
+			);
+
+			const enrollmentBEAdmin = await ca.enroll({
+				enrollmentID: id,
+				enrollmentSecret: secret
+			});
+
+			logger.info(
+				'>>>>>>>>>>>>>>>>>>>>>>>>> registration & enrollment : BE admin'
+			);
+
+			const identityBEAdmin = {
+				credentials: {
+					certificate: enrollmentBEAdmin.certificate,
+					privateKey: enrollmentBEAdmin.key.toBytes()
+				},
+				mspId: this.fabricConfig.getMspId(),
+				type: 'X.509'
+			};
+			await this.wallet.put(id, identityBEAdmin);
+
 			logger.debug('Successfully get user enrolled and imported to wallet, ', id);
 
-			return identity;
+			return identityBEAdmin;
 		} catch (error) {
 			// TODO decide how to proceed if error
 			logger.error('Error instantiating FabricCAServices ', error);
@@ -333,12 +361,6 @@ class FabricGateway {
 		}
 	}
 
-	getPeer_pem(pemPath) {
-		const data = fs.readFileSync(path.resolve(__dirname, '../../../..', pemPath));
-		const pem = Buffer.from(data).toString();
-		return pem;
-	}
-
 	async getDiscoveryResult(channelName) {
 		try {
 			const network = await this.gateway.getNetwork(channelName);
@@ -353,7 +375,7 @@ class FabricGateway {
 			for (const peer of this.config.organizations[mspID].peers) {
 				const discoverer = new Discoverer(`be discoverer ${peer}`, client);
 				const url = this.config.peers[peer].url;
-				const pemPath = this.config.peers[peer].tlsCACerts.path;
+				const pem = this.fabricConfig.getPeerTlsCACertsPem(peer);
 				let grpcOpt = {};
 				if ('grpcOptions' in this.config.peers[peer]) {
 					grpcOpt = this.config.peers[peer].grpcOptions;
@@ -361,7 +383,7 @@ class FabricGateway {
 				const peer_endpoint = client.newEndpoint(
 					Object.assign(grpcOpt, {
 						url: url,
-						pem: this.getPeer_pem(pemPath)
+						pem: pem
 					})
 				);
 				await discoverer.connect(peer_endpoint);
@@ -373,7 +395,7 @@ class FabricGateway {
 			ds.build(idx);
 			ds.sign(idx);
 			await ds.send({
-				asLocalhost: true,
+				asLocalhost: this.asLocalhost,
 				refreshAge: 15000,
 				targets: targets
 			});
