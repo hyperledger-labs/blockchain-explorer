@@ -19,7 +19,13 @@
 		"no-console": "off",
 		"react/prop-types": "off",
 		"no-undef": "off",
-		"react/react-in-jsx-scope": "off"
+		"react/react-in-jsx-scope": "off",
+		"object-curly-newline": [
+			"error",
+			{
+				"ImportDeclaration": "never"
+			}
+		]
 	},
 	"settings": {
 		"react": {
