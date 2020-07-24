@@ -308,7 +308,17 @@ $ npm install
 $ npm run build
 ```
 
-## Run Hyperledger Explorer
+## Run Hyperledger Explorer 
+
+### Run Locally in Same Location
+
+* Modify `app/explorerconfig.json` to update sync settings.
+
+    ```json
+    "sync": {
+      "type": "local"
+    }   
+    ```
 
 * `./start.sh`
   * It will have the backend and GUI service up
@@ -320,6 +330,30 @@ $ npm run build
 
 ```
 $ DISCOVERY_AS_LOCALHOST=false ./start.sh
+```
+
+### Run Standalone in Different Location
+
+* Modify `app/explorerconfig.json` to update sync settings.
+
+    ```json
+    "sync": {
+      "type": "host"
+    }   
+    ```
+
+* If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching
+
+* `./syncstart.sh`
+  * It will have the sync node up
+
+* `./syncstop.sh`
+  * It will stop the sync node
+
+**Note:** If Hyperledger Fabric network is deployed on other machine, please define the following environment variable
+
+```
+$ DISCOVERY_AS_LOCALHOST=false ./syncstart.sh
 ```
 
 # Configuration
