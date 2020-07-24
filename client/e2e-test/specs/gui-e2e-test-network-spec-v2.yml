@@ -8,7 +8,7 @@
 #! Development stream images are pulled from
 #! hyperledger-fabric.jfrog.io/, e.g. 1.4.5-stable or 2.0.0-stable
 dockerOrg: hyperledger
-dockerTag: 2.1.1
+dockerTag: 2.2.0
 
 #! peer database ledger type (couchdb, goleveldb)
 dbType: goleveldb
