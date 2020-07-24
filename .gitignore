@@ -37,3 +37,9 @@ _build
 # _static
 _templates
 *.DS_Store
+crypto-config
+**/specs/channel-artifacts
+**/specs/configFiles/
+**/specs/templates/
+**/specs/ytt/
+PTE

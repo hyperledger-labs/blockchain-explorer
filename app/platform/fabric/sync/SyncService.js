@@ -440,11 +440,16 @@ class SyncServices {
 					await client.initializeNewChannel(channel_name);
 					channel_genesis_hash = client.getChannelGenHash(channel_name);
 					// inserting new channel details to DB
-					await _self.insertNewChannel(client, channel, block, channel_genesis_hash);
+					await _self.insertNewChannel(
+						client,
+						channel_name,
+						block,
+						channel_genesis_hash
+					);
 					await _self.insertFromDiscoveryResults(
 						client,
 						channel_name,
-						channel_name_genesis_hash
+						channel_genesis_hash
 					);
 
 					const notify = {

@@ -1,8 +1,10 @@
 #!/bin/bash
 
 ROOTDIR="$(cd "$(dirname "$0")"/../../../.. && pwd)"
-FABRIC_V1_VERSION=1.4.6
-FABRIC_V2_VERSION=2.1.1
+FABRIC_V1_VERSION=1.4.8
+FABRIC_CA_V1_VERSION=1.4.7
+FABRIC_V2_VERSION=2.2.0
+FABRIC_CA_V2_VERSION=1.4.7
 
 echo "#### Downloaded fabric-test repo"
 
@@ -14,14 +16,14 @@ fi
 while getopts "12" opt; do
   case "$opt" in
   1)
-    SDKVER=1.4.8
+    SDKVER=1.4.11
     export FABRIC_VERSION=1
     export RELEASE_VERSION=1.4-stable
     CHECKOUT_HASH=45799a2ee4eefa49ae705cc57ed415270c35d60a
     # export FABRIC_CFG_PATH=$GOPATH/src/github.com/hyperledger/fabric-test/scripts/config
     export PATH=$GOPATH/src/github.com/hyperledger/fabric-test/scripts/bin:$PATH
     PULL_PEER_IMAGE_VERSION=${FABRIC_V1_VERSION}
-    PULL_CA_IMAGE_VERSION=${FABRIC_V1_VERSION}
+    PULL_CA_IMAGE_VERSION=${FABRIC_CA_V1_VERSION}
     ;;
   2)
     SDKVER=2.0.0-beta.2
@@ -30,7 +32,7 @@ while getopts "12" opt; do
     export FABRIC_CFG_PATH=$GOPATH/src/github.com/hyperledger/fabric-test/config
     export PATH=$GOPATH/src/github.com/hyperledger/fabric-test/bin:$PATH
     PULL_PEER_IMAGE_VERSION=${FABRIC_V2_VERSION}
-    PULL_CA_IMAGE_VERSION=${FABRIC_V1_VERSION}
+    PULL_CA_IMAGE_VERSION=${FABRIC_CA_V2_VERSION}
     ;;
   *)
     echo "$0 [-1 | -2]"
@@ -75,8 +77,7 @@ rm -rf wallet logs
 popd
 
 curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s -- ${PULL_PEER_IMAGE_VERSION} ${PULL_CA_IMAGE_VERSION} 0.4.18 -s -b
-docker pull hyperledger/fabric-ca:${FABRIC_V1_VERSION}
-docker tag hyperledger/fabric-ca:${FABRIC_V1_VERSION} hyperledger/fabric-ca:${FABRIC_V2_VERSION}
+docker tag hyperledger/fabric-ca:${PULL_CA_IMAGE_VERSION} hyperledger/fabric-ca:${PULL_PEER_IMAGE_VERSION}
 
 pushd $ROOTDIR/app/platform/fabric/e2e-test/specs
 
