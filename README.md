@@ -308,7 +308,9 @@ $ npm install
 $ npm run build
 ```
 
-## Run Hyperledger Explorer Locally - Local (Same Location)
+## Run Hyperledger Explorer 
+
+### Run Locally in Same Location
 
 * Modify `app/explorerconfig.json` to update sync settings.
 
@@ -330,7 +332,7 @@ $ npm run build
 $ DISCOVERY_AS_LOCALHOST=false ./start.sh
 ```
 
-## Run Hyperledger Explorer Standalone - Host (Different Location)
+### Run Standalone in Different Location
 
 * Modify `app/explorerconfig.json` to update sync settings.
 
@@ -339,7 +341,7 @@ $ DISCOVERY_AS_LOCALHOST=false ./start.sh
       "type": "host"
     }   
     ```
-    
+
 * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching
 
 * `./syncstart.sh`
