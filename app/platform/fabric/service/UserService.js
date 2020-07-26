@@ -4,12 +4,13 @@
 /* eslint-disable */
 
 const fs = require('fs');
+const bcrypt = require('bcrypt');
+const FabricCAServices = require('fabric-ca-client');
 
 const User = require('../models/User');
 const helper = require('../../../common/helper');
 const logger = helper.getLogger('UserService');
-
-const FabricCAServices = require('fabric-ca-client');
+const Model = require('../../../model/model');
 
 /**
  *
@@ -42,82 +43,48 @@ class UserService {
 	 */
 	async authenticate(user) {
 		let enableAuth = false;
-		let adminUser = null;
-		let adminPassword = null;
-		if (user.user && user.password && user.network) {
-			logger.info('user.network ', user.network);
-			const clientObj = this.platform.getNetworks().get(user.network);
 
-			if (!clientObj) {
-				const errMsg = `Faied to get client object for ${user.network}`;
-				logger.error(errMsg);
-				return {
-					authenticated: false,
-					user: user.user,
-					message: `Internal error: ${errMsg}`,
-					enableAuthentication: enableAuth,
-					network: user.network
-				};
-			}
-
-			let client = clientObj.instance;
-			const fabricConfig = client.fabricGateway.fabricConfig;
-			enableAuth = fabricConfig.getEnableAuthentication();
-			if (enableAuth) {
-				logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
-				adminUser = fabricConfig.getAdminUser();
-				adminPassword = fabricConfig.getAdminPassword();
-
-				// Not authorized if credentials are incomplete in auth enabled mode
-				if (!adminUser || !adminPassword) {
-					const errMsg = `Faied authentication for ${user.network}`;
-					logger.error(errMsg);
-					return {
-						authenticated: false,
-						user: user.user,
-						message: `Internal error: ${errMsg}`,
-						enableAuthentication: enableAuth,
-						network: user.network
-					};
-				}
-			}
-
-			// Skip authentication, if set to false in connection profile, key: enableAuthentication
-			if (!enableAuth) {
-				return {
-					authenticated: true,
-					user: user.user,
-					enableAuthentication: enableAuth,
-					network: user.network
-				};
-			}
-
-			// For now validate only for the admin user
-			if (user.user === adminUser && user.password === adminPassword) {
-				return {
-					authenticated: true,
-					user: user.user,
-					enableAuthentication: enableAuth,
-					network: user.network
-				};
-			} else {
-				return {
-					authenticated: false,
-					user: user.user,
-					message: 'Invalid user name, or password',
-					enableAuthentication: enableAuth,
-					network: user.network
-				};
-			}
-		} else {
-			return {
-				authenticated: false,
-				user: user.user,
-				message: 'Invalid request',
-				enableAuthentication: enableAuth,
-				network: user.network
-			};
+		if (!user.user || !user.password || !user.network) {
+			logger.error('Invalid parameters');
+			return false;
 		}
+
+		logger.info('user.network ', user.network);
+		const clientObj = this.platform.getNetworks().get(user.network);
+		if (!clientObj) {
+			logger.error(`Faied to get client object for ${user.network}`);
+			return false;
+		}
+
+		let client = clientObj.instance;
+		const fabricConfig = client.fabricGateway.fabricConfig;
+		enableAuth = fabricConfig.getEnableAuthentication();
+		// Skip authentication, if set to false in connection profile, key: enableAuthentication
+		if (!enableAuth) {
+			logger.info('Skip authentication');
+			return true;
+		}
+
+		logger.info(`Network: ${user.network} enableAuthentication ${enableAuth}`);
+
+		return Model.User.findOne({
+			where: {
+				username: `${user.network}-${user.user}`
+			}
+		}).then(userEntry => {
+			if (userEntry == null) {
+				logger.error(`Incorrect credential : ${user.user} in ${user.network}`);
+				return false;
+			}
+
+			var hashedPassword = bcrypt.hashSync(user.password, userEntry.salt);
+			if (userEntry.password === hashedPassword) {
+				return true;
+			}
+
+			logger.error(`Incorrect credential : ${user.user} in ${user.network}`);
+			return false;
+		});
 	}
 
 	/**

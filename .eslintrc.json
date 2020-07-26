@@ -430,7 +430,10 @@
 					"mynetwork",
 					"guitest",
 					"configfiles",
-					"_lifecycle"
+					"_lifecycle",
+					"bcrypt",
+					"sequelize",
+					"fabricexplorer"
 				],
 				"skipIfMatch": ["http://[^s]*", "[a-z]scc"],
 				"skipWordIfMatch": ["^foobar.*$"],

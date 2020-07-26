@@ -184,6 +184,26 @@ CREATE TABLE transactions
 ALTER table transactions owner to :user;
 Alter sequence transactions_id_seq restart with 6;
 
+-- ---------------------------
+--  Table structure for `users`
+-- ----------------------------
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users
+(
+  id SERIAL PRIMARY KEY,
+  username varchar(255) NOT NULL,
+  email varchar(255),
+  "networkName" varchar(255) NOT NULL,
+  "firstName" varchar(255),
+  "lastName" varchar(255),
+  "password" varchar(255),
+  salt varchar(255),
+  "createdAt" timestamp NOT NULL,
+  "updatedAt" timestamp NOT NULL
+);
+ALTER table users owner to :user;
+
 DROP TABLE IF EXISTS write_lock;
 CREATE TABLE write_lock
 (
