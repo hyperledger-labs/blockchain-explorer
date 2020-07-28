@@ -190,13 +190,13 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 
 		basicCheck("exploreradmin")
 
-		XIt("register user", func() {
-			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
+		It("register user", func() {
+			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(200))
 		})
 
-		XIt("login with newly registered user", func() {
+		It("login with newly registered user", func() {
 			resp := restPost("/auth/login", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &LoginResponse{})
 			resultLogin := resp.Result().(*LoginResponse)
 
@@ -204,8 +204,8 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(resultLogin.User.Name).Should(Equal("test"))
 		})
 
-		XIt("fail to register duplicate user", func() {
-			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "affiliation": "department2", "role": "admin"}, &RegisterResp{}, token)
+		It("fail to register duplicate user", func() {
+			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
 			Expect(resultRegister.Status).Should(Equal(400))
 			Expect(resultRegister.Message).Should(Equal("Error: already exists"))

@@ -95,48 +95,38 @@ class UserService {
 	 * @memberof UserService
 	 */
 	async register(user) {
-		/* TODO
-    1. verify if user exists
-    2. register user if doesn't exist
-    3. depending on the user type use either enrollUserIdentity, or  enrollCaIdentity*/
 		try {
-			var fabricClient = this.platform.getClient();
-			var fabricGw = fabricClient.fabricGateway;
-			var userOrg = fabricClient.config.client.organization;
-			var isExist = await fabricGw.wallet.get(user['user']);
+			if (!user.user || !user.password || !user.network) {
+				throw new Error('Invalid parameters');
+			}
+			const combinedUserName = `${user.network}-${user.user}`;
 
-			if (isExist) {
-				throw new Error('already exists');
-			} else {
-				if (fabricGw.fabricCaEnabled) {
-					const caConfig = fabricGw.fabricConfig.getCertificateAuthorities();
-					const tlsCACert = fs.readFileSync(caConfig.serverCertPath, 'utf8');
-					const ca = new FabricCAServices(caConfig.caURL[0], {
-						trustedRoots: tlsCACert,
-						verify: false
-					});
-
-					const adminUserName = fabricGw.fabricConfig.getAdminUser();
-					const adminUserObj = await fabricGw.getUserContext(adminUserName);
-
-					let secret = await ca.register(
-						{
-							enrollmentID: user['user'],
-							enrollmentSecret: user['password'],
-							affiliation: [userOrg.toLowerCase(), user['affiliation']].join('.'),
-							role: user['roles']
-						},
-						adminUserObj
-					);
-
-					logger.debug('Successfully got the secret for user %s', user['user']);
-				} else {
-					throw new Error('did not register with CA');
+			await Model.User.findOne({
+				where: {
+					username: combinedUserName
+				}
+			}).then(async userEntry => {
+				if (userEntry != null) {
+					throw new Error('already exists');
 				}
 
-				const identity = await this.enrollCaIdentity(user);
-				await this.reconnectGw(user, identity);
-			}
+				const salt = bcrypt.genSaltSync(10);
+				const hashedPassword = bcrypt.hashSync(user.password, salt);
+				const newUser = {
+					username: combinedUserName,
+					salt: salt,
+					password: hashedPassword,
+					networkName: user.network
+				};
+
+				await Model.User.create(newUser)
+					.then(() => {
+						return true;
+					})
+					.catch(error => {
+						throw new Error(`Failed to register user : ${user.user} : ${error}`);
+					});
+			});
 		} catch (error) {
 			return {
 				status: 400,
