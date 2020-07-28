@@ -110,6 +110,14 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getAdminUser() {
+		if (
+			!this.config.client ||
+			!this.config.client.adminCredential ||
+			!this.config.client.adminCredential.id
+		) {
+			logger.error('client.adminCredential.id is undefined');
+			return null;
+		}
 		return this.config.client.adminCredential.id;
 	}
 
@@ -120,6 +128,14 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 	getAdminPassword() {
+		if (
+			!this.config.client ||
+			!this.config.client.adminCredential ||
+			!this.config.client.adminCredential.password
+		) {
+			logger.error('client.adminCredential.password is undefined');
+			return null;
+		}
 		return this.config.client.adminCredential.password;
 	}
 

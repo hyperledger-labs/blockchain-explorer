@@ -4,6 +4,7 @@
 
 const path = require('path');
 const fs = require('fs-extra');
+const bcrypt = require('bcrypt');
 
 const Proxy = require('./Proxy');
 const helper = require('../../common/helper');
@@ -20,6 +21,9 @@ const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
+
+const Model = require('../../model/model');
+const FabricConfig = require('./FabricConfig');
 
 /**
  *
@@ -39,7 +43,6 @@ class Platform {
 		this.networks = new Map();
 		this.proxy = new Proxy(this);
 		this.defaultNetwork = null;
-		this.defaultClient = null;
 		this.network_configs = null;
 		this.syncType = null;
 		this.explorerListeners = [];
@@ -115,13 +118,18 @@ class Platform {
 				client_configs.profile
 			);
 			const client_name = client_configs.name;
-			// Set default client as first client
-			if (!this.defaultClient) {
-				this.defaultClient = client_name;
-			}
 
 			// Create client instance
 			logger.debug('Creating client [%s] >> ', client_name, client_configs);
+
+			const signupResult = await this.registerAdmin(
+				client_configs.name,
+				client_configs.profile
+			);
+			if (!signupResult) {
+				logger.error(`Failed to register admin user : ${network_name}`);
+				continue;
+			}
 
 			const client = await FabricUtils.createFabricClient(
 				client_configs,
@@ -136,6 +144,52 @@ class Platform {
 			}
 			//  }
 		}
+	}
+
+	registerAdmin(networkName, network_profile_path) {
+		const configPath = path.resolve(__dirname, network_profile_path);
+		const config = new FabricConfig();
+		config.initialize(configPath);
+
+		if (!config.getEnableAuthentication()) {
+			logger.info('Disabled authentication');
+			return true;
+		}
+
+		const userName = config.getAdminUser();
+		const password = config.getAdminPassword();
+		if (!userName || !password) {
+			logger.error('Invalid credentials');
+			return false;
+		}
+		const combinedUserName = `${networkName}-${userName}`;
+
+		return Model.User.findOne({
+			where: {
+				username: combinedUserName
+			}
+		}).then(user => {
+			if (user != null) {
+				return true;
+			}
+			const salt = bcrypt.genSaltSync(10);
+			const hashedPassword = bcrypt.hashSync(password, salt);
+			const newUser = {
+				username: combinedUserName,
+				salt: salt,
+				password: hashedPassword,
+				networkName: networkName
+			};
+
+			return Model.User.create(newUser)
+				.then(() => {
+					return true;
+				})
+				.catch(error => {
+					logger.error('Failed to register admin user');
+					return false;
+				});
+		});
 	}
 
 	/**
@@ -230,16 +284,6 @@ class Platform {
 	 */
 	getProxy() {
 		return this.proxy;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} defaultClient
-	 * @memberof Platform
-	 */
-	setDefaultClient(defaultClient) {
-		this.defaultClient = defaultClient;
 	}
 
 	/**

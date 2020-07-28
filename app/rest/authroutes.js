@@ -42,16 +42,10 @@ const authroutes = async function(router, platform) {
 	router.post('/login', async (req, res, next) => {
 		logger.debug('req.body', req.body);
 		return passport.authenticate('local-login', (err, token, userData) => {
-			if (err) {
-				if (err.name === 'IncorrectCredentialsError') {
-					return res.status(400).json({
-						success: false,
-						message: err.message
-					});
-				}
+			if (!token) {
 				return res.status(400).json({
 					success: false,
-					message: 'Could not process the form.'
+					message: userData.message
 				});
 			}
 			return res.status(200).json({
