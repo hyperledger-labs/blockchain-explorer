@@ -433,7 +433,9 @@
 					"_lifecycle",
 					"bcrypt",
 					"sequelize",
-					"fabricexplorer"
+					"fabricexplorer",
+					"firstname",
+					"lastname"
 				],
 				"skipIfMatch": ["http://[^s]*", "[a-z]scc"],
 				"skipWordIfMatch": ["^foobar.*$"],

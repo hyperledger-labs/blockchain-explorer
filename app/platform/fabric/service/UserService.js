@@ -116,7 +116,11 @@ class UserService {
 					username: combinedUserName,
 					salt: salt,
 					password: hashedPassword,
-					networkName: user.network
+					networkName: user.network,
+					firstName: user.firstname,
+					lastName: user.lastname,
+					email: user.email ? user.email : null,
+					roles: user.roles
 				};
 
 				await Model.User.create(newUser)

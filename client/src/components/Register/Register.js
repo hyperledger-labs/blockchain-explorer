@@ -90,11 +90,23 @@ export class Register extends Component {
 				error: null,
 				value: ''
 			},
+			firstname: {
+				error: null,
+				value: ''
+			},
+			lastname: {
+				error: null,
+				value: ''
+			},
+			email: {
+				error: null,
+				value: ''
+			},
 			password: {
 				error: null,
 				value: ''
 			},
-			affiliation: {
+			password2: {
 				error: null,
 				value: ''
 			},
@@ -102,10 +114,11 @@ export class Register extends Component {
 				error: null,
 				value: ''
 			},
-			rolesList: ['admin', 'reader', 'user'],
+			rolesList: ['admin', 'user'],
 			error: '',
 			registered,
-			isLoading: false
+			isLoading: false,
+			allValid: false
 		};
 	}
 
@@ -124,19 +137,70 @@ export class Register extends Component {
 		this.setState({
 			[name]: { value }
 		});
+
+		let password2 = {};
+		if (name === 'password') {
+			if (
+				this.state.password2.value.length &&
+				value !== this.state.password2.value
+			) {
+				password2 = {
+					value: this.state.password2.value,
+					error: 'The password confirmation does not match.'
+				};
+			} else {
+				password2 = { value: this.state.password2.value, error: null };
+			}
+		} else if (name === 'password2') {
+			if (
+				this.state.password.value.length &&
+				value !== this.state.password.value
+			) {
+				password2 = { value, error: 'The password confirmation does not match.' };
+			} else {
+				password2 = { value, error: null };
+			}
+		} else {
+			password2 = this.state.password2;
+		}
+
+		this.setState({ password2 }, () => {
+			if (
+				this.state.user.value &&
+				this.state.password.value &&
+				this.state.password2.value &&
+				this.state.roles.value &&
+				!this.state.password2.error
+			) {
+				this.setState({ allValid: true });
+			} else if (this.state.allValid) {
+				this.setState({ allValid: false });
+			}
+		});
 	};
 
 	submitForm = async e => {
 		e.preventDefault();
 
 		const { register } = this.props;
-		const { user, password, affiliation, roles } = this.state;
+		const {
+			user,
+			password,
+			password2,
+			roles,
+			firstname,
+			lastname,
+			email
+		} = this.state;
 
 		const userInfo = {
 			user: user.value,
 			password: password.value,
-			affiliation: affiliation.value,
-			roles: roles.value
+			password2: password2.value,
+			roles: roles.value,
+			firstname: firstname.value,
+			lastname: lastname.value,
+			email: email.value
 		};
 
 		const info = await register(userInfo);
@@ -151,8 +215,11 @@ export class Register extends Component {
 			info,
 			user,
 			password,
-			affiliation,
+			password2,
 			roles,
+			firstname,
+			lastname,
+			email,
 			rolesList,
 			isLoading
 		} = this.state;
@@ -195,6 +262,57 @@ export class Register extends Component {
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
 							<TextField
+								fullWidth
+								id="firstname"
+								name="firstname"
+								label="First name"
+								disabled={isLoading}
+								value={firstname.value}
+								onChange={e => this.handleChange(e)}
+								margin="normal"
+							/>
+							{firstname.error && (
+								<FormHelperText id="component-error-text" error>
+									{firstname.error}
+								</FormHelperText>
+							)}
+						</FormControl>
+						<FormControl margin="normal" required fullWidth>
+							<TextField
+								fullWidth
+								id="lastname"
+								name="lastname"
+								label="Last name"
+								disabled={isLoading}
+								value={lastname.value}
+								onChange={e => this.handleChange(e)}
+								margin="normal"
+							/>
+							{lastname.error && (
+								<FormHelperText id="component-error-text" error>
+									{lastname.error}
+								</FormHelperText>
+							)}
+						</FormControl>
+						<FormControl margin="normal" required fullWidth>
+							<TextField
+								fullWidth
+								id="email"
+								name="email"
+								label="E-mail address"
+								disabled={isLoading}
+								value={email.value}
+								onChange={e => this.handleChange(e)}
+								margin="normal"
+							/>
+							{email.error && (
+								<FormHelperText id="component-error-text" error>
+									{email.error}
+								</FormHelperText>
+							)}
+						</FormControl>
+						<FormControl margin="normal" required fullWidth>
+							<TextField
 								required
 								fullWidth
 								error={!!password.error}
@@ -215,20 +333,21 @@ export class Register extends Component {
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
 							<TextField
-								error={!!affiliation.error}
+								error={!!password2.error}
 								required
 								fullWidth
-								id="affiliation"
-								name="affiliation"
-								label="Affiliation"
+								id="password2"
+								type="password"
+								name="password2"
+								label="Password(confirm)"
 								disabled={isLoading}
-								value={affiliation.value}
+								value={password2.value}
 								onChange={e => this.handleChange(e)}
 								margin="normal"
 							/>
-							{affiliation.error && (
+							{password2.error && (
 								<FormHelperText id="component-error-text" error>
-									{affiliation.error}
+									{password2.error}
 								</FormHelperText>
 							)}
 						</FormControl>
@@ -287,7 +406,13 @@ export class Register extends Component {
 								</Button>
 							</Grid>
 							<Grid item>
-								<Button type="submit" fullWidth variant="contained" color="primary">
+								<Button
+									disabled={!this.state.allValid}
+									type="submit"
+									fullWidth
+									variant="contained"
+									color="primary"
+								>
 									Register
 								</Button>
 							</Grid>

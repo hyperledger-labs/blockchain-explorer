@@ -32,6 +32,9 @@ const attributes = {
 	password: {
 		type: Sequelize.STRING
 	},
+	roles: {
+		type: Sequelize.STRING
+	},
 	salt: {
 		type: Sequelize.STRING
 	}
