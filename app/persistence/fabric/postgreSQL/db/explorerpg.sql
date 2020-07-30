@@ -198,6 +198,7 @@ CREATE TABLE users
   "firstName" varchar(255),
   "lastName" varchar(255),
   "password" varchar(255),
+  "roles" varchar(255),
   salt varchar(255),
   "createdAt" timestamp NOT NULL,
   "updatedAt" timestamp NOT NULL
