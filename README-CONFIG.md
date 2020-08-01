@@ -293,3 +293,14 @@ This document will describe about the detail of each configuration:
     ```shell
     docker-compose down -v
     ```
+
+## Value encoding in Transaction Details
+
+* By default, the value of each read/write set is encoded by UTF-8. If you want to change the type of encoding, you can configure with the following property in the connection profile. Please refer to [Buffer | Node.js v14.7.0 Documentation](https://nodejs.org/docs/latest/api/buffer.html#buffer_buffers_and_character_encodings) for the supported encoding.
+
+    ```json
+    "client": {
+      "rwSetEncoding": "hex"
+    }
+    ```
+

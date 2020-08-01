@@ -354,6 +354,10 @@ class FabricConfig {
 		}
 		return peers;
 	}
+
+	getRWSetEncoding() {
+		return this.config.client.rwSetEncoding || 'utf8';
+	}
 }
 
 module.exports = FabricConfig;
