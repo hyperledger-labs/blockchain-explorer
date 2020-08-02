@@ -5,6 +5,20 @@ type UserData struct {
 	Name    string `json:"name"`
 }
 
+type UserList struct {
+	ID          int    `json:"id"`
+	Username    string `json:"username"`
+	Email       int    `json:"email"`
+	NetworkName string `json:"networkName"`
+	FirstName   int    `json:"firstName"`
+	LastName    string `json:"lastName"`
+	Password    string `json:"password"`
+	Roles       string `json:"roles"`
+	Salt        int    `json:"salt"`
+	CreatedAt   string `json:"createdAt"`
+	UpdatedAt   string `json:"updatedAt"`
+}
+
 type LoginResponse struct {
 	Status  int      `json:"status"`
 	Success bool     `json:"success"`
@@ -16,6 +30,11 @@ type LoginResponse struct {
 type RegisterResp struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
+}
+
+type UserListResp struct {
+	Status  int        `json:"status"`
+	Message []UserList `json:"message"`
 }
 
 type ChannelData struct {
