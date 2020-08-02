@@ -526,6 +526,11 @@ class SyncServices {
 				let chaincodeID;
 				let status;
 				let mspId = [];
+				this.convertFormatOfValue(
+					'value',
+					client.fabricGateway.fabricConfig.getRWSetEncoding(),
+					txObj
+				);
 				if (txid && txid !== '') {
 					const validation_codes =
 						block.metadata.metadata[block.metadata.metadata.length - 1];
@@ -695,6 +700,23 @@ class SyncServices {
 		}
 		const index = blocksInProcess.indexOf(blockPro_key);
 		blocksInProcess.splice(index, 1);
+	}
+
+	convertFormatOfValue(prop, encoding, obj) {
+		if (Array.isArray(obj)) {
+			for (let i = 0; i < obj.length; i++) {
+				this.convertFormatOfValue(prop, encoding, obj[i]);
+			}
+		} else if (!Buffer.isBuffer(obj) && typeof obj === 'object') {
+			// Each element of array of Buffer is excluded by the 1st condition
+			Object.keys(obj).forEach(key => {
+				if (key === prop && Buffer.isBuffer(obj[key])) {
+					obj[key] = obj[key].toString(encoding);
+				} else if (obj[key]) {
+					this.convertFormatOfValue(prop, encoding, obj[key]);
+				}
+			});
+		}
 	}
 
 	/**
