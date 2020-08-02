@@ -334,6 +334,73 @@
 				]
 			}
 		},
+		"/api/unregister": {
+			"post": {
+				"tags": ["Login"],
+				"summary": "UnRegister",
+				"operationId": "unregister",
+				"requestBody": {
+					"description": "UnRegister",
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/unregister"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
+		},
+		"/api/userlist": {
+			"get": {
+				"tags": ["Login"],
+				"summary": "UserList",
+				"operationId": "userlist",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
+		},
 		"/api/block/{channel_genesis_hash}/{number}": {
 			"get": {
 				"tags": ["Blocks"],
@@ -976,6 +1043,14 @@
 						"type": "string"
 					},
 					"roles": {
+						"type": "string"
+					}
+				}
+			},
+			"unregister": {
+				"type": "object",
+				"properties": {
+					"user": {
 						"type": "string"
 					}
 				}

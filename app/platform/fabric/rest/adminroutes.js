@@ -14,7 +14,6 @@ const { responder } = require('./../../../rest/requestutils');
  */
 const adminroutes = async function(router, platform) {
 	const proxy = platform.getProxy();
-
 	/*
 	 * Register
 	 * curl 'http://<host>:<port>/api/register'  -H 'Accept: application/json'
@@ -31,6 +30,38 @@ const adminroutes = async function(router, platform) {
 			const reqUser = await new User(req.body).asJson();
 			reqUser.network = req.network;
 			return await proxy.register(reqUser);
+		})
+	);
+
+	/*
+	 * Userlist
+	 * curl 'http://<host>:<port>/api/userlist' -H 'Accept: application/json' \
+	 * -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.8iTytz6wkPMVJzgD3jIGTQ2s2UZLO8nzvJQJGR0rs_0'
+	 *
+	 */
+
+	router.get(
+		'/userlist',
+		responder(async req => {
+			return await proxy.userlist();
+		})
+	);
+
+	/*
+	 * UnRegister
+	 * curl 'http://<host>:<port>/api/unregister' -H 'Accept: application/json
+	 * -H 'Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.8iTytz6wkPMVJzgD3jIGTQ2s2UZLO8nzvJQJGR0rs_0'
+	 * -H 'Content-Type: application/json'
+	 * --data-binary { "user": "user1" } --compressed
+	 *
+	 */
+
+	router.post(
+		'/unregister',
+		responder(async req => {
+			const reqUser = await new User(req.body).asJson();
+			reqUser.network = req.network;
+			return await proxy.unregister(reqUser);
 		})
 	);
 };

@@ -14,9 +14,9 @@ export const network = networks => ({
 	payload: networks
 });
 
-export const error = error => ({
+export const error = errors => ({
 	type: types.ERROR,
-	payload: error
+	payload: errors
 });
 
 export const register = registered => ({
@@ -24,9 +24,21 @@ export const register = registered => ({
 	payload: registered
 });
 
+export const unregister = unregistered => ({
+	type: types.UNREGISTER,
+	payload: unregistered
+});
+
+export const userlist = userlists => ({
+	type: types.USERLIST,
+	payload: userlists
+});
+
 export default {
 	login,
 	network,
 	error,
-	register
+	register,
+	unregister,
+	userlist
 };
