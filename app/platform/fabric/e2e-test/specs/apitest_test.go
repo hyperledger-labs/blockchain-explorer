@@ -190,12 +190,6 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 
 		basicCheck("exploreradmin")
 
-		It("list user", func() {
-			resp := restGetWithToken("/api/userlist", &UserListResp{}, token)
-			resultRegister := resp.Result().(*UserListResp)
-			Expect(len(resultRegister.Message)).Should(Equal(0))
-		})
-
 		It("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &RegisterResp{}, token)
 			resultRegister := resp.Result().(*RegisterResp)
@@ -205,7 +199,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 		It("list user", func() {
 			resp := restGetWithToken("/api/userlist", &UserListResp{}, token)
 			resultRegister := resp.Result().(*UserListResp)
-			Expect(len(resultRegister.Message)).Should(Equal(1))
+			Expect(resultRegister.Status).Should(Equal(200))
 		})
 
 		It("unregister user", func() {
