@@ -196,6 +196,24 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			Expect(resultRegister.Status).Should(Equal(200))
 		})
 
+		It("list user", func() {
+			resp := restGetWithToken("/api/userlist", &UserListResp{}, token)
+			resultRegister := resp.Result().(*UserListResp)
+			Expect(resultRegister.Status).Should(Equal(200))
+		})
+
+		It("unregister user", func() {
+			resp := restPostWithToken("/api/unregister", map[string]interface{}{"user": "test", "network": "org1-network"}, &RegisterResp{}, token)
+			resultRegister := resp.Result().(*RegisterResp)
+			Expect(resultRegister.Status).Should(Equal(200))
+		})
+
+		It("register user", func() {
+			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &RegisterResp{}, token)
+			resultRegister := resp.Result().(*RegisterResp)
+			Expect(resultRegister.Status).Should(Equal(200))
+		})
+
 		It("login with newly registered user", func() {
 			resp := restPost("/auth/login", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &LoginResponse{})
 			resultLogin := resp.Result().(*LoginResponse)

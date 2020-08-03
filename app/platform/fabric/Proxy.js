@@ -300,6 +300,33 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
+	async unregister(reqUser) {
+		const userService = new UserService(this.platform);
+		const response = await userService.unregister(reqUser);
+		logger.debug('unregister >> %s', response);
+		return response;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof Proxy
+	 */
+	async userlist() {
+		const userService = new UserService(this.platform);
+		const response = await userService.userlist();
+		logger.debug('userlist >> %s', response);
+		return response;
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} reqUser
+	 * @returns
+	 * @memberof Proxy
+	 */
 	async enroll(reqUser) {
 		const userService = new UserService(this.platform);
 		const response = await userService.enroll(reqUser);

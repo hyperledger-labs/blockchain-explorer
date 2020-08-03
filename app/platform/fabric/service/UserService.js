@@ -149,6 +149,79 @@ class UserService {
 	 * @returns
 	 * @memberof UserService
 	 */
+	async unregister(user) {
+		try {
+			if (!user.user || !user.network) {
+				throw new Error('Invalid parameters');
+			}
+			const combinedUserName = `${user.network}-${user.user}`;
+
+			await Model.User.findOne({
+				where: {
+					username: combinedUserName
+				}
+			}).then(async userEntry => {
+				if (userEntry == null) {
+					throw new Error(`${user.user} does not exists`);
+				}
+
+				const newUser = {
+					username: combinedUserName,
+					truncate: true
+				};
+
+				await Model.User.destroy(newUser)
+					.then(() => {
+						return true;
+					})
+					.catch(error => {
+						throw new Error(`Failed to unRegister user : ${user.user} : ${error}`);
+					});
+			});
+		} catch (error) {
+			return {
+				status: 400,
+				message: error.toString()
+			};
+		}
+		return {
+			status: 200,
+			message: 'Unregistered successfully!'
+		};
+	}
+
+	async userlist() {
+		var userList = [];
+		try {
+			await Model.User.findAll()
+				.then(users => {
+					users.forEach(user => {
+						userList.push({ username: user.username, email: user.email, networkName: user.networkName, firstName: user.firstName, lastName: user.lastName, roles: user.roles });
+					})
+					return true;
+				})
+				.catch(error => {
+					throw new Error(`Failed to get all users : ${error}`);
+				});
+		} catch (error) {
+			return {
+				status: 400,
+				message: error.toString()
+			};
+		}
+		return {
+			status: 200,
+			message: userList
+		};
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} user
+	 * @returns
+	 * @memberof UserService
+	 */
 	async enroll(user) {
 		try {
 			logger.debug('UserService::enroll');

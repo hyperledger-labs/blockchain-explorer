@@ -435,7 +435,9 @@
 					"sequelize",
 					"fabricexplorer",
 					"firstname",
-					"lastname"
+					"lastname",
+					"userlist",
+					"unregister"
 				],
 				"skipIfMatch": ["http://[^s]*", "[a-z]scc"],
 				"skipWordIfMatch": ["^foobar.*$"],
