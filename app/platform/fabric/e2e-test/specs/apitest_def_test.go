@@ -6,17 +6,12 @@ type UserData struct {
 }
 
 type UserList struct {
-	ID          int    `json:"id"`
 	Username    string `json:"username"`
 	Email       string `json:"email"`
 	NetworkName string `json:"networkName"`
 	FirstName   string `json:"firstName"`
 	LastName    string `json:"lastName"`
-	Password    string `json:"password"`
 	Roles       string `json:"roles"`
-	Salt        string `json:"salt"`
-	CreatedAt   string `json:"createdAt"`
-	UpdatedAt   string `json:"updatedAt"`
 }
 
 type LoginResponse struct {

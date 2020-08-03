@@ -195,7 +195,9 @@ class UserService {
 		try {
 			await Model.User.findAll()
 				.then(users => {
-					userList = users;
+					users.forEach(user => {
+						userList.push({ username: user.username, email: user.email, networkName: user.networkName, firstName: user.firstName, lastName: user.lastName, roles: user.roles });
+					})
 					return true;
 				})
 				.catch(error => {
