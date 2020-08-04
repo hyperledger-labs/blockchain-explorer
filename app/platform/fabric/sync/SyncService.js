@@ -533,7 +533,7 @@ class SyncServices {
 				);
 				if (txid && txid !== '') {
 					const validation_codes =
-						block.metadata.metadata[block.metadata.metadata.length - 1];
+						block.metadata.metadata[2];
 					const val_code = validation_codes[i];
 					validation_code = convertValidationCode(val_code);
 				}
