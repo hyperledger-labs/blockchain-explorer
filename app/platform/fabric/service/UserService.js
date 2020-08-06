@@ -87,6 +87,32 @@ class UserService {
 		});
 	}
 
+	getAdminUser(userObj) {
+		const clientObj = this.platform.getNetworks().get(userObj.network);
+		if (!clientObj) {
+			throw new Error(`Faied to get client object for ${userObj.network}`);
+		}
+
+		let client = clientObj.instance;
+		const fabricConfig = client.fabricGateway.fabricConfig;
+		return fabricConfig.getAdminUser();
+	}
+
+	isAdminRole(userObj) {
+		const combinedUserName = `${userObj.network}-${userObj.requestUserId}`;
+		return Model.User.findOne({
+			where: {
+				username: combinedUserName
+			}
+		}).then(userEntry => {
+			if (userEntry === null) {
+				throw new Error(
+					`User who requests doesn't exist : ${userObj.requestUserId}`
+				);
+			}
+			return userEntry.roles === 'admin';
+		});
+	}
 	/**
 	 *
 	 *
@@ -100,6 +126,10 @@ class UserService {
 				throw new Error('Invalid parameters');
 			}
 			const combinedUserName = `${user.network}-${user.user}`;
+
+			if (!(await this.isAdminRole(user))) {
+				throw new Error(`Permission error : can't register user`);
+			}
 
 			await Model.User.findOne({
 				where: {
@@ -156,6 +186,18 @@ class UserService {
 			}
 			const combinedUserName = `${user.network}-${user.user}`;
 
+			if (!(await this.isAdminRole(user))) {
+				throw new Error(`Permission error : can't unregister user`);
+			}
+
+			if (user.user === user.requestUserId) {
+				throw new Error(`Permission error : can't unregister by yourself`);
+			}
+
+			if (user.user === this.getAdminUser(user)) {
+				throw new Error(`Permission error : can't unregister root admin user`);
+			}
+
 			await Model.User.findOne({
 				where: {
 					username: combinedUserName
@@ -166,8 +208,9 @@ class UserService {
 				}
 
 				const newUser = {
-					username: combinedUserName,
-					truncate: true
+					where: {
+						username: combinedUserName
+					}
 				};
 
 				await Model.User.destroy(newUser)
@@ -196,8 +239,15 @@ class UserService {
 			await Model.User.findAll()
 				.then(users => {
 					users.forEach(user => {
-						userList.push({ username: user.username, email: user.email, networkName: user.networkName, firstName: user.firstName, lastName: user.lastName, roles: user.roles });
-					})
+						userList.push({
+							username: user.username,
+							email: user.email,
+							networkName: user.networkName,
+							firstName: user.firstName,
+							lastName: user.lastName,
+							roles: user.roles
+						});
+					});
 					return true;
 				})
 				.catch(error => {
