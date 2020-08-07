@@ -178,7 +178,8 @@ class Platform {
 				username: combinedUserName,
 				salt: salt,
 				password: hashedPassword,
-				networkName: networkName
+				networkName: networkName,
+				roles: 'admin'
 			};
 
 			return Model.User.create(newUser)

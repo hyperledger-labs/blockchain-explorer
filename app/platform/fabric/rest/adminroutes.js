@@ -29,6 +29,7 @@ const adminroutes = async function(router, platform) {
 		responder(async req => {
 			const reqUser = await new User(req.body).asJson();
 			reqUser.network = req.network;
+			reqUser.requestUserId = req.requestUserId;
 			return await proxy.register(reqUser);
 		})
 	);
@@ -61,6 +62,7 @@ const adminroutes = async function(router, platform) {
 		responder(async req => {
 			const reqUser = await new User(req.body).asJson();
 			reqUser.network = req.network;
+			reqUser.requestUserId = req.requestUserId;
 			return await proxy.unregister(reqUser);
 		})
 	);
