@@ -4,7 +4,6 @@
 
 const path = require('path');
 const fs = require('fs-extra');
-const bcrypt = require('bcrypt');
 
 const Proxy = require('./Proxy');
 const helper = require('../../common/helper');
@@ -16,14 +15,16 @@ const ExplorerListener = require('../../sync/listener/ExplorerListener');
 
 const CRUDService = require('../../persistence/fabric/CRUDService');
 const MetricService = require('../../persistence/fabric/MetricService');
+const UserDataService = require('../../persistence/fabric/UserDataService');
 
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
 
-const Model = require('../../model/model');
+const User = require('./models/User');
 const FabricConfig = require('./FabricConfig');
+const UserService = require('./service/UserService');
 
 /**
  *
@@ -41,7 +42,8 @@ class Platform {
 		this.persistence = persistence;
 		this.broadcaster = broadcaster;
 		this.networks = new Map();
-		this.proxy = new Proxy(this);
+		this.userService = null;
+		this.proxy = null;
 		this.defaultNetwork = null;
 		this.network_configs = null;
 		this.syncType = null;
@@ -62,6 +64,9 @@ class Platform {
 		const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
 		const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 		this.syncType = all_config.syncType;
+
+		this.userService = new UserService(this);
+		this.proxy = new Proxy(this, this.userService);
 
 		// Build client context
 		logger.debug(
@@ -146,7 +151,7 @@ class Platform {
 		}
 	}
 
-	registerAdmin(networkName, network_profile_path) {
+	async registerAdmin(network, network_profile_path) {
 		const configPath = path.resolve(__dirname, network_profile_path);
 		const config = new FabricConfig();
 		config.initialize(configPath);
@@ -156,41 +161,29 @@ class Platform {
 			return true;
 		}
 
-		const userName = config.getAdminUser();
+		const user = config.getAdminUser();
 		const password = config.getAdminPassword();
-		if (!userName || !password) {
+		if (!user || !password) {
 			logger.error('Invalid credentials');
 			return false;
 		}
-		const combinedUserName = `${networkName}-${userName}`;
 
-		return Model.User.findOne({
-			where: {
-				username: combinedUserName
-			}
-		}).then(user => {
-			if (user != null) {
-				return true;
-			}
-			const salt = bcrypt.genSaltSync(10);
-			const hashedPassword = bcrypt.hashSync(password, salt);
-			const newUser = {
-				username: combinedUserName,
-				salt: salt,
-				password: hashedPassword,
-				networkName: networkName,
-				roles: 'admin'
-			};
-
-			return Model.User.create(newUser)
-				.then(() => {
-					return true;
-				})
-				.catch(error => {
-					logger.error('Failed to register admin user');
-					return false;
-				});
-		});
+		const reqUser = await User.createInstanceWithParam(
+			user,
+			password,
+			network,
+			'admin'
+		).asJson();
+		if (await this.userService.isExist(user, network)) {
+			logger.info('Already registered : admin');
+			return true;
+		}
+		const resp = await this.userService.register(reqUser);
+		if (resp.status !== 200) {
+			logger.error('Failed to register admin user: ', resp.message);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -231,6 +224,9 @@ class Platform {
 		);
 		this.persistence.setCrudService(
 			new CRUDService(this.persistence.getPGService())
+		);
+		this.persistence.setUserDataService(
+			new UserDataService(this.persistence.getPGService())
 		);
 	}
 

@@ -13,6 +13,7 @@ class Persist {
 		this.pgservice = new PgService(pgconfig);
 		this.metricservice = null;
 		this.crudService = null;
+		this.userdataservice = null;
 	}
 
 	/**
@@ -37,6 +38,18 @@ class Persist {
 
 	/**
 	 *
+	 *
+	 * @param {*} userdataservice
+	 * @memberof Persist
+	 */
+	setUserDataService(userdataservice) {
+		this.userdataservice = userdataservice;
+	}
+
+	/**
+	 *
+	 * @returns
+	 * @memberof Persist
 	 */
 	getMetricService() {
 		return this.metricservice;
@@ -50,6 +63,15 @@ class Persist {
 	 */
 	getCrudService() {
 		return this.crudService;
+	}
+
+	/**
+	 *
+	 * @returns
+	 * @memberof Persist
+	 */
+	getUserDataService() {
+		return this.userdataservice;
 	}
 
 	/**

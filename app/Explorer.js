@@ -107,10 +107,11 @@ class Explorer {
 
 			platform.setPersistenceService();
 
-			passport.use('local-login', localLoginStrategy(platform));
-
 			// Initializing the platform
 			await platform.initialize();
+
+			// Make sure that platform instance will be referred after its initialization
+			passport.use('local-login', localLoginStrategy(platform));
 
 			this.app.use('/api', authCheckMiddleware);
 
