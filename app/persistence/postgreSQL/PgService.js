@@ -19,6 +19,7 @@
  */
 
 const { Client } = require('pg');
+const Sequelize = require('sequelize');
 
 const fs = require('fs');
 
@@ -44,6 +45,7 @@ class PgService {
 		this.pgconfig.database = process.env.DATABASE_DATABASE || pgconfig.database;
 		this.pgconfig.user = process.env.DATABASE_USERNAME || pgconfig.username;
 		this.pgconfig.password = process.env.DATABASE_PASSWD || pgconfig.passwd;
+		this.userModel = null;
 
 		const isPostgresSslEnabled = process.env.DATABASE_SSL_ENABLED || false;
 
@@ -77,6 +79,23 @@ class PgService {
 		logger.info(`connecting to Postgresql ${connectionString}`);
 
 		this.client = new Client(this.pgconfig);
+	}
+
+	/**
+	 *
+	 * Create and return the instance for accessing User table via Sequelize
+	 * @param {*} attributes
+	 * @param {*} options
+	 * @returns {Sequelize.Model} Newly defined model
+	 * @memberof PgService
+	 */
+	getUserModel(attributes, options) {
+		const sequelize = new Sequelize(
+			`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
+			{ logging: false }
+		);
+		this.userModel = sequelize.define('users', attributes, options);
+		return this.userModel;
 	}
 
 	/**

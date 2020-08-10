@@ -44,7 +44,7 @@ const adminroutes = async function(router, platform) {
 	router.get(
 		'/userlist',
 		responder(async req => {
-			return await proxy.userlist();
+			return await proxy.userlist({ network: req.network });
 		})
 	);
 

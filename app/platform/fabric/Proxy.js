@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
-const UserService = require('./service/UserService.js');
+
 const helper = require('../../common/helper');
 const NetworkService = require('./service/NetworkService.js');
 
@@ -23,10 +23,11 @@ class Proxy {
 	 * @param {*} platform
 	 * @memberof Proxy
 	 */
-	constructor(platform) {
+	constructor(platform, userService) {
 		this.platform = platform;
 		this.persistence = platform.getPersistence();
 		this.broadcaster = platform.getBroadcaster();
+		this.userService = userService;
 	}
 
 	/**
@@ -37,8 +38,7 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async authenticate(user) {
-		const userService = new UserService(this.platform);
-		const response = await userService.authenticate(user);
+		const response = await this.userService.authenticate(user);
 		logger.debug('result of authentication >> %j', response);
 		return response;
 	}
@@ -287,8 +287,7 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async register(reqUser) {
-		const userService = new UserService(this.platform);
-		const response = await userService.register(reqUser);
+		const response = await this.userService.register(reqUser);
 		logger.debug('register >> %s', response);
 		return response;
 	}
@@ -301,8 +300,7 @@ class Proxy {
 	 * @memberof Proxy
 	 */
 	async unregister(reqUser) {
-		const userService = new UserService(this.platform);
-		const response = await userService.unregister(reqUser);
+		const response = await this.userService.unregister(reqUser);
 		logger.debug('unregister >> %s', response);
 		return response;
 	}
@@ -313,24 +311,9 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async userlist() {
-		const userService = new UserService(this.platform);
-		const response = await userService.userlist();
+	async userlist(reqUser) {
+		const response = await this.userService.userlist(reqUser);
 		logger.debug('userlist >> %s', response);
-		return response;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {*} reqUser
-	 * @returns
-	 * @memberof Proxy
-	 */
-	async enroll(reqUser) {
-		const userService = new UserService(this.platform);
-		const response = await userService.enroll(reqUser);
-		logger.debug('enroll >> %s', response);
 		return response;
 	}
 

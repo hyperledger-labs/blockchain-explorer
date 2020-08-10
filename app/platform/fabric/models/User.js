@@ -29,6 +29,25 @@ class User {
 
 	/**
 	 *
+	 * Create and return the User object by specifying minimum parameters
+	 * @param {string} user
+	 * @param {string} password
+	 * @param {string} network
+	 * @param {string} roles
+	 * @returns {User} Newly defined User object
+	 * @memberof User
+	 */
+	static createInstanceWithParam(user, password, network, roles) {
+		return new User({
+			user,
+			password,
+			network,
+			roles
+		});
+	}
+
+	/**
+	 *
 	 *
 	 * @returns
 	 * @memberof User
