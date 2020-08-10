@@ -188,7 +188,7 @@ var _ = Describe("REST API Test Suite - Single profile", func() {
 			time.Sleep(waitSyncInterval * time.Second)
 		})
 
-		basicCheck("exploreradmin")
+		basicCheck("org1exploreradmin")
 
 		It("register user", func() {
 			resp := restPostWithToken("/api/register", map[string]interface{}{"user": "test", "password": "test", "network": "org1-network"}, &RegisterResp{}, token)
@@ -478,29 +478,26 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 		Context("/auth/login", func() {
 			It("login to org1-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "org1exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("exploreradmin"))
+				Expect(result.User.Name).Should(Equal("org1exploreradmin"))
 			})
 
 			It("login to org2-network", func() {
-				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
+				resp := restPost("/auth/login", map[string]interface{}{"user": "org2exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
 				result := resp.Result().(*LoginResponse)
 				Expect(result.User.Message).Should(Equal("logged in"))
-				Expect(result.User.Name).Should(Equal("exploreradmin"))
+				Expect(result.User.Name).Should(Equal("org2exploreradmin"))
 			})
 		})
 
 		Context("/api/channels", func() {
 			It("get channels for Org1", func() {
 				// For org1
-				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
-				resultLogin := resp.Result().(*LoginResponse)
-				token := resultLogin.Token
-				Expect(resultLogin.User.Message).Should(Equal("logged in"))
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
 
-				resp = restGetWithToken("/api/channels", &ChannelsResponse{}, token)
+				resp := restGetWithToken("/api/channels", &ChannelsResponse{}, token)
 				result := resp.Result().(*ChannelsResponse)
 				Expect(result.Channels).Should(ContainElements([]string{"org1channel", "commonchannel"}))
 				Expect(len(result.Channels)).Should(Equal(2))
@@ -508,12 +505,9 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels for Org2", func() {
 				// For org2
-				resp := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
-				resultLogin := resp.Result().(*LoginResponse)
-				token := resultLogin.Token
-				Expect(resultLogin.User.Message).Should(Equal("logged in"))
+				token := restLogin("org2exploreradmin", "exploreradminpw", "org2-network")
 
-				resp = restGetWithToken("/api/channels", &ChannelsResponse{}, token)
+				resp := restGetWithToken("/api/channels", &ChannelsResponse{}, token)
 				result := resp.Result().(*ChannelsResponse)
 				Expect(result.Channels).Should(ContainElements([]string{"org2channel", "commonchannel"}))
 				Expect(len(result.Channels)).Should(Equal(2))
@@ -524,10 +518,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
-				result1 := resp1.Result().(*LoginResponse)
-				token := result1.Token
-				Expect(result1.User.Message).Should(Equal("logged in"))
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
 
 				time.Sleep(waitSyncInterval * time.Second)
 
@@ -588,10 +579,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get channels info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
-				result1 := resp1.Result().(*LoginResponse)
-				token := result1.Token
-				Expect(result1.User.Message).Should(Equal("logged in"))
+				token := restLogin("org2exploreradmin", "exploreradminpw", "org2-network")
 
 				time.Sleep(waitSyncInterval * time.Second)
 
@@ -656,10 +644,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org1", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org1-network"}, &LoginResponse{})
-				result1 := resp1.Result().(*LoginResponse)
-				token := result1.Token
-				Expect(result1.User.Message).Should(Equal("logged in"))
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
 
 				resp2 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result2 := resp2.Result().(*ChannelsInfoResp)
@@ -687,10 +672,7 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 
 			It("get block info for org2", func() {
 
-				resp1 := restPost("/auth/login", map[string]interface{}{"user": "exploreradmin", "password": "exploreradminpw", "network": "org2-network"}, &LoginResponse{})
-				result1 := resp1.Result().(*LoginResponse)
-				token := result1.Token
-				Expect(result1.User.Message).Should(Equal("logged in"))
+				token := restLogin("org2exploreradmin", "exploreradminpw", "org2-network")
 
 				resp2 := restGetWithToken("/api/channels/info", &ChannelsInfoResp{}, token)
 				result2 := resp2.Result().(*ChannelsInfoResp)
@@ -714,6 +696,236 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 				Expect(result3.Status).Should(Equal(200))
 				Expect(strconv.Atoi(result3.Number)).Should(Equal(latestBlockNum))
 				Expect(len(result3.Transactions)).Should(Equal(1))
+			})
+		})
+
+		Context("/api/register", func() {
+			It("should work successfully with root admin user of org1", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin2", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser2", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+			})
+
+			It("should work successfully with newly added admin user of org1", func() {
+				token := restLogin("testadmin1", "testadmin", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin3", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser3", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+			})
+
+			It("should fail with newly added user of org1", func() {
+				token := restLogin("testuser1", "testuser", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin4", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't register user"))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser4", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't register user"))
+			})
+
+			It("should work successfully for org2 with user ID which has already been registered in org1", func() {
+				token := restLogin("org2exploreradmin", "exploreradminpw", "org2-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+			})
+		})
+
+		Context("/api/unregister", func() {
+			It("should work successfully with root admin user of org1", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testadmin1"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testuser1"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(200))
+			})
+
+			It("should fail to unregister with user of org1", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser2", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+
+				token = restLogin("testuser1", "testuser", "org1-network")
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testuser2"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister user"))
+			})
+
+			It("should fail to unregister root admin or user which is logging in now", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+
+				token = restLogin("testadmin1", "testadmin", "org1-network")
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testadmin1"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister by yourself"))
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "org1exploreradmin"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister root admin user"))
+			})
+		})
+
+		Context("/api/userlist", func() {
+			It("should work successfully with root admin user of org1", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin2", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin3", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser2", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser3", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+
+				token = restLogin("org2exploreradmin", "exploreradminpw", "org2-network")
+
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin2", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin3", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin4", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser2", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser3", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser4", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+
+				resp = restGetWithToken("/api/userlist", &UserListResp{}, token)
+				resultUserList := resp.Result().(*UserListResp)
+				Expect(resultUserList.Status).Should(Equal(200))
+
+				list := []string{}
+				for _, val := range resultUserList.Message {
+					list = append(list, val.Username)
+				}
+				Expect(list).Should(HaveLen(9))
+				Expect(list).Should(ContainElements([]string{
+					"org2exploreradmin",
+					"testadmin1",
+					"testadmin2",
+					"testadmin3",
+					"testadmin4",
+					"testuser1",
+					"testuser2",
+					"testuser3",
+					"testuser4",
+				}))
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testadmin1"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testuser2"}, &RegisterResp{}, token)
+
+				resp = restGetWithToken("/api/userlist", &UserListResp{}, token)
+				resultUserList = resp.Result().(*UserListResp)
+				Expect(resultUserList.Status).Should(Equal(200))
+
+				list = []string{}
+				for _, val := range resultUserList.Message {
+					list = append(list, val.Username)
+				}
+				Expect(list).Should(HaveLen(7))
+				Expect(list).Should(ContainElements([]string{
+					"org2exploreradmin",
+					"testadmin2",
+					"testadmin3",
+					"testadmin4",
+					"testuser1",
+					"testuser3",
+					"testuser4",
+				}))
+
+				token = restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp = restGetWithToken("/api/userlist", &UserListResp{}, token)
+				resultUserList = resp.Result().(*UserListResp)
+				Expect(resultUserList.Status).Should(Equal(200))
+
+				list = []string{}
+				for _, val := range resultUserList.Message {
+					list = append(list, val.Username)
+				}
+				Expect(list).Should(HaveLen(7))
+				Expect(list).Should(ContainElements([]string{
+					"org1exploreradmin",
+					"testadmin1",
+					"testadmin2",
+					"testadmin3",
+					"testuser1",
+					"testuser2",
+					"testuser3",
+				}))
+
+			})
+
+			It("should fail to unregister with user of org1", func() {
+				token := restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testuser1", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+				resp = restPostWithToken("/api/register", map[string]interface{}{"user": "testuser2", "password": "testuser", "roles": "user"}, &RegisterResp{}, token)
+
+				token = restLogin("testuser1", "testuser", "org1-network")
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testuser2"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister user"))
+			})
+
+			It("should fail to unregister root admin or user which is logging in now", func() {
+				token = restLogin("org1exploreradmin", "exploreradminpw", "org1-network")
+
+				resp := restPostWithToken("/api/register", map[string]interface{}{"user": "testadmin1", "password": "testadmin", "roles": "admin"}, &RegisterResp{}, token)
+
+				token = restLogin("testadmin1", "testadmin", "org1-network")
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "testadmin1"}, &RegisterResp{}, token)
+				resultRegister := resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister by yourself"))
+
+				resp = restPostWithToken("/api/unregister", map[string]interface{}{"user": "org1exploreradmin"}, &RegisterResp{}, token)
+				resultRegister = resp.Result().(*RegisterResp)
+				Expect(resultRegister.Status).Should(Equal(400))
+				Expect(resultRegister.Message).Should(Equal("Error: Permission error : can't unregister root admin user"))
 			})
 		})
 
