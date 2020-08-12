@@ -533,7 +533,9 @@ class SyncServices {
 				);
 				if (txid && txid !== '') {
 					const validation_codes =
-						block.metadata.metadata[block.metadata.metadata.length - 1];
+						block.metadata.metadata[
+							fabprotos.common.BlockMetadataIndex.TRANSACTIONS_FILTER
+						];
 					const val_code = validation_codes[i];
 					validation_code = convertValidationCode(val_code);
 				}
