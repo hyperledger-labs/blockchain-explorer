@@ -3,9 +3,11 @@
 	"version": "1.0.0",
 	"client": {
 		"tlsEnable": true,
-		"adminUser": "admin",
-		"adminPassword": "adminpw",
-		"enableAuthentication": false,
+		"adminCredential": {
+			"id": "exploreradmin",
+			"password": "exploreradminpw"
+		},
+		"enableAuthentication": true,
 		"organization": "Org1MSP",
 		"connection": {
 			"timeout": {
@@ -49,11 +51,7 @@
 			"tlsCACerts": {
 				"path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
-			"url": "grpcs://peer0.org1.example.com:7051",
-			"eventUrl": "grpcs://peer0.org1.example.com:7053",
-			"grpcOptions": {
-				"ssl-target-name-override": "peer0.org1.example.com"
-			}
+			"url": "grpcs://peer0.org1.example.com:7051"
 		}
 	}
 }
