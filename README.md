@@ -1,10 +1,13 @@
 
 <!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
-# Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url]
+# Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url] [![](https://img.shields.io/badge/Stack%20Overflow-Hyperledger%20Explorer-brightgreen)](https://stackoverflow.com/search?tab=newest&q=hyperledger%20explorer%20hyperledger-explorer)
 
 [rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer
 [rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
+![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
 [![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/Blockchain-Explorer?branchName=master)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=master)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
 [![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=master)](https://blockchain-explorer.readthedocs.io/en/master/?badge=master)
@@ -24,13 +27,13 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
+| <b>[v1.1.2](release_notes/v1.1.2.md)</b> (Aug 12, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.1](release_notes/v1.1.1.md)</b> (Jul 17, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.0](release_notes/v1.1.0.md)</b> (Jul 01, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0](release_notes/v1.0.0.md)</b> (Apr 09, 2020)  | [v1.4.0 to v1.4.8](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc3](release_notes/v1.0.0-rc3.md)</b> (Apr 01, 2020)  | [v1.4.0 to v1.4.6](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc2](release_notes/v1.0.0-rc2.md)</b> (Dec 10, 2019)  | [v1.4.0 to v1.4.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc1](release_notes/v1.0.0-rc1.md)</b> (Nov 18, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v0.3.9.5](release_notes/v0.3.9.5.md)</b> (Sep 8, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 
 ---
 
