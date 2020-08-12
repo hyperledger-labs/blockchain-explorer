@@ -66,6 +66,112 @@ This document will describe about the detail of each configuration:
     }
     ```
 
+## User management
+
+### Register user
+
+* Only admin and users who has admin roles can register a new user.
+* admin user can register a user who has `admin` or `user` roles
+  * `user` roles doesn't include a privilege to manipulate user
+* If multiple profiles are configured, user information of each profile is completely isolated.
+  * e.g. Admin of org1-network can't manipulate user of org2-network.
+* There are 2 ways to register a new user to Explorer. You can do that via GUI or Web API.
+
+  * GUI
+![](docs/source/images/UserRegisterGUI.png)
+
+  * Web API
+First you need to login using admin credential to get a JSON Web token.
+    ```shell
+    $ curl -s --location --request POST 'localhost:8080/auth/login' \
+    --header 'Content-Type: application/json' --data-raw '{
+    "user": "exploreradmin",
+    "password": "exploreradminpw",
+    "network": "first-network"
+    }' | jq .
+
+    {
+      "success": true,
+      "message": "You have successfully logged in!",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZXhwbG9yZXJhZG1pbiIsIm5ldHdvcmsiOiJmaXJzdC1uZXR3b3JrIiwiaWF0IjoxNTk3MTMyMTY0LCJleHAiOjE1OTcxMzkzNjR9.5Z9nyQi93fsKNV9Y7RgAXaXKds70fivZOVAEefHzlx4",
+      "user": {
+        "message": "logged in",
+        "name": "exploreradmin"
+      }
+    }
+    ```
+
+    Then post a request for registering a new user with the retrieved token and mandatorily required parameters.
+
+    ```shell
+    $ curl -s --location --request POST 'localhost:8080/api/register' \
+    --header 'Content-Type: application/json' \
+    --header 'Authorization: Bearer eyJheyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZXhwbG9yZXJhZG1pbiIsIm5ldHdvcmsiOiJmaXJzdC1uZXR3b3JrIiwiaWF0IjoxNTk3MTMyMTY0LCJleHAiOjE1OTcxMzkzNjR9.5Z9nyQi93fsKNV9Y7RgAXaXKds70fivZOVAEefHzlx4' \
+    --data-raw '{
+      "user": "newuser",
+      "password": "newuser",
+        "roles": "user"
+    }' | jq .
+
+    {
+      "status": 200
+    }
+    ```
+
+### List registered user
+
+* Anyone can request this Web API after sing in Explorer dashboard.
+* You can list registered user via Web API (GUI for this operation has not been supported yet).
+
+    ```shell
+    $ curl -s --location --request GET 'localhost:8080/api/userlist' \
+    --header 'conten: application/json' \
+    --header 'Authorization: Bearer eyJheyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZXhwbG9yZXJhZG1pbiIsIm5ldHdvcmsiOiJmaXJzdC1uZXR3b3JrIiwiaWF0IjoxNTk3MTMyMTY0LCJleHAiOjE1OTcxMzkzNjR9.5Z9nyQi93fsKNV9Y7RgAXaXKds70fivZOVAEefHzlx4' \
+    | jq .
+
+    {
+      "status": 200,
+      "message": [
+        {
+          "username": "exploreradmin",
+          "email": null,
+          "networkName": "first-network",
+          "firstName": null,
+          "lastName": null,
+          "roles": "admin"
+        },
+        {
+          "username": "newuser",
+          "email": null,
+          "networkName": "first-network",
+          "firstName": null,
+          "lastName": null,
+          "roles": "user"
+        }
+      ]
+    }
+    ```
+
+### Unregister user
+
+* Root admin user can't be unregistered
+* It's not allowed to unregister user who's sending this request itself
+* You can unregister user via Web API (GUI for this operation has not been supported yet).
+
+```shell
+$ curl -s --location --request POST 'localhost:8080/api/unregister' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJheyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZXhwbG9yZXJhZG1pbiIsIm5ldHdvcmsiOiJmaXJzdC1uZXR3b3JrIiwiaWF0IjoxNTk3MTMyMTY0LCJleHAiOjE1OTcxMzkzNjR9.5Z9nyQi93fsKNV9Y7RgAXaXKds70fivZOVAEefHzlx4' \
+--data-raw '{
+"user": "newuser"
+}' | jq .
+
+{
+  "status": 200,
+  "message": "Unregistered successfully!"
+}
+```
+
 ## Enable TLS
 
 * If your fabric network enables TLS, then set `true` to `client.tlsEnable` in the connection profile (e.g. `app/platform/fabric/connection-profile/first-network.json`).
