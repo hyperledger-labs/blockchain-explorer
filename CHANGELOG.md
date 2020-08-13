@@ -1,3 +1,25 @@
+## v1.1.2
+
+* [4528879](https://github.com/hyperledger/blockchain-explorer/commit/4528879) [BE-804](https://jira.hyperledger.org/browse/BE-804) Fix Security vulnerability (#167)
+* [6398bcf](https://github.com/hyperledger/blockchain-explorer/commit/6398bcf) [BE-800](https://jira.hyperledger.org/browse/BE-800) Update example of connection profile for docker setup (#165)
+* [c594a60](https://github.com/hyperledger/blockchain-explorer/commit/c594a60) [BE-803](https://jira.hyperledger.org/browse/BE-803) Correct index to get validation code from metadata (#164)
+* [85203dc](https://github.com/hyperledger/blockchain-explorer/commit/85203dc) [BE-785](https://jira.hyperledger.org/browse/BE-785) Add steps for user management (#163)
+* [38774b6](https://github.com/hyperledger/blockchain-explorer/commit/38774b6) [BE-784](https://jira.hyperledger.org/browse/BE-784) Add e2e test for Web API of user management (#162)
+* [d22533a](https://github.com/hyperledger/blockchain-explorer/commit/d22533a) [BE-798](https://jira.hyperledger.org/browse/BE-798) Refactor user model structure (#161)
+* [74abe2c](https://github.com/hyperledger/blockchain-explorer/commit/74abe2c) [BE-792](https://jira.hyperledger.org/browse/BE-792) Allow only "admin" to manage user (#160)
+* [3eddc40](https://github.com/hyperledger/blockchain-explorer/commit/3eddc40) [BE-788](https://jira.hyperledger.org/browse/BE-788) Add a new API for unregistering user and BE-789 Add a new API … (#158)
+* [be72d93](https://github.com/hyperledger/blockchain-explorer/commit/be72d93) [BE-790](https://jira.hyperledger.org/browse/BE-790) Change default encode of value in TX details (#157)
+* [ec0da32](https://github.com/hyperledger/blockchain-explorer/commit/ec0da32) Fix Security vulnerability (#156)
+* [1f4e832](https://github.com/hyperledger/blockchain-explorer/commit/1f4e832) [BE-783](https://jira.hyperledger.org/browse/BE-783) Update User registration UI (#155)
+* [5726187](https://github.com/hyperledger/blockchain-explorer/commit/5726187) [BE-782](https://jira.hyperledger.org/browse/BE-782) Adjust register API to use the new user model (#154)
+* [90e8d4e](https://github.com/hyperledger/blockchain-explorer/commit/90e8d4e) [BE-781](https://jira.hyperledger.org/browse/BE-781) Add user model for admin user of Explorer (#153)
+* [9e1d4fa](https://github.com/hyperledger/blockchain-explorer/commit/9e1d4fa) [BE-786](https://jira.hyperledger.org/browse/BE-786) standalone mode (#152)
+* [0b0cc41](https://github.com/hyperledger/blockchain-explorer/commit/0b0cc41) update maintainers (#151)
+* [876ac15](https://github.com/hyperledger/blockchain-explorer/commit/876ac15) [BE-787](https://jira.hyperledger.org/browse/BE-787) Add fabric 1.4.8 / 2.2.0 support (#150)
+* [f1a40d1](https://github.com/hyperledger/blockchain-explorer/commit/f1a40d1) [BE-779](https://jira.hyperledger.org/browse/BE-779) Reduce container image size (#148)
+* [bc343fb](https://github.com/hyperledger/blockchain-explorer/commit/bc343fb) [BE-780](https://jira.hyperledger.org/browse/BE-780) Fixed typos in "SyncService" (#149)
+* [e190d0d](https://github.com/hyperledger/blockchain-explorer/commit/e190d0d) [BE-778](https://jira.hyperledger.org/browse/BE-778) Fix typo in "Transaction Details" view (#147)
+
 ## v1.1.1
 
 * [851a9ba](https://github.com/hyperledger/blockchain-explorer/commit/851a9ba) Bump lodash from 4.17.15 to 4.17.19 in /client (#144)
