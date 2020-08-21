@@ -10,13 +10,20 @@ const attributes = {
 		allowNull: false,
 		unique: true,
 		validate: {
-			is: /^[a-z0-9_-]+$/i
+			is: {
+				args: /^[a-z0-9_-]+$/i,
+				msg:
+					'Username allows only lowercase alphanumeric characters with hyphen and underscore Ex:(a-z0-9_-)'
+			}
 		}
 	},
 	email: {
 		type: Sequelize.STRING,
 		validate: {
-			isEmail: true
+			isEmail: {
+				args: true,
+				msg: 'Invalid email format'
+			}
 		}
 	},
 	networkName: {
