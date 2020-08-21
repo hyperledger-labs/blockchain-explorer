@@ -48,7 +48,13 @@ const attributes = {
 };
 
 const options = {
-	freezeTableName: true
+	freezeTableName: true,
+	indexes: [
+		{
+			unique: true,
+			fields: ['username', 'networkName']
+		}
+	]
 };
 
 module.exports.attributes = attributes;
