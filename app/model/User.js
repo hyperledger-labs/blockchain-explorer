@@ -11,9 +11,9 @@ const attributes = {
 		unique: true,
 		validate: {
 			is: {
-				args: /^[a-z0-9_-\s]+$/i,
+				args: /^[a-z0-9_-]+$/i,
 				msg:
-					'Username allows only lowercase alphanumeric characters with spaces,hyphen and underscore Ex:(a-z0-9_- )'
+					'Username allows only lowercase alphanumeric characters with hyphen and underscore Ex:(a-z0-9_-)'
 			}
 		}
 	},
