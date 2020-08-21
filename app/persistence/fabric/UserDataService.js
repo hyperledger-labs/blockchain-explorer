@@ -20,31 +20,6 @@ class UserDataService {
 	/**
 	 *
 	 *
-	 * @param {string} userID
-	 * @param {string} network
-	 * @returns {string} Actually registered User ID
-	 * @memberof UserDataService
-	 */
-	getRegisterUserID(userID, network) {
-		// To ensure that user ID needs to be unique within each network
-		return `${network}-${userID}`;
-	}
-
-	/**
-	 *
-	 *
-	 * @param {string} registeredUserID
-	 * @param {string} network
-	 * @returns {string} User ID stripped network name
-	 * @memberof UserDataService
-	 */
-	getOriginalUserID(registeredUserID, network) {
-		return registeredUserID.split(`${network}-`).join('');
-	}
-
-	/**
-	 *
-	 *
 	 * @param {*} attributes
 	 * @param {*} options
 	 * @memberof UserDataService
@@ -56,15 +31,16 @@ class UserDataService {
 	/**
 	 *
 	 *
-	 * @param {string} user
-	 * @param {string} network
+	 * @param {string} username
+	 * @param {string} networkName
 	 * @returns {*} User model
 	 * @memberof UserDataService
 	 */
-	findUser(user, network) {
+	findUser(username, networkName) {
 		return this.userModel.findOne({
 			where: {
-				username: this.getRegisterUserID(user, network)
+				username,
+				networkName
 			}
 		});
 	}
@@ -77,25 +53,22 @@ class UserDataService {
 	 * @memberof UserDataService
 	 */
 	registerUser(newUserObj) {
-		newUserObj.username = this.getRegisterUserID(
-			newUserObj.username,
-			newUserObj.networkName
-		);
 		return this.userModel.create(newUserObj);
 	}
 
 	/**
 	 *
 	 *
-	 * @param {User} user
-	 * @param {User} network
+	 * @param {User} username
+	 * @param {User} networkName
 	 * @returns {Promise} Promise of the number of destroyed users
 	 * @memberof UserDataService
 	 */
-	unregisterUser(user, network) {
+	unregisterUser(username, networkName) {
 		const unregisterUser = {
 			where: {
-				username: this.getRegisterUserID(user, network)
+				username,
+				networkName
 			}
 		};
 
@@ -118,7 +91,7 @@ class UserDataService {
 			})
 			.then(users => {
 				return users.map(user => ({
-					username: this.getOriginalUserID(user.username, user.networkName),
+					username: user.username,
 					email: user.email,
 					networkName: user.networkName,
 					firstName: user.firstName,
