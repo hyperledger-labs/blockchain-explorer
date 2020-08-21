@@ -10,6 +10,7 @@ Maintainers
 |------|--------|------|----------------------
 | Atsushi Neki | [nekia][nekia] | nekia | <atsushin@fast.au.fujitsu.com>
 | Jeeva Sankarapandian | [jeevasang][jeevasang] | jeevasang | <jeevasang@gmail.com>
+| Mekia Edwards | [mekiae] | edwardsm26 | <dev.edwardsm@gmail.com>
 
 **Release Managers**
 
@@ -23,7 +24,6 @@ Maintainers
 |------|--------|------|----------------------
 | Adam Kwan | [adamk1230][adamk1230] | adamk1230 | <adamk1230@gmail.com>
 | David Huffman |  |  | <dshuffma@us.ibm.com>
-| Mekia Edwards |  | edwardsm26 | <dev.edwardsm@gmail.com>
 | Nik Frunza | [nfrunza][nfrunza] | nfrunza | <nfrunza@gmail.com>
 | Satheesh Kathamuthu | [xspeedcruiser][xspeedcruiser] |satheeshk | <satheesh.ceg@gmail.com>
 | Umapathi Madiraju | [umadiraju][umadiraju] | umadiraj | <umapathi.madiraju@gmail.com>
@@ -36,3 +36,4 @@ Maintainers
 [nfrunza]: https://github.com/nfrunza
 [xspeedcruiser]: https://github.com/xspeedcruiser
 [umadiraju]: https://github.com/umadiraju
+[mekiae]: https://github.com/mekiae
