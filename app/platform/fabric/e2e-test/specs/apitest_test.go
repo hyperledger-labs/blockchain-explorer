@@ -42,12 +42,16 @@ func basicCheck(loginId string) {
 		resp := restGet("/auth/networklist", &NetworklistInfo{})
 
 		result := resp.Result().(*NetworklistInfo)
-		list := []string{}
+		nameList := []string{}
+		idList := []string{}
 		for _, val := range result.NetworkList {
-			list = append(list, val.Name)
+			nameList = append(nameList, val.Name)
+			idList = append(idList, val.Id)
 		}
-		Expect(list).Should(HaveLen(1))
-		Expect(list).Should(ContainElements([]string{"org1-network"}))
+		Expect(nameList).Should(HaveLen(1))
+		Expect(nameList).Should(ContainElements([]string{"org1-network"}))
+		Expect(idList).Should(HaveLen(1))
+		Expect(idList).Should(ContainElements([]string{"org1-network"}))
 	})
 
 	It("login to org1-network", func() {
@@ -466,12 +470,16 @@ var _ = Describe("REST API Test Suite - Multiple profile", func() {
 			It("get network list", func() {
 				resp := restGet("/auth/networklist", &NetworklistInfo{})
 				result := resp.Result().(*NetworklistInfo)
-				list := []string{}
+				nameList := []string{}
+				idList := []string{}
 				for _, val := range result.NetworkList {
-					list = append(list, val.Name)
+					nameList = append(nameList, val.Name)
+					idList = append(idList, val.Id)
 				}
-				Expect(list).Should(HaveLen(2))
-				Expect(list).Should(ContainElements([]string{"org1-network", "org2-network"}))
+				Expect(nameList).Should(HaveLen(2))
+				Expect(nameList).Should(ContainElements([]string{"org1 network", "org2 network"}))
+				Expect(idList).Should(HaveLen(2))
+				Expect(idList).Should(ContainElements([]string{"org1-network", "org2-network"}))
 
 			})
 		})

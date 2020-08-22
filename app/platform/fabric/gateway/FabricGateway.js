@@ -21,20 +21,22 @@ const helper = require('../../../common/helper');
 const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../../common/ExplorerError');
-const FabricConfig = require('../FabricConfig');
 
 class FabricGateway {
-	constructor(networkConfig) {
-		this.networkConfig = networkConfig;
-		this.config = null;
+	/**
+	 * Creates an instance of FabricGateway.
+	 * @param {FabricConfig} config
+	 * @memberof FabricGateway
+	 */
+	constructor(fabricConfig) {
+		this.fabricConfig = fabricConfig;
+		this.config = this.fabricConfig.getConfig();
 		this.gateway = null;
 		this.wallet = null;
 		this.tlsEnable = false;
 		this.defaultChannelName = null;
 		this.gateway = new Gateway();
-		this.fabricConfig = new FabricConfig();
 		this.fabricCaEnabled = false;
-		this.networkName = null;
 		this.client = null;
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
@@ -42,15 +44,10 @@ class FabricGateway {
 	}
 
 	async initialize() {
-		const configPath = path.resolve(__dirname, this.networkConfig);
-		this.fabricConfig = new FabricConfig();
-		this.fabricConfig.initialize(configPath);
-		this.config = this.fabricConfig.getConfig();
 		this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
 		this.tlsEnable = this.fabricConfig.getTls();
 		this.enableAuthentication = this.fabricConfig.getEnableAuthentication();
-		this.networkName = this.fabricConfig.getNetworkName();
-		this.FSWALLET = 'wallet/' + this.networkName;
+		this.FSWALLET = 'wallet/' + this.fabricConfig.getNetworkId();
 
 		const explorerAdminId = this.fabricConfig.getAdminUser();
 		if (!explorerAdminId) {

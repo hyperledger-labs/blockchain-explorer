@@ -1,7 +1,7 @@
 {
 	"network-configs": {
 		"first-network": {
-			"name": "first-network",
+			"name": "My first network",
 			"profile": "./connection-profile/first-network.json"
 		}
 	},

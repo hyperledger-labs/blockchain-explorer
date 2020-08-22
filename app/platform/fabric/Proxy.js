@@ -68,10 +68,10 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getCurrentChannel(network_name) {
-		logger.debug('getCurrentChannel: network_name', network_name);
+	async getCurrentChannel(network_id) {
+		logger.debug('getCurrentChannel: network_id', network_id);
 
-		const client = await this.platform.getClient(network_name);
+		const client = await this.platform.getClient(network_id);
 		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		let respose;
@@ -97,12 +97,12 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getPeersStatus(network_name, channel_genesis_hash) {
-		const client = await this.platform.getClient(network_name);
+	async getPeersStatus(network_id, channel_genesis_hash) {
+		const client = await this.platform.getClient(network_id);
 		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
 		const nodes = await this.persistence
 			.getMetricService()
-			.getPeerList(network_name, channel_genesis_hash);
+			.getPeerList(network_id, channel_genesis_hash);
 		let discover_results;
 		if (client.status) {
 			try {
@@ -158,7 +158,7 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async changeChannel(network_name, channel_genesis_hash) {
+	async changeChannel(network_id, channel_genesis_hash) {
 		return channel_genesis_hash;
 	}
 
@@ -168,11 +168,11 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getChannelsInfo(network_name) {
-		const client = this.platform.getClient(network_name);
+	async getChannelsInfo(network_id) {
+		const client = this.platform.getClient(network_id);
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name);
+			.getChannelsInfo(network_id);
 		const currentchannels = [];
 		for (const channel of channels) {
 			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
@@ -194,13 +194,13 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getTxByOrgs(network_name, channel_genesis_hash) {
+	async getTxByOrgs(network_id, channel_genesis_hash) {
 		const rows = await this.persistence
 			.getMetricService()
-			.getTxByOrgs(network_name, channel_genesis_hash);
+			.getTxByOrgs(network_id, channel_genesis_hash);
 		const organizations = await this.persistence
 			.getMetricService()
-			.getOrgsData(network_name, channel_genesis_hash);
+			.getOrgsData(network_id, channel_genesis_hash);
 
 		for (const organization of rows) {
 			const index = organizations.indexOf(organization.creator_msp_id);
@@ -225,8 +225,8 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getBlockByNumber(network_name, channel_genesis_hash, number) {
-		const client = this.platform.getClient(network_name);
+	async getBlockByNumber(network_id, channel_genesis_hash, number) {
+		const client = this.platform.getClient(network_id);
 		const channelName = client.getChannelNameByHash(channel_genesis_hash);
 		let block;
 
@@ -260,12 +260,12 @@ class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getChannels(network_name) {
-		const client = this.platform.getClient(network_name);
+	async getChannels(network_id) {
+		const client = this.platform.getClient(network_id);
 		const client_channels = client.getChannelNames();
 		const channels = await this.persistence
 			.getCrudService()
-			.getChannelsInfo(network_name);
+			.getChannelsInfo(network_id);
 		const respose = [];
 
 		for (let i = 0; i < channels.length; i++) {
@@ -328,8 +328,8 @@ class Proxy {
 		logger.debug('Message from child %j', msg);
 		if (fabric_const.NOTITY_TYPE_NEWCHANNEL === msg.notify_type) {
 			// Initialize new channel instance in parent
-			if (msg.network_name && msg.client_name) {
-				const client = this.platform.getClient(msg.network_name);
+			if (msg.network_id) {
+				const client = this.platform.getClient(msg.network_id);
 				if (msg.channel_name) {
 					client.initializeNewChannel(msg.channel_name);
 				} else {
@@ -347,8 +347,8 @@ class Proxy {
 			fabric_const.NOTITY_TYPE_CHAINCODE === msg.notify_type
 		) {
 			// Update channel details in parent
-			if (msg.network_name && msg.client_name) {
-				const client = this.platform.getClient(msg.network_name);
+			if (msg.network_id) {
+				const client = this.platform.getClient(msg.network_id);
 				if (msg.channel_name) {
 					client.initializeChannelFromDiscover(msg.channel_name);
 				} else {

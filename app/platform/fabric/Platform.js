@@ -78,10 +78,7 @@ class Platform {
 		);
 		await this.buildClients(network_configs);
 
-		if (
-			this.networks.size === 0 &&
-			this.networks.get(this.defaultNetwork).size === 0
-		) {
+		if (this.networks.size === 0) {
 			logger.error(
 				'************* There is no client found for Hyperledger fabric platform *************'
 			);
@@ -104,12 +101,10 @@ class Platform {
 		logger.debug('Setting admin organization enrolment files');
 		this.network_configs = network_configs;
 
-		for (const network_name in this.network_configs) {
-			// this.networks.set(network_name, new Map());
-			const client_configs = this.network_configs[network_name];
-			// Console.log('network_name ', network_name, ' client_configs ', client_configs)
+		for (const network_id in this.network_configs) {
+			const network_config = this.network_configs[network_id];
 			if (!this.defaultNetwork) {
-				this.defaultNetwork = network_name;
+				this.defaultNetwork = network_id;
 			}
 
 			/*
@@ -117,45 +112,38 @@ class Platform {
 			 * Each client is connected to only a single peer and monitor that particular peer only
 			 */
 			logger.info(
-				' client_configs.name ',
-				client_configs.name,
-				' client_configs.profile ',
-				client_configs.profile
+				' network_config.id ',
+				network_id,
+				' network_config.profile ',
+				network_config.profile
 			);
-			const client_name = client_configs.name;
 
 			// Create client instance
-			logger.debug('Creating client [%s] >> ', client_name, client_configs);
+			logger.debug('Creating network client [%s] >> ', network_id, network_config);
 
-			const signupResult = await this.registerAdmin(
-				client_configs.name,
-				client_configs.profile
-			);
+			const config = new FabricConfig();
+			config.initialize(network_id, network_config);
+
+			const signupResult = await this.registerAdmin(config);
 			if (!signupResult) {
-				logger.error(`Failed to register admin user : ${network_name}`);
+				logger.error(`Failed to register admin user : ${network_id}`);
 				continue;
 			}
 
 			const client = await FabricUtils.createFabricClient(
-				client_configs,
-				network_name,
-				client_name,
+				config,
 				this.persistence
 			);
 			if (client) {
 				// Set client into clients map
-				const clientObj = { name: client_name, instance: client };
-				this.networks.set(network_name, clientObj);
+				const clientObj = { name: network_config.name, instance: client };
+				this.networks.set(network_id, clientObj);
 			}
 			//  }
 		}
 	}
 
-	async registerAdmin(network, network_profile_path) {
-		const configPath = path.resolve(__dirname, network_profile_path);
-		const config = new FabricConfig();
-		config.initialize(configPath);
-
+	async registerAdmin(config) {
 		if (!config.getEnableAuthentication()) {
 			logger.info('Disabled authentication');
 			return true;
@@ -168,13 +156,14 @@ class Platform {
 			return false;
 		}
 
+		const network_id = config.getNetworkId();
 		const reqUser = await User.createInstanceWithParam(
 			user,
 			password,
-			network,
+			network_id,
 			'admin'
 		).asJson();
-		if (await this.userService.isExist(user, network)) {
+		if (await this.userService.isExist(user, network_id)) {
 			logger.info('Already registered : admin');
 			return true;
 		}
@@ -194,17 +183,17 @@ class Platform {
 	 */
 	initializeListener(syncconfig) {
 		/* eslint-disable */
-		for (const [network_name, clientObj] of this.networks.entries()) {
-			const client_name = clientObj.name;
-			const client = clientObj.instance;
+		for (const [network_id, clientObj] of this.networks.entries()) {
+			const network_name = clientObj.name;
+			const network_client = clientObj.instance;
 			logger.info(
-				'initializeListener, client_name, client ',
-				client_name,
-				client.client_config
+				'initializeListener, network_id, network_client ',
+				network_id,
+				network_client.getNetworkConfig()
 			);
-			if (this.getClient(network_name).getStatus()) {
+			if (network_client.getStatus()) {
 				const explorerListener = new ExplorerListener(this, syncconfig);
-				explorerListener.initialize([network_name, client_name, '1']);
+				explorerListener.initialize([network_id, network_name, '1']);
 				explorerListener.send('Successfully send a message to child process');
 				this.explorerListeners.push(explorerListener);
 			}
@@ -243,13 +232,13 @@ class Platform {
 	/**
 	 *
 	 *
-	 * @param {*} network_name
-	 * @param {*} client_name
+	 * @param {*} network_id
 	 * @returns
 	 * @memberof Platform
 	 */
-	getClient(network_name) {
-		const clientObj = this.networks.get(network_name || this.defaultNetwork);
+	getClient(network_id) {
+		logger.info(`getClient (id:${network_id})`);
+		const clientObj = this.networks.get(network_id || this.defaultNetwork);
 		return clientObj.instance;
 	}
 

@@ -77,7 +77,7 @@ class SyncServices {
 		for (const channel_name of channels) {
 			logger.info(
 				'SyncServices.synchNetworkConfigToDB client ',
-				client.client_name,
+				client.getNetworkId(),
 				' channel_name ',
 				channel_name
 			);
@@ -119,15 +119,15 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertNewChannel(client, channel_name, block, channel_genesis_hash) {
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const channelInfo = await this.persistence
 			.getCrudService()
-			.getChannel(network_name, channel_name, channel_genesis_hash);
+			.getChannel(network_id, channel_name, channel_genesis_hash);
 
 		if (!channelInfo) {
 			const count = await this.persistence
 				.getCrudService()
-				.existChannel(network_name, channel_name);
+				.existChannel(network_id, channel_name);
 			if (count.count === '0') {
 				if (block.data && block.data.data.length > 0 && block.data.data[0]) {
 					const createdt = await FabricUtils.getBlockTimeStamp(
@@ -144,13 +144,12 @@ class SyncServices {
 					};
 					await this.persistence
 						.getCrudService()
-						.saveChannel(network_name, channel_row);
+						.saveChannel(network_id, channel_row);
 				}
 			} else {
 				const notify = {
 					notify_type: fabric_const.NOTITY_TYPE_EXISTCHANNEL,
-					network_name: this.platform.network_name,
-					client_name: client.client_name,
+					network_id: network_id,
 					channel_name
 				};
 				this.platform.send(notify);
@@ -212,21 +211,14 @@ class SyncServices {
 	async insertNewPeer(peer, channel_genesis_hash, client) {
 		let eventurl = '';
 		let requesturl = peer.endpoint;
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const host_port = peer.endpoint.split(':');
-		if (
-			client.client_config.peers &&
-			client.client_config.peers[host_port[0]] &&
-			client.client_config.peers[host_port[0]].url
-		) {
-			requesturl = client.client_config.peers[host_port[0]].url;
+		const peers = client.getNetworkConfig().peers;
+		if (peers && peers[host_port[0]] && peers[host_port[0]].url) {
+			requesturl = peers[host_port[0]].url;
 		}
-		if (
-			client.client_config.peers &&
-			client.client_config.peers[host_port[0]] &&
-			client.client_config.peers[host_port[0]].eventUrl
-		) {
-			eventurl = client.client_config.peers[host_port[0]].eventUrl;
+		if (peers && peers[host_port[0]] && peers[host_port[0]].eventUrl) {
+			eventurl = peers[host_port[0]].eventUrl;
 		}
 
 		const peer_row = {
@@ -237,14 +229,14 @@ class SyncServices {
 			channel_genesis_hash,
 			peer_type: 'PEER'
 		};
-		await this.persistence.getCrudService().savePeer(network_name, peer_row);
+		await this.persistence.getCrudService().savePeer(network_id, peer_row);
 		const channel_peer_row = {
 			peerid: host_port[0],
 			channelid: channel_genesis_hash
 		};
 		await this.persistence
 			.getCrudService()
-			.savePeerChannelRef(network_name, channel_peer_row);
+			.savePeerChannelRef(network_id, channel_peer_row);
 	}
 
 	/**
@@ -256,7 +248,7 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const discoveryProtocol = client.fabricGateway.getDiscoveryProtocol();
 		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
 		logger.debug(
@@ -273,14 +265,14 @@ class SyncServices {
 			channel_genesis_hash,
 			peer_type: 'ORDERER'
 		};
-		await this.persistence.getCrudService().savePeer(network_name, orderer_row);
+		await this.persistence.getCrudService().savePeer(network_id, orderer_row);
 		const channel_orderer_row = {
 			peerid: orderer.host,
 			channelid: channel_genesis_hash
 		};
 		await this.persistence
 			.getCrudService()
-			.savePeerChannelRef(network_name, channel_orderer_row);
+			.savePeerChannelRef(network_id, channel_orderer_row);
 	}
 
 	/**
@@ -297,7 +289,7 @@ class SyncServices {
 		channel_genesis_hash,
 		discoveryResults
 	) {
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
 		const chaincodes = await client.fabricGateway.queryInstantiatedChaincodes(
 			channel_name
@@ -317,7 +309,7 @@ class SyncServices {
 			};
 			await this.persistence
 				.getCrudService()
-				.saveChaincode(network_name, chaincode_row);
+				.saveChaincode(network_id, chaincode_row);
 			if (discoveryResults && discoveryResults.peers_by_org) {
 				for (const org_name in discoveryResults.peers_by_org) {
 					const org = discoveryResults.peers_by_org[org_name];
@@ -355,7 +347,7 @@ class SyncServices {
 		endpoint,
 		channel_genesis_hash
 	) {
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const host_port = endpoint.split(':');
 		const chaincode_peer_row = {
 			chaincodeid: chaincode.name,
@@ -365,16 +357,15 @@ class SyncServices {
 		};
 		await this.persistence
 			.getCrudService()
-			.saveChaincodPeerRef(network_name, chaincode_peer_row);
+			.saveChaincodPeerRef(network_id, chaincode_peer_row);
 	}
 
 	async synchBlocks(client, channel_name) {
-		const network_name = client.network_name;
-		const client_name = client.getClientName();
+		const network_id = client.getNetworkId();
 
-		const synch_key = `${client_name}_${channel_name}`;
+		const synch_key = `${network_id}_${channel_name}`;
 		if (this.synchInProcess.includes(synch_key)) {
-			logger.info(`Block synch in process for >> ${client_name}_${channel_name}`);
+			logger.info(`Block synch in process for >> ${network_id}_${channel_name}`);
 			return;
 		}
 		this.synchInProcess.push(synch_key);
@@ -386,7 +377,7 @@ class SyncServices {
 		// Query missing blocks from DB
 		const results = await this.persistence
 			.getMetricService()
-			.findMissingBlockNumber(network_name, channel_genesis_hash, blockHeight);
+			.findMissingBlockNumber(network_id, channel_genesis_hash, blockHeight);
 
 		if (results) {
 			for (const result of results) {
@@ -415,7 +406,7 @@ class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async processBlockEvent(client, block) {
-		const network_name = client.network_name;
+		const network_id = client.getNetworkId();
 		const _self = this;
 		// Get the first transaction
 		const first_tx = block.data.data[0];
@@ -454,8 +445,7 @@ class SyncServices {
 
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_NEWCHANNEL,
-						network_name: _self.platform.network_name,
-						client_name: client.client_name,
+						network_id,
 						channel_name
 					};
 
@@ -480,8 +470,7 @@ class SyncServices {
 					);
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_UPDATECHANNEL,
-						network_name: _self.platform.network_name,
-						client_name: client.client_name,
+						network_id,
 						channel_name
 					};
 
@@ -623,8 +612,7 @@ class SyncServices {
 
 							const notify = {
 								notify_type: fabric_const.NOTITY_TYPE_CHAINCODE,
-								network_name: _self.platform.network_name,
-								client_name: client.client_name,
+								network_id,
 								channel_name
 							};
 
@@ -658,15 +646,14 @@ class SyncServices {
 					endorser_signature,
 					creator_id_bytes,
 					payload_proposal_hash,
-					endorser_id_bytes,
-					network_name
+					endorser_id_bytes
 				};
 
 				// Insert transaction
 
 				const res = await this.persistence
 					.getCrudService()
-					.saveTransaction(network_name, transaction_row);
+					.saveTransaction(network_id, transaction_row);
 				logger.debug('saveTransaction ', res);
 			}
 
@@ -674,15 +661,14 @@ class SyncServices {
 			logger.info('block_row.blocknum ', block_row.blocknum);
 			const status = await this.persistence
 				.getCrudService()
-				.saveBlock(network_name, block_row);
+				.saveBlock(network_id, block_row);
 			logger.debug('status ', status);
 
 			if (status) {
 				// Push last block
 				const notify = {
 					notify_type: fabric_const.NOTITY_TYPE_BLOCK,
-					network_name: _self.platform.network_name,
-					client_name: client.client_name,
+					network_id,
 					channel_name,
 					title: `Block ${block.header.number.toString()} added to Channel: ${channel_name}`,
 					type: 'block',

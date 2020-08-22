@@ -125,6 +125,7 @@ type PeersStatusResp struct {
 
 type Network struct {
 	Name     string      `json:"name"`
+	Id       string      `json:"id"`
 	Instance interface{} `json:"instance"`
 }
 

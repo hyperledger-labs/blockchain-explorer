@@ -236,6 +236,7 @@ class CRUDService {
 		);
 
 		if (isValidRow(c)) {
+			transaction.network_name = network_name;
 			await this.sql.saveRow('transactions', transaction);
 			await this.sql.updateBySql(
 				`update chaincodes set txcount =txcount+1 where channel_genesis_hash='${transaction.channel_genesis_hash}' and network_name = '${network_name}' and name='${transaction.chaincodename}'`

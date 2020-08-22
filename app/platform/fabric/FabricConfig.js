@@ -32,8 +32,10 @@ class FabricConfig {
 	 * @memberof FabricConfig
 	 */
 
-	initialize(configPath) {
-		const configJson = fs.readFileSync(configPath, 'utf8');
+	initialize(network_id, network_config) {
+		this.network_id = network_id;
+		const profile_path = path.resolve(__dirname, network_config.profile);
+		const configJson = fs.readFileSync(profile_path, 'utf8');
 		this.config = JSON.parse(configJson);
 	}
 
@@ -175,8 +177,8 @@ class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
-	getNetworkName() {
-		return this.config.name;
+	getNetworkId() {
+		return this.network_id;
 	}
 
 	/**
