@@ -2,12 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const path = require('path');
 const includes = require('lodash/includes');
 const ExplorerError = require('../../common/ExplorerError');
 const FabricUtils = require('./utils/FabricUtils.js');
 const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
-const FabricConfig = require('../fabric/FabricConfig');
 const helper = require('../../common/helper');
 
 const logger = helper.getLogger('FabricClient');
@@ -22,15 +20,14 @@ const explorer_mess = require('../../common/ExplorerMessage').explorer;
 class FabricClient {
 	/**
 	 * Creates an instance of FabricClient.
-	 * @param {*} client_name
+	 * @param {FabricConfig} config
 	 * @memberof FabricClient
 	 */
-	constructor(network_name, client_name) {
-		this.network_name = network_name;
-		this.client_name = client_name;
+	constructor(config) {
+		this.network_id = config.getNetworkId();
 		this.fabricGateway = null;
 		this.channelsGenHash = new Map();
-		this.client_config = null;
+		this.config = config;
 		this.status = false;
 		this.channels = [];
 	}
@@ -38,28 +35,18 @@ class FabricClient {
 	/**
 	 *
 	 *
-	 * @param {*} client_config
 	 * @param {*} persistence
 	 * @memberof FabricClient
 	 */
-	async initialize(client_config, persistence) {
-		this.client_config = client_config;
-
+	async initialize(persistence) {
 		// Before initializing a channel
 
 		// Loading client from network configuration file
-		logger.debug(
-			'Client configuration [%s]  ...',
-			this.client_name,
-			' this.client_config ',
-			this.client_config
-		);
+		logger.debug('Client configuration [%s]  ...', this.config.getNetworkId());
 
-		const profileConnection = this.client_config.profile;
-		const configPath = path.resolve(__dirname, profileConnection);
 		try {
 			// Use Gateway to connect to fabric network
-			this.fabricGateway = new FabricGateway(configPath);
+			this.fabricGateway = new FabricGateway(this.config);
 			await this.fabricGateway.initialize();
 		} catch (error) {
 			// TODO in case of the failure, should terminate explorer?
@@ -90,7 +77,7 @@ class FabricClient {
 			}
 		} else if (persistence) {
 			logger.info('********* call to initializeDetachClient **********');
-			this.initializeDetachClient(this.client_config, persistence);
+			this.initializeDetachClient(persistence);
 		} else {
 			logger.error('Not found any channels');
 		}
@@ -99,27 +86,15 @@ class FabricClient {
 	/**
 	 *
 	 *
-	 * @param {*} client_config
 	 * @param {*} persistence
 	 * @memberof FabricClient
 	 */
-	async initializeDetachClient(client_config, persistence) {
-		const name = client_config.name;
-		logger.debug(
-			'initializeDetachClient --> client_config ',
-			client_config,
-			' name ',
-			name
-		);
-		const profileConnection = client_config.profile;
-		const configPath = path.resolve(__dirname, profileConnection);
-		const fabricConfig = new FabricConfig();
-		fabricConfig.initialize(configPath);
-		const config = fabricConfig.getConfig();
-		this.userName = fabricConfig.getAdminUser();
-		const peers = fabricConfig.getPeersConfig();
+	async initializeDetachClient(persistence) {
+		logger.debug('initializeDetachClient', this.config.getNetworkId());
+		const network_config = this.config.getConfig();
+		const peers = this.config.getPeersConfig();
 
-		logger.info('initializeDetachClient, network config) ', config);
+		logger.info('initializeDetachClient, network config) ', network_config);
 		logger.info(
 			'************************************* initializeDetachClient *************************************************'
 		);
@@ -130,7 +105,7 @@ class FabricClient {
 		);
 		const channels = await persistence
 			.getCrudService()
-			.getChannelsInfo(this.network_name);
+			.getChannelsInfo(this.network_id);
 
 		if (channels.length === 0) {
 			throw new ExplorerError(explorer_mess.error.ERROR_2003);
@@ -140,7 +115,7 @@ class FabricClient {
 			this.setChannelGenHash(channel.channelname, channel.channel_genesis_hash);
 			const nodes = await persistence
 				.getMetricService()
-				.getPeerList(this.network_name, channel.channel_genesis_hash);
+				.getPeerList(this.network_id, channel.channel_genesis_hash);
 			for (const node of nodes) {
 				const peer_config = peers[node.server_hostname];
 				let pem;
@@ -170,7 +145,7 @@ class FabricClient {
 	async initializeNewChannel(channel_name) {
 		// Get genesis block for the channel
 		const block = await this.getGenesisBlock(channel_name);
-		logger.debug('Genesis Block for client [%s]', this.client_name);
+		logger.debug('Genesis Block for client [%s]', this.network_id);
 
 		const channel_genesis_hash = await FabricUtils.generateBlockHash(
 			block.header
@@ -284,8 +259,8 @@ class FabricClient {
 	 * @returns
 	 * @memberof FabricClient
 	 */
-	getClientName() {
-		return this.client_name;
+	getNetworkId() {
+		return this.network_id;
 	}
 
 	/**
@@ -311,6 +286,16 @@ class FabricClient {
 	 */
 	getStatus() {
 		return this.status;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricClient
+	 */
+	getNetworkConfig() {
+		return this.config.getConfig();
 	}
 }
 
