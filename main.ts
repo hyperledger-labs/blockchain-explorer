@@ -14,7 +14,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const url = require('url');
-const WebSocket = require('ws');
+import * as WebSocket from 'ws';
 const appconfig = require('./appconfig.json');
 const helper = require('./app/common/helper');
 
@@ -114,7 +114,7 @@ async function startExplorer() {
 	}
 	const broadcaster = new Broadcaster(server);
 	await explorer.initialize(broadcaster);
-	explorer.getApp().use(express.static(path.join(__dirname, 'client/build')));
+	explorer.getApp().use(express.static(path.join(__dirname, '..', 'client/build')));
 
 	// ============= start server =======================
 	server.listen(port, () => {
@@ -159,7 +159,7 @@ const shutDown = function(exitCode) {
 	setTimeout(() => connections.forEach(curr => curr.destroy()), 5000);
 };
 
-process.on('unhandledRejection', up => {
+process.on('unhandledRejection', (up: Error) => {
 	logger.error(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Explorer Error >>>>>>>>>>>>>>>>>>>>>'
 	);

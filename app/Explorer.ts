@@ -8,7 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const compression = require('compression');
 const passport = require('passport');
 const RateLimit = require('express-rate-limit');
-const PlatformBuilder = require('./platform/PlatformBuilder');
+import {PlatformBuilder } from './platform/PlatformBuilder';
 const explorerconfig = require('./explorerconfig.json');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerError = require('./common/ExplorerError');
@@ -32,12 +32,16 @@ const explorer_error = require('./common/ExplorerMessage').explorer.error;
  * @class Explorer
  */
 class Explorer {
+
+	app = Express();
+	persistence : any;
+	platforms : any[];
+
 	/**
 	 * Creates an instance of Explorer.
 	 * @memberof Explorer
 	 */
 	constructor() {
-		this.app = new Express();
 
 		// set up rate limiter: maximum of 1000 requests per minute
 
