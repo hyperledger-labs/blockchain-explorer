@@ -3,7 +3,7 @@
 	//   "./app/Explorer.ts"
 	// ],
 	"include": ["app/", "app/**/*.json", "main.ts", "sync.js", "swagger.json"],
-	"exclude": ["app/platform/fabric/e2e-test/**/*"],
+	"exclude": ["app/platform/fabric/e2e-test/PTE/"],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
