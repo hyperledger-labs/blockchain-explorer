@@ -1,9 +1,11 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
+/* eslint-disable import/extensions */
+import { helper } from './common/helper';
+/* eslint-enable import/extensions */
 
 const syncconfig = require('./explorerconfig.json');
-const helper = require('./common/helper');
 const ExplorerError = require('./common/ExplorerError');
 
 const logger = helper.getLogger('Synchronizer');

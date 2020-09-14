@@ -9,7 +9,7 @@ volumes:
 networks:
   mynetwork.com:
     external:
-      name: net_byfn
+      name: net_test
 
 services:
 
@@ -46,11 +46,10 @@ services:
       - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
-      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
-      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+      - ./examples/net1/config.json:/opt/explorer/dist/app/platform/fabric/config.json
+      - ./examples/net1/connection-profile:/opt/explorer/dist/app/platform/fabric/connection-profile
       - ./examples/net1/crypto:/tmp/crypto
       - walletstore:/opt/wallet
-    command: sh -c "node /opt/explorer/main.js && tail -f /dev/null"
     ports:
       - 8080:8080
     depends_on:

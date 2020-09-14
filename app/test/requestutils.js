@@ -6,7 +6,7 @@ const expect = require('chai').expect;
 const assert = require('assert');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const helper = require('../common/helper');
+import { helper } from '../common/helper';
 const reqMultiOrgs = require('./fixtures/reqMultiOrgs.json');
 const reqOneOrg = require('./fixtures/reqOneOrg.json');
 const reqNoOrgs = require('./fixtures/reqNoOrgs.json');

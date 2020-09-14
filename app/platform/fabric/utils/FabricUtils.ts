@@ -2,7 +2,7 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const path = require('path');
+import * as path from 'path';
 const fs = require('fs-extra');
 const sha = require('js-sha256');
 const asn = require('asn1.js');
@@ -11,7 +11,7 @@ const FabricClient = require('./../FabricClient.js');
 const ExplorerError = require('../../../common/ExplorerError');
 const explorer_error = require('../../../common/ExplorerMessage').explorer
 	.error;
-const helper = require('../../../common/helper');
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricUtils');
 

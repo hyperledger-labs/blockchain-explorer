@@ -1,11 +1,10 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+import { helper } from '../common/helper';
 
 const passport = require('passport');
-
 const { responder } = require('./requestutils');
-const helper = require('../common/helper');
 
 const logger = helper.getLogger('Auth');
 

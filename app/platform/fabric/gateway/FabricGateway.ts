@@ -15,14 +15,27 @@ const concat = require('lodash/concat');
 const FabricCAServices = require('fabric-ca-client');
 
 const fs = require('fs');
-const path = require('path');
-const helper = require('../../../common/helper');
+import * as path from 'path';
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../../common/ExplorerError');
 
 class FabricGateway {
+
+	fabricConfig : any;
+	config : any;
+	gateway : any;
+	wallet : any;
+	tlsEnable : boolean;
+	defaultChannelName : string;
+	fabricCaEnabled : boolean;
+	client : any;
+	FSWALLET : string;
+	enableAuthentication : boolean;
+	asLocalhost : boolean;
+
 	/**
 	 * Creates an instance of FabricGateway.
 	 * @param {FabricConfig} config
@@ -109,7 +122,8 @@ class FabricGateway {
 				discovery: {
 					enabled: true,
 					asLocalhost: this.asLocalhost
-				}
+				},
+				clientTlsIdentity: ""
 			};
 
 			if ('clientTlsIdentity' in this.config.client) {

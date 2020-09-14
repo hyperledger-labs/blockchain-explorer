@@ -28,7 +28,7 @@ RUN apk add --no-cache --virtual npm-deps python make g++ curl bash && \
 RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash -s -- -b /usr/local/bin
 
 # install NPM dependencies
-RUN npm install && npm prune --production
+RUN npm install && npm run build && npm prune --production
 
 # build explorer app
 RUN cd client && npm install && npm prune --production && yarn build
@@ -58,6 +58,7 @@ ENV EXPLORER_APP_PATH $DEFAULT_WORKDIR/explorer
 WORKDIR $EXPLORER_APP_PATH
 
 COPY . .
+COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/dist ./dist/
 COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/client/build ./client/build/
 COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/node_modules ./node_modules/
 
@@ -65,4 +66,4 @@ COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/node_modules ./node_modules/
 EXPOSE 8080
 
 # run blockchain explorer main app
-CMD node $EXPLORER_APP_PATH/main.js && tail -f /dev/null
+CMD npm run app-start && tail -f /dev/null

@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {helper} from '../../../common/helper';
+
 const convertHex = require('convert-hex');
 const fabprotos = require('fabric-protos');
 const includes = require('lodash/includes');
-const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('SyncServices');
 
@@ -31,6 +32,10 @@ for (const key in fabprotos.protos.TxValidationCode) {
  * @class SyncServices
  */
 class SyncServices {
+	persistence : any;
+	platform : any;
+	synchInProcess : string[];
+
 	/**
 	 * Creates an instance of SyncServices.
 	 * @param {*} platform
@@ -40,7 +45,6 @@ class SyncServices {
 	constructor(platform, persistence) {
 		this.platform = platform;
 		this.persistence = persistence;
-		this.blocks = [];
 		this.synchInProcess = [];
 	}
 

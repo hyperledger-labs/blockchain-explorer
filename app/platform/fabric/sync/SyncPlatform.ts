@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const path = require('path');
+import * as path from 'path';
 const fs = require('fs-extra');
 
 const SyncService = require('../sync/SyncService');
@@ -10,7 +10,7 @@ const FabricUtils = require('../utils/FabricUtils');
 const FabricEvent = require('./FabricEvent');
 const FabricConfig = require('../FabricConfig');
 
-const helper = require('../../../common/helper');
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('SyncPlatform');
 const ExplorerError = require('../../../common/ExplorerError');
@@ -29,6 +29,16 @@ const config_path = path.resolve(__dirname, '../config.json');
  * @class SyncPlatform
  */
 class SyncPlatform {
+	network_id : string;
+	network_name : string;
+	client : any;
+	eventHub : any;
+	sender : any;
+	persistence : any;
+	syncService : any;
+	blocksSyncTime : number;
+	network_config : object;
+
 	/**
 	 * Creates an instance of SyncPlatform.
 	 * @param {*} persistence
@@ -86,10 +96,6 @@ class SyncPlatform {
 		);
 
 		logger.debug('Blocks synch interval time >> %s', this.blocksSyncTime);
-
-		// Update the discovery-cache-life as block synch interval time in global config
-		global.hfc.config.set('discovery-cache-life', this.blocksSyncTime);
-		// global.hfc.config.set('initialize-with-discovery', true);
 
 		this.network_config = network_configs[this.network_id];
 		const config = new FabricConfig();
