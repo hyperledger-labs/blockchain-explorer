@@ -323,16 +323,16 @@ $ npm run build
     }   
     ```
 
-* `./start.sh`
+* `npm start`
   * It will have the backend and GUI service up
 
-* `./stop.sh`
+* `npm run app-stop`
   * It will stop the node server
 
 **Note:** If Hyperledger Fabric network is deployed on other machine, please define the following environment variable
 
 ```
-$ DISCOVERY_AS_LOCALHOST=false ./start.sh
+$ DISCOVERY_AS_LOCALHOST=false npm start
 ```
 
 ### Run Standalone in Different Location

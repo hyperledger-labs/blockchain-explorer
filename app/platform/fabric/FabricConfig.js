@@ -242,7 +242,7 @@ class FabricConfig {
 
 		if (organization.signedCert.path !== undefined) {
 			return fs.readFileSync(
-				path.resolve(__dirname, '../../..', organization.signedCert.path),
+				path.resolve(__dirname, '../../../..', organization.signedCert.path),
 				'utf8'
 			);
 		}
@@ -268,7 +268,7 @@ class FabricConfig {
 
 		if (organization.adminPrivateKey.path !== undefined) {
 			return fs.readFileSync(
-				path.resolve(__dirname, '../../..', organization.adminPrivateKey.path),
+				path.resolve(__dirname, '../../../..', organization.adminPrivateKey.path),
 				'utf8'
 			);
 		}
@@ -293,7 +293,7 @@ class FabricConfig {
 
 		if (tlsCACerts.path !== undefined) {
 			return fs.readFileSync(
-				path.resolve(__dirname, '../../..', tlsCACerts.path),
+				path.resolve(__dirname, '../../../..', tlsCACerts.path),
 				'utf8'
 			);
 		}

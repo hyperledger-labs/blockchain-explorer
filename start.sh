@@ -18,4 +18,4 @@ export LOG_LEVEL_CONSOLE=${LOG_LEVEL_CONSOLE:-info}
 export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-false}
 
 export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
-node main.js name - hyperledger-explorer &
+node dist/main.js name - hyperledger-explorer &

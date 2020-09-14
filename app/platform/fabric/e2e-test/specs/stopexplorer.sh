@@ -17,7 +17,7 @@ done
 
 pushd ${ROOTPATH}
 
-./stop.sh
+npm run app-stop
 if [ $CLEANUP -eq 1 ]; then
   docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml down -v
   rm -rf wallet/ logs/

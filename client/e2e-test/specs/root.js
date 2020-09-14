@@ -138,7 +138,7 @@ describe('GUI e2e test', () => {
 
 		process.env.LOG_LEVEL_CONSOLE = 'debug';
 		process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC = '10';
-		child = spawn('./start.sh', [], {
+		child = spawn('npm', ['start'], {
 			cwd: rootdir,
 			env: process.env,
 			shell: true
@@ -232,7 +232,7 @@ describe('GUI e2e test', () => {
 
 			process.chdir(rootdir);
 
-			child = spawnSync('./stop.sh', [], {
+			child = spawnSync('npm', ['run', 'app-stop'], {
 				cwd: rootdir,
 				env: process.env,
 				shell: true

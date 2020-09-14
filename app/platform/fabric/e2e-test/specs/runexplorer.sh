@@ -82,7 +82,7 @@ fi
 
 # export LOG_LEVEL_CONSOLE=debug
 export EXPLORER_SYNC_BLOCKSYNCTIME_SEC=5
-./start.sh
+npm start
 echo "#### Starting Explorer process ..."
 
 rc=1

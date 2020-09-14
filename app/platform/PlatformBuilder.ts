@@ -11,7 +11,7 @@ const ExplorerError = require('../common/ExplorerError');
  *
  * @class PlatformBuilder
  */
-class PlatformBuilder {
+export class PlatformBuilder {
 	/**
 	 *
 	 *
@@ -31,5 +31,3 @@ class PlatformBuilder {
 		throw new ExplorerError(explorer_error.ERROR_1004, pltfrm);
 	}
 }
-
-module.exports = PlatformBuilder;
