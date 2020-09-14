@@ -8,6 +8,8 @@
 		"fabric nodesdk"
 	],
 	"dependencies": {
+		"@types/pg": "^7.14.5",
+		"@types/sequelize": "^4.28.9",
 		"ajv": "^5.5.2",
 		"app-root-path": "^2.0.1",
 		"asn1.js": "^5.0.1",
