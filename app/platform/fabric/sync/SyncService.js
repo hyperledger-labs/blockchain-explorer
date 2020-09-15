@@ -628,7 +628,7 @@ class SyncServices {
 				const transaction_row = {
 					blockid: block.header.number.toString(),
 					txhash: txObj.payload.header.channel_header.tx_id,
-					createdt,
+					createdt: txObj.payload.header.channel_header.timestamp,
 					chaincodename: chaincode,
 					chaincode_id,
 					status,
