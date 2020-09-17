@@ -1,9 +1,9 @@
 /*
  *SPDX-License-Identifier: Apache-2.0
  */
-const explorer_const = require('../common/ExplorerConst').explorer.const;
-const explorer_error = require('../common/ExplorerMessage').explorer.error;
-const ExplorerError = require('../common/ExplorerError');
+import {explorer} from '../common/ExplorerConst'
+import {explorer as explorerErr} from '../common/ExplorerMessage'
+import ExplorerError from '../common/ExplorerError'
 
 /**
  *
@@ -22,12 +22,12 @@ class SyncBuilder {
 	 * @memberof SyncBuilder
 	 */
 	static async build(pltfrm, persistence, sender) {
-		if (pltfrm === explorer_const.PLATFORM_FABRIC) {
+		if (pltfrm === explorer.const.PLATFORM_FABRIC) {
 			const SyncPlatform = require('../platform/fabric/sync/SyncPlatform');
 			const platform = new SyncPlatform(persistence, sender);
 			return platform;
 		}
-		throw new ExplorerError(explorer_error.ERROR_1005, pltfrm);
+		throw new ExplorerError(explorerErr.error.ERROR_1005, pltfrm);
 	}
 }
 
