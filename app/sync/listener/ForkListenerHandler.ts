@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const path = require('path');
+import path from 'path'
 const { fork } = require('child_process');
 
 /**
@@ -11,6 +11,9 @@ const { fork } = require('child_process');
  * @class ForkListenerHandler
  */
 class ForkListenerHandler {
+	public platform: any;
+	public syncProcessor: any;
+
 	/**
 	 * Creates an instance of ForkListenerHandler.
 	 * @param {*} platform
