@@ -1,9 +1,9 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+import { helper } from '../common/helper';
 
 const requtil = require('./requestutils.js');
-const helper = require('./../common/helper');
 
 const logger = helper.getLogger('dbroutes');
 
@@ -21,7 +21,7 @@ const dbroutes = (router, platform) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
 			dbStatusMetrics.getStatus(req.network, channel_genesis_hash, data => {
-				if (data && (data.chaincodeCount && data.txCount && data.peerCount)) {
+				if (data && data.chaincodeCount && data.txCount && data.peerCount) {
 					return res.send(data);
 				}
 				return requtil.notFound(req, res);

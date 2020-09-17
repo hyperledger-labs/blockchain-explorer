@@ -5,11 +5,10 @@
 /* eslint-disable quotes */
 /* eslint-disable no-extra-parens */
 
+import {helper} from '../../../common/helper';
+
 const bcrypt = require('bcrypt');
-
-const helper = require('../../../common/helper');
 const UserMeta = require('../../../model/User.js');
-
 const logger = helper.getLogger('UserService');
 
 /**
@@ -18,6 +17,9 @@ const logger = helper.getLogger('UserService');
  * @class UserService
  */
 class UserService {
+	platform : any;
+	userDataService : any;
+
 	/**
 	 *Creates an instance of UserService.
 	 * @param {*} platform

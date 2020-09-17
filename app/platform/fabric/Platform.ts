@@ -2,11 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const path = require('path');
+import * as path from 'path';
+import {helper} from '../../common/helper';
+import {User} from './models/User';
+
 const fs = require('fs-extra');
 
 const Proxy = require('./Proxy');
-const helper = require('../../common/helper');
 const ExplorerError = require('../../common/ExplorerError');
 
 const logger = helper.getLogger('Platform');
@@ -22,7 +24,6 @@ const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const config_path = path.resolve(__dirname, './config.json');
 
-const User = require('./models/User');
 const FabricConfig = require('./FabricConfig');
 const UserService = require('./service/UserService');
 
@@ -32,6 +33,16 @@ const UserService = require('./service/UserService');
  * @class Platform
  */
 class Platform {
+	persistence : any;
+	broadcaster : any;
+	networks : Map<string, any>;
+	userService : any;
+	proxy : any;
+	defaultNetwork : string;
+	network_configs : object;
+	syncType : string;
+	explorerListeners : any[];
+
 	/**
 	 * Creates an instance of Platform.
 	 * @param {*} persistence

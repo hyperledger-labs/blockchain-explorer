@@ -15,14 +15,27 @@ const concat = require('lodash/concat');
 const FabricCAServices = require('fabric-ca-client');
 
 const fs = require('fs');
-const path = require('path');
-const helper = require('../../../common/helper');
+import * as path from 'path';
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricGateway');
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../../common/ExplorerError');
 
 class FabricGateway {
+
+	fabricConfig : any;
+	config : any;
+	gateway : any;
+	wallet : any;
+	tlsEnable : boolean;
+	defaultChannelName : string;
+	fabricCaEnabled : boolean;
+	client : any;
+	FSWALLET : string;
+	enableAuthentication : boolean;
+	asLocalhost : boolean;
+
 	/**
 	 * Creates an instance of FabricGateway.
 	 * @param {FabricConfig} config
@@ -59,13 +72,12 @@ class FabricGateway {
 		logger.debug(info.toUpperCase());
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		let identity;
 		try {
 			// Create a new file system based wallet for managing identities.
 			const walletPath = path.join(process.cwd(), this.FSWALLET);
 			this.wallet = await Wallets.newFileSystemWallet(walletPath);
 			// Check to see if we've already enrolled the admin user.
-			identity = await this.wallet.get(explorerAdminId);
+			const identity = await this.wallet.get(explorerAdminId);
 			if (identity) {
 				logger.debug(
 					`An identity for the admin user: ${explorerAdminId} already exists in the wallet`
@@ -73,7 +85,7 @@ class FabricGateway {
 			} else if (this.fabricCaEnabled) {
 				logger.info('CA enabled');
 
-				identity = await this.enrollCaIdentity(
+				await this.enrollCaIdentity(
 					explorerAdminId,
 					this.fabricConfig.getAdminPassword()
 				);
@@ -85,7 +97,7 @@ class FabricGateway {
 
 				const signedCertPem = this.fabricConfig.getOrgSignedCertPem();
 				const adminPrivateKeyPem = this.fabricConfig.getOrgAdminPrivateKeyPem();
-				identity = this.enrollUserIdentity(
+				await this.enrollUserIdentity(
 					explorerAdminId,
 					signedCertPem,
 					adminPrivateKeyPem
@@ -109,7 +121,8 @@ class FabricGateway {
 				discovery: {
 					enabled: true,
 					asLocalhost: this.asLocalhost
-				}
+				},
+				clientTlsIdentity: ""
 			};
 
 			if ('clientTlsIdentity' in this.config.client) {

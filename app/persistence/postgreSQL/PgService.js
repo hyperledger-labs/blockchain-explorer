@@ -17,13 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { helper } from '../../common/helper';
 
 const { Client } = require('pg');
 const Sequelize = require('sequelize');
-
 const fs = require('fs');
-
-const helper = require('../../common/helper');
 
 const logger = helper.getLogger('PgService');
 

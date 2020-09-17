@@ -7,6 +7,8 @@
  * Created by shouhewu on 6/8/17.
  *
  */
+import {helper} from './app/common/helper';
+
 const express = require('express');
 const helmet = require('helmet');
 const path = require('path');
@@ -16,7 +18,6 @@ const fs = require('fs');
 const url = require('url');
 import * as WebSocket from 'ws';
 const appconfig = require('./appconfig.json');
-const helper = require('./app/common/helper');
 
 const logger = helper.getLogger('main');
 

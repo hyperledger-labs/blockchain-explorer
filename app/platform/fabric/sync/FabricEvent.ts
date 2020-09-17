@@ -1,7 +1,8 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
-const helper = require('../../../common/helper');
+
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricEvent');
 
@@ -11,6 +12,11 @@ const logger = helper.getLogger('FabricEvent');
  * @class FabricEvent
  */
 class FabricEvent {
+
+	client : any;
+	fabricServices : any;
+	static channelEventHubs : any;
+
 	/**
 	 * Creates an instance of FabricEvent.
 	 * @param {*} client
@@ -85,9 +91,9 @@ class FabricEvent {
 	 * @param {*} channel_name
 	 * @memberof FabricEvent
 	 */
-	connectChannelEventHub(channel_name) {
+	async connectChannelEventHub(channel_name) {
 		try {
-			this.createChannelEventHub(channel_name);
+			await this.createChannelEventHub(channel_name);
 		} catch (err) {
 			logger.error('Failed to get the channel ', err);
 		}

@@ -2,15 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const helper = require('../../common/helper');
+import {helper} from '../../common/helper';
+
 const NetworkService = require('./service/NetworkService.js');
+const ExplorerError = require('../../common/ExplorerError');
+const fabric_const = require('./utils/FabricConst').fabric.const;
+const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 const logger = helper.getLogger('Proxy');
 
-const ExplorerError = require('../../common/ExplorerError');
-
-const fabric_const = require('./utils/FabricConst').fabric.const;
-const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 
 /**
  *
@@ -18,6 +18,11 @@ const explorer_error = require('../../common/ExplorerMessage').explorer.error;
  * @class Proxy
  */
 class Proxy {
+	platform : any;
+	persistence : any;
+	broadcaster : any;
+	userService : any;
+
 	/**
 	 * Creates an instance of Proxy.
 	 * @param {*} platform
@@ -270,7 +275,7 @@ class Proxy {
 
 		for (let i = 0; i < channels.length; i++) {
 			const index = client_channels.indexOf(channels[i].channelname);
-			if (!(index > -1)) {
+			if (index <= -1) {
 				await client.initializeNewChannel(channels[i].channelname);
 			}
 			respose.push(channels[i].channelname);

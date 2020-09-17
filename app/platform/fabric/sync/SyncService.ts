@@ -2,10 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import {helper} from '../../../common/helper';
+
 const convertHex = require('convert-hex');
 const fabprotos = require('fabric-protos');
 const includes = require('lodash/includes');
-const helper = require('../../../common/helper');
 
 const logger = helper.getLogger('SyncServices');
 
@@ -31,6 +32,10 @@ for (const key in fabprotos.protos.TxValidationCode) {
  * @class SyncServices
  */
 class SyncServices {
+	persistence : any;
+	platform : any;
+	synchInProcess : string[];
+
 	/**
 	 * Creates an instance of SyncServices.
 	 * @param {*} platform
@@ -40,7 +45,6 @@ class SyncServices {
 	constructor(platform, persistence) {
 		this.platform = platform;
 		this.persistence = persistence;
-		this.blocks = [];
 		this.synchInProcess = [];
 	}
 
@@ -427,26 +431,26 @@ class SyncServices {
 		if (!channel_genesis_hash) {
 			// get discovery and insert channel details to db and create new channel object in client context
 			setTimeout(
-				async (client, channel_name, block) => {
-					await client.initializeNewChannel(channel_name);
-					channel_genesis_hash = client.getChannelGenHash(channel_name);
+				async (cli, chName, blk) => {
+					await cli.initializeNewChannel(chName);
+					channel_genesis_hash = cli.getChannelGenHash(chName);
 					// inserting new channel details to DB
 					await _self.insertNewChannel(
-						client,
-						channel_name,
-						block,
+						cli,
+						chName,
+						blk,
 						channel_genesis_hash
 					);
 					await _self.insertFromDiscoveryResults(
-						client,
-						channel_name,
+						cli,
+						chName,
 						channel_genesis_hash
 					);
 
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_NEWCHANNEL,
 						network_id,
-						channel_name
+						chName
 					};
 
 					_self.platform.send(notify);
@@ -460,18 +464,18 @@ class SyncServices {
 			header.channel_header.typeString === fabric_const.BLOCK_TYPE_CONFIG
 		) {
 			setTimeout(
-				async (client, channel_name, channel_genesis_hash) => {
+				async (cli, chName, chGenHash) => {
 					// get discovery and insert new peer, orders details to db
-					await client.initializeChannelFromDiscover(channel_name);
+					await cli.initializeChannelFromDiscover(chName);
 					await _self.insertFromDiscoveryResults(
-						client,
-						channel_name,
-						channel_genesis_hash
+						cli,
+						chName,
+						chGenHash
 					);
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_UPDATECHANNEL,
 						network_id,
-						channel_name
+						chName
 					};
 
 					_self.platform.send(notify);
@@ -500,8 +504,8 @@ class SyncServices {
 				blksize: jsonObjSize(block)
 			};
 			const txLen = block.data.data.length;
-			for (let i = 0; i < txLen; i++) {
-				const txObj = block.data.data[i];
+			for (let txIndex = 0; txIndex < txLen; txIndex++) {
+				const txObj = block.data.data[txIndex];
 				const txid = txObj.payload.header.channel_header.tx_id;
 				let validation_code = '';
 				let endorser_signature = '';
@@ -525,7 +529,7 @@ class SyncServices {
 						block.metadata.metadata[
 							fabprotos.common.BlockMetadataIndex.TRANSACTIONS_FILTER
 						];
-					const val_code = validation_codes[i];
+					const val_code = validation_codes[txIndex];
 					validation_code = convertValidationCode(val_code);
 				}
 				let envelope_signature = txObj.signature;
@@ -554,18 +558,18 @@ class SyncServices {
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
 							.extension.response.status;
 					mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(
-						i => i.endorser.mspid
+						endorsement => endorsement.endorser.mspid
 					);
 					rwset =
 						txObj.payload.data.actions[0].payload.action.proposal_response_payload
 							.extension.results.ns_rwset;
-					readSet = rwset.map(i => ({
-						chaincode: i.namespace,
-						set: i.rwset.reads
+					readSet = rwset.map(rw => ({
+						chaincode: rw.namespace,
+						set: rw.rwset.reads
 					}));
-					writeSet = rwset.map(i => ({
-						chaincode: i.namespace,
-						set: i.rwset.writes
+					writeSet = rwset.map(rw => ({
+						chaincode: rw.namespace,
+						set: rw.rwset.writes
 					}));
 					chaincode_proposal_input =
 						txObj.payload.data.actions[0].payload.chaincode_proposal_payload.input
@@ -602,18 +606,18 @@ class SyncServices {
 					chaincode === fabric_const.CHAINCODE_LSCC
 				) {
 					setTimeout(
-						async (client, channel_name, channel_genesis_hash) => {
+						async (cli, chName, chGenHash) => {
 							// get discovery and insert chaincode details to db
 							await _self.insertFromDiscoveryResults(
-								client,
-								channel_name,
-								channel_genesis_hash
+								cli,
+								chName,
+								chGenHash
 							);
 
 							const notify = {
 								notify_type: fabric_const.NOTITY_TYPE_CHAINCODE,
 								network_id,
-								channel_name
+								chName
 							};
 
 							_self.platform.send(notify);
@@ -659,12 +663,12 @@ class SyncServices {
 
 			// Insert block
 			logger.info('block_row.blocknum ', block_row.blocknum);
-			const status = await this.persistence
+			const successSaveBlock = await this.persistence
 				.getCrudService()
 				.saveBlock(network_id, block_row);
-			logger.debug('status ', status);
+			logger.debug('result of SaveBlock ', successSaveBlock);
 
-			if (status) {
+			if (successSaveBlock) {
 				// Push last block
 				const notify = {
 					notify_type: fabric_const.NOTITY_TYPE_BLOCK,
@@ -692,8 +696,8 @@ class SyncServices {
 
 	convertFormatOfValue(prop, encoding, obj) {
 		if (Array.isArray(obj)) {
-			for (let i = 0; i < obj.length; i++) {
-				this.convertFormatOfValue(prop, encoding, obj[i]);
+			for (let idx = 0; idx < obj.length; idx++) {
+				this.convertFormatOfValue(prop, encoding, obj[idx]);
 			}
 		} else if (!Buffer.isBuffer(obj) && typeof obj === 'object') {
 			// Each element of array of Buffer is excluded by the 1st condition

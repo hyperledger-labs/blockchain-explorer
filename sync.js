@@ -2,8 +2,9 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
+import { helper } from './app/common/helper';
+
 const Synchronizer = require('./app/Synchronizer');
-const helper = require('./app/common/helper');
 
 const logger = helper.getLogger('Sync');
 const ExplorerError = require('./app/common/ExplorerError');

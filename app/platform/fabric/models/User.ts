@@ -2,7 +2,7 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const helper = require('../../../common/helper');
+import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('User');
 
@@ -11,7 +11,10 @@ const logger = helper.getLogger('User');
  *
  * @class User
  */
-class User {
+export class User {
+	userJson : any;
+	user: any;
+
 	/**
 	 * Creates an instance of User.
 	 * @param {*} user
@@ -37,7 +40,7 @@ class User {
 	 * @returns {User} Newly defined User object
 	 * @memberof User
 	 */
-	static createInstanceWithParam(user, password, network, roles) {
+	static createInstanceWithParam(user, password, network, roles) : any {
 		return new User({
 			user,
 			password,
@@ -57,4 +60,4 @@ class User {
 	}
 }
 
-module.exports = User;
+// module.exports = User;

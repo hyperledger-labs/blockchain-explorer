@@ -94,6 +94,7 @@
 		"import/no-extraneous-dependencies": ["off"],
 		"import/no-unresolved": ["off"],
 		"import/no-named-as-default": ["off"],
+		"import/extensions": ["off"],
 		"react/no-unused-state": ["off"],
 		"react/destructuring-assignment": ["off"],
 		"jsx-a11y/label-has-for": ["off"],

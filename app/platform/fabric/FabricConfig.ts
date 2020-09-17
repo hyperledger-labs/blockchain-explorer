@@ -3,8 +3,8 @@
  */
 
 const fs = require('fs');
-const path = require('path');
-const helper = require('../../common/helper');
+import * as path from 'path';
+import {helper} from '../../common/helper';
 const explorer_mess = require('../../common/ExplorerMessage').explorer;
 const ExplorerError = require('../../common/ExplorerError');
 
@@ -16,6 +16,10 @@ const logger = helper.getLogger('FabricConfig');
  * @class FabricConfig
  */
 class FabricConfig {
+	logger : any;
+	config : any;
+	network_id : string;
+
 	/**
 	 * Creates an instance of FabricConfig.
 	 * @memberof FabricConfig

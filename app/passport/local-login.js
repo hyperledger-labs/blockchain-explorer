@@ -3,14 +3,12 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
+import { User } from '../platform/fabric/models/User';
 
 const { promisify } = require('util');
-
 const jwt = require('jsonwebtoken');
-
 const PassportLocalStrategy = require('passport-local').Strategy;
 
-const User = require('../platform/fabric/models/User');
 // @ts-ignore
 const config = require('../explorerconfig.json');
 // @ts-check
