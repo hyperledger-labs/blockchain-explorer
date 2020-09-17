@@ -72,13 +72,12 @@ class FabricGateway {
 		logger.debug(info.toUpperCase());
 
 		this.defaultChannelName = this.fabricConfig.getDefaultChannel();
-		let identity;
 		try {
 			// Create a new file system based wallet for managing identities.
 			const walletPath = path.join(process.cwd(), this.FSWALLET);
 			this.wallet = await Wallets.newFileSystemWallet(walletPath);
 			// Check to see if we've already enrolled the admin user.
-			identity = await this.wallet.get(explorerAdminId);
+			const identity = await this.wallet.get(explorerAdminId);
 			if (identity) {
 				logger.debug(
 					`An identity for the admin user: ${explorerAdminId} already exists in the wallet`
@@ -86,7 +85,7 @@ class FabricGateway {
 			} else if (this.fabricCaEnabled) {
 				logger.info('CA enabled');
 
-				identity = await this.enrollCaIdentity(
+				await this.enrollCaIdentity(
 					explorerAdminId,
 					this.fabricConfig.getAdminPassword()
 				);
@@ -98,7 +97,7 @@ class FabricGateway {
 
 				const signedCertPem = this.fabricConfig.getOrgSignedCertPem();
 				const adminPrivateKeyPem = this.fabricConfig.getOrgAdminPrivateKeyPem();
-				identity = this.enrollUserIdentity(
+				await this.enrollUserIdentity(
 					explorerAdminId,
 					signedCertPem,
 					adminPrivateKeyPem

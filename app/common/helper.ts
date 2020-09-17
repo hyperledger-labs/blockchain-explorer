@@ -20,7 +20,6 @@
 
 const log4js = require('log4js/lib/log4js');
 
-import { join } from 'path';
 const fs = require('fs-extra');
 const yn = require('yn');
 

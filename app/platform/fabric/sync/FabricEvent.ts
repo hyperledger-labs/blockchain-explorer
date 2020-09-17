@@ -91,9 +91,9 @@ class FabricEvent {
 	 * @param {*} channel_name
 	 * @memberof FabricEvent
 	 */
-	connectChannelEventHub(channel_name) {
+	async connectChannelEventHub(channel_name) {
 		try {
-			this.createChannelEventHub(channel_name);
+			await this.createChannelEventHub(channel_name);
 		} catch (err) {
 			logger.error('Failed to get the channel ', err);
 		}

@@ -275,7 +275,7 @@ class Proxy {
 
 		for (let i = 0; i < channels.length; i++) {
 			const index = client_channels.indexOf(channels[i].channelname);
-			if (!(index > -1)) {
+			if (index <= -1) {
 				await client.initializeNewChannel(channels[i].channelname);
 			}
 			respose.push(channels[i].channelname);
