@@ -643,5 +643,3 @@ export class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlQuery);
 	}
 }
-
-module.exports = MetricService;

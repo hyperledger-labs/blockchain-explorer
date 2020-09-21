@@ -59,5 +59,3 @@ export class User {
 		return this.userJson;
 	}
 }
-
-// module.exports = User;

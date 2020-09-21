@@ -3,6 +3,10 @@
  */
 
 import * as path from 'path';
+import {helper} from '../../../common/helper';
+import {MetricService} from '../../../persistence/fabric/MetricService';
+import {CRUDService} from '../../../persistence/fabric/CRUDService';
+
 const fs = require('fs-extra');
 
 const SyncService = require('../sync/SyncService');
@@ -10,13 +14,9 @@ const FabricUtils = require('../utils/FabricUtils');
 const FabricEvent = require('./FabricEvent');
 const FabricConfig = require('../FabricConfig');
 
-import {helper} from '../../../common/helper';
-
 const logger = helper.getLogger('SyncPlatform');
 const ExplorerError = require('../../../common/ExplorerError');
 
-const CRUDService = require('../../../persistence/fabric/CRUDService');
-const MetricService = require('../../../persistence/fabric/MetricService');
 
 const fabric_const = require('../utils/FabricConst').fabric.const;
 const explorer_mess = require('../../../common/ExplorerMessage').explorer;

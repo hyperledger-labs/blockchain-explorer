@@ -104,5 +104,3 @@ export class UserDataService {
 			});
 	}
 }
-
-module.exports = UserDataService;

@@ -423,7 +423,6 @@ export class CRUDService {
 	}
 	// Orderer BE-303
 }
-module.exports = CRUDService;
 
 /**
  *

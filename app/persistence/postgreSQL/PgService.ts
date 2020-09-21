@@ -579,5 +579,3 @@ export class PgService {
 	}
 
 }
-
-module.exports = PgService;
