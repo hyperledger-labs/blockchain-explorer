@@ -3,14 +3,14 @@
  */
 
 import {explorerConst} from '../../common/ExplorerConst'
-const ForkSenderHandler = require('./ForkSenderHandler');
+import {ForkSenderHandler} from './ForkSenderHandler';
 
 /**
  *
  *
  * @class ExplorerSender
  */
-class ExplorerSender {
+export class ExplorerSender {
 	public syncType: any;
 	public syncSenderHandler: any;
 
@@ -50,5 +50,3 @@ class ExplorerSender {
 		}
 	}
 }
-
-module.exports = ExplorerSender;

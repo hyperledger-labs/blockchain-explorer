@@ -9,20 +9,20 @@
  */
 import {helper} from './app/common/helper';
 
-const express = require('express');
-const helmet = require('helmet');
-const path = require('path');
-const http = require('http');
-const https = require('https');
+import express from 'express';
+import helmet from 'helmet';
+import path from 'path';
+import http from 'http';
+import https from 'https';
 const fs = require('fs');
-const url = require('url');
+import url from 'url';
 import * as WebSocket from 'ws';
-const appconfig = require('./appconfig.json');
+import appconfig from './appconfig.json';
 
 const logger = helper.getLogger('main');
 
-const Explorer = require('./app/Explorer');
-const ExplorerError = require('./app/common/ExplorerError');
+import {Explorer} from './app/Explorer';
+import {ExplorerError} from './app/common/ExplorerError';
 
 const sslEnabled = process.env.SSL_ENABLED || appconfig.sslEnabled;
 const sslCertsPath = process.env.SSL_CERTS_PATH || appconfig.sslCertsPath;

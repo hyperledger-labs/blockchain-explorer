@@ -13,14 +13,14 @@ const logger = helper.getLogger('dbroutes');
  * @param {*} router
  * @param {*} platform
  */
-const dbroutes = (router, platform) => {
+export function dbroutes(router: any, platform: any) {
 	const dbStatusMetrics = platform.getPersistence().getMetricService();
 	const dbCrudService = platform.getPersistence().getCrudService();
 
-	router.get('/status/:channel_genesis_hash', (req, res) => {
+	router.get('/status/:channel_genesis_hash', (req: { params: { channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: any) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
-			dbStatusMetrics.getStatus(req.network, channel_genesis_hash, data => {
+			dbStatusMetrics.getStatus(req.network, channel_genesis_hash, (data: { chaincodeCount: any; txCount: any; peerCount: any; }) => {
 				if (data && data.chaincodeCount && data.txCount && data.peerCount) {
 					return res.send(data);
 				}
@@ -43,7 +43,7 @@ const dbroutes = (router, platform) => {
 	 */
 	router.get(
 		'/block/transactions/:channel_genesis_hash/:number',
-		async (req, res) => {
+		async (req: { params: { number: string; channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; number: any; txCount: any; }) => any; }) => {
 			const number = parseInt(req.params.number);
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			if (!isNaN(number) && channel_genesis_hash) {
@@ -78,13 +78,13 @@ const dbroutes = (router, platform) => {
 	 * 'type': 'header.channel_header.type'
 	 * }
 	 */
-	router.get('/transaction/:channel_genesis_hash/:txid', (req, res) => {
+	router.get('/transaction/:channel_genesis_hash/:txid', (req: { params: { txid: any; channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; row: any; }) => any; }) => {
 		const txid = req.params.txid;
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (txid && txid !== '0' && channel_genesis_hash) {
 			dbCrudService
 				.getTransactionByID(req.network, channel_genesis_hash, txid)
-				.then(row => {
+				.then((row: { createdt: string | number | Date; }) => {
 					if (row) {
 						row.createdt = new Date(row.createdt).toISOString();
 						return res.send({ status: 200, row });
@@ -95,12 +95,12 @@ const dbroutes = (router, platform) => {
 		}
 	});
 
-	router.get('/blockActivity/:channel_genesis_hash', (req, res) => {
+	router.get('/blockActivity/:channel_genesis_hash', (req: { params: { channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; row: any; }) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
 			dbCrudService
 				.getBlockActivityList(req.network, channel_genesis_hash)
-				.then(row => {
+				.then((row: any) => {
 					if (row) {
 						return res.send({ status: 200, row });
 					}
@@ -122,7 +122,7 @@ const dbroutes = (router, platform) => {
 	 */
 	router.get(
 		'/txList/:channel_genesis_hash/:blocknum/:txid',
-		async (req, res) => {
+		async (req: { params: { channel_genesis_hash: any; blocknum: string; txid: string; }; query: { from: any; to: any; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			const blockNum = parseInt(req.params.blocknum);
 			let txid = parseInt(req.params.txid);
@@ -145,7 +145,7 @@ const dbroutes = (router, platform) => {
 						to,
 						orgs
 					)
-					.then(rows => {
+					.then((rows: any) => {
 						if (rows) {
 							return res.send({ status: 200, rows });
 						}
@@ -171,10 +171,10 @@ const dbroutes = (router, platform) => {
 	 * }
 	 * ]
 	 */
-	router.get('/chaincode/:channel', (req, res) => {
+	router.get('/chaincode/:channel', (req: { params: { channel: any; }; network: any; }, res: { send: (arg0: { status: number; chaincode: any; }) => void; }) => {
 		const channelName = req.params.channel;
 		if (channelName) {
-			dbStatusMetrics.getTxPerChaincode(req.network, channelName, async data => {
+			dbStatusMetrics.getTxPerChaincode(req.network, channelName, async (data: any) => {
 				res.send({
 					status: 200,
 					chaincode: data
@@ -197,10 +197,10 @@ const dbroutes = (router, platform) => {
 	 * }
 	 * ]
 	 */
-	router.get('/peers/:channel_genesis_hash', (req, res) => {
+	router.get('/peers/:channel_genesis_hash', (req: { params: { channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; peers: any; }) => void; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
-			dbStatusMetrics.getPeerList(req.network, channel_genesis_hash, data => {
+			dbStatusMetrics.getPeerList(req.network, channel_genesis_hash, (data: any) => {
 				res.send({ status: 200, peers: data });
 			});
 		} else {
@@ -220,7 +220,7 @@ const dbroutes = (router, platform) => {
 	 */
 	router.get(
 		'/blockAndTxList/:channel_genesis_hash/:blocknum',
-		async (req, res) => {
+		async (req: { params: { channel_genesis_hash: any; blocknum: string; }; query: { from: any; to: any; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			const blockNum = parseInt(req.params.blocknum);
 			const orgs = requtil.orgsArrayToString(req.query);
@@ -238,7 +238,7 @@ const dbroutes = (router, platform) => {
 						to,
 						orgs
 					)
-					.then(rows => {
+					.then((rows: any) => {
 						logger.debug('Return getBlockAndTxList ', rows);
 						if (rows) {
 							return res.send({ status: 200, rows });
@@ -262,14 +262,14 @@ const dbroutes = (router, platform) => {
 	 * {'datetime':'2018-03-13T17:50:00.000Z','count':'0'},{'datetime':'2018-03-13T17:51:00.000Z','count':'0'},
 	 * {'datetime':'2018-03-13T17:52:00.000Z','count':'0'},{'datetime':'2018-03-13T17:53:00.000Z','count':'0'}]}
 	 */
-	router.get('/txByMinute/:channel_genesis_hash/:hours', (req, res) => {
+	router.get('/txByMinute/:channel_genesis_hash/:hours', (req: { params: { channel_genesis_hash: any; hours: string; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
 			dbStatusMetrics
 				.getTxByMinute(req.network, channel_genesis_hash, hours)
-				.then(rows => {
+				.then((rows: any) => {
 					if (rows) {
 						return res.send({ status: 200, rows });
 					}
@@ -289,14 +289,14 @@ const dbroutes = (router, platform) => {
 	 * {'rows':[{'datetime':'2018-03-12T19:00:00.000Z','count':'0'},
 	 * {'datetime':'2018-03-12T20:00:00.000Z','count':'0'}]}
 	 */
-	router.get('/txByHour/:channel_genesis_hash/:days', (req, res) => {
+	router.get('/txByHour/:channel_genesis_hash/:days', (req: { params: { channel_genesis_hash: any; days: string; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
 			dbStatusMetrics
 				.getTxByHour(req.network, channel_genesis_hash, days)
-				.then(rows => {
+				.then((rows: any) => {
 					if (rows) {
 						return res.send({ status: 200, rows });
 					}
@@ -315,14 +315,14 @@ const dbroutes = (router, platform) => {
 	 * Response:
 	 * {'rows':[{'datetime':'2018-03-13T19:59:00.000Z','count':'0'}]}
 	 */
-	router.get('/blocksByMinute/:channel_genesis_hash/:hours', (req, res) => {
+	router.get('/blocksByMinute/:channel_genesis_hash/:hours', (req: { params: { channel_genesis_hash: any; hours: string; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
 			dbStatusMetrics
 				.getBlocksByMinute(req.network, channel_genesis_hash, hours)
-				.then(rows => {
+				.then((rows: any) => {
 					if (rows) {
 						return res.send({ status: 200, rows });
 					}
@@ -341,14 +341,14 @@ const dbroutes = (router, platform) => {
 	 * Response:
 	 * {'rows':[{'datetime':'2018-03-13T20:00:00.000Z','count':'0'}]}
 	 */
-	router.get('/blocksByHour/:channel_genesis_hash/:days', (req, res) => {
+	router.get('/blocksByHour/:channel_genesis_hash/:days', (req: { params: { channel_genesis_hash: any; days: string; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
 			dbStatusMetrics
 				.getBlocksByHour(req.network, channel_genesis_hash, days)
-				.then(rows => {
+				.then((rows: any) => {
 					if (rows) {
 						return res.send({ status: 200, rows });
 					}
@@ -360,4 +360,3 @@ const dbroutes = (router, platform) => {
 	});
 }; // End dbroutes()
 
-module.exports = dbroutes;

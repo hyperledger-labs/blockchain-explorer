@@ -5,12 +5,12 @@
 import {helper} from '../../../common/helper';
 
 const convertHex = require('convert-hex');
-const fabprotos = require('fabric-protos');
-const includes = require('lodash/includes');
+import fabprotos from 'fabric-protos';
+import includes from 'lodash/includes';
 
 const logger = helper.getLogger('SyncServices');
 
-const ExplorerError = require('../../../common/ExplorerError');
+import {ExplorerError} from '../../../common/ExplorerError';
 const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
 const fabric_const = require('../../../platform/fabric/utils/FabricConst')
 	.fabric.const;
@@ -31,7 +31,7 @@ for (const key in fabprotos.protos.TxValidationCode) {
  *
  * @class SyncServices
  */
-class SyncServices {
+export class SyncServices {
 	persistence : any;
 	platform : any;
 	synchInProcess : string[];
@@ -739,8 +739,6 @@ class SyncServices {
 		return this.persistence;
 	}
 }
-
-module.exports = SyncServices;
 // Transaction validation code
 function convertValidationCode(code) {
 	if (typeof code === 'string') {

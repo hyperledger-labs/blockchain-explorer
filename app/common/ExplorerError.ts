@@ -13,10 +13,10 @@ import util from 'util';
  * %% - single percent sign ('%'). This does not consume an argument.
  * }
  */
-module.exports = function ExplorerError(...args) {
+export function ExplorerError(...args: string[]) {
 	Error.captureStackTrace(this, this.constructor);
 	this.name = this.constructor.name;
 	this.message = util.format(args);
 };
 
-require('util').inherits(module.exports, Error);
+//require('util').inherits(module.exports, Error);

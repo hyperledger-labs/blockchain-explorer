@@ -18,10 +18,9 @@
  * limitations under the License.
  */
 
-const log4js = require('log4js/lib/log4js');
+import log4js from 'log4js/lib/log4js';
 
-const fs = require('fs-extra');
-const yn = require('yn');
+import yn from 'yn';
 
 /*
  * Please assign the logger with the file name for the application logging and assign the logger with "PgService"
@@ -43,7 +42,7 @@ const yn = require('yn');
  */
 export class helper {
 
-	static getLogger(moduleName) : any {
+	static getLogger(moduleName: string) : any {
 		const logger = log4js.getLogger(moduleName);
 	
 		let appLog = 'logs/app/app.log';

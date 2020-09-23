@@ -27,7 +27,7 @@ export class CRUDService {
 	 * @memberof CRUDService
 	 */
 
-	getTxCountByBlockNum(network_name, channel_genesis_hash, blockNum) {
+	getTxCountByBlockNum(network_name: any, channel_genesis_hash: any, blockNum: any) {
 		return this.sql.getRowByPkOne(
 			`select blocknum ,txcount from blocks where channel_genesis_hash='${channel_genesis_hash}' and blocknum=${blockNum} and network_name = '${network_name}' `
 		);
@@ -41,7 +41,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	getTransactionByID(network_name, channel_genesis_hash, txhash) {
+	getTransactionByID(network_name: any, channel_genesis_hash: any, txhash: any) {
 		const sqlTxById = ` select t.txhash,t.validation_code,t.payload_proposal_hash,t.creator_msp_id,t.endorser_msp_id,t.chaincodename,t.type,t.createdt,t.read_set,
 				t.write_set,channel.name as channelName from TRANSACTIONS as t inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name=channel.network_name
 				where t.txhash = '${txhash}' and t.network_name = '${network_name}' `;
@@ -56,7 +56,7 @@ export class CRUDService {
 	 * @memberof CRUDService
 	 */
 
-	getBlockActivityList(network_name, channel_genesis_hash) {
+	getBlockActivityList(network_name: any, channel_genesis_hash: any) {
 		const sqlBlockActivityList = `select blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, (
       SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum and
        channel_genesis_hash = '${channel_genesis_hash}' and network_name = '${network_name}' group by transactions.blockid ),
@@ -78,7 +78,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	getTxList(network_name, channel_genesis_hash, blockNum, txid, from, to, orgs) {
+	getTxList(network_name: any, channel_genesis_hash: any, blockNum: any, txid: any, from: any, to: any, orgs: string) {
 		let byOrgs = false;
 		if (orgs && orgs !== '') {
 			byOrgs = true;
@@ -113,12 +113,12 @@ export class CRUDService {
 	 * @memberof CRUDService
 	 */
 	getBlockAndTxList(
-		network_name,
-		channel_genesis_hash,
-		blockNum,
-		from,
-		to,
-		orgs
+		network_name: any,
+		channel_genesis_hash: any,
+		blockNum: any,
+		from: any,
+		to: any,
+		orgs: string
 	) {
 		let byOrgs = false;
 		// workaround for SQL injection
@@ -162,7 +162,7 @@ export class CRUDService {
 	 * @memberof CRUDService
 	 */
 
-	async getChannelConfig(network_name, channel_genesis_hash) {
+	async getChannelConfig(network_name: any, channel_genesis_hash: any) {
 		const channelConfig = await this.sql.getRowsBySQlCase(
 			` select * from channel where channel_genesis_hash ='${channel_genesis_hash}' and network_name = '${network_name}' `
 		);
@@ -177,7 +177,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	async getChannel(network_name, channelname, channel_genesis_hash) {
+	async getChannel(network_name: any, channelname: any, channel_genesis_hash: any) {
 		const channel = await this.sql.getRowsBySQlCase(
 			` select * from channel where name='${channelname}' and channel_genesis_hash='${channel_genesis_hash}' and network_name = '${network_name}' `
 		);
@@ -190,7 +190,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	async existChannel(network_name, channelname) {
+	async existChannel(network_name: any, channelname: any) {
 		const channel = await this.sql.getRowsBySQlCase(
 			` select count(1) from channel where name='${channelname}' and network_name = '${network_name}' `
 		);
