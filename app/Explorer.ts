@@ -23,8 +23,8 @@ const authCheckMiddleware = require('./middleware/auth-check');
 
 const swaggerDocument = require('../swagger.json');
 
-const explorer_const = require('./common/ExplorerConst').explorer.const;
-const explorer_error = require('./common/ExplorerMessage').explorer.error;
+import {explorerConst} from './common/ExplorerConst'
+import {explorerError} from './common/ExplorerMessage'
 
 /**
  *
@@ -38,7 +38,7 @@ class Explorer {
 	platforms : any[];
 
 	/**
-	 * Creates an instance of Explorer.
+	 * Creates an instance of explorerConst.
 	 * @memberof Explorer
 	 */
 	constructor() {
@@ -88,21 +88,21 @@ class Explorer {
 	 * @memberof Explorer
 	 */
 	async initialize(broadcaster) {
-		if (!explorerconfig[explorer_const.PERSISTENCE]) {
-			throw new ExplorerError(explorer_error.ERROR_1001);
+		if (!explorerconfig[explorerConst.PERSISTENCE]) {
+			throw new ExplorerError(explorerError.ERROR_1001);
 		}
-		if (!explorerconfig[explorerconfig[explorer_const.PERSISTENCE]]) {
+		if (!explorerconfig[explorerconfig[explorerConst.PERSISTENCE]]) {
 			throw new ExplorerError(
-				explorer_error.ERROR_1002,
-				explorerconfig[explorer_const.PERSISTENCE]
+				explorerError.ERROR_1002,
+				explorerconfig[explorerConst.PERSISTENCE]
 			);
 		}
 		this.persistence = await PersistenceFactory.create(
-			explorerconfig[explorer_const.PERSISTENCE],
-			explorerconfig[explorerconfig[explorer_const.PERSISTENCE]]
+			explorerconfig[explorerConst.PERSISTENCE],
+			explorerconfig[explorerconfig[explorerConst.PERSISTENCE]]
 		);
 
-		for (const pltfrm of explorerconfig[explorer_const.PLATFORMS]) {
+		for (const pltfrm of explorerconfig[explorerConst.PLATFORMS]) {
 			const platform = await PlatformBuilder.build(
 				pltfrm,
 				this.persistence,

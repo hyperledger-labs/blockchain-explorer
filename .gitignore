@@ -43,3 +43,5 @@ crypto-config
 **/specs/templates/
 **/specs/ytt/
 PTE
+dist/*
+app/persistence/fabric/postgreSQL/db/logfile

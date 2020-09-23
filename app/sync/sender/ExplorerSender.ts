@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {explorer} from '../../common/ExplorerConst'
+import {explorerConst} from '../../common/ExplorerConst'
 const ForkSenderHandler = require('./ForkSenderHandler');
 
 /**
@@ -30,7 +30,7 @@ class ExplorerSender {
 	 * @memberof ExplorerSender
 	 */
 	async initialize() {
-		if (this.syncType && this.syncType === explorer.const.SYNC_TYPE_LOCAL) {
+		if (this.syncType && this.syncType === explorerConst.SYNC_TYPE_LOCAL) {
 			this.syncSenderHandler = new ForkSenderHandler();
 		}
 		if (this.syncSenderHandler) {

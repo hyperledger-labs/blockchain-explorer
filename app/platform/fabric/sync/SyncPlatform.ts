@@ -19,7 +19,7 @@ const ExplorerError = require('../../../common/ExplorerError');
 
 
 const fabric_const = require('../utils/FabricConst').fabric.const;
-const explorer_mess = require('../../../common/ExplorerMessage').explorer;
+import {explorerError} from '../../../common/ExplorerMessage'
 
 const config_path = path.resolve(__dirname, '../config.json');
 
@@ -90,7 +90,7 @@ class SyncPlatform {
 		}
 
 		logger.info(
-			explorer_mess.message.MESSAGE_1002,
+			explorerError.MESSAGE_1002,
 			this.network_id,
 			this.network_name
 		);
@@ -103,7 +103,7 @@ class SyncPlatform {
 
 		this.client = await FabricUtils.createFabricClient(config);
 		if (!this.client) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2011);
+			throw new ExplorerError(explorerError.ERROR_2011);
 		}
 
 		// Updating the client network and other details to DB

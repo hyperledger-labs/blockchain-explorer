@@ -19,7 +19,7 @@ import * as path from 'path';
 import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricGateway');
-const explorer_mess = require('../../../common/ExplorerMessage').explorer;
+import {explorerError} from '../../../common/ExplorerMessage'
 const ExplorerError = require('../../../common/ExplorerError');
 
 class FabricGateway {
@@ -65,7 +65,7 @@ class FabricGateway {
 		const explorerAdminId = this.fabricConfig.getAdminUser();
 		if (!explorerAdminId) {
 			logger.error('Failed to get admin ID from configuration file');
-			throw new ExplorerError(explorer_mess.error.ERROR_1010);
+			throw new ExplorerError(explorerError.ERROR_1010);
 		}
 
 		const info = `Loading configuration  ${this.config}`;
@@ -142,7 +142,7 @@ class FabricGateway {
 			await this.gateway.connect(this.config, connectionOptions);
 		} catch (error) {
 			logger.error(`${error}`);
-			throw new ExplorerError(explorer_mess.error.ERROR_1010);
+			throw new ExplorerError(explorerError.ERROR_1010);
 		}
 	}
 

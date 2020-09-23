@@ -3,6 +3,9 @@
  */
 /* eslint-disable import/extensions */
 import { helper } from './common/helper';
+
+import { explorerConst } from './common/ExplorerConst';
+import { explorerError } from './common/ExplorerMessage';
 /* eslint-enable import/extensions */
 
 const syncconfig = require('./explorerconfig.json');
@@ -12,9 +15,6 @@ const logger = helper.getLogger('Synchronizer');
 const SyncBuilder = require('./sync/SyncBuilder');
 const PersistenceFactory = require('./persistence/PersistenceFactory');
 const ExplorerSender = require('./sync/sender/ExplorerSender');
-
-const explorer_const = require('./common/ExplorerConst').explorer.const;
-const explorer_error = require('./common/ExplorerMessage').explorer.error;
 
 /**
  *
@@ -39,13 +39,13 @@ class Synchronizer {
 	 * @memberof Synchronizer
 	 */
 	async initialize() {
-		if (!syncconfig[explorer_const.PERSISTENCE]) {
-			throw new ExplorerError(explorer_error.ERROR_1001);
+		if (!syncconfig[explorerConst.PERSISTENCE]) {
+			throw new ExplorerError(explorerError.ERROR_1001);
 		}
-		if (!syncconfig[syncconfig[explorer_const.PERSISTENCE]]) {
+		if (!syncconfig[syncconfig[explorerConst.PERSISTENCE]]) {
 			throw new ExplorerError(
-				explorer_error.ERROR_1002,
-				syncconfig[explorer_const.PERSISTENCE]
+				explorerError.ERROR_1002,
+				syncconfig[explorerConst.PERSISTENCE]
 			);
 		}
 
@@ -53,12 +53,12 @@ class Synchronizer {
 		if (syncconfig && syncconfig.sync && syncconfig.sync.platform) {
 			pltfrm = syncconfig.sync.platform;
 		} else {
-			throw new ExplorerError(explorer_error.ERROR_1006);
+			throw new ExplorerError(explorerError.ERROR_1006);
 		}
 
 		this.persistence = await PersistenceFactory.create(
-			syncconfig[explorer_const.PERSISTENCE],
-			syncconfig[syncconfig[explorer_const.PERSISTENCE]]
+			syncconfig[explorerConst.PERSISTENCE],
+			syncconfig[syncconfig[explorerConst.PERSISTENCE]]
 		);
 
 		const sender = new ExplorerSender(syncconfig.sync);

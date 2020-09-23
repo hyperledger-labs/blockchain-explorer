@@ -2,8 +2,8 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const explorer_const = require('../common/ExplorerConst').explorer.const;
-const explorer_error = require('../common/ExplorerMessage').explorer.error;
+import {explorerConst} from '../common/ExplorerConst'
+import {explorerError} from '../common/ExplorerMessage'
 const ExplorerError = require('../common/ExplorerError');
 
 /**
@@ -23,11 +23,11 @@ export class PlatformBuilder {
 	 * @memberof PlatformBuilder
 	 */
 	static async build(pltfrm, persistence, broadcaster) {
-		if (pltfrm === explorer_const.PLATFORM_FABRIC) {
+		if (pltfrm === explorerConst.PLATFORM_FABRIC) {
 			const Platform = require('./fabric/Platform');
 			const platform = new Platform(persistence, broadcaster);
 			return platform;
 		}
-		throw new ExplorerError(explorer_error.ERROR_1004, pltfrm);
+		throw new ExplorerError(explorerError.ERROR_1004, pltfrm);
 	}
 }
