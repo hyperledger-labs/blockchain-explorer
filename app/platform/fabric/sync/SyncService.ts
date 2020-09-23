@@ -450,7 +450,7 @@ export class SyncServices {
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_NEWCHANNEL,
 						network_id,
-						chName
+						channel_name: chName
 					};
 
 					_self.platform.send(notify);
@@ -475,7 +475,7 @@ export class SyncServices {
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_UPDATECHANNEL,
 						network_id,
-						chName
+						channel_name: chName
 					};
 
 					_self.platform.send(notify);
@@ -617,7 +617,7 @@ export class SyncServices {
 							const notify = {
 								notify_type: fabric_const.NOTITY_TYPE_CHAINCODE,
 								network_id,
-								chName
+								channel_name: chName
 							};
 
 							_self.platform.send(notify);
