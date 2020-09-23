@@ -17,10 +17,11 @@ import {platformroutes} from './rest/platformroutes';
 import {adminroutes} from './platform/fabric/rest/adminroutes';
 import {explorerConst} from './common/ExplorerConst'
 import {explorerError} from './common/ExplorerMessage'
-import authCheckMiddleware from './middleware/auth-check';
-import swaggerDocument from '../swagger.json';
+import {authCheckMiddleware} from './middleware/auth-check';
+import swaggerDocument from './swagger.json';
 import {ExplorerError} from './common/ExplorerError';
-const localLoginStrategy = require('./passport/local-login');
+import {localLoginStrategy} from './passport/local-login';
+
 /**
  *
  *

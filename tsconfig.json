@@ -2,7 +2,7 @@
 	// "files": [
 	//   "./app/Explorer.ts"
 	// ],
-	"include": ["app/", "app/**/*.json", "main.ts", "sync.js", "swagger.json"],
+	"include": ["app/", "app/platform/fabric/**/*.json"],
 	"exclude": ["app/platform/fabric/e2e-test/PTE/"],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
@@ -20,7 +20,7 @@
 		"sourceMap": true /* Generates corresponding '.map' file. */,
 		// "outFile": "./",                       /* Concatenate and emit output to single file. */
 		"outDir": "dist/" /* Redirect output structure to the directory. */,
-		"rootDir": "./" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
+		// "rootDir": "./" /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */,
 		// "composite": true,                     /* Enable project compilation */
 		// "tsBuildInfoFile": "./",               /* Specify file to store incremental compilation information */
 		"removeComments": false /* Do not emit comments to output. */,

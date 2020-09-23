@@ -7,7 +7,7 @@
  * Created by shouhewu on 6/8/17.
  *
  */
-import {helper} from './app/common/helper';
+import {helper} from './common/helper';
 
 import express from 'express';
 import helmet from 'helmet';
@@ -21,8 +21,8 @@ import appconfig from './appconfig.json';
 
 const logger = helper.getLogger('main');
 
-import {Explorer} from './app/Explorer';
-import {ExplorerError} from './app/common/ExplorerError';
+import {Explorer} from './Explorer';
+import {ExplorerError} from './common/ExplorerError';
 
 const sslEnabled = process.env.SSL_ENABLED || appconfig.sslEnabled;
 const sslCertsPath = process.env.SSL_CERTS_PATH || appconfig.sslCertsPath;

@@ -22,7 +22,6 @@ export class PersistenceFactory {
 	 * @memberof PersistenceFactory
 	 */
 	static async create(db: string, dbconfig: any) {
-		console.log("check",explorerConst.PERSISTENCE_POSTGRESQL)
 		if (db === explorerConst.PERSISTENCE_POSTGRESQL) {
 			// Avoid to load all db Persist module
 			const PostgreSQL = require('./postgreSQL/Persist');
