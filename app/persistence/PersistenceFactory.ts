@@ -1,8 +1,9 @@
 /*
  *SPDX-License-Identifier: Apache-2.0
  */
-const explorer_const = require('../common/ExplorerConst').explorer.const;
-const explorer_error = require('../common/ExplorerMessage').explorer.error;
+
+import {explorerConst} from '../common/ExplorerConst'
+import {explorerError} from '../common/ExplorerMessage'
 const ExplorerError = require('../common/ExplorerError');
 
 /**
@@ -21,14 +22,15 @@ class PersistenceFactory {
 	 * @memberof PersistenceFactory
 	 */
 	static async create(db, dbconfig) {
-		if (db === explorer_const.PERSISTENCE_POSTGRESQL) {
+		console.log("check",explorerConst.PERSISTENCE_POSTGRESQL)
+		if (db === explorerConst.PERSISTENCE_POSTGRESQL) {
 			// Avoid to load all db Persist module
 			const PostgreSQL = require('./postgreSQL/Persist');
 			const persistence = new PostgreSQL(dbconfig);
 			await persistence.getPGService().handleDisconnect();
 			return persistence;
 		}
-		throw new ExplorerError(explorer_error.ERROR_1003, db);
+		throw new ExplorerError(explorerError.ERROR_1003, db);
 	}
 }
 

@@ -11,7 +11,7 @@ const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
 
 const logger = helper.getLogger('FabricClient');
 
-const explorer_mess = require('../../common/ExplorerMessage').explorer;
+import {explorerError} from '../../common/ExplorerMessage'
 
 /**
  *
@@ -106,8 +106,8 @@ class FabricClient {
 		logger.info(
 			'************************************* initializeDetachClient *************************************************'
 		);
-		logger.info('Error :', explorer_mess.error.ERROR_1009);
-		logger.info('Info : ', explorer_mess.message.MESSAGE_1001);
+		logger.info('Error :', explorerError.ERROR_1009);
+		logger.info('Info : ', explorerError.MESSAGE_1001);
 		logger.info(
 			'************************************** initializeDetachClient ************************************************'
 		);
@@ -116,7 +116,7 @@ class FabricClient {
 			.getChannelsInfo(this.network_id);
 
 		if (channels.length === 0) {
-			throw new ExplorerError(explorer_mess.error.ERROR_2003);
+			throw new ExplorerError(explorerError.ERROR_2003);
 		}
 
 		for (const channel of channels) {

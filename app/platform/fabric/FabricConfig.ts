@@ -5,7 +5,7 @@
 const fs = require('fs');
 import * as path from 'path';
 import {helper} from '../../common/helper';
-const explorer_mess = require('../../common/ExplorerMessage').explorer;
+import {explorerError} from '../../common/ExplorerMessage'
 const ExplorerError = require('../../common/ExplorerError');
 
 const logger = helper.getLogger('FabricConfig');
@@ -241,7 +241,7 @@ class FabricConfig {
 				organization.signedCert.pem === undefined)
 		) {
 			logger.error('Not found signedCert configuration');
-			throw new ExplorerError(explorer_mess.error.ERROR_2015);
+			throw new ExplorerError(explorerError.ERROR_2015);
 		}
 
 		if (organization.signedCert.path !== undefined) {
@@ -267,7 +267,7 @@ class FabricConfig {
 				organization.adminPrivateKey.pem === undefined)
 		) {
 			logger.error('Not found adminPrivateKey configuration');
-			throw new ExplorerError(explorer_mess.error.ERROR_2015);
+			throw new ExplorerError(explorerError.ERROR_2015);
 		}
 
 		if (organization.adminPrivateKey.path !== undefined) {

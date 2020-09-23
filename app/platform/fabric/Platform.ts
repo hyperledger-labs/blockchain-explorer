@@ -18,7 +18,7 @@ const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
 const ExplorerListener = require('../../sync/listener/ExplorerListener');
 const fabric_const = require('./utils/FabricConst').fabric.const;
-const explorer_error = require('../../common/ExplorerMessage').explorer.error;
+import {explorerError} from '../../common/ExplorerMessage'
 
 const config_path = path.resolve(__dirname, './config.json');
 
@@ -91,7 +91,7 @@ class Platform {
 			logger.error(
 				'************* There is no client found for Hyperledger fabric platform *************'
 			);
-			throw new ExplorerError(explorer_error.ERROR_2008);
+			throw new ExplorerError(explorerError.ERROR_2008);
 		}
 	}
 

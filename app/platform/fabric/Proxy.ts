@@ -7,7 +7,7 @@ import {helper} from '../../common/helper';
 const NetworkService = require('./service/NetworkService.js');
 const ExplorerError = require('../../common/ExplorerError');
 const fabric_const = require('./utils/FabricConst').fabric.const;
-const explorer_error = require('../../common/ExplorerMessage').explorer.error;
+import {explorerError} from '../../common/ExplorerMessage'
 
 const logger = helper.getLogger('Proxy');
 
@@ -378,9 +378,9 @@ class Proxy {
 			};
 			this.broadcaster.broadcast(notify);
 		} else if (fabric_const.NOTITY_TYPE_EXISTCHANNEL === msg.notify_type) {
-			throw new ExplorerError(explorer_error.ERROR_2009, msg.channel_name);
+			throw new ExplorerError(explorerError.ERROR_2009, msg.channel_name);
 		} else if (msg.error) {
-			throw new ExplorerError(explorer_error.ERROR_2010, msg.error);
+			throw new ExplorerError(explorerError.ERROR_2010, msg.error);
 		} else {
 			logger.error(
 				'Child process notify is not implemented for this type %s ',

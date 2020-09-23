@@ -14,8 +14,8 @@ const ExplorerError = require('../../../common/ExplorerError');
 const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
 const fabric_const = require('../../../platform/fabric/utils/FabricConst')
 	.fabric.const;
-const explorer_error = require('../../../common/ExplorerMessage').explorer
-	.error;
+import {explorerError} from '../../../common/ExplorerMessage'
+
 
 const blocksInProcess = [];
 
@@ -157,7 +157,7 @@ class SyncServices {
 					channel_name
 				};
 				this.platform.send(notify);
-				throw new ExplorerError(explorer_error.ERROR_2013, channel_name);
+				throw new ExplorerError(explorerError.ERROR_2013, channel_name);
 				//	Return false;
 			}
 		}

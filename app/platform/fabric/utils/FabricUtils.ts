@@ -9,8 +9,8 @@ const asn = require('asn1.js');
 const { Utils } = require('fabric-common');
 const FabricClient = require('./../FabricClient.js');
 const ExplorerError = require('../../../common/ExplorerError');
-const explorer_error = require('../../../common/ExplorerMessage').explorer
-	.error;
+import {explorerError} from '../../../common/ExplorerMessage'
+
 import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricUtils');
@@ -27,7 +27,7 @@ async function createFabricClient(config, persistence) {
 		await client.initialize(persistence);
 		return client;
 	} catch (err) {
-		throw new ExplorerError(explorer_error.ERROR_2014);
+		throw new ExplorerError(explorerError.ERROR_2014);
 	}
 }
 
