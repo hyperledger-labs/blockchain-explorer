@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const queryString = require('query-string');
+import queryString from 'query-string';
 /**
  *
  *
@@ -11,7 +11,7 @@ const queryString = require('query-string');
  * @param {*} res
  * @param {*} next
  */
-async function respond(action, req, res, next) {
+async function respond(action: (arg0: any, arg1: any, arg2: any) => any, req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any; }; }; send: (arg0: { status: number; message: any; }) => void; }, next: any) {
 	try {
 		const value = await action(req, res, next);
 		res.status(200).send(value);
@@ -29,8 +29,8 @@ async function respond(action, req, res, next) {
  * @param {*} action
  * @returns
  */
-function responder(action) {
-	return async function(req, res, next) {
+function responder(action: any) {
+	return async function(req: any, res: any, next: any) {
 		return await respond(action, req, res, next);
 	};
 }
@@ -41,7 +41,7 @@ function responder(action) {
  * @param {*} req
  * @param {*} res
  */
-function invalidRequest(req, res) {
+function invalidRequest(req: any, res: { send: (arg0: { status: number; error: string; payload: any[]; }) => void; }) {
 	const payload = reqPayload(req);
 	res.send({
 		status: 400,
@@ -56,7 +56,7 @@ function invalidRequest(req, res) {
  * @param {*} req
  * @param {*} res
  */
-function notFound(req, res) {
+function notFound(req: any, res: { send: (arg0: { status: number; error: string; payload: any[]; }) => void; }) {
 	const payload = reqPayload(req);
 	res.send({
 		status: 404,
@@ -71,7 +71,7 @@ function notFound(req, res) {
  * @param {*} req
  * @returns
  */
-function reqPayload(req) {
+function reqPayload(req: { params: any; query: any; body: any; }) {
 	const requestPayload = [];
 	const { params, query, body } = req;
 
@@ -89,7 +89,7 @@ function reqPayload(req) {
 	return requestPayload;
 }
 
-const orgsArrayToString = function(reqQuery) {
+const orgsArrayToString = function(reqQuery: { [key: string]: any; }) {
 	let temp = '';
 	if (reqQuery) {
 		// eslint-disable-next-line spellcheck/spell-checker
@@ -116,7 +116,7 @@ const orgsArrayToString = function(reqQuery) {
 	return temp;
 };
 
-const queryDatevalidator = function(from, to) {
+const queryDatevalidator = function(from: string, to: string) {
 	if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
 		from = new Date(from).toISOString();
 		to = new Date(to).toISOString();

@@ -16,7 +16,7 @@ class Persist {
 	crudService : CRUDService;
 	userdataservice : UserDataService;
 
-	constructor(pgconfig) {
+	constructor(pgconfig: any) {
 		this.pgservice = new PgService(pgconfig);
 		this.metricservice = null;
 		this.crudService = null;
@@ -39,7 +39,7 @@ class Persist {
 	 * @param {*} crudService
 	 * @memberof Persist
 	 */
-	setCrudService(crudService) {
+	setCrudService(crudService: CRUDService) {
 		this.crudService = crudService;
 	}
 
@@ -49,7 +49,7 @@ class Persist {
 	 * @param {*} userdataservice
 	 * @memberof Persist
 	 */
-	setUserDataService(userdataservice) {
+	setUserDataService(userdataservice: UserDataService) {
 		this.userdataservice = userdataservice;
 	}
 

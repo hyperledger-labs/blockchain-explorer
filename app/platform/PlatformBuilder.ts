@@ -4,7 +4,9 @@
 
 import {explorerConst} from '../common/ExplorerConst'
 import {explorerError} from '../common/ExplorerMessage'
-const ExplorerError = require('../common/ExplorerError');
+import {ExplorerError} from '../common/ExplorerError';
+import {Platform} from './fabric/Platform';
+
 
 /**
  *
@@ -22,9 +24,8 @@ export class PlatformBuilder {
 	 * @returns
 	 * @memberof PlatformBuilder
 	 */
-	static async build(pltfrm, persistence, broadcaster) {
+	static async build(pltfrm: string, persistence: any, broadcaster: any) {
 		if (pltfrm === explorerConst.PLATFORM_FABRIC) {
-			const Platform = require('./fabric/Platform');
 			const platform = new Platform(persistence, broadcaster);
 			return platform;
 		}

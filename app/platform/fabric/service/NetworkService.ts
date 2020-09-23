@@ -11,7 +11,7 @@ const logger = helper.getLogger('NetworkService');
  *
  * @class NetworkService
  */
-class NetworkService {
+export class NetworkService {
 	platform : any;
 	/**
 	 * Creates an instance of NetworkService.
@@ -46,5 +46,3 @@ class NetworkService {
 		return networklist;
 	}
 }
-
-module.exports = NetworkService;

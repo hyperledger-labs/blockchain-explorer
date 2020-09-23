@@ -14,7 +14,7 @@ const logger = helper.getLogger('ForkSenderHandler');
  * @returns
  */
 
-function toUTCmilliseconds(dateStr) {
+export function toUTCmilliseconds(dateStr: any) {
 	let startSyncMills = null;
 	try {
 		startSyncMills = Date.parse(dateStr);
@@ -23,5 +23,3 @@ function toUTCmilliseconds(dateStr) {
 	}
 	return startSyncMills;
 }
-
-exports.toUTCmilliseconds = toUTCmilliseconds;

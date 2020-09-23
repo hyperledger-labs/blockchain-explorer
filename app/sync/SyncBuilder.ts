@@ -3,7 +3,9 @@
  */
 import {explorerConst} from '../common/ExplorerConst'
 import {explorerError} from '../common/ExplorerMessage'
-const ExplorerError = require('../common/ExplorerError');
+import {ExplorerError} from '../common/ExplorerError';
+import { ExplorerSender } from './sender/ExplorerSender';
+import {SyncPlatform} from '../platform/fabric/sync/SyncPlatform';
 
 
 /**
@@ -11,7 +13,7 @@ const ExplorerError = require('../common/ExplorerError');
  *
  * @class SyncBuilder
  */
-class SyncBuilder {
+export class SyncBuilder {
 	/**
 	 *
 	 *
@@ -22,14 +24,11 @@ class SyncBuilder {
 	 * @returns
 	 * @memberof SyncBuilder
 	 */
-	static async build(pltfrm, persistence, sender) {
+	static async build(pltfrm: string, persistence: any, sender: ExplorerSender) {
 		if (pltfrm === explorerConst.PLATFORM_FABRIC) {
-			const SyncPlatform = require('../platform/fabric/sync/SyncPlatform');
 			const platform = new SyncPlatform(persistence, sender);
 			return platform;
 		}
 		throw new ExplorerError(explorerError.ERROR_1005, pltfrm);
 	}
 }
-
-module.exports = SyncBuilder;

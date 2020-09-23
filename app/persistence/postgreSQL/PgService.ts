@@ -40,7 +40,7 @@ export class PgService {
 	 * @param {*} pgconfig
 	 * @memberof PgService
 	 */
-	constructor(pgconfig) {
+	constructor(pgconfig: { host: any; port: any; database: any; username: any; passwd: any; }) {
 		this.pgconfig = pgconfig;
 		this.pgconfig.host = process.env.DATABASE_HOST || pgconfig.host;
 		this.pgconfig.port = process.env.DATABASE_PORT || pgconfig.port;

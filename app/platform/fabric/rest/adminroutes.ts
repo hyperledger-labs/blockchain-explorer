@@ -12,7 +12,7 @@ const { responder } = require('./../../../rest/requestutils');
  * @param {*} router
  * @param {*} platform
  */
-const adminroutes = async function(router, platform) {
+export async function adminroutes(router, platform) {
 	const proxy = platform.getProxy();
 	/*
 	 * Register
@@ -67,5 +67,3 @@ const adminroutes = async function(router, platform) {
 		})
 	);
 };
-
-module.exports = adminroutes;

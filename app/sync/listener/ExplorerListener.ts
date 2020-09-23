@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import {explorerConst} from '../../common/ExplorerConst'
-const ForkListenerHandler = require('./ForkListenerHandler');
+import {ForkListenerHandler} from './ForkListenerHandler';
 
 /**
  *
  *
  * @class ExplorerListener
  */
-class ExplorerListener {
+export class ExplorerListener {
 	public platform: any;
 	public syncType: any;
 	public syncListenerHandler: any;
@@ -64,5 +64,3 @@ class ExplorerListener {
 		}
 	}
 }
-
-module.exports = ExplorerListener;

@@ -25,7 +25,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getChaincodeCount(network_name, channel_genesis_hash) {
+	getChaincodeCount(network_name: any, channel_genesis_hash: any) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from chaincodes where channel_genesis_hash='${channel_genesis_hash}' and network_name='${network_name}' `
 		);
@@ -38,7 +38,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getPeerlistCount(network_name, channel_genesis_hash) {
+	getPeerlistCount(network_name: any, channel_genesis_hash: any) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from peer where channel_genesis_hash='${channel_genesis_hash}' and peer_type='PEER' and network_name='${network_name}' `
 		);
@@ -51,7 +51,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxCount(network_name, channel_genesis_hash) {
+	getTxCount(network_name: any, channel_genesis_hash: any) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from transactions where channel_genesis_hash='${channel_genesis_hash}' and network_name='${network_name}' `
 		);
@@ -64,7 +64,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlockCount(network_name, channel_genesis_hash) {
+	getBlockCount(network_name: any, channel_genesis_hash: any) {
 		return this.sql.getRowsBySQlCase(
 			`select count(1) c from blocks where channel_genesis_hash='${channel_genesis_hash}' and network_name='${network_name}' `
 		);
@@ -77,7 +77,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getPeerData(network_name, channel_genesis_hash) {
+	async getPeerData(network_name: any, channel_genesis_hash: any) {
 		const peerArray = [];
 		const c1 = await this.sql
 			.getRowsBySQlNoCondition(`select channel.name as channelName,c.requests as requests,c.channel_genesis_hash as channel_genesis_hash ,
@@ -103,7 +103,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getOrdererData(network_name) {
+	async getOrdererData(network_name: any) {
 		const ordererArray = [];
 		const c1 = await this.sql.getRowsBySQlNoCondition(
 			`select c.requests as requests,c.server_hostname as server_hostname,c.channel_genesis_hash as channel_genesis_hash from orderer c where network_name='${network_name}' `
@@ -126,13 +126,13 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getTxPerChaincodeGenerate(network_name, channel_genesis_hash) {
+	async getTxPerChaincodeGenerate(network_name: any, channel_genesis_hash: any) {
 		const txArray = [];
 		const c = await this.sql
 			.getRowsBySQlNoCondition(`select  c.name as chaincodename,channel.name as channelname ,c.version as version,c.channel_genesis_hash
        as channel_genesis_hash,c.path as path ,txcount  as c from chaincodes as c inner join channel on c.channel_genesis_hash=channel.channel_genesis_hash and c.network_name=channel.network_name where  c.channel_genesis_hash='${channel_genesis_hash}' and  c.network_name='${network_name}' `);
 		if (c) {
-			c.forEach((item, index) => {
+			c.forEach((item: { chaincodename: any; channelname: any; path: any; version: any; c: any; channel_genesis_hash: any; }, index: any) => {
 				logger.debug(' item ------------> ', item);
 				txArray.push({
 					chaincodename: item.chaincodename,
@@ -154,7 +154,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getOrgsData(network_name, channel_genesis_hash) {
+	async getOrgsData(network_name: any, channel_genesis_hash: any) {
 		const orgs = [];
 		const rows : any = await this.sql.getRowsBySQlNoCondition(
 			`select distinct on (mspid) mspid from peer  where channel_genesis_hash='${channel_genesis_hash}' and network_name='${network_name}'`
@@ -173,7 +173,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getTxPerChaincode(network_name, channel_genesis_hash, cb) {
+	async getTxPerChaincode(network_name: any, channel_genesis_hash: any, cb: (arg0: any[]) => any) {
 		try {
 			const txArray = await this.getTxPerChaincodeGenerate(
 				network_name,
@@ -193,7 +193,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getStatusGenerate(network_name, channel_genesis_hash) {
+	async getStatusGenerate(network_name: any, channel_genesis_hash: any) {
 		let chaincodeCount : any = await this.getChaincodeCount(
 			network_name,
 			channel_genesis_hash
@@ -235,7 +235,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getStatus(network_name, channel_genesis_hash, cb) {
+	async getStatus(network_name, channel_genesis_hash,cb ) {
 		try {
 			const data = await this.getStatusGenerate(
 				network_name,
@@ -256,7 +256,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getPeerList(network_name, channel_genesis_hash, cb) {
+	async getPeerList(network_name: any, channel_genesis_hash: any, cb: (arg0: any[]) => any) {
 		try {
 			const peerArray = await this.getPeerData(network_name, channel_genesis_hash);
 			if (cb) {
@@ -276,7 +276,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async getOrdererList(network_name, cb) {
+	async getOrdererList(network_name: any, cb: (arg0: any[]) => any) {
 		try {
 			const ordererArray = await this.getOrdererData(network_name);
 			return cb(ordererArray);
@@ -294,7 +294,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByMinute(network_name, channel_genesis_hash, hours) {
+	getTxByMinute(network_name: any, channel_genesis_hash: any, hours: any) {
 		const sqlPerMinute = ` with minutes as (
             select generate_series(
               date_trunc('min', now()) - '${hours}hour'::interval,
@@ -321,7 +321,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByHour(network_name, channel_genesis_hash, day) {
+	getTxByHour(network_name: any, channel_genesis_hash: any, day: any) {
 		const sqlPerHour = ` with hours as (
             select generate_series(
               date_trunc('hour', now()) - '${day}day'::interval,
@@ -348,7 +348,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByDay(network_name, channel_genesis_hash, days) {
+	getTxByDay(network_name: any, channel_genesis_hash: any, days: any) {
 		const sqlPerDay = ` with days as (
             select generate_series(
               date_trunc('day', now()) - '${days}day'::interval,
@@ -375,7 +375,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByWeek(network_name, channel_genesis_hash, weeks) {
+	getTxByWeek(network_name: any, channel_genesis_hash: any, weeks: any) {
 		const sqlPerWeek = ` with weeks as (
             select generate_series(
               date_trunc('week', now()) - '${weeks}week'::interval,
@@ -402,7 +402,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByMonth(network_name, channel_genesis_hash, months) {
+	getTxByMonth(network_name: any, channel_genesis_hash: any, months: any) {
 		const sqlPerMonth = ` with months as (
             select generate_series(
               date_trunc('month', now()) - '${months}month'::interval,
@@ -430,7 +430,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByYear(network_name, channel_genesis_hash, years) {
+	getTxByYear(network_name: any, channel_genesis_hash: any, years: any) {
 		const sqlPerYear = ` with years as (
             select generate_series(
               date_trunc('year', now()) - '${years}year'::interval,
@@ -458,7 +458,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByMinute(network_name, channel_genesis_hash, hours) {
+	getBlocksByMinute(network_name: any, channel_genesis_hash: any, hours: any) {
 		const sqlPerMinute = ` with minutes as (
             select generate_series(
               date_trunc('min', now()) - '${hours} hour'::interval,
@@ -485,7 +485,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByHour(network_name, channel_genesis_hash, days) {
+	getBlocksByHour(network_name: any, channel_genesis_hash: any, days: any) {
 		const sqlPerHour = ` with hours as (
             select generate_series(
               date_trunc('hour', now()) - '${days}day'::interval,
@@ -512,7 +512,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByDay(network_name, channel_genesis_hash, days) {
+	getBlocksByDay(network_name: any, channel_genesis_hash: any, days: any) {
 		const sqlPerDay = `  with days as (
             select generate_series(
               date_trunc('day', now()) - '${days}day'::interval,
@@ -539,7 +539,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByWeek(network_name, channel_genesis_hash, weeks) {
+	getBlocksByWeek(network_name: any, channel_genesis_hash: any, weeks: any) {
 		const sqlPerWeek = ` with weeks as (
             select generate_series(
               date_trunc('week', now()) - '${weeks}week'::interval,
@@ -566,7 +566,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByMonth(network_name, channel_genesis_hash, months) {
+	getBlocksByMonth(network_name: any, channel_genesis_hash: any, months: any) {
 		const sqlPerMonth = `  with months as (
             select generate_series(
               date_trunc('month', now()) - '${months}month'::interval,
@@ -593,7 +593,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getBlocksByYear(network_name, channel_genesis_hash, years) {
+	getBlocksByYear(network_name: any, channel_genesis_hash: any, years: any) {
 		const sqlPerYear = ` with years as (
             select generate_series(
               date_trunc('year', now()) - '${years}year'::interval,
@@ -619,7 +619,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	getTxByOrgs(network_name, channel_genesis_hash) {
+	getTxByOrgs(network_name: any, channel_genesis_hash: any) {
 		const sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
       from transactions
       where channel_genesis_hash ='${channel_genesis_hash}' and network_name='${network_name}'
@@ -636,7 +636,7 @@ export class MetricService {
 	 * @returns
 	 * @memberof MetricService
 	 */
-	async findMissingBlockNumber(network_name, channel_genesis_hash, maxHeight) {
+	async findMissingBlockNumber(network_name: any, channel_genesis_hash: any, maxHeight: any) {
 		const sqlQuery = `SELECT s.id AS missing_id
     FROM generate_series(0, ${maxHeight}) s(id) WHERE NOT EXISTS (SELECT 1 FROM blocks WHERE blocknum = s.id and channel_genesis_hash ='${channel_genesis_hash}' and network_name='${network_name}' )`;
 

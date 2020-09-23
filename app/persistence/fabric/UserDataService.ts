@@ -27,7 +27,7 @@ export class UserDataService {
 	 * @param {*} options
 	 * @memberof UserDataService
 	 */
-	async initialize(attributes, options) {
+	async initialize(attributes: any, options: any) {
 		this.userModel = this.sql.getUserModel(attributes, options);
 	}
 
@@ -39,7 +39,7 @@ export class UserDataService {
 	 * @returns {*} User model
 	 * @memberof UserDataService
 	 */
-	findUser(username, networkName) {
+	findUser(username: any, networkName: any) {
 		return this.userModel.findOne({
 			where: {
 				username,
@@ -55,7 +55,7 @@ export class UserDataService {
 	 * @returns {Promise} Promise of User model
 	 * @memberof UserDataService
 	 */
-	registerUser(newUserObj) {
+	registerUser(newUserObj: any) {
 		return this.userModel.create(newUserObj);
 	}
 
@@ -67,7 +67,7 @@ export class UserDataService {
 	 * @returns {Promise} Promise of the number of destroyed users
 	 * @memberof UserDataService
 	 */
-	unregisterUser(username, networkName) {
+	unregisterUser(username: any, networkName: any) {
 		const unregisterUser = {
 			where: {
 				username,
@@ -85,15 +85,15 @@ export class UserDataService {
 	 * @returns {Promise} Promise of the list of users belonging to specified network
 	 * @memberof UserDataService
 	 */
-	getUserlist(networkName) {
+	getUserlist(networkName: any) {
 		return this.userModel
 			.findAll({
 				where: {
 					networkName
 				}
 			})
-			.then(users => {
-				return users.map(user => ({
+			.then((users: any[]) => {
+				return users.map((user: { username: any; email: any; networkName: any; firstName: any; lastName: any; roles: any; }) => ({
 					username: user.username,
 					email: user.email,
 					networkName: user.networkName,

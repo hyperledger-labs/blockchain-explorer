@@ -5,20 +5,20 @@
 import {helper} from '../../common/helper';
 
 const includes = require('lodash/includes');
-const ExplorerError = require('../../common/ExplorerError');
+import {ExplorerError} from '../../common/ExplorerError';
+import {explorerError} from '../../common/ExplorerMessage'
 const FabricUtils = require('./utils/FabricUtils.js');
-const FabricGateway = require('../../platform/fabric/gateway/FabricGateway');
+import {FabricGateway} from '../../platform/fabric/gateway/FabricGateway';
 
 const logger = helper.getLogger('FabricClient');
 
-import {explorerError} from '../../common/ExplorerMessage'
 
 /**
  *
  *
  * @class FabricClient
  */
-class FabricClient {
+export class FabricClient {
 	network_id : string;
 	fabricGateway : any;
 	channelsGenHash : Map<string, any>;
@@ -306,5 +306,3 @@ class FabricClient {
 		return this.config.getConfig();
 	}
 }
-
-module.exports = FabricClient;

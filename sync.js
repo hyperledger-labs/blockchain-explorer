@@ -1,13 +1,13 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
 import { helper } from './app/common/helper';
 
-const Synchronizer = require('./app/Synchronizer');
+import { ExplorerError } from './app/common/ExplorerError';
+
+import { Synchronizer } from './app/Synchronizer';
 
 const logger = helper.getLogger('Sync');
-const ExplorerError = require('./app/common/ExplorerError');
 
 const args = process.argv.slice(2);
 
