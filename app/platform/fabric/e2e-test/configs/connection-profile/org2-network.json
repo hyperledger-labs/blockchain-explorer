@@ -9,7 +9,7 @@
 			"password": "adminpw"
 		},
 		"adminCredential": {
-			"id": "exploreradmin",
+			"id": "org2exploreradmin",
 			"password": "exploreradminpw",
 			"affiliation": "org2.department1"
 		},

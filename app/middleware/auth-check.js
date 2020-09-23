@@ -26,9 +26,9 @@ module.exports = (req, res, next) => {
 			return res.status(401).end();
 		}
 
-		const userId = decoded.user;
+		const requestUserId = decoded.user;
 
-		req.userId = userId;
+		req.requestUserId = requestUserId;
 		req.network = decoded.network;
 
 		// TODO: check if a user exists, otherwise error

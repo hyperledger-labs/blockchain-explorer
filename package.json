@@ -1,6 +1,6 @@
 {
 	"name": "hyperledger-explorer",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"description": "hyperledger-explorer",
 	"private": true,
 	"main": "main.js",
@@ -8,9 +8,16 @@
 		"fabric nodesdk"
 	],
 	"dependencies": {
+		"@types/fs-extra": "^9.0.1",
+		"@types/log4js": "^2.3.5",
+		"@types/passport": "^1.0.4",
+		"@types/pg": "^7.14.5",
+		"@types/sequelize": "^4.28.9",
+		"@types/ws": "^7.2.6",
 		"ajv": "^5.5.2",
 		"app-root-path": "^2.0.1",
 		"asn1.js": "^5.0.1",
+		"bcrypt": "^5.0.0",
 		"body-parser": "^1.17.2",
 		"child_process": "^1.0.2",
 		"classnames": "^2.2.6",
@@ -19,6 +26,7 @@
 		"convert-hex": "^0.1.0",
 		"ejs": "^2.5.6",
 		"enum": "^2.5.0",
+		"eslint": "^7.9.0",
 		"express": "^4.15.3",
 		"express-rate-limit": "^5.0.0",
 		"fabric-ca-client": "^2.2.0",
@@ -41,6 +49,7 @@
 		"prop-types": "^15.6.2",
 		"query-string": "^6.9.0",
 		"save": "^2.3.3",
+		"sequelize": "^6.3.3",
 		"stomp-broker-js": "^0.1.3",
 		"stompjs": "^2.3.3",
 		"swagger-ui-express": "^4.0.5",
@@ -51,6 +60,9 @@
 	},
 	"license": "Apache-2.0",
 	"devDependencies": {
+		"@types/express": "^4.17.8",
+		"@types/fs-extra": "^9.0.1",
+		"@types/node": "^14.10.0",
 		"cross-env": "^5.2.0",
 		"eslint-config-airbnb": "^17.0.0",
 		"eslint-plugin-import": "^2.13.0",
@@ -59,7 +71,8 @@
 		"eslint-plugin-spellcheck": "0.0.11",
 		"husky": "^0.14.3",
 		"lint-staged": "^7.2.0",
-		"prettier": "^1.13.7"
+		"prettier": "^1.13.7",
+		"typescript": "^4.0.2"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,json,css}": [
@@ -72,6 +85,10 @@
 		]
 	},
 	"scripts": {
+		"build": "tsc",
+		"app-start": "./start.sh",
+		"app-stop": "./stop.sh",
+		"start": "run-s build app-start",
 		"docker_build": "docker build --squash -t $npm_package_name .",
 		"docker_push": "docker push ${DOCKER_REGISTRY}/$npm_package_name:$npm_package_version",
 		"docker_tag": "docker tag $npm_package_name ${DOCKER_REGISTRY}/$npm_package_name:$npm_package_version",

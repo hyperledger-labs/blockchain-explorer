@@ -96,6 +96,14 @@ func isExplorerReady() bool {
 	return false
 }
 
+func restLogin(user string, password string, network string) string {
+	resp := restPost("/auth/login", map[string]interface{}{"user": user, "password": password, "network": network}, &LoginResponse{})
+	resultLogin := resp.Result().(*LoginResponse)
+	token := resultLogin.Token
+	Expect(resultLogin.User.Message).Should(Equal("logged in"))
+	return token
+}
+
 func restPost(path string, body interface{}, data interface{}) *resty.Response {
 	return restPostWithToken(path, body, data, "")
 }

@@ -91,7 +91,8 @@ export class Login extends Component {
 			},
 			network: {
 				error: null,
-				value: ''
+				value: '',
+				id: ''
 			},
 			autoLoginAttempted: false,
 			error: '',
@@ -107,7 +108,8 @@ export class Login extends Component {
 			networks,
 			network: {
 				error: null,
-				value: networks[0].name || ''
+				value: networks[0].name || '',
+				id: networks[0].id
 			},
 			authEnabled: networks[0].authEnabled
 		}));
@@ -123,20 +125,23 @@ export class Login extends Component {
 		};
 		if (name === 'network') {
 			const { networks } = this.state;
-			newState.authEnabled = (networks.find(n => n.name === value) || {}).authEnabled;
+			newState.authEnabled = (
+				networks.find(n => n.name === value) || {}
+			).authEnabled;
+			newState.network.id = (networks.find(n => n.name === value) || {}).id;
 		}
 
 		this.setState(newState);
 	};
 
-	async performLogin({ user, password, network}) {
+	async performLogin({ user, password, network }) {
 		const { login } = this.props;
 		const { authEnabled } = this.state;
 
 		const info = await login(
 			{
 				user: authEnabled ? user : 'dummy-user',
-				password: authEnabled ? password : 'dummy-password',
+				password: authEnabled ? password : 'dummy-password'
 			},
 			network
 		);
@@ -157,25 +162,40 @@ export class Login extends Component {
 		await this.performLogin({
 			user: user.value,
 			password: password.value,
-			network: network.value
+			network: network.id
 		});
 	};
 
 	async componentDidUpdate() {
 		const { networks, autoLoginAttempted } = this.state;
 
-		// If we have only one network and it doesn't have auth enabled, perform a login
-		// autoLoginAttempted is a safety to prevent multiple tries
-		if (networks.length === 1 && !networks[0].authEnabled && !autoLoginAttempted) {
+		/*
+		 * If we have only one network and it doesn't have auth enabled, perform a login
+		 * autoLoginAttempted is a safety to prevent multiple tries
+		 */
+		if (
+			networks.length === 1 &&
+			!networks[0].authEnabled &&
+			!autoLoginAttempted
+		) {
+			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState(() => ({
 				autoLoginAttempted: true
 			}));
-			await this.performLogin({ network: networks[0].name })
+			await this.performLogin({ network: networks[0].name });
 		}
 	}
 
 	render() {
-		const { info, user, password, network, networks, authEnabled, isLoading } = this.state;
+		const {
+			info,
+			user,
+			password,
+			network,
+			networks,
+			authEnabled,
+			isLoading
+		} = this.state;
 		const { classes, error } = this.props;
 
 		return (
@@ -249,8 +269,8 @@ export class Login extends Component {
 									</FormHelperText>
 								)}
 							</FormControl>
-							)}
-							{authEnabled && (
+						)}
+						{authEnabled && (
 							<FormControl margin="normal" required fullWidth>
 								<TextField
 									required
@@ -297,7 +317,7 @@ export class Login extends Component {
 							color="primary"
 							className={classes.submit}
 						>
-							{authEnabled ? "Sign in" : "Connect"}
+							{authEnabled ? 'Sign in' : 'Connect'}
 						</Button>
 					</form>
 				</Paper>

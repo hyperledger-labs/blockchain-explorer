@@ -3,14 +3,12 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
+import { User } from '../platform/fabric/models/User';
 
 const { promisify } = require('util');
-
 const jwt = require('jsonwebtoken');
-
 const PassportLocalStrategy = require('passport-local').Strategy;
 
-const User = require('../platform/fabric/models/User');
 // @ts-ignore
 const config = require('../explorerconfig.json');
 // @ts-check
@@ -32,21 +30,16 @@ const strategy = function(platform) {
 			};
 
 			const reqUser = await new User(req.body).asJson();
-			const userInfo = await proxy.authenticate(reqUser);
+			const authResult = await proxy.authenticate(reqUser);
+			if (!authResult) {
+				return done(null, false, { message: 'Incorrect credentials' });
+			}
 
 			const payload = {
-				user: userInfo.user,
-				network: userInfo.network
+				user: reqUser.user,
+				network: reqUser.network
 			};
 
-			if (!userInfo || !userInfo.authenticated) {
-				const error = {
-					name: 'IncorrectCredentialsError',
-					message: userInfo.message
-				};
-
-				return done(error, null, null);
-			}
 			// @ts-ignore
 			const token = await jwtSignAsync(payload, config.jwt.secret, {
 				expiresIn: config.jwt.expiresIn
@@ -57,7 +50,6 @@ const strategy = function(platform) {
 				name: userData.user,
 				network: userData.network
 			};
-
 			return done(null, token, data);
 		}
 	);
