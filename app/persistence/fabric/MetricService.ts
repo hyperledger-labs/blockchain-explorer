@@ -1,7 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
+import {PgService} from '../postgreSQL/PgService';
 import { helper } from '../../common/helper';
 
 const logger = helper.getLogger('MetricService');
@@ -11,8 +11,10 @@ const logger = helper.getLogger('MetricService');
  *
  * @class MetricService
  */
-class MetricService {
-	constructor(sql) {
+export class MetricService {
+	sql : PgService;
+
+	constructor(sql : PgService) {
 		this.sql = sql;
 	}
 
@@ -154,7 +156,7 @@ class MetricService {
 	 */
 	async getOrgsData(network_name, channel_genesis_hash) {
 		const orgs = [];
-		const rows = await this.sql.getRowsBySQlNoCondition(
+		const rows : any = await this.sql.getRowsBySQlNoCondition(
 			`select distinct on (mspid) mspid from peer  where channel_genesis_hash='${channel_genesis_hash}' and network_name='${network_name}'`
 		);
 		for (let i = 0, len = rows.length; i < len; i++) {
@@ -192,24 +194,24 @@ class MetricService {
 	 * @memberof MetricService
 	 */
 	async getStatusGenerate(network_name, channel_genesis_hash) {
-		let chaincodeCount = await this.getChaincodeCount(
+		let chaincodeCount : any = await this.getChaincodeCount(
 			network_name,
 			channel_genesis_hash
 		);
 		if (!chaincodeCount) {
 			chaincodeCount = 0;
 		}
-		let txCount = await this.getTxCount(network_name, channel_genesis_hash);
+		let txCount : any = await this.getTxCount(network_name, channel_genesis_hash);
 		if (!txCount) {
 			txCount = 0;
 		}
 		txCount.c = txCount.c ? txCount.c : 0;
-		let blockCount = await this.getBlockCount(network_name, channel_genesis_hash);
+		let blockCount : any = await this.getBlockCount(network_name, channel_genesis_hash);
 		if (!blockCount) {
 			blockCount = 0;
 		}
 		blockCount.c = blockCount.c ? blockCount.c : 0;
-		let peerCount = await this.getPeerlistCount(
+		let peerCount : any = await this.getPeerlistCount(
 			network_name,
 			channel_genesis_hash
 		);
@@ -641,5 +643,3 @@ class MetricService {
 		return this.sql.getRowsBySQlQuery(sqlQuery);
 	}
 }
-
-module.exports = MetricService;

@@ -5,6 +5,9 @@
 import * as path from 'path';
 import {helper} from '../../common/helper';
 import {User} from './models/User';
+import {MetricService} from '../../persistence/fabric/MetricService';
+import {CRUDService} from '../../persistence/fabric/CRUDService';
+import {UserDataService} from '../../persistence/fabric/UserDataService';
 
 const fs = require('fs-extra');
 
@@ -14,11 +17,6 @@ const ExplorerError = require('../../common/ExplorerError');
 const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
 const ExplorerListener = require('../../sync/listener/ExplorerListener');
-
-const CRUDService = require('../../persistence/fabric/CRUDService');
-const MetricService = require('../../persistence/fabric/MetricService');
-const UserDataService = require('../../persistence/fabric/UserDataService');
-
 const fabric_const = require('./utils/FabricConst').fabric.const;
 const explorer_error = require('../../common/ExplorerMessage').explorer.error;
 

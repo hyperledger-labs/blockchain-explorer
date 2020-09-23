@@ -1,7 +1,7 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-
+import {PgService} from '../postgreSQL/PgService';
 import { helper } from '../../common/helper';
 
 const logger = helper.getLogger('CRUDService');
@@ -11,8 +11,10 @@ const logger = helper.getLogger('CRUDService');
  *
  * @class CRUDService
  */
-class CRUDService {
-	constructor(sql) {
+export class CRUDService {
+	sql : PgService;
+
+	constructor(sql : PgService) {
 		this.sql = sql;
 	}
 
@@ -260,7 +262,7 @@ class CRUDService {
 	async getCurBlockNum(network_name, channel_genesis_hash) {
 		let curBlockNum;
 		try {
-			const row = await this.sql.getRowsBySQlCase(
+			const row : any = await this.sql.getRowsBySQlCase(
 				`select max(blocknum) as blocknum from blocks  where channel_genesis_hash='${channel_genesis_hash}' and network_name = '${network_name}' `
 			);
 
@@ -421,7 +423,6 @@ class CRUDService {
 	}
 	// Orderer BE-303
 }
-module.exports = CRUDService;
 
 /**
  *

@@ -1,19 +1,22 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+import {PgService} from '../postgreSQL/PgService';
 
 /**
  *
  *
  * @class UserDataService
  */
-class UserDataService {
+export class UserDataService {
+	sql : PgService;
+	userModel : any;
 	/**
 	 * Creates an instance of UserDataService.
 	 * @param {*} sql
 	 * @memberof UserDataService
 	 */
-	constructor(sql) {
+	constructor(sql : PgService) {
 		this.sql = sql;
 	}
 
@@ -101,5 +104,3 @@ class UserDataService {
 			});
 	}
 }
-
-module.exports = UserDataService;

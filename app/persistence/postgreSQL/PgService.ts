@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 import { helper } from '../../common/helper';
+import { Client } from 'pg';
+import { Sequelize, Optional } from 'sequelize';
 
-const { Client } = require('pg');
-const Sequelize = require('sequelize');
 const fs = require('fs');
 
 const logger = helper.getLogger('PgService');
@@ -30,7 +30,11 @@ const logger = helper.getLogger('PgService');
  *
  * @class PgService
  */
-class PgService {
+export class PgService {
+	pgconfig : any;
+	userModel : any;
+	client : Client;
+
 	/**
 	 * Creates an instance of PgService.
 	 * @param {*} pgconfig
@@ -103,7 +107,7 @@ class PgService {
 	 */
 	async handleDisconnect() {
 		try {
-			this.client.on('error', err => {
+			this.client.on('error', (err : NodeJS.ErrnoException) => {
 				logger.error('db error', err);
 				if (err.code === 'PROTOCOL_CONNECTION_LOST') {
 					this.handleDisconnect();
@@ -517,7 +521,7 @@ class PgService {
 	 * @param datatype limit         the page limit.
 	 *
 	 */
-	getRowsBySQlNoCondition(sqlcharacter, limit) {
+	getRowsBySQlNoCondition(sqlcharacter, limit? ) : Promise<any>{
 		/* eslint-disable */
 		const _self = this;
 		return new Promise((resolve, reject) => {
@@ -574,75 +578,4 @@ class PgService {
 		});
 	}
 
-	/**
-	 *
-	 * @param sql
-	 * @param key
-	 * @returns {Promise}
-	 *
-	 */
-	getSQL2Map(sql, key) {
-		const _self = this;
-		return new Promise((resolve, reject) => {
-			_self.client.query(sql, (err, res) => {
-				if (err) {
-					reject(err);
-					return;
-				}
-
-				logger.debug(`The solution is: ${res.rows.length}  `);
-
-				const keymap = new Map();
-
-				for (let ind = 0; ind < res.rows.length; ind++) {
-					logger.debug(`The ind value is: ${res.rows[ind].id}  `);
-					keymap.set(res.rows[ind][key], res.rows[ind]);
-				}
-
-				resolve(keymap);
-			});
-		});
-	}
-
-	/**
-	 *
-	 *
-	 * @param unknown_type sql
-	 * @param unknown_type key
-	 * @return unknown
-	 */
-	getSQL2Map4Arr(sql, key) {
-		const _self = this;
-		return new Promise((resolve, reject) => {
-			_self.client.query(sql, (err, rows) => {
-				if (err) {
-					reject(err);
-					return;
-				}
-
-				// Logger.debug(  `The solution is: ${rows.length }  `  );
-				logger.debug(' the getSqlMap ');
-
-				const keymap = new Map();
-
-				for (let ind = 0; ind < rows.length; ind++) {
-					const keyvalue = rows[ind][key];
-					let arrvalue = [];
-
-					if (keymap.has(keyvalue)) {
-						arrvalue = keymap.get(keyvalue);
-						arrvalue.push(rows);
-					} else {
-						arrvalue.push(rows);
-					}
-
-					keymap.set(keyvalue, arrvalue);
-				}
-
-				resolve(keymap);
-			});
-		});
-	}
 }
-
-module.exports = PgService;
