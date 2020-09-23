@@ -126,9 +126,9 @@ const platformroutes = async function(router, platform) {
 	router.get('/channels', (req, res) => {
 		proxy.getChannels(req.network).then(channels => {
 			const response = {
-				status: 200
+				status: 200,
+				channels
 			};
-			response.channels = channels;
 			res.send(response);
 		});
 	});
