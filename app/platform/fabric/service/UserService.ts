@@ -5,10 +5,10 @@
 /* eslint-disable quotes */
 /* eslint-disable no-extra-parens */
 
-import {helper} from '../../../common/helper';
+import * as bcrypt from 'bcrypt';
+import { helper } from '../../../common/helper';
+import * as UserMeta from '../../../model/User';
 
-const bcrypt = require('bcrypt');
-const UserMeta = require('../../../model/User.js');
 const logger = helper.getLogger('UserService');
 
 /**
@@ -17,8 +17,8 @@ const logger = helper.getLogger('UserService');
  * @class UserService
  */
 export class UserService {
-	platform : any;
-	userDataService : any;
+	platform: any;
+	userDataService: any;
 
 	/**
 	 *Creates an instance of UserService.

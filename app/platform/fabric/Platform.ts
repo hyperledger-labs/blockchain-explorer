@@ -3,27 +3,27 @@
  */
 
 import * as path from 'path';
-import {helper} from '../../common/helper';
-import {User} from './models/User';
-import {MetricService} from '../../persistence/fabric/MetricService';
-import {CRUDService} from '../../persistence/fabric/CRUDService';
-import {UserDataService} from '../../persistence/fabric/UserDataService';
-
 import fs from 'fs-extra';
+import { helper } from '../../common/helper';
+import { User } from './models/User';
+import { MetricService } from '../../persistence/fabric/MetricService';
+import { CRUDService } from '../../persistence/fabric/CRUDService';
+import { UserDataService } from '../../persistence/fabric/UserDataService';
 
-import {Proxy} from './Proxy';
-import {ExplorerError} from '../../common/ExplorerError';
+import { Proxy } from './Proxy';
+import { ExplorerError } from '../../common/ExplorerError';
+import { ExplorerListener } from '../../sync/listener/ExplorerListener';
+import { explorerError } from '../../common/ExplorerMessage';
+
+import { FabricConfig } from './FabricConfig';
+import { UserService } from './service/UserService';
+import * as FabricUtils from './utils/FabricUtils';
+import * as FabricConst from './utils/FabricConst';
 
 const logger = helper.getLogger('Platform');
-const FabricUtils = require('./utils/FabricUtils.js');
-import {ExplorerListener} from '../../sync/listener/ExplorerListener';
-const fabric_const = require('./utils/FabricConst').fabric.const;
-import {explorerError} from '../../common/ExplorerMessage'
+const fabric_const = FabricConst.fabric.const;
 
 const config_path = path.resolve(__dirname, './config.json');
-
-import {FabricConfig} from './FabricConfig';
-import {UserService} from './service/UserService';
 
 /**
  *
@@ -31,15 +31,15 @@ import {UserService} from './service/UserService';
  * @class Platform
  */
 export class Platform {
-	persistence : any;
-	broadcaster : any;
-	networks : Map<string, any>;
-	userService : any;
-	proxy : any;
-	defaultNetwork : string;
-	network_configs : object;
-	syncType : string;
-	explorerListeners : any[];
+	persistence: any;
+	broadcaster: any;
+	networks: Map<string, any>;
+	userService: any;
+	proxy: any;
+	defaultNetwork: string;
+	network_configs: Record<string, any>;
+	syncType: string;
+	explorerListeners: any[];
 
 	/**
 	 * Creates an instance of Platform.

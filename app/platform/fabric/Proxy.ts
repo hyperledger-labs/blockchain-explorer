@@ -2,15 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../common/helper';
+import { helper } from '../../common/helper';
 
-import {NetworkService} from './service/NetworkService';
-import {ExplorerError} from '../../common/ExplorerError';
-const fabric_const = require('./utils/FabricConst').fabric.const;
-import {explorerError} from '../../common/ExplorerMessage'
+import { NetworkService } from './service/NetworkService';
+import { ExplorerError } from '../../common/ExplorerError';
+import { explorerError } from '../../common/ExplorerMessage';
+import * as FabricConst from './utils/FabricConst';
+
+const fabric_const = FabricConst.fabric.const;
 
 const logger = helper.getLogger('Proxy');
-
 
 /**
  *
@@ -18,10 +19,10 @@ const logger = helper.getLogger('Proxy');
  * @class Proxy
  */
 export class Proxy {
-	platform : any;
-	persistence : any;
-	broadcaster : any;
-	userService : any;
+	platform: any;
+	persistence: any;
+	broadcaster: any;
+	userService: any;
 
 	/**
 	 * Creates an instance of Proxy.
@@ -58,10 +59,12 @@ export class Proxy {
 		const networkService = new NetworkService(this.platform);
 		let response = await networkService.networkList();
 		if (!response) {
-			response = [{
-				status: false,
-				message: 'Failed to get network list '
-			}];
+			response = [
+				{
+					status: false,
+					message: 'Failed to get network list '
+				}
+			];
 		}
 		logger.debug('networkList >> %s', response);
 		return response;

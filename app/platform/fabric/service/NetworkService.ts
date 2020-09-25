@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../../common/helper';
+import { helper } from '../../../common/helper';
 
 const logger = helper.getLogger('NetworkService');
 
@@ -12,7 +12,7 @@ const logger = helper.getLogger('NetworkService');
  * @class NetworkService
  */
 export class NetworkService {
-	platform : any;
+	platform: any;
 	/**
 	 * Creates an instance of NetworkService.
 	 * @param {*} platform

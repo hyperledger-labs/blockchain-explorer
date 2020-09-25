@@ -3,38 +3,34 @@
  */
 
 import { Wallets, Gateway } from 'fabric-network';
-const {
-	Discoverer,
-	DiscoveryService,
-	Client,
-	BlockDecoder
-} = require('fabric-common');
-const fabprotos = require('fabric-protos');
+import * as fabprotos from 'fabric-protos';
+import { Discoverer, DiscoveryService } from 'fabric-common';
 import concat from 'lodash/concat';
-
-const FabricCAServices = require('fabric-ca-client');
-
-const fs = require('fs');
 import * as path from 'path';
-import {helper} from '../../../common/helper';
+import * as fs from 'fs';
+import { helper } from '../../../common/helper';
+import { explorerError } from '../../../common/ExplorerMessage';
+import { ExplorerError } from '../../../common/ExplorerError';
+
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { BlockDecoder, Client } = require('fabric-common');
+const FabricCAServices = require('fabric-ca-client');
+/* eslint-enable @typescript-eslint/no-var-requires */
 
 const logger = helper.getLogger('FabricGateway');
-import {explorerError} from '../../../common/ExplorerMessage'
-import {ExplorerError} from '../../../common/ExplorerError';
 
 export class FabricGateway {
-
-	fabricConfig : any;
-	config : any;
-	gateway : any;
-	wallet : any;
-	tlsEnable : boolean;
-	defaultChannelName : string;
-	fabricCaEnabled : boolean;
-	client : any;
-	FSWALLET : string;
-	enableAuthentication : boolean;
-	asLocalhost : boolean;
+	fabricConfig: any;
+	config: any;
+	gateway: any;
+	wallet: any;
+	tlsEnable: boolean;
+	defaultChannelName: string;
+	fabricCaEnabled: boolean;
+	client: any;
+	FSWALLET: string;
+	enableAuthentication: boolean;
+	asLocalhost: boolean;
 
 	/**
 	 * Creates an instance of FabricGateway.
@@ -122,7 +118,7 @@ export class FabricGateway {
 					enabled: true,
 					asLocalhost: this.asLocalhost
 				},
-				clientTlsIdentity: ""
+				clientTlsIdentity: ''
 			};
 
 			if ('clientTlsIdentity' in this.config.client) {
@@ -330,7 +326,7 @@ export class FabricGateway {
 		let result = await contract.evaluateTransaction('GetChaincodes');
 		let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
 		if (resultJson.chaincodes.length <= 0) {
-			resultJson = { chaincodes: [] };
+			resultJson = { chaincodes: [], toJSON: null };
 			contract = network.getContract('_lifecycle');
 			result = await contract.evaluateTransaction('QueryInstalledChaincodes', '');
 			const decodedReult = fabprotos.lifecycle.QueryInstalledChaincodesResult.decode(
@@ -383,7 +379,7 @@ export class FabricGateway {
 			const mspID = this.config.client.organization;
 			const targets = [];
 			for (const peer of this.config.organizations[mspID].peers) {
-				const discoverer = new Discoverer(`be discoverer ${peer}`, client);
+				const discoverer = new Discoverer(`be discoverer ${peer}`, client, mspID);
 				const url = this.config.peers[peer].url;
 				const pem = this.fabricConfig.getPeerTlsCACertsPem(peer);
 				let grpcOpt = {};

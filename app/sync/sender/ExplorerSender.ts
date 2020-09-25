@@ -2,8 +2,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {explorerConst} from '../../common/ExplorerConst'
-import {ForkSenderHandler} from './ForkSenderHandler';
+import { explorerConst } from '../../common/ExplorerConst';
+import { ForkSenderHandler } from './ForkSenderHandler';
 
 /**
  *

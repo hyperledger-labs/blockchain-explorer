@@ -2,11 +2,10 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-import {explorerConst} from '../common/ExplorerConst'
-import {explorerError} from '../common/ExplorerMessage'
-import {ExplorerError} from '../common/ExplorerError';
-import {Platform} from './fabric/Platform';
-
+import { explorerConst } from '../common/ExplorerConst';
+import { explorerError } from '../common/ExplorerMessage';
+import { ExplorerError } from '../common/ExplorerError';
+import { Platform } from './fabric/Platform';
 
 /**
  *

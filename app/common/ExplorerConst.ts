@@ -5,6 +5,7 @@
 /**
  * Explorer constants
  */
+/* eslint-disable no-shadow */
 export enum explorerConst {
 	PERSISTENCE = 'persistence',
 	PLATFORMS = 'platforms',

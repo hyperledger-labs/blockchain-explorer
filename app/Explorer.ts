@@ -8,19 +8,19 @@ import swaggerUi from 'swagger-ui-express';
 import compression from 'compression';
 import passport from 'passport';
 import RateLimit from 'express-rate-limit';
-import {PlatformBuilder } from './platform/PlatformBuilder';
+import { PlatformBuilder } from './platform/PlatformBuilder';
 import explorerconfig from './explorerconfig.json';
-import {PersistenceFactory} from './persistence/PersistenceFactory';
-import {authroutes} from './rest/authroutes';
-import {dbroutes} from './rest/dbroutes';
-import {platformroutes} from './rest/platformroutes';
-import {adminroutes} from './platform/fabric/rest/adminroutes';
-import {explorerConst} from './common/ExplorerConst'
-import {explorerError} from './common/ExplorerMessage'
-import {authCheckMiddleware} from './middleware/auth-check';
+import { PersistenceFactory } from './persistence/PersistenceFactory';
+import { authroutes } from './rest/authroutes';
+import { dbroutes } from './rest/dbroutes';
+import { platformroutes } from './rest/platformroutes';
+import { adminroutes } from './platform/fabric/rest/adminroutes';
+import { explorerConst } from './common/ExplorerConst';
+import { explorerError } from './common/ExplorerMessage';
+import { authCheckMiddleware } from './middleware/auth-check';
 import swaggerDocument from './swagger.json';
-import {ExplorerError} from './common/ExplorerError';
-import {localLoginStrategy} from './passport/local-login';
+import { ExplorerError } from './common/ExplorerError';
+import { localLoginStrategy } from './passport/local-login';
 
 /**
  *
@@ -28,17 +28,15 @@ import {localLoginStrategy} from './passport/local-login';
  * @class Explorer
  */
 export class Explorer {
-
 	app = Express();
-	persistence : any;
-	platforms : any[];
+	persistence: any;
+	platforms: any[];
 
 	/**
 	 * Creates an instance of explorerConst.
 	 * @memberof Explorer
 	 */
 	constructor() {
-
 		// set up rate limiter: maximum of 1000 requests per minute
 
 		const limiter = new RateLimit({

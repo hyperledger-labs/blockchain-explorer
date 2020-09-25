@@ -2,11 +2,11 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-const Sequelize = require('sequelize');
+import * as Sequelize from 'sequelize';
 
-const attributes = {
+export const attributes = {
 	username: {
-		type: Sequelize.STRING,
+		type: Sequelize.DataTypes.STRING,
 		allowNull: false,
 		unique: true,
 		validate: {
@@ -18,7 +18,7 @@ const attributes = {
 		}
 	},
 	email: {
-		type: Sequelize.STRING,
+		type: Sequelize.DataTypes.STRING,
 		validate: {
 			isEmail: {
 				args: true,
@@ -27,27 +27,27 @@ const attributes = {
 		}
 	},
 	networkName: {
-		type: Sequelize.STRING,
+		type: Sequelize.DataTypes.STRING,
 		allowNull: false
 	},
 	firstName: {
-		type: Sequelize.STRING
+		type: Sequelize.DataTypes.STRING
 	},
 	lastName: {
-		type: Sequelize.STRING
+		type: Sequelize.DataTypes.STRING
 	},
 	password: {
-		type: Sequelize.STRING
+		type: Sequelize.DataTypes.STRING
 	},
 	roles: {
-		type: Sequelize.STRING
+		type: Sequelize.DataTypes.STRING
 	},
 	salt: {
-		type: Sequelize.STRING
+		type: Sequelize.DataTypes.STRING
 	}
 };
 
-const options = {
+export const options = {
 	freezeTableName: true,
 	indexes: [
 		{
@@ -56,6 +56,3 @@ const options = {
 		}
 	]
 };
-
-module.exports.attributes = attributes;
-module.exports.options = options;

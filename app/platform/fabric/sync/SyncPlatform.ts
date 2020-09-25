@@ -3,23 +3,22 @@
  */
 
 import * as path from 'path';
-import {helper} from '../../../common/helper';
-import {MetricService} from '../../../persistence/fabric/MetricService';
-import {CRUDService} from '../../../persistence/fabric/CRUDService';
+import * as fs from 'fs';
+import { helper } from '../../../common/helper';
+import { MetricService } from '../../../persistence/fabric/MetricService';
+import { CRUDService } from '../../../persistence/fabric/CRUDService';
 
-const fs = require('fs-extra');
-
-import {SyncServices} from '../sync/SyncService';
-const FabricUtils = require('../utils/FabricUtils');
-import {FabricEvent} from './FabricEvent';
-import {FabricConfig} from '../FabricConfig';
+import { SyncServices } from '../sync/SyncService';
+import { FabricEvent } from './FabricEvent';
+import { FabricConfig } from '../FabricConfig';
+import { ExplorerError } from '../../../common/ExplorerError';
+import { explorerError } from '../../../common/ExplorerMessage';
+import * as FabricConst from '../utils/FabricConst';
+import * as FabricUtils from '../utils/FabricUtils';
 
 const logger = helper.getLogger('SyncPlatform');
-import {ExplorerError} from '../../../common/ExplorerError';
 
-
-const fabric_const = require('../utils/FabricConst').fabric.const;
-import {explorerError} from '../../../common/ExplorerMessage'
+const fabric_const = FabricConst.fabric.const;
 
 const config_path = path.resolve(__dirname, '../config.json');
 
@@ -29,15 +28,15 @@ const config_path = path.resolve(__dirname, '../config.json');
  * @class SyncPlatform
  */
 export class SyncPlatform {
-	network_id : string;
-	network_name : string;
-	client : any;
-	eventHub : any;
-	sender : any;
-	persistence : any;
-	syncService : any;
-	blocksSyncTime : number;
-	network_config : object;
+	network_id: string;
+	network_name: string;
+	client: any;
+	eventHub: any;
+	sender: any;
+	persistence: any;
+	syncService: any;
+	blocksSyncTime: number;
+	network_config: Record<string, any>;
 
 	/**
 	 * Creates an instance of SyncPlatform.
@@ -65,8 +64,6 @@ export class SyncPlatform {
 	 * @memberof SyncPlatform
 	 */
 	async initialize(args: string | any[]) {
-		const _self = this;
-
 		logger.debug(
 			'******* Initialization started for child client process ******',
 			args
@@ -89,11 +86,7 @@ export class SyncPlatform {
 			this.network_name = args[1];
 		}
 
-		logger.info(
-			explorerError.MESSAGE_1002,
-			this.network_id,
-			this.network_name
-		);
+		logger.info(explorerError.MESSAGE_1002, this.network_id, this.network_name);
 
 		logger.debug('Blocks synch interval time >> %s', this.blocksSyncTime);
 
@@ -126,7 +119,7 @@ export class SyncPlatform {
 		 * Set blocksSyncTime property in platform config.json in minutes
 		 */
 		setInterval(() => {
-			_self.isChannelEventHubConnected();
+			this.isChannelEventHubConnected();
 		}, this.blocksSyncTime);
 		logger.debug(
 			'******* Initialization end for child client process %s ******',
