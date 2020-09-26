@@ -2,36 +2,31 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-const Express = require('express');
-const bodyParser = require('body-parser');
-const swaggerUi = require('swagger-ui-express');
-const compression = require('compression');
-const passport = require('passport');
-const RateLimit = require('express-rate-limit');
+import Express from 'express';
+import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express';
+import compression from 'compression';
+import passport from 'passport';
+import RateLimit from 'express-rate-limit';
 import {PlatformBuilder } from './platform/PlatformBuilder';
-const explorerconfig = require('./explorerconfig.json');
-const PersistenceFactory = require('./persistence/PersistenceFactory');
-const ExplorerError = require('./common/ExplorerError');
-
-const localLoginStrategy = require('./passport/local-login');
-const authroutes = require('./rest/authroutes');
-const dbroutes = require('./rest/dbroutes');
-const platformroutes = require('./rest/platformroutes');
-const adminroutes = require('./platform/fabric/rest/adminroutes');
-
-const authCheckMiddleware = require('./middleware/auth-check');
-
-const swaggerDocument = require('../swagger.json');
-
+import explorerconfig from './explorerconfig.json';
+import {PersistenceFactory} from './persistence/PersistenceFactory';
+import {authroutes} from './rest/authroutes';
+import {dbroutes} from './rest/dbroutes';
+import {platformroutes} from './rest/platformroutes';
+import {adminroutes} from './platform/fabric/rest/adminroutes';
 import {explorerConst} from './common/ExplorerConst'
 import {explorerError} from './common/ExplorerMessage'
-
+import authCheckMiddleware from './middleware/auth-check';
+import swaggerDocument from '../swagger.json';
+import {ExplorerError} from './common/ExplorerError';
+const localLoginStrategy = require('./passport/local-login');
 /**
  *
  *
  * @class Explorer
  */
-class Explorer {
+export class Explorer {
 
 	app = Express();
 	persistence : any;
@@ -119,12 +114,12 @@ class Explorer {
 
 			this.app.use('/api', authCheckMiddleware);
 
-			const authrouter = new Express.Router();
+			const authrouter = Express.Router();
 
 			// Initializing the rest app services
 			await authroutes(authrouter, platform);
 
-			const apirouter = new Express.Router();
+			const apirouter = Express.Router();
 
 			// Initializing the rest app services
 			await dbroutes(apirouter, platform);
@@ -158,5 +153,3 @@ class Explorer {
 		}
 	}
 }
-
-module.exports = Explorer;

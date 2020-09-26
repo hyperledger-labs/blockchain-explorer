@@ -3,7 +3,8 @@
  */
 import { helper } from '../common/helper';
 
-const passport = require('passport');
+import passport from 'passport'
+
 const { responder } = require('./requestutils');
 
 const logger = helper.getLogger('Auth');
@@ -14,7 +15,7 @@ const logger = helper.getLogger('Auth');
  * @param {*} router
  * @param {*} platform
  */
-const authroutes = async function(router, platform) {
+export async function authroutes(router: any, platform: any) {
 	const proxy = platform.getProxy();
 
 	/**
@@ -26,7 +27,7 @@ const authroutes = async function(router, platform) {
 
 	router.get(
 		'/networklist',
-		responder(async req => {
+		responder(async (req: any) => {
 			const networkList = await proxy.networkList(req);
 			return { networkList };
 		})
@@ -38,7 +39,7 @@ const authroutes = async function(router, platform) {
 	 * POST /login -> /login
 	 * curl -X POST -H 'Content-Type: routerlication/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
 	 */
-	router.post('/login', async (req, res, next) => {
+	router.post('/login', async (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { success: boolean; message: any; token?: any; user?: any; }): any; new(): any; }; }; }, next: any) => {
 		logger.debug('req.body', req.body);
 		return passport.authenticate('local-login', (err, token, userData) => {
 			if (!token) {
@@ -56,11 +57,9 @@ const authroutes = async function(router, platform) {
 		})(req, res, next);
 	});
 
-	router.post('/logout', async (req, res) => {
+	router.post('/logout', async (req: { body: any; logout: () => void; }, res: { send: () => void; }) => {
 		logger.debug('req.body', req.body);
 		req.logout();
 		res.send();
 	});
 };
-
-module.exports = authroutes;

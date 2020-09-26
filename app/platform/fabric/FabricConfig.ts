@@ -6,7 +6,7 @@ const fs = require('fs');
 import * as path from 'path';
 import {helper} from '../../common/helper';
 import {explorerError} from '../../common/ExplorerMessage'
-const ExplorerError = require('../../common/ExplorerError');
+import {ExplorerError} from '../../common/ExplorerError';
 
 const logger = helper.getLogger('FabricConfig');
 
@@ -15,7 +15,7 @@ const logger = helper.getLogger('FabricConfig');
  *
  * @class FabricConfig
  */
-class FabricConfig {
+export class FabricConfig {
 	logger : any;
 	config : any;
 	network_id : string;
@@ -365,5 +365,3 @@ class FabricConfig {
 		return this.config.client.rwSetEncoding || 'utf8';
 	}
 }
-
-module.exports = FabricConfig;

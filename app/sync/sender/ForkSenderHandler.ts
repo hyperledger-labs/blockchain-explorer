@@ -11,7 +11,7 @@ const logger = helper.getLogger('ForkSenderHandler');
  *
  * @class ForkSenderHandler
  */
-class ForkSenderHandler {
+export class ForkSenderHandler {
 	/**
 	 * Creates an instance of ForkSenderHandler.
 	 * @memberof ForkSenderHandler
@@ -45,5 +45,3 @@ class ForkSenderHandler {
 	 */
 	close() {}
 }
-
-module.exports = ForkSenderHandler;

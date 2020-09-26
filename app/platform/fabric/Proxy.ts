@@ -4,8 +4,8 @@
 
 import {helper} from '../../common/helper';
 
-const NetworkService = require('./service/NetworkService.js');
-const ExplorerError = require('../../common/ExplorerError');
+import {NetworkService} from './service/NetworkService';
+import {ExplorerError} from '../../common/ExplorerError';
 const fabric_const = require('./utils/FabricConst').fabric.const;
 import {explorerError} from '../../common/ExplorerMessage'
 
@@ -17,7 +17,7 @@ const logger = helper.getLogger('Proxy');
  *
  * @class Proxy
  */
-class Proxy {
+export class Proxy {
 	platform : any;
 	persistence : any;
 	broadcaster : any;
@@ -58,10 +58,10 @@ class Proxy {
 		const networkService = new NetworkService(this.platform);
 		let response = await networkService.networkList();
 		if (!response) {
-			response = {
+			response = [{
 				status: false,
 				message: 'Failed to get network list '
-			};
+			}];
 		}
 		logger.debug('networkList >> %s', response);
 		return response;
@@ -389,5 +389,3 @@ class Proxy {
 		}
 	}
 }
-
-module.exports = Proxy;

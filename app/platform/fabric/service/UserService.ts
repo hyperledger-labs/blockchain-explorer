@@ -16,7 +16,7 @@ const logger = helper.getLogger('UserService');
  *
  * @class UserService
  */
-class UserService {
+export class UserService {
 	platform : any;
 	userDataService : any;
 
@@ -273,5 +273,3 @@ class UserService {
 		});
 	}
 }
-
-module.exports = UserService;

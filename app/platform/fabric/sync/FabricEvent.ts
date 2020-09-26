@@ -11,7 +11,7 @@ const logger = helper.getLogger('FabricEvent');
  *
  * @class FabricEvent
  */
-class FabricEvent {
+export class FabricEvent {
 
 	client : any;
 	fabricServices : any;
@@ -155,5 +155,3 @@ class FabricEvent {
 
 // static class variable
 FabricEvent.channelEventHubs = new Map();
-
-module.exports = FabricEvent;

@@ -3,12 +3,12 @@
  */
 
 import * as path from 'path';
-const fs = require('fs-extra');
-const sha = require('js-sha256');
-const asn = require('asn1.js');
-const { Utils } = require('fabric-common');
-const FabricClient = require('./../FabricClient.js');
-const ExplorerError = require('../../../common/ExplorerError');
+import fs from 'fs-extra';
+import sha from 'js-sha256';
+import asn from 'asn1.js';
+import { Utils } from 'fabric-common';
+import {FabricClient} from './../FabricClient';
+import {ExplorerError} from '../../../common/ExplorerError';
 import {explorerError} from '../../../common/ExplorerMessage'
 
 import {helper} from '../../../common/helper';

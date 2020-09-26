@@ -3,31 +3,31 @@
  */
 /* eslint-disable import/extensions */
 import { helper } from './common/helper';
-
 import { explorerConst } from './common/ExplorerConst';
 import { explorerError } from './common/ExplorerMessage';
+import {ExplorerError} from './common/ExplorerError';
+import syncconfig from './explorerconfig.json';
+import {SyncBuilder} from './sync/SyncBuilder';
+import {PersistenceFactory} from './persistence/PersistenceFactory';
+import {ExplorerSender} from './sync/sender/ExplorerSender';
 /* eslint-enable import/extensions */
-
-const syncconfig = require('./explorerconfig.json');
-const ExplorerError = require('./common/ExplorerError');
-
 const logger = helper.getLogger('Synchronizer');
-const SyncBuilder = require('./sync/SyncBuilder');
-const PersistenceFactory = require('./persistence/PersistenceFactory');
-const ExplorerSender = require('./sync/sender/ExplorerSender');
 
 /**
  *
  *
  * @class Synchronizer
  */
-class Synchronizer {
+export class Synchronizer {
+	args: any;
+	persistence: any;
+	platform: any;
 	/**
 	 * Creates an instance of Synchronizer.
 	 * @param {*} args
 	 * @memberof Synchronizer
 	 */
-	constructor(args) {
+	constructor(args: any) {
 		this.args = args;
 		this.persistence = null;
 		this.platform = null;
@@ -92,5 +92,3 @@ class Synchronizer {
 		}
 	}
 }
-
-module.exports = Synchronizer;

@@ -4,14 +4,14 @@
 
 import {explorerConst} from '../common/ExplorerConst'
 import {explorerError} from '../common/ExplorerMessage'
-const ExplorerError = require('../common/ExplorerError');
+import {ExplorerError} from '../common/ExplorerError';
 
 /**
  *
  *
  * @class PersistenceFactory
  */
-class PersistenceFactory {
+export class PersistenceFactory {
 	/**
 	 *
 	 *
@@ -21,7 +21,7 @@ class PersistenceFactory {
 	 * @returns
 	 * @memberof PersistenceFactory
 	 */
-	static async create(db, dbconfig) {
+	static async create(db: string, dbconfig: any) {
 		console.log("check",explorerConst.PERSISTENCE_POSTGRESQL)
 		if (db === explorerConst.PERSISTENCE_POSTGRESQL) {
 			// Avoid to load all db Persist module
@@ -33,5 +33,3 @@ class PersistenceFactory {
 		throw new ExplorerError(explorerError.ERROR_1003, db);
 	}
 }
-
-module.exports = PersistenceFactory;

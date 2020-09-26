@@ -3,14 +3,14 @@
  */
 
 import path from 'path'
-const { fork } = require('child_process');
+import { fork } from 'child_process';
 
 /**
  *
  *
  * @class ForkListenerHandler
  */
-class ForkListenerHandler {
+export class ForkListenerHandler {
 	public platform: any;
 	public syncProcessor: any;
 
@@ -61,5 +61,3 @@ class ForkListenerHandler {
 		}
 	}
 }
-
-module.exports = ForkListenerHandler;

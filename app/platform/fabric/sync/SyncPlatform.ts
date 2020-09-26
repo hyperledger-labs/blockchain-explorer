@@ -9,13 +9,13 @@ import {CRUDService} from '../../../persistence/fabric/CRUDService';
 
 const fs = require('fs-extra');
 
-const SyncService = require('../sync/SyncService');
+import {SyncServices} from '../sync/SyncService';
 const FabricUtils = require('../utils/FabricUtils');
-const FabricEvent = require('./FabricEvent');
-const FabricConfig = require('../FabricConfig');
+import {FabricEvent} from './FabricEvent';
+import {FabricConfig} from '../FabricConfig';
 
 const logger = helper.getLogger('SyncPlatform');
-const ExplorerError = require('../../../common/ExplorerError');
+import {ExplorerError} from '../../../common/ExplorerError';
 
 
 const fabric_const = require('../utils/FabricConst').fabric.const;
@@ -28,7 +28,7 @@ const config_path = path.resolve(__dirname, '../config.json');
  *
  * @class SyncPlatform
  */
-class SyncPlatform {
+export class SyncPlatform {
 	network_id : string;
 	network_name : string;
 	client : any;
@@ -45,14 +45,14 @@ class SyncPlatform {
 	 * @param {*} sender
 	 * @memberof SyncPlatform
 	 */
-	constructor(persistence, sender) {
+	constructor(persistence: any, sender: any) {
 		this.network_id = null;
 		this.network_name = null;
 		this.client = null;
 		this.eventHub = null;
 		this.sender = sender;
 		this.persistence = persistence;
-		this.syncService = new SyncService(this, this.persistence);
+		this.syncService = new SyncServices(this, this.persistence);
 		this.blocksSyncTime = 60000;
 		this.network_config = null;
 	}
@@ -64,7 +64,7 @@ class SyncPlatform {
 	 * @returns
 	 * @memberof SyncPlatform
 	 */
-	async initialize(args) {
+	async initialize(args: string | any[]) {
 		const _self = this;
 
 		logger.debug(
@@ -152,7 +152,7 @@ class SyncPlatform {
 		}
 	}
 
-	setBlocksSyncTime(blocksSyncTime) {
+	setBlocksSyncTime(blocksSyncTime: number) {
 		if (!isNaN(blocksSyncTime)) {
 			this.blocksSyncTime = blocksSyncTime * 1000;
 		}
@@ -179,7 +179,7 @@ class SyncPlatform {
 	 * @param {*} notify
 	 * @memberof SyncPlatform
 	 */
-	send(notify) {
+	send(notify: any) {
 		if (this.sender) {
 			this.sender.send(notify);
 		}
@@ -196,5 +196,3 @@ class SyncPlatform {
 		}
 	}
 }
-
-module.exports = SyncPlatform;

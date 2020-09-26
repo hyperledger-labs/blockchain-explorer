@@ -2,7 +2,7 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-const { Wallets, Gateway } = require('fabric-network');
+import { Wallets, Gateway } from 'fabric-network';
 const {
 	Discoverer,
 	DiscoveryService,
@@ -10,7 +10,7 @@ const {
 	BlockDecoder
 } = require('fabric-common');
 const fabprotos = require('fabric-protos');
-const concat = require('lodash/concat');
+import concat from 'lodash/concat';
 
 const FabricCAServices = require('fabric-ca-client');
 
@@ -20,9 +20,9 @@ import {helper} from '../../../common/helper';
 
 const logger = helper.getLogger('FabricGateway');
 import {explorerError} from '../../../common/ExplorerMessage'
-const ExplorerError = require('../../../common/ExplorerError');
+import {ExplorerError} from '../../../common/ExplorerError';
 
-class FabricGateway {
+export class FabricGateway {
 
 	fabricConfig : any;
 	config : any;
@@ -421,5 +421,3 @@ class FabricGateway {
 		return null;
 	}
 }
-
-module.exports = FabricGateway;

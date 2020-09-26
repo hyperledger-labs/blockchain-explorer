@@ -9,28 +9,28 @@ import {MetricService} from '../../persistence/fabric/MetricService';
 import {CRUDService} from '../../persistence/fabric/CRUDService';
 import {UserDataService} from '../../persistence/fabric/UserDataService';
 
-const fs = require('fs-extra');
+import fs from 'fs-extra';
 
-const Proxy = require('./Proxy');
-const ExplorerError = require('../../common/ExplorerError');
+import {Proxy} from './Proxy';
+import {ExplorerError} from '../../common/ExplorerError';
 
 const logger = helper.getLogger('Platform');
 const FabricUtils = require('./utils/FabricUtils.js');
-const ExplorerListener = require('../../sync/listener/ExplorerListener');
+import {ExplorerListener} from '../../sync/listener/ExplorerListener';
 const fabric_const = require('./utils/FabricConst').fabric.const;
 import {explorerError} from '../../common/ExplorerMessage'
 
 const config_path = path.resolve(__dirname, './config.json');
 
-const FabricConfig = require('./FabricConfig');
-const UserService = require('./service/UserService');
+import {FabricConfig} from './FabricConfig';
+import {UserService} from './service/UserService';
 
 /**
  *
  *
  * @class Platform
  */
-class Platform {
+export class Platform {
 	persistence : any;
 	broadcaster : any;
 	networks : Map<string, any>;
@@ -295,4 +295,3 @@ class Platform {
 		}
 	}
 }
-module.exports = Platform;
