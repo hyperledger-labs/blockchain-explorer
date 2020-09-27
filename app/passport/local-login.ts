@@ -14,7 +14,7 @@ const config = require('../explorerconfig.json');
 // @ts-check
 const jwtSignAsync = promisify(jwt.sign);
 
-const strategy = function(platform) {
+export const localLoginStrategy = function(platform) {
 	const proxy = platform.getProxy();
 	return new PassportLocalStrategy(
 		{
@@ -47,15 +47,9 @@ const strategy = function(platform) {
 			// @ts-check
 			const data = {
 				message: 'logged in',
-				name: userData.user,
-				network: userData.network
+				name: userData.user
 			};
 			return done(null, token, data);
 		}
 	);
 };
-
-/**
- * Return the Passport Local Strategy object.
- */
-module.exports = strategy;

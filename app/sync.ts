@@ -1,11 +1,11 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-import { helper } from './app/common/helper';
+import { helper } from './common/helper';
 
-import { ExplorerError } from './app/common/ExplorerError';
+import { ExplorerError } from './common/ExplorerError';
 
-import { Synchronizer } from './app/Synchronizer';
+import { Synchronizer } from './Synchronizer';
 
 const logger = helper.getLogger('Sync');
 
@@ -49,7 +49,7 @@ const shutDown = function() {
 	}, 2000);
 };
 
-process.on('unhandledRejection', up => {
+process.on('unhandledRejection', (up : {message : string}) => {
 	logger.error(
 		'<<<<<<<<<<<<<<<<<<<<<<<<<< Synchronizer Error >>>>>>>>>>>>>>>>>>>>>'
 	);
