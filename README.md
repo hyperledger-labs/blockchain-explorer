@@ -27,13 +27,13 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
+| <b>[v1.1.3](release_notes/v1.1.3.md)</b> (Sep 28, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.2](release_notes/v1.1.2.md)</b> (Aug 12, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.1](release_notes/v1.1.1.md)</b> (Jul 17, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.0](release_notes/v1.1.0.md)</b> (Jul 01, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0](release_notes/v1.0.0.md)</b> (Apr 09, 2020)  | [v1.4.0 to v1.4.8](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc3](release_notes/v1.0.0-rc3.md)</b> (Apr 01, 2020)  | [v1.4.0 to v1.4.6](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [10.19.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.0.0-rc2](release_notes/v1.0.0-rc2.md)</b> (Dec 10, 2019)  | [v1.4.0 to v1.4.4](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
-| <b>[v1.0.0-rc1](release_notes/v1.0.0-rc1.md)</b> (Nov 18, 2019)  | [v1.4.2](https://hyperledger-fabric.readthedocs.io/en/release-1.4) | [8.11.x](https://nodejs.org/en/download/releases) |
 
 ---
 

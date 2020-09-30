@@ -1,3 +1,22 @@
+## v1.1.3
+
+* [a105280](https://github.com/hyperledger/blockchain-explorer/commit/a105280) Fix tsconfig.json for backward compatibility for docker env (#185)
+* [65b5001](https://github.com/hyperledger/blockchain-explorer/commit/65b5001) Be 769 convert to ts (#184)
+* [571ba55](https://github.com/hyperledger/blockchain-explorer/commit/571ba55) [BE-824](https://jira.hyperledger.org/browse/BE-824) Converted javascript to typescript (#181)
+* [74f5f4a](https://github.com/hyperledger/blockchain-explorer/commit/74f5f4a) [BE-823](https://jira.hyperledger.org/browse/BE-823) Convert to TS : app/persistence/... (#180)
+* [aa870ea](https://github.com/hyperledger/blockchain-explorer/commit/aa870ea) [BE-822](https://jira.hyperledger.org/browse/BE-822) Converted javascript to typescript (#179)
+* [63f77c1](https://github.com/hyperledger/blockchain-explorer/commit/63f77c1) [BE-821](https://jira.hyperledger.org/browse/BE-821) Convert to TS : app/platfrom/... (#178)
+* [21d718a](https://github.com/hyperledger/blockchain-explorer/commit/21d718a) [BE-828](https://jira.hyperledger.org/browse/BE-828) Fix transaction timestamps (#177)
+* [cc2f637](https://github.com/hyperledger/blockchain-explorer/commit/cc2f637) [BE-827](https://jira.hyperledger.org/browse/BE-827)-security-vulnerability Updated node-forge (#176)
+* [7eff791](https://github.com/hyperledger/blockchain-explorer/commit/7eff791) [BE-769](https://jira.hyperledger.org/browse/BE-769) Initial migration (#175)
+* [59fa173](https://github.com/hyperledger/blockchain-explorer/commit/59fa173) Fix Security Vulnerability (#174)
+* [f875250](https://github.com/hyperledger/blockchain-explorer/commit/f875250) [BE-819](https://jira.hyperledger.org/browse/BE-819) Security Vulnerability - Upgraded bl version (#173)
+* [b020de2](https://github.com/hyperledger/blockchain-explorer/commit/b020de2) [BE-814](https://jira.hyperledger.org/browse/BE-814) Fix inconsistency of network key (#172)
+* [d8a1d3e](https://github.com/hyperledger/blockchain-explorer/commit/d8a1d3e) [BE-812](https://jira.hyperledger.org/browse/BE-812) Add an index to sequelize option (#171)
+* [7be8ad3](https://github.com/hyperledger/blockchain-explorer/commit/7be8ad3) [BE-812](https://jira.hyperledger.org/browse/BE-812) Updated username validation message and rules (#170)
+* [33995ec](https://github.com/hyperledger/blockchain-explorer/commit/33995ec) updated maintainer name (#169)
+* [9b5246d](https://github.com/hyperledger/blockchain-explorer/commit/9b5246d) [BE-813](https://jira.hyperledger.org/browse/BE-813) Fixed security vulnerability issues (#168)
+
 ## v1.1.2
 
 * [4528879](https://github.com/hyperledger/blockchain-explorer/commit/4528879) [BE-804](https://jira.hyperledger.org/browse/BE-804) Fix Security vulnerability (#167)
