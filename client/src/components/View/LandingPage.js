@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations } from '../../state/redux/tables';
+import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
 	getBlockListType,
@@ -25,7 +26,8 @@ import {
 	getTransactionByOrgType,
 	getTransactionListType,
 	getTransactionPerHourType,
-	getTransactionPerMinType
+	getTransactionPerMinType,
+	getUserListType
 } from '../types';
 
 const {
@@ -38,7 +40,8 @@ const {
 	peerStatus,
 	transactionByOrg,
 	transactionPerHour,
-	transactionPerMin
+	transactionPerMin /* ,
+	userList */
 } = chartOperations;
 
 const {
@@ -48,6 +51,8 @@ const {
 	peerList,
 	transactionList
 } = tableOperations;
+
+const { userlist } = authOperations;
 
 const { currentChannelSelector } = chartSelectors;
 
@@ -116,7 +121,9 @@ export class LandingPage extends Component {
 			getTransactionList,
 			getTransactionPerHour,
 			getTransactionPerMin,
-			updateLoadStatus
+			updateLoadStatus,
+			userlist
+			// getUserList
 		} = this.props;
 		await getChannel();
 		const { currentChannel } = this.props;
@@ -139,7 +146,8 @@ export class LandingPage extends Component {
 			getTransactionByOrg(currentChannel),
 			getTransactionList(currentChannel),
 			getTransactionPerHour(currentChannel),
-			getTransactionPerMin(currentChannel)
+			getTransactionPerMin(currentChannel),
+			userlist()
 		]);
 		clearTimeout(promiseTimeout);
 		updateLoadStatus();
@@ -201,7 +209,8 @@ LandingPage.propTypes = {
 	getTransactionByOrg: getTransactionByOrgType.isRequired,
 	getTransactionList: getTransactionListType.isRequired,
 	getTransactionPerHour: getTransactionPerHourType.isRequired,
-	getTransactionPerMin: getTransactionPerMinType.isRequired
+	getTransactionPerMin: getTransactionPerMinType.isRequired,
+	userlist: getUserListType.isRequired
 };
 
 LandingPage.defaultProps = {
@@ -229,7 +238,9 @@ export default compose(
 			getTransactionByOrg: transactionByOrg,
 			getTransactionList: transactionList,
 			getTransactionPerHour: transactionPerHour,
-			getTransactionPerMin: transactionPerMin
+			getTransactionPerMin: transactionPerMin,
+			userlist: userlist
+			//getUserList: userList
 		}
 	)
 )(LandingPage);

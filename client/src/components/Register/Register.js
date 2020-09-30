@@ -182,7 +182,7 @@ export class Register extends Component {
 	submitForm = async e => {
 		e.preventDefault();
 
-		const { register } = this.props;
+		const { register, userlist } = this.props;
 		const {
 			user,
 			password,
@@ -204,11 +204,50 @@ export class Register extends Component {
 		};
 
 		const info = await register(userInfo);
-
+		await userlist();
 		this.setState(() => ({ info }));
-
+		this.resetForm();
 		return true;
 	};
+	resetForm() {
+		const user = {
+			error: null,
+			value: ''
+		};
+		const firstname = {
+			error: null,
+			value: ''
+		};
+		const lastname = {
+			error: null,
+			value: ''
+		};
+		const email = {
+			error: null,
+			value: ''
+		};
+		const password = {
+			error: null,
+			value: ''
+		};
+		const password2 = {
+			error: null,
+			value: ''
+		};
+		const roles = {
+			error: null,
+			value: ''
+		};
+		this.setState({
+			user: user,
+			firstname: firstname,
+			lastname: lastname,
+			email: email,
+			password: password,
+			password2: password2,
+			roles: roles
+		});
+	}
 
 	render() {
 		const {
@@ -434,7 +473,8 @@ export default compose(
 			error: errorSelector(state)
 		}),
 		{
-			register: authOperations.register
+			register: authOperations.register,
+			userlist: authOperations.userlist
 		}
 	)
 )(Register);
