@@ -207,7 +207,7 @@ export class Register extends Component {
 		const info = await register(userInfo);
 		await userlist();
 		this.setState(() => ({ info }));
-		this.setState({ lastSaved: user.value });
+		this.setState(() => ({ lastSaved: user.value }));
 		this.resetForm();
 		return true;
 	};
