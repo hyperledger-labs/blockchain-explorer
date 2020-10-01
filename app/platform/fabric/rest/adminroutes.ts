@@ -66,4 +66,4 @@ export async function adminroutes(router, platform) {
 			return await proxy.unregister(reqUser);
 		})
 	);
-};
+}

@@ -4,7 +4,7 @@
 
 import React from 'react';
 /* eslint-disable */
-import Enzyme, { shallow, render, mount, configure } from 'enzyme';
+import { shallow, render, mount, configure } from 'enzyme';
 /* eslint-enable */
 import sinon from 'sinon';
 // import { configure } from 'enzyme';

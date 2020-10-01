@@ -27,8 +27,6 @@ import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
 
-import Register from '../Register';
-
 // import Enroll from '../Enroll';
 
 import {
@@ -48,7 +46,6 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
-import getUserList from '../../state/redux/charts/actions';
 
 const {
 	blockPerHour,

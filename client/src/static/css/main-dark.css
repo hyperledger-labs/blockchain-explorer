@@ -4,58 +4,50 @@
 /* Dark-Theme is switched by the class name */
 
 .dark-theme svg.custom .node circle {
-  fill: #f3f3ff;
-  stroke: #2593b8;
+	fill: #f3f3ff;
+	stroke: #2593b8;
 }
 
 .dark-theme svg.custom .node text {
-  background-color: #444;
-  fill: #000000;
-}
-
-.dark-theme svg.custom .node text {
-  background-color: #444;
-  fill: #000000;
+	background-color: #444;
+	fill: #000000;
 }
 
 /*Tables Styling*/
 .dark-theme .table-hover tbody tr:hover td,
 .dark-theme .table-hover tbody tr:hover th {
-  transition: background-color 1s ease;
-  background-color: #5e558e !important;
-  opacity: 0.8;
+	transition: background-color 1s ease;
+	background-color: #5e558e !important;
+	opacity: 0.8;
 }
 
 .dark-theme .-pageJump input {
-  background: #7165ad !important;
-  color: #ffffff !important;
+	background: #7165ad !important;
+	color: #ffffff !important;
 }
 .dark-theme .select-wrap select {
-  background: #7165ad !important;
-  color: #ffffff !important;
+	background: #7165ad !important;
+	color: #ffffff !important;
 }
 
 .dark-theme li .active {
-  color: #ffffff !important;
-  background-color: #5e558e !important;
+	color: #ffffff !important;
+	background-color: #5e558e !important;
 }
 .dark-theme li .active:hover {
-  color: #ffffff !important;
+	color: #ffffff !important;
 }
 
-.dark-theme .nav-link:hover {
-  color: black;
-}
 .dark-theme .active .nav-link {
-  color: #ffffff;
-  fill: #ffffff;
+	color: #ffffff;
+	fill: #ffffff;
 }
 
 /*Time Chart and Chart stats */
 .dark-theme .nav-link:hover {
-  color: #007bff !important;
+	color: #007bff !important;
 }
 .dark-theme .rt-noData {
-  color: #ffffff !important;
-  background: transparent !important;
+	color: #ffffff !important;
+	background: transparent !important;
 }

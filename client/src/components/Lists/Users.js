@@ -25,7 +25,6 @@ import PersonIcon from '@material-ui/icons/Person';
 import RemoveIcon from '@material-ui/icons/Remove';
 import Avatar from '@material-ui/core/Avatar';
 import { shape, string } from 'prop-types';
-//import userListSelector,{chartOperations} from '../../state/redux/charts';
 import { authSelectors, authOperations } from '../../state/redux/auth';
 import { userListType, getUserListType } from '../types';
 const styles = theme => {
@@ -150,14 +149,16 @@ export class Users extends Component {
 	};
 	async reloadUsers() {
 		const { userlists } = this.props;
-		var index = userlists.findIndex(x => x.username === this.state.selectedUser);
-		var newUsers = userlists;
+		const index = userlists.findIndex(
+			x => x.username === this.state.selectedUser
+		);
+		const newUsers = userlists;
 		newUsers.splice(index, 1);
 		this.setState({ userlists: newUsers });
 	}
 	async removeUser() {
-		const { unregister } = this.props;
-		await Promise.all([unregister({ user: this.state.selectedUser })]).then(
+		const { unregisters } = this.props;
+		await Promise.all([unregisters({ user: this.state.selectedUser })]).then(
 			message => {
 				if (message[0].status === 'success') {
 					this.reloadUsers();
@@ -169,8 +170,6 @@ export class Users extends Component {
 	}
 	render() {
 		const { classes, onClose } = this.props;
-		/* const [open, setOpen] = React.useState(false);
-		 */
 		const { info } = this.state;
 		const handleClose = () => {
 			this.setState({

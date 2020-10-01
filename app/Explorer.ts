@@ -123,7 +123,7 @@ export class Explorer {
 			const apirouter = Express.Router();
 
 			// Initializing the rest app services
-			await dbroutes(apirouter, platform);
+			dbroutes(apirouter, platform);
 			await platformroutes(apirouter, platform);
 			await adminroutes(apirouter, platform);
 

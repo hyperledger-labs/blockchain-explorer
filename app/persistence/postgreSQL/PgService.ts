@@ -19,7 +19,7 @@
  */
 import { helper } from '../../common/helper';
 import { Client } from 'pg';
-import { Sequelize, Optional } from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 const fs = require('fs');
 

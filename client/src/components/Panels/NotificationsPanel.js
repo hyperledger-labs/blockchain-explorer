@@ -45,19 +45,18 @@ const styles = theme => {
 export class NotificationsPanel extends Component {
 	/* istanbul ignore next */
 	avatarIcon = (type, classes) => {
-		switch (type) {
-			case 'block':
-				return (
-					<Avatar className={classes.avatarBlue}>
-						<FontAwesome name="cube" />{' '}
-					</Avatar>
-				);
-			default:
-				return (
-					<Avatar>
-						<FontAwesome name="exclamation" />{' '}
-					</Avatar>
-				);
+		if (type === 'block') {
+			return (
+				<Avatar className={classes.avatarBlue}>
+					<FontAwesome name="cube" />{' '}
+				</Avatar>
+			);
+		} else {
+			return (
+				<Avatar>
+					<FontAwesome name="exclamation" />{' '}
+				</Avatar>
+			);
 		}
 	};
 
