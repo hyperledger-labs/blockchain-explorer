@@ -84,7 +84,7 @@ class Channels extends Component {
 					defaultPageSize={5}
 					filterable
 					minRows={0}
-					showPagination={channels.length > 5}
+					showPagination={channels.length >= 5}
 				/>
 			</div>
 		);
