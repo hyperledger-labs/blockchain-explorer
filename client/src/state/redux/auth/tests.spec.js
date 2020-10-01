@@ -22,7 +22,8 @@ describe('Reducers', () => {
 			token: null,
 			error: '',
 			networks: [],
-			registered: ''
+			registered: '',
+			userlists: []
 		});
 	});
 
@@ -82,6 +83,12 @@ describe('Selectors', () => {
 		const state = { auth: { registered: 'test' } };
 		const RegisteredSelector = selectors.registeredSelector(state);
 		expect(RegisteredSelector).toBe('test');
+	});
+
+	test('Userlist Selector', () => {
+		const state = { auth: { userlists: ['test'] } };
+		const UserlistSelector = selectors.userlistSelector(state);
+		expect(UserlistSelector).toStrictEqual(['test']);
 	});
 });
 

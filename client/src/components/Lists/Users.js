@@ -11,6 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Paper from '@material-ui/core/Paper';
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import CloseIcon from '@material-ui/icons/Close';
@@ -118,7 +119,11 @@ export class Users extends Component {
 			allValid: false,
 			prompt: false,
 			selectedUser: '',
-			userlists: userlists
+			userlists: userlists,
+			info: {
+				status: '',
+				message: ''
+			}
 		};
 	}
 
@@ -154,8 +159,10 @@ export class Users extends Component {
 		const { unregister } = this.props;
 		await Promise.all([unregister({ user: this.state.selectedUser })]).then(
 			message => {
-				if (message.status === 'success') {
+				if (message[0].status === 'success') {
 					this.reloadUsers();
+				} else {
+					this.setState({ info: message[0] });
 				}
 			}
 		);
@@ -164,13 +171,19 @@ export class Users extends Component {
 		const { classes, onClose } = this.props;
 		/* const [open, setOpen] = React.useState(false);
 		 */
-
+		const { info } = this.state;
 		const handleClose = () => {
-			this.setState({ prompt: false });
+			this.setState({
+				prompt: false,
+				info: {
+					status: '',
+					message: ''
+				}
+			});
 		};
 		const handleDelete = () => {
+			this.setState({ info: { status: '', message: '' } });
 			this.removeUser();
-			this.reloadUsers();
 			this.setState({ selectedUser: '' });
 
 			handleClose();
@@ -227,6 +240,11 @@ export class Users extends Component {
 							</ListItem>
 						))}
 					</List>
+					{info.status !== 'success' && (
+						<FormHelperText id="component-error-text" error>
+							{info.message}
+						</FormHelperText>
+					)}
 					<Dialog
 						open={this.state.prompt}
 						keepMounted
