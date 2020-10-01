@@ -24,7 +24,7 @@ import AdminPanel from '../Panels/AdminPanel';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
-
+import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
 
 import Register from '../Register';
@@ -48,6 +48,7 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
+import getUserList from '../../state/redux/charts/actions';
 
 const {
 	blockPerHour,
@@ -71,7 +72,6 @@ const {
 
 const { currentChannelSelector } = chartSelectors;
 const { channelsSelector } = tableSelectors;
-
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -244,7 +244,6 @@ export class HeaderView extends Component {
 				label: element.channelname
 			});
 		});
-
 		this.setState({
 			currentChannel: currentChannel,
 			channels: arr,
@@ -480,7 +479,6 @@ export class HeaderView extends Component {
 			registerOpen,
 			notifications
 		} = this.state;
-
 		const links = [
 			{ to: '/', label: 'DASHBOARD', exact: true },
 			{ to: '/network', label: 'NETWORK' },
@@ -610,7 +608,8 @@ export class HeaderView extends Component {
 							fullWidth={false}
 							maxWidth="md"
 						>
-							<Register onClose={this.registerClose} onRegister={this.onRegister} />
+							<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
+							{/* <Register onClose={this.registerClose} onRegister={this.onRegister} /> */}
 						</Dialog>
 						<Dialog
 							open={modalOpen}

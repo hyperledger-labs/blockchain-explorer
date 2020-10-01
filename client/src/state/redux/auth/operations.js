@@ -66,7 +66,7 @@ const register = user => dispatch =>
 			dispatch(errorAction(error));
 		});
 
-const userlist = dispatch =>
+const userlist = () => dispatch =>
 	get('/api/userlist')
 		.then(resp => {
 			if (resp.status === 500) {

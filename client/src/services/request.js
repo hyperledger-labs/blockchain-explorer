@@ -21,6 +21,7 @@ export const get = uri =>
 			.get(uri)
 			.set('Accept', 'application/json')
 			.set('Authorization', `bearer ${Auth.getToken()}`)
+			.set('Cache-Control', 'no-cache')
 			.end(withPromiseCallback(resolve, reject));
 	});
 export const put = (uri, payload) =>

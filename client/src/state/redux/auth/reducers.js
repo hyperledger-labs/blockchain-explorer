@@ -9,7 +9,8 @@ const initialState = {
 	token: null,
 	error: '',
 	networks: [],
-	registered: ''
+	registered: '',
+	userlists: []
 };
 
 /* Reducers for Dashboard Charts */
@@ -37,6 +38,18 @@ const authReducer = (state = initialState, action) => {
 			return {
 				...state,
 				...action.payload
+			};
+		}
+		case types.USERLIST: {
+			return {
+				...state,
+				userlists: action.payload.message
+			};
+		}
+		case types.UNREGISTER: {
+			return {
+				...state,
+				unregistered: action.payload.message
 			};
 		}
 		default: {
