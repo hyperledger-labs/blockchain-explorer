@@ -25,35 +25,12 @@ import PersonIcon from '@material-ui/icons/Person';
 import RemoveIcon from '@material-ui/icons/Remove';
 import Avatar from '@material-ui/core/Avatar';
 import { shape, string } from 'prop-types';
-//import userListSelector,{chartOperations} from '../../state/redux/charts';
 import { authSelectors, authOperations } from '../../state/redux/auth';
 import { userListType, getUserListType } from '../types';
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		container: {
-			width: 'auto',
-			display: 'block', // Fix IE 11 issue.
-			marginLeft: theme.spacing.unit * 3,
-			marginRight: theme.spacing.unit * 3,
-			[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-				width: 400,
-				marginLeft: 'auto',
-				marginRight: 'auto'
-			}
-		},
-		paper: {
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'center',
-			padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-				.spacing.unit * 3}px`
-		},
-		form: {
-			width: '100%', // Fix IE 11 issue.
-			marginTop: theme.spacing.unit
-		},
 		root: {
 			width: '100%',
 			maxWidth: 360,
@@ -61,19 +38,6 @@ const styles = theme => {
 		},
 		title: {
 			marginTop: theme.spacing.unit * 2
-		},
-		actions: {
-			marginTop: theme.spacing.unit * 3
-		},
-		errortext: {
-			fontSize: 16,
-			font: 'bold',
-			color: 'red'
-		},
-		successtext: {
-			fontSize: 16,
-			font: 'bold',
-			color: 'green'
 		},
 		closeButton: {
 			position: 'absolute',

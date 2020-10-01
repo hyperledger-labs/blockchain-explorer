@@ -2,150 +2,145 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 body {
-  line-height: normal;
-  font-size: 16px;
-  font-family: 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial,
-    sans-serif;
-  -webkit-font-smoothing: antialiased !important;
+	line-height: normal;
+	font-size: 16px;
+	font-family: 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased !important;
 }
 #root > div > div:nth-child(1) > nav > a {
-  font-size: 30pt;
-  /* margin-left: 670px; */
-  font-weight: 300;
+	font-size: 30pt;
+	/* margin-left: 670px; */
+	font-weight: 300;
 }
 /*Navbar styling*/
 #root > div > div:nth-child(1) > nav {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  height: 75px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	height: 75px;
 }
 .ml-auto li {
-  height: 50px;
-  line-height: 50px;
+	height: 50px;
+	line-height: 50px;
 }
 
 button:focus {
-  outline: none !important;
+	outline: none !important;
 }
 
 /* Navigation bar */
 div.menuItems > nav > ul {
-  margin-left: 160px !important;
+	margin-left: 160px !important;
 }
 div.menuItems > nav > ul > li {
-  padding-left: 100px;
-  padding-right: 60px;
-  font-size: 16pt;
-  color: #bfbfbf;
+	padding-left: 100px;
+	padding-right: 60px;
+	font-size: 16pt;
+	color: #bfbfbf;
 }
 .menuItems > nav > ul > li.active {
-  color: #22313f;
-  font-weight: bolder;
+	color: #22313f;
+	font-weight: bolder;
 }
 div.menuItems > nav {
-  border-top: 2px #000000 solid;
-  border-bottom: 2px #000000 solid;
+	border-top: 2px #000000 solid;
+	border-bottom: 2px #000000 solid;
 }
 
 /*Scroll Bar Styling*/
 ::-webkit-scrollbar {
-  width: 0px; /* remove scrollbar space */
-  background: transparent; /* optional: just make scrollbar invisible */
+	width: 0px; /* remove scrollbar space */
+	background: transparent; /* optional: just make scrollbar invisible */
 }
 
 /* Table and List  */
 #root
-  > div
-  > div.App
-  > div
-  > div:nth-child(1)
-  > div
-  > div:nth-child(2)
-  > div
-  > table {
-  min-width: 970px;
-  border: 1px #bdc3c7 solid;
+	> div
+	> div.App
+	> div
+	> div:nth-child(1)
+	> div
+	> div:nth-child(2)
+	> div
+	> table {
+	min-width: 970px;
+	border: 1px #bdc3c7 solid;
 }
 .table thead th {
-  border-bottom-color: #bdc3c7 !important;
+	border-bottom-color: #bdc3c7 !important;
 }
 
 #root
-  > div
-  > div.App
-  > div
-  > div:nth-child(1)
-  > div
-  > div:nth-child(2)
-  > div
-  > table
-  th
-  > tbody
-  td {
-  border-color: #bdc3c7 !important;
+	> div
+	> div.App
+	> div
+	> div:nth-child(1)
+	> div
+	> div:nth-child(2)
+	> div
+	> table
+	th
+	> tbody
+	td {
+	border-color: #bdc3c7 !important;
 }
 
 .fixed-header thead > tr {
-  position: relative;
+	position: relative;
 }
 
 svg.custom .node circle {
-  fill: #f3f3ff;
-  stroke: #2593b8;
-  stroke-width: 1.5px;
+	fill: #f3f3ff;
+	stroke: #2593b8;
+	stroke-width: 1.5px;
 }
 
 svg.custom .node text {
-  font-size: 14px;
-  background-color: #444;
-  /* fill: #F4F4F4; */
-  fill: #000000;
-  /* text-shadow: 0 1px 4px black; */
+	font-size: 14px;
+	background-color: #444;
+	/* fill: #F4F4F4; */
+	fill: #000000;
+	/* text-shadow: 0 1px 4px black; */
 }
 
 svg.custom .node {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 svg.custom path.link {
-  fill: none;
-  stroke: #2593b8;
-  stroke-width: 1.5px;
+	fill: none;
+	stroke: #2593b8;
+	stroke-width: 1.5px;
 }
 
 .table-hover tbody tr:hover td,
 .table-hover tbody tr:hover th {
-  transition: background-color 1s ease;
-  opacity: 0.8;
+	transition: background-color 1s ease;
+	opacity: 0.8;
 }
 tr {
-  border-style: hidden !important;
+	border-style: hidden !important;
 }
 th {
-  font-weight: bold;
+	font-weight: bold;
 }
 .table th,
 .table td {
-  padding: 5px;
+	padding: 5px;
 }
 
 .selectDate {
-  width: 250px;
-  margin: 2%;
+	width: 250px;
+	margin: 2%;
 }
 
 .searchRow .col-md-1,
 .searchRow .col-md-2 {
-  padding-right: 6px !important;
-  margin-top: 20px;
-}
-.selectDate {
-  width: 250px;
-  margin: 2%;
+	padding-right: 6px !important;
+	margin-top: 20px;
 }
 .border-red {
-  color: red;
+	color: red;
 }
 .validator {
-  margin: 37px;
+	margin: 37px;
 }

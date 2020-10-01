@@ -18,39 +18,6 @@ const styles = theme => ({
 			marginLeft: 'auto',
 			marginRight: 'auto'
 		}
-	},
-	paper: {
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-		padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-			.spacing.unit * 3}px`
-	},
-	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing.unit
-	},
-	title: {
-		marginTop: theme.spacing.unit * 2
-	},
-	actions: {
-		marginTop: theme.spacing.unit * 3
-	},
-	errortext: {
-		fontSize: 16,
-		font: 'bold',
-		color: 'red'
-	},
-	successtext: {
-		fontSize: 16,
-		font: 'bold',
-		color: 'green'
-	},
-	closeButton: {
-		position: 'absolute',
-		right: theme.spacing.unit,
-		top: theme.spacing.unit,
-		color: theme.palette.grey[500]
 	}
 });
 
