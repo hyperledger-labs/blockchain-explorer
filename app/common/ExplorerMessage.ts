@@ -51,4 +51,4 @@ export enum explorerError {
 
 	// Fabric Message
 
-};
+}

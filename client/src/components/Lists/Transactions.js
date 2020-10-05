@@ -406,7 +406,7 @@ export class Transactions extends Component {
 					}}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={!(transactionList.length < 5)}
+					showPagination={transactionList.length >= 5}
 				/>
 
 				<Dialog

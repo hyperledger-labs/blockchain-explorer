@@ -519,7 +519,7 @@ export class Blocks extends Component {
 					}}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={!(blockList.length < 5)}
+					showPagination={blockList.length >= 5}
 				/>
 
 				<Dialog

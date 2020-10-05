@@ -110,7 +110,7 @@ const Peers = ({ peerList }) => {
 				defaultPageSize={5}
 				filterable
 				minRows={0}
-				showPagination={!(peerList.length < 5)}
+				showPagination={peerList.length >= 5}
 			/>
 		</div>
 	);

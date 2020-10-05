@@ -21,21 +21,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import { shape, string } from 'prop-types';
+import Container from '../Container'
 
 import { authSelectors, authOperations } from '../../state/redux/auth';
 
 const styles = theme => ({
-	container: {
-		width: 'auto',
-		display: 'block', // Fix IE 11 issue.
-		marginLeft: theme.spacing.unit * 3,
-		marginRight: theme.spacing.unit * 3,
-		[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-			width: 400,
-			marginLeft: 'auto',
-			marginRight: 'auto'
-		}
-	},
 	paper: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -207,7 +197,7 @@ export class Register extends Component {
 		const info = await register(userInfo);
 		await userlist();
 		this.setState(() => ({ info }));
-		this.setState({ lastSaved: user.value });
+		this.setState(() => ({ lastSaved: user.value }));
 		this.resetForm();
 		return true;
 	};
@@ -267,7 +257,7 @@ export class Register extends Component {
 		} = this.state;
 		const { classes, error, onClose } = this.props;
 		return (
-			<div className={classes.container}>
+			<Container>
 				<Paper className={classes.paper}>
 					<Typography className={classes.title} component="h5" variant="headline">
 						Register User
@@ -461,7 +451,7 @@ export class Register extends Component {
 						</Grid>
 					</form>
 				</Paper>
-			</div>
+			</Container>
 		);
 	}
 }

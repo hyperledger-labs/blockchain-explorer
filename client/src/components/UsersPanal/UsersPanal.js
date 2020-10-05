@@ -1,58 +1,10 @@
 import React, { Component } from 'react';
 
-import compose from 'recompose/compose';
 import classnames from 'classnames';
 import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import { withStyles } from '@material-ui/core/styles';
 import Register from '../Register/Register';
 import Users from '../Lists/Users';
-
-const styles = theme => ({
-	container: {
-		width: 'auto',
-		display: 'block', // Fix IE 11 issue.
-		marginLeft: theme.spacing.unit * 3,
-		marginRight: theme.spacing.unit * 3,
-		[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-			width: 400,
-			marginLeft: 'auto',
-			marginRight: 'auto'
-		}
-	},
-	paper: {
-		display: 'flex',
-		flexDirection: 'column',
-		alignItems: 'center',
-		padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
-			.spacing.unit * 3}px`
-	},
-	form: {
-		width: '100%', // Fix IE 11 issue.
-		marginTop: theme.spacing.unit
-	},
-	title: {
-		marginTop: theme.spacing.unit * 2
-	},
-	actions: {
-		marginTop: theme.spacing.unit * 3
-	},
-	errortext: {
-		fontSize: 16,
-		font: 'bold',
-		color: 'red'
-	},
-	successtext: {
-		fontSize: 16,
-		font: 'bold',
-		color: 'green'
-	},
-	closeButton: {
-		position: 'absolute',
-		right: theme.spacing.unit,
-		top: theme.spacing.unit,
-		color: theme.palette.grey[500]
-	}
-});
+import Container from '../Container'
 
 export class UsersPanal extends Component {
 	constructor(props) {
@@ -87,9 +39,9 @@ export class UsersPanal extends Component {
 	};
 	render() {
 		const { activeTab } = this.state;
-		const { classes, onClose } = this.props;
+		const { onClose } = this.props;
 		return (
-			<div className={classes.container}>
+			<Container>
 				<Nav tabs>
 					<NavItem>
 						<NavLink
@@ -124,9 +76,9 @@ export class UsersPanal extends Component {
 						<Register onClose={onClose} onRegister={this.onRegister} />
 					</TabPane>
 				</TabContent>
-			</div>
+			</Container>
 		);
 	}
 }
 
-export default compose(withStyles(styles))(UsersPanal);
+export default UsersPanal;
