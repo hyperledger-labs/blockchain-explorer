@@ -312,13 +312,14 @@ export class PgService {
 	/**
 	 *  Execute update or delete  sql.
 	 *  @param string  updateSql   the execute sql
+	 *  @param string  values   sql query parameters
 	 */
-	updateBySql(updateSql) {
+	updateBySql(updateSql, values) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
 			logger.debug(`update sql is :  ${updateSql}`);
 
-			_self.client.query(updateSql, [], (err, res) => {
+			_self.client.query(updateSql, values, (err, res) => {
 				if (err) {
 					logger.error('[INSERT ERROR] - ', err.message);
 					reject(err);
@@ -380,20 +381,15 @@ export class PgService {
 	 * @param unknown_type DB
 	 * @return unknown
 	 */
-	getRowByPkOne(sql) {
+	getRowByPkOne(sql, values) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
-			// Var sql = ` select  ${column} from ${tablename} where ${pkColumn} = ${value} `
 
-			_self.client.query(sql, (err, res) => {
+			_self.client.query(sql, values, (err, res) => {
 				if (err) {
 					reject(err);
 					return;
 				}
-
-				// Console.log(  `The solution is: ${rows.length }  `  );
-				logger.debug(` the getRowByPkOne sql ${sql}`);
-				// (` the getRowByPkOne sql ${sql}`)
 
 				if (res && res.rows && res.rows[0]) {
 					resolve(res.rows[0]);
@@ -490,18 +486,19 @@ export class PgService {
 	 *
 	 *
 	 * @param {*} sql
+	 * @param {*} values
 	 * @returns
 	 * @memberof PgService
 	 */
-	getRowsBySQlQuery(sql) {
+	getRowsBySQlQuery(sql, values) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
-			_self.client.query(sql, (err, res) => {
+			_self.client.query(sql, values, (err, res) => {
 				if (err) {
 					reject(err);
 					return;
 				}
-				logger.debug(` the getRowsBySQlQuery ${sql}`);
+				logger.debug(` the getRowsBySQlQuery ${res.command}`);
 
 				if (res && res.rows) {
 					resolve(res.rows);
@@ -516,12 +513,12 @@ export class PgService {
 	 * Search table by sql and it's not condition
 	 *
 	 *
-	 * @param datatype sqlchareter   the table name
-	 * @param datatype condition       the search condition,it is sorted by array. exp condition = array("id"=>"1");
+	 * @param datatype sqlcharacter   the table name
+	 * @param datatype values        SQL query parameters
 	 * @param datatype limit         the page limit.
 	 *
 	 */
-	getRowsBySQlNoCondition(sqlcharacter, limit? ) : Promise<any>{
+	getRowsBySQlNoCondition(sqlcharacter, values, limit? ) : Promise<any>{
 		/* eslint-disable */
 		const _self = this;
 		return new Promise((resolve, reject) => {
@@ -534,13 +531,13 @@ export class PgService {
 				reject(null);
 				return;
 			}
-			_self.client.query(sql, (err, res) => {
+			_self.client.query(sql, values, (err, res) => {
 				if (err) {
 					reject(err);
 					return;
 				}
 
-				logger.debug(` the getRowsBySQlNoCondition ${sql}`);
+				logger.debug(` the getRowsBySQlNoCondition ${sql} ${values}`);
 
 				if (res && res.rows) {
 					resolve(res.rows);
@@ -555,13 +552,13 @@ export class PgService {
 	/**
 	 * 自动橱窗日志查找/评价历史记录查找
 	 * @param unknown_type sql
-	 * @param unknown_type DB
+	 * @param unknown_type values
 	 * @return unknown
 	 */
-	getRowsBySQlCase(sql) {
+	getRowsBySQlCase(sql, values) {
 		const _self = this;
 		return new Promise((resolve, reject) => {
-			_self.client.query(sql, (err, res) => {
+			_self.client.query(sql, values, (err, res) => {
 				if (err) {
 					reject(err);
 					return;
