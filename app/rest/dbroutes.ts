@@ -145,11 +145,7 @@ export function dbroutes(router: any, platform: any) {
 						to,
 						orgs
 					)
-					.then((rows: any) => {
-						if (rows) {
-							return res.send({ status: 200, rows });
-						}
-					});
+					.then(handleResult(req,res));
 			} else {
 				return requtil.invalidRequest(req, res);
 			}
@@ -229,7 +225,7 @@ export function dbroutes(router: any, platform: any) {
 				req.query.to
 			);
 			if (channel_genesis_hash && !isNaN(blockNum)) {
-				dbCrudService
+				return dbCrudService
 					.getBlockAndTxList(
 						req.network,
 						channel_genesis_hash,
@@ -238,13 +234,7 @@ export function dbroutes(router: any, platform: any) {
 						to,
 						orgs
 					)
-					.then((rows: any) => {
-						logger.debug('Return getBlockAndTxList ', rows);
-						if (rows) {
-							return res.send({ status: 200, rows });
-						}
-						return requtil.notFound(req, res);
-					});
+					.then(handleResult(req,res));
 			} else {
 				return requtil.invalidRequest(req, res);
 			}
@@ -267,14 +257,9 @@ export function dbroutes(router: any, platform: any) {
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
-			dbStatusMetrics
+			return dbStatusMetrics
 				.getTxByMinute(req.network, channel_genesis_hash, hours)
-				.then((rows: any) => {
-					if (rows) {
-						return res.send({ status: 200, rows });
-					}
-					return requtil.notFound(req, res);
-				});
+				.then(handleResult(req,res));
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
@@ -294,14 +279,9 @@ export function dbroutes(router: any, platform: any) {
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
-			dbStatusMetrics
+			return dbStatusMetrics
 				.getTxByHour(req.network, channel_genesis_hash, days)
-				.then((rows: any) => {
-					if (rows) {
-						return res.send({ status: 200, rows });
-					}
-					return requtil.notFound(req, res);
-				});
+				.then(handleResult(req,res));
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
@@ -320,18 +300,24 @@ export function dbroutes(router: any, platform: any) {
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
-			dbStatusMetrics
+			return dbStatusMetrics
 				.getBlocksByMinute(req.network, channel_genesis_hash, hours)
-				.then((rows: any) => {
-					if (rows) {
-						return res.send({ status: 200, rows });
-					}
-					return requtil.notFound(req, res);
-				});
+				.then(handleResult(req,res));
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
 	});
+	
+
+	function handleResult(req, res) {
+		return function (rows) {
+			if (rows) {
+				return res.send({ status: 200, rows });
+			}
+			return requtil.notFound(req, res);
+		};
+	}
+	
 
 	/**
 	 * *
@@ -346,14 +332,9 @@ export function dbroutes(router: any, platform: any) {
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
-			dbStatusMetrics
+			return dbStatusMetrics
 				.getBlocksByHour(req.network, channel_genesis_hash, days)
-				.then((rows: any) => {
-					if (rows) {
-						return res.send({ status: 200, rows });
-					}
-					return requtil.notFound(req, res);
-				});
+				.then(handleResult(req,res));
 		} else {
 			return requtil.invalidRequest(req, res);
 		}

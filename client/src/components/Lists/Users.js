@@ -27,21 +27,12 @@ import Avatar from '@material-ui/core/Avatar';
 import { shape, string } from 'prop-types';
 import { authSelectors, authOperations } from '../../state/redux/auth';
 import { userListType, getUserListType } from '../types';
+import Container from '../Container'
+
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		container: {
-			width: 'auto',
-			display: 'block', // Fix IE 11 issue.
-			marginLeft: theme.spacing.unit * 3,
-			marginRight: theme.spacing.unit * 3,
-			[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-				width: 400,
-				marginLeft: 'auto',
-				marginRight: 'auto'
-			}
-		},
 		paper: {
 			display: 'flex',
 			flexDirection: 'column',
@@ -53,9 +44,6 @@ const styles = theme => {
 			width: '100%',
 			maxWidth: 360,
 			backgroundColor: theme.palette.background.paper
-		},
-		title: {
-			marginTop: theme.spacing.unit * 2
 		},
 		closeButton: {
 			position: 'absolute',
@@ -83,10 +71,8 @@ const { userlistSelector, unregisteredSelector } = authSelectors;
 export class Users extends Component {
 	static propTypes = {
 		classes: shape({
-			form: string,
 			container: string,
-			paper: string,
-			actions: string
+			paper: string
 		}).isRequired
 	};
 
@@ -171,7 +157,7 @@ export class Users extends Component {
 			handleClose();
 		};
 		return (
-			<div className={classes.container}>
+			<Container>
 				<Paper className={classes.paper}>
 					{/* <Typography className={classes.title} component="h5" variant="headline">
 						User List
@@ -252,7 +238,7 @@ export class Users extends Component {
 						</DialogActions>
 					</Dialog>
 				</Paper>
-			</div>
+			</Container>
 		);
 	}
 }
