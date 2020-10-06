@@ -420,7 +420,7 @@ export class PgService {
 			//const addSqlParams = [];
 
 			Object.keys(condition).forEach(k => {
-				const v = condition[k];
+				//const v = condition[k];
 
 				//addSqlParams.push(v);
 				updatewhereparm += ` and ${k}=? `;
