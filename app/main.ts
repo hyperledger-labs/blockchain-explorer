@@ -39,12 +39,12 @@ const protocol = sslEnabled ? 'https' : 'http';
 class Broadcaster extends WebSocket.Server {
 	/**
 	 * Creates an instance of Broadcaster.
-	 * @param {*} server
+	 * @param {*} bServer
 	 * @memberof Broadcaster
 	 */
-	constructor(server) {
+	constructor(bServer: any) {
 		super({
-			server
+			server: bServer
 		});
 		this.on('connection', function connection(ws, req) {
 			const location = url.parse(req.url, true);

@@ -226,10 +226,10 @@ export class HeaderView extends Component {
 	}
 
 	componentDidMount() {
-		const { channels, currentChannel } = this.props;
+		const { channels: channelArr , currentChannel } = this.props;
 		const arr = [];
 		let selectedValue = {};
-		channels.forEach(element => {
+		channelArr.forEach(element => {
 			if (element.channel_genesis_hash === currentChannel) {
 				selectedValue = {
 					value: element.channel_genesis_hash,
@@ -468,7 +468,7 @@ export class HeaderView extends Component {
 		const {
 			isLoading,
 			selectedChannel,
-			channels,
+			channels: stateChannels,
 			notifyCount,
 			notifyDrawer,
 			adminDrawer,
@@ -533,7 +533,7 @@ export class HeaderView extends Component {
 											value={selectedChannel}
 											onChange={this.handleChange}
 											onFocus={this.reloadChannels.bind(this)}
-											options={channels}
+											options={stateChannels}
 										/>
 									</div>
 									{

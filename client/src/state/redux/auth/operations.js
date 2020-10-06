@@ -17,8 +17,8 @@ import actions from '../charts/actions';
 
 import Auth from '../../Auth';
 
-const login = ({ user, password }, network) => dispatch =>
-	post('/auth/login', { user, password, network })
+const login = ({ user, password }, networkObj) => dispatch =>
+	post('/auth/login', { user, password, network: networkObj })
 		.then(resp => {
 			Auth.authenticateUser(resp.token);
 			dispatch(errorAction(null));

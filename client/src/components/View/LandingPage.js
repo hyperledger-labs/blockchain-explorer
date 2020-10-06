@@ -122,7 +122,7 @@ export class LandingPage extends Component {
 			getTransactionPerHour,
 			getTransactionPerMin,
 			updateLoadStatus,
-			userlist
+			userlist: userlistData
 			// getUserList
 		} = this.props;
 		await getChannel();
@@ -147,7 +147,7 @@ export class LandingPage extends Component {
 			getTransactionList(currentChannel),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel),
-			userlist()
+			userlistData()
 		]);
 		clearTimeout(promiseTimeout);
 		updateLoadStatus();

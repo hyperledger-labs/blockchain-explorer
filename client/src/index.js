@@ -16,10 +16,10 @@ const store = createStore({ theme: { mode } });
 
 store.subscribe(themeSideEffect(store));
 
-function themeSideEffect(store) {
+function themeSideEffect(storeObj) {
 	let theme;
 	return () => {
-		const state = store.getState();
+		const state = storeObj.getState();
 		if (theme !== state.theme) {
 			theme = state.theme;
 			localStorage.setItem('theme-mode', theme.mode);

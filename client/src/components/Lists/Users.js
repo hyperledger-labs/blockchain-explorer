@@ -124,8 +124,8 @@ export class Users extends Component {
 		this.setState({ userlists: newUsers });
 	}
 	async removeUser() {
-		const { unregister } = this.props;
-		await Promise.all([unregister({ user: this.state.selectedUser })]).then(
+		const { unregister: unregisterUser } = this.props;
+		await Promise.all([unregisterUser({ user: this.state.selectedUser })]).then(
 			message => {
 				if (message[0].status === 'success') {
 					this.reloadUsers();
