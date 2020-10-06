@@ -14,14 +14,18 @@ const initialState = {
 };
 
 /* Reducers for Dashboard Charts */
-const authReducer = (state = initialState,action) => {
+const authReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case types.LOGIN || types.ERROR || types.NETWORK || types.REGISTER: {
-			return {
-				...state,
-				...action.payload
-			};
-		}
+		case types.LOGIN:
+		case types.ERROR:
+		case types.NETWORK:
+		case types.REGISTER:
+			{
+				return {
+					...state,
+					...action.payload
+				};
+			}
 		case types.USERLIST: {
 			return {
 				...state,
