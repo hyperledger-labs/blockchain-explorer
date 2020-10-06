@@ -89,8 +89,8 @@ function reqPayload(req: { params: any; query: any; body: any; }) {
 	return requestPayload;
 }
 
-const orgsArrayToString = function(reqQuery: { [key: string]: any; }) {
-	let temp = '';
+const parseOrgsArray = function(reqQuery: { [key: string]: any; }) {
+	
 	if (reqQuery) {
 		// eslint-disable-next-line spellcheck/spell-checker
 		// workaround 'Type confusion through parameter tampering', see `https //lgtm dot com/rules/1506301137371 `
@@ -99,21 +99,15 @@ const orgsArrayToString = function(reqQuery: { [key: string]: any; }) {
 		if (orgsStr) {
 			const parsedReq = queryString.parse(orgsStr);
 			if (parsedReq && parsedReq.orgs) {
-				const orgsArray = parsedReq.orgs.toString().split(',');
-				// format DB value for IN clause, ex: in ('a', 'b', 'c')
-				if (orgsArray) {
-					orgsArray.forEach((element, i) => {
-						temp += `'${element}'`;
-						if (orgsArray.length - 1 !== i) {
-							temp += ',';
-						}
-					});
-				}
+				return Array.isArray(parsedReq) ? 
+					parsedReq.orgs :
+					[parsedReq.orgs];
+			}
+			else{
+				return [];
 			}
 		}
 	}
-
-	return temp;
 };
 
 const queryDatevalidator = function(from: string, to: string) {
@@ -133,6 +127,6 @@ module.exports = {
 	invalidRequest,
 	notFound,
 	reqPayload,
-	orgsArrayToString,
+	parseOrgsArray,
 	queryDatevalidator
 };

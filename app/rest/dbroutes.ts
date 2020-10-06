@@ -126,7 +126,7 @@ export function dbroutes(router: any, platform: any) {
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			const blockNum = parseInt(req.params.blocknum);
 			let txid = parseInt(req.params.txid);
-			const orgs = requtil.orgsArrayToString(req.query);
+			const orgs = requtil.parseOrgsArray(req.query);
 			const { from, to } = requtil.queryDatevalidator(
 				req.query.from,
 				req.query.to
@@ -219,7 +219,7 @@ export function dbroutes(router: any, platform: any) {
 		async (req: { params: { channel_genesis_hash: any; blocknum: string; }; query: { from: any; to: any; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			const blockNum = parseInt(req.params.blocknum);
-			const orgs = requtil.orgsArrayToString(req.query);
+			const orgs = requtil.parseOrgsArray(req.query);
 			const { from, to } = requtil.queryDatevalidator(
 				req.query.from,
 				req.query.to
