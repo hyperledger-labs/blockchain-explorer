@@ -339,5 +339,5 @@ export function dbroutes(router: any, platform: any) {
 			return requtil.invalidRequest(req, res);
 		}
 	});
-}; // End dbroutes()
+} // End dbroutes()
 

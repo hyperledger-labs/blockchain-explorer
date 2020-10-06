@@ -19,7 +19,7 @@
  */
 import { helper } from '../../common/helper';
 import { Client } from 'pg';
-import { Sequelize, Optional } from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 const fs = require('fs');
 
@@ -417,12 +417,12 @@ export class PgService {
 			}
 
 			let updatewhereparm = ' (1=1)  ';
-			const addSqlParams = [];
+			//const addSqlParams = [];
 
 			Object.keys(condition).forEach(k => {
-				const v = condition[k];
+				//const v = condition[k];
 
-				addSqlParams.push(v);
+				//addSqlParams.push(v);
 				updatewhereparm += ` and ${k}=? `;
 			});
 

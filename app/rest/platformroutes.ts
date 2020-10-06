@@ -157,4 +157,4 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 			});
 		});
 	});
-}; // End platformroutes()
+} // End platformroutes()
