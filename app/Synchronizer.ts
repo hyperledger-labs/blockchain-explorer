@@ -5,11 +5,11 @@
 import { helper } from './common/helper';
 import { explorerConst } from './common/ExplorerConst';
 import { explorerError } from './common/ExplorerMessage';
-import {ExplorerError} from './common/ExplorerError';
+import { ExplorerError } from './common/ExplorerError';
 import syncconfig from './explorerconfig.json';
-import {SyncBuilder} from './sync/SyncBuilder';
-import {PersistenceFactory} from './persistence/PersistenceFactory';
-import {ExplorerSender} from './sync/sender/ExplorerSender';
+import { SyncBuilder } from './sync/SyncBuilder';
+import { PersistenceFactory } from './persistence/PersistenceFactory';
+import { ExplorerSender } from './sync/sender/ExplorerSender';
 /* eslint-enable import/extensions */
 const logger = helper.getLogger('Synchronizer');
 

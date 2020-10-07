@@ -11,7 +11,7 @@ import queryString from 'query-string';
  * @param {*} res
  * @param {*} next
  */
-async function respond(action: (arg0: any, arg1: any, arg2: any) => any, req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any; }; }; send: (arg0: { status: number; message: any; }) => void; }, next: any) {
+async function respond(action, req, res, next) {
 	try {
 		const value = await action(req, res, next);
 		res.status(200).send(value);
@@ -29,7 +29,7 @@ async function respond(action: (arg0: any, arg1: any, arg2: any) => any, req: an
  * @param {*} action
  * @returns
  */
-function responder(action: any) {
+export function responder(action: any) {
 	return async function(req: any, res: any, next: any) {
 		return await respond(action, req, res, next);
 	};
@@ -41,7 +41,7 @@ function responder(action: any) {
  * @param {*} req
  * @param {*} res
  */
-function invalidRequest(req: any, res: { send: (arg0: { status: number; error: string; payload: any[]; }) => void; }) {
+export function invalidRequest(req, res) {
 	const payload = reqPayload(req);
 	res.send({
 		status: 400,
@@ -56,7 +56,7 @@ function invalidRequest(req: any, res: { send: (arg0: { status: number; error: s
  * @param {*} req
  * @param {*} res
  */
-function notFound(req: any, res: { send: (arg0: { status: number; error: string; payload: any[]; }) => void; }) {
+export function notFound(req, res) {
 	const payload = reqPayload(req);
 	res.send({
 		status: 404,
@@ -71,7 +71,7 @@ function notFound(req: any, res: { send: (arg0: { status: number; error: string;
  * @param {*} req
  * @returns
  */
-function reqPayload(req: { params: any; query: any; body: any; }) {
+function reqPayload(req) {
 	const requestPayload = [];
 	const { params, query, body } = req;
 
@@ -89,8 +89,7 @@ function reqPayload(req: { params: any; query: any; body: any; }) {
 	return requestPayload;
 }
 
-const parseOrgsArray = function(reqQuery: { [key: string]: any; }) {
-	
+export const parseOrgsArray = function(reqQuery: { [key: string]: any }) {
 	if (reqQuery) {
 		// eslint-disable-next-line spellcheck/spell-checker
 		// workaround 'Type confusion through parameter tampering', see `https //lgtm dot com/rules/1506301137371 `
@@ -99,18 +98,15 @@ const parseOrgsArray = function(reqQuery: { [key: string]: any; }) {
 		if (orgsStr) {
 			const parsedReq = queryString.parse(orgsStr);
 			if (parsedReq && parsedReq.orgs) {
-				return Array.isArray(parsedReq) ? 
-					parsedReq.orgs :
-					[parsedReq.orgs];
+				return Array.isArray(parsedReq) ? parsedReq.orgs : [parsedReq.orgs];
 			}
-			else{
-				return [];
-			}
+
+			return [];
 		}
 	}
 };
 
-const queryDatevalidator = function(from: string, to: string) {
+export const queryDatevalidator = function(from: string, to: string) {
 	if (!isNaN(Date.parse(from)) && !isNaN(Date.parse(to))) {
 		from = new Date(from).toISOString();
 		to = new Date(to).toISOString();
@@ -119,14 +115,4 @@ const queryDatevalidator = function(from: string, to: string) {
 		to = new Date().toISOString();
 	}
 	return { from, to };
-};
-
-module.exports = {
-	respond,
-	responder,
-	invalidRequest,
-	notFound,
-	reqPayload,
-	parseOrgsArray,
-	queryDatevalidator
 };

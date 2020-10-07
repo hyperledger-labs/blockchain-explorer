@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const fs = require('fs');
+import * as fs from 'fs';
 import * as path from 'path';
-import {helper} from '../../common/helper';
-import {explorerError} from '../../common/ExplorerMessage'
-import {ExplorerError} from '../../common/ExplorerError';
+import { helper } from '../../common/helper';
+import { explorerError } from '../../common/ExplorerMessage';
+import { ExplorerError } from '../../common/ExplorerError';
 
 const logger = helper.getLogger('FabricConfig');
 
@@ -16,9 +16,9 @@ const logger = helper.getLogger('FabricConfig');
  * @class FabricConfig
  */
 export class FabricConfig {
-	logger : any;
-	config : any;
-	network_id : string;
+	logger: any;
+	config: any;
+	network_id: string;
 
 	/**
 	 * Creates an instance of FabricConfig.

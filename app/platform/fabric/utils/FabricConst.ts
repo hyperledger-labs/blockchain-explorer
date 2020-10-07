@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-exports.fabric = {
+export const fabric = {
 	const: {
 		NETWORK_CONFIGS: 'network-configs',
 		PERSISTENCE: 'persistence',

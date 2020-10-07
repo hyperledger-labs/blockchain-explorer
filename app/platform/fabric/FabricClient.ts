@@ -2,16 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../common/helper';
-
-const includes = require('lodash/includes');
-import {ExplorerError} from '../../common/ExplorerError';
-import {explorerError} from '../../common/ExplorerMessage'
-const FabricUtils = require('./utils/FabricUtils.js');
-import {FabricGateway} from '../../platform/fabric/gateway/FabricGateway';
+import { includes } from 'lodash';
+import { helper } from '../../common/helper';
+import { ExplorerError } from '../../common/ExplorerError';
+import { explorerError } from '../../common/ExplorerMessage';
+import { FabricGateway } from '../../platform/fabric/gateway/FabricGateway';
+import * as FabricUtils from './utils/FabricUtils';
 
 const logger = helper.getLogger('FabricClient');
-
 
 /**
  *
@@ -19,12 +17,12 @@ const logger = helper.getLogger('FabricClient');
  * @class FabricClient
  */
 export class FabricClient {
-	network_id : string;
-	fabricGateway : any;
-	channelsGenHash : Map<string, any>;
-	config : any;
-	status : boolean;
-	channels : string[];
+	network_id: string;
+	fabricGateway: any;
+	channelsGenHash: Map<string, any>;
+	config: any;
+	status: boolean;
+	channels: string[];
 
 	/**
 	 * Creates an instance of FabricClient.

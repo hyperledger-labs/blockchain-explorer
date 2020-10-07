@@ -137,7 +137,7 @@ describe('GUI e2e test', () => {
 		}
 
 		process.env.LOG_LEVEL_CONSOLE = 'debug';
-		process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC = '10';
+		process.env.EXPLORER_SYNC_BLOCKSYNCTIME_SEC = '5';
 		child = spawn('npm', ['start'], {
 			cwd: rootdir,
 			env: process.env,

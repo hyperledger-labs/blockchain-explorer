@@ -2,20 +2,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../../common/helper';
-
-const convertHex = require('convert-hex');
+import * as convertHex from 'convert-hex';
 import fabprotos from 'fabric-protos';
 import includes from 'lodash/includes';
+import { helper } from '../../../common/helper';
+
+import { ExplorerError } from '../../../common/ExplorerError';
+import { explorerError } from '../../../common/ExplorerMessage';
+import * as FabricConst from '../../../platform/fabric/utils/FabricConst';
+import * as FabricUtils from '../../../platform/fabric/utils/FabricUtils';
 
 const logger = helper.getLogger('SyncServices');
 
-import {ExplorerError} from '../../../common/ExplorerError';
-const FabricUtils = require('../../../platform/fabric/utils/FabricUtils');
-const fabric_const = require('../../../platform/fabric/utils/FabricConst')
-	.fabric.const;
-import {explorerError} from '../../../common/ExplorerMessage'
-
+const fabric_const = FabricConst.fabric.const;
 
 const blocksInProcess = [];
 
@@ -32,9 +31,9 @@ for (const key in fabprotos.protos.TxValidationCode) {
  * @class SyncServices
  */
 export class SyncServices {
-	persistence : any;
-	platform : any;
-	synchInProcess : string[];
+	persistence: any;
+	platform: any;
+	synchInProcess: string[];
 
 	/**
 	 * Creates an instance of SyncServices.
@@ -411,7 +410,6 @@ export class SyncServices {
 	 */
 	async processBlockEvent(client, block) {
 		const network_id = client.getNetworkId();
-		const _self = this;
 		// Get the first transaction
 		const first_tx = block.data.data[0];
 		// The 'header' object contains metadata of the transaction
@@ -435,17 +433,8 @@ export class SyncServices {
 					await cli.initializeNewChannel(chName);
 					channel_genesis_hash = cli.getChannelGenHash(chName);
 					// inserting new channel details to DB
-					await _self.insertNewChannel(
-						cli,
-						chName,
-						blk,
-						channel_genesis_hash
-					);
-					await _self.insertFromDiscoveryResults(
-						cli,
-						chName,
-						channel_genesis_hash
-					);
+					await this.insertNewChannel(cli, chName, blk, channel_genesis_hash);
+					await this.insertFromDiscoveryResults(cli, chName, channel_genesis_hash);
 
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_NEWCHANNEL,
@@ -453,7 +442,7 @@ export class SyncServices {
 						channel_name: chName
 					};
 
-					_self.platform.send(notify);
+					this.platform.send(notify);
 				},
 				10000,
 				client,
@@ -467,18 +456,14 @@ export class SyncServices {
 				async (cli, chName, chGenHash) => {
 					// get discovery and insert new peer, orders details to db
 					await cli.initializeChannelFromDiscover(chName);
-					await _self.insertFromDiscoveryResults(
-						cli,
-						chName,
-						chGenHash
-					);
+					await this.insertFromDiscoveryResults(cli, chName, chGenHash);
 					const notify = {
 						notify_type: fabric_const.NOTITY_TYPE_UPDATECHANNEL,
 						network_id,
 						channel_name: chName
 					};
 
-					_self.platform.send(notify);
+					this.platform.send(notify);
 				},
 				10000,
 				client,
@@ -608,11 +593,7 @@ export class SyncServices {
 					setTimeout(
 						async (cli, chName, chGenHash) => {
 							// get discovery and insert chaincode details to db
-							await _self.insertFromDiscoveryResults(
-								cli,
-								chName,
-								chGenHash
-							);
+							await this.insertFromDiscoveryResults(cli, chName, chGenHash);
 
 							const notify = {
 								notify_type: fabric_const.NOTITY_TYPE_CHAINCODE,
@@ -620,7 +601,7 @@ export class SyncServices {
 								channel_name: chName
 							};
 
-							_self.platform.send(notify);
+							this.platform.send(notify);
 						},
 						10000,
 						client,
@@ -685,7 +666,7 @@ export class SyncServices {
 					blksize: block_row.blksize
 				};
 
-				_self.platform.send(notify);
+				this.platform.send(notify);
 			}
 		} else {
 			logger.error('Failed to process the block %j', block);
@@ -710,13 +691,6 @@ export class SyncServices {
 			});
 		}
 	}
-
-	/**
-	 *
-	 *
-	 * @memberof SyncServices
-	 */
-	getCurrentChannel() {}
 
 	/**
 	 *

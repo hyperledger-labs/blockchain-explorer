@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-const requtil = require('./requestutils');
+import * as requtil from './requestutils';
 
 /**
  *
@@ -10,7 +10,23 @@ const requtil = require('./requestutils');
  * @param {*} router
  * @param {*} platform
  */
-export async function platformroutes(router: { get: (arg0: string, arg1: { (req: any, res: any): any; (req: any, res: any): void; (req: any, res: any): any; (req: any, res: any): any; (req: any, res: any): void; (req: any, res: any): void; (req: any, res: any): void; }) => void; }, platform: { getProxy: () => any; }) {
+export async function platformroutes(
+	router: {
+		get: (
+			arg0: string,
+			arg1: {
+				(req: any, res: any): any;
+				(req: any, res: any): void;
+				(req: any, res: any): any;
+				(req: any, res: any): any;
+				(req: any, res: any): void;
+				(req: any, res: any): void;
+				(req: any, res: any): void;
+			}
+		) => void;
+	},
+	platform: { getProxy: () => any }
+) {
 	const proxy = platform.getProxy();
 
 	/**
@@ -20,7 +36,7 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * Response:
 	 * {'rows':[{'count':'4','creator_msp_id':'Org1'}]}
 	 */
-	router.get('/txByOrg/:channel_genesis_hash', (req: { params: { channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; rows: any; }) => any; }) => {
+	router.get('/txByOrg/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 
 		if (channel_genesis_hash) {
@@ -45,11 +61,11 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * }
 	 * ]
 	 */
-	router.get('/channels/info', (req: { network: any; }, res: { send: (arg0: { status: number; channels?: any; error?: any; }) => void; }) => {
+	router.get('/channels/info', (req, res) => {
 		proxy
 			.getChannelsInfo(req.network)
 			.then((data: any[]) => {
-				data.forEach((element: { createdat: string | number | Date; }) => {
+				data.forEach((element: { createdat: string | number | Date }) => {
 					element.createdat = new Date(element.createdat).toISOString();
 				});
 				res.send({ status: 200, channels: data });
@@ -69,7 +85,7 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * }
 	 * ]
 	 */
-	router.get('/peersStatus/:channel', (req: { params: { channel: any; }; network: any; }, res: { send: (arg0: { status: number; peers: any; }) => void; }) => {
+	router.get('/peersStatus/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {
 			proxy.getPeersStatus(req.network, channelName).then((data: any) => {
@@ -86,13 +102,19 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * GET /block/getinfo -> /block
 	 * curl -i 'http://<host>:<port>/block/<channel>/<number>'
 	 */
-	router.get('/block/:channel_genesis_hash/:number', (req: { params: { number: string; channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { status: number; error?: string; number?: any; previous_hash?: any; data_hash?: any; transactions?: any; }) => void; }) => {
+	router.get('/block/:channel_genesis_hash/:number', (req, res) => {
 		const number = parseInt(req.params.number);
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (!isNaN(number) && channel_genesis_hash) {
-			proxy
-				.getBlockByNumber(req.network, channel_genesis_hash, number)
-				.then((block: { header: { number: { toString: () => any; }; previous_hash: { toString: (arg0: string) => any; }; data_hash: { toString: (arg0: string) => any; }; }; data: { data: any; }; }) => {
+			proxy.getBlockByNumber(req.network, channel_genesis_hash, number).then(
+				(block: {
+					header: {
+						number: { toString: () => any };
+						previous_hash: { toString: (arg0: string) => any };
+						data_hash: { toString: (arg0: string) => any };
+					};
+					data: { data: any };
+				}) => {
 					if (typeof block === 'string') {
 						res.send({ status: 500, error: block });
 					} else {
@@ -104,7 +126,8 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 							transactions: block.data.data
 						});
 					}
-				});
+				}
+			);
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
@@ -123,11 +146,11 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * ]
 	 * }
 	 */
-	router.get('/channels', (req: { network: any; }, res: { send: (arg0: { status: number; }) => void; }) => {
+	router.get('/channels', (req, res) => {
 		proxy.getChannels(req.network).then((channels: any) => {
 			const response = {
 				status: 200,
-				channels : channels
+				channels: channels
 			};
 			res.send(response);
 		});
@@ -138,7 +161,7 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * GET /curChannel
 	 * curl -i 'http://<host>:<port>/curChannel'
 	 */
-	router.get('/curChannel', (req: { network: any; }, res: { send: (arg0: any) => void; }) => {
+	router.get('/curChannel', (req, res) => {
 		proxy.getCurrentChannel(req.network).then((data: any) => {
 			res.send(data);
 		});
@@ -149,7 +172,7 @@ export async function platformroutes(router: { get: (arg0: string, arg1: { (req:
 	 * POST /changeChannel
 	 * curl -i 'http://<host>:<port>/curChannel'
 	 */
-	router.get('/changeChannel/:channel_genesis_hash', (req: { params: { channel_genesis_hash: any; }; network: any; }, res: { send: (arg0: { currentChannel: any; }) => void; }) => {
+	router.get('/changeChannel/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		proxy.changeChannel(req.network, channel_genesis_hash).then((data: any) => {
 			res.send({

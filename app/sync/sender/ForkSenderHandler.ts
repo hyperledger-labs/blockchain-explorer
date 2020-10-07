@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../common/helper'
+import { helper } from '../../common/helper';
 
 const logger = helper.getLogger('ForkSenderHandler');
 
@@ -43,5 +43,7 @@ export class ForkSenderHandler {
 	 *
 	 * @memberof ForkSenderHandler
 	 */
-	close() {}
+	close() {
+		// TODO
+	}
 }

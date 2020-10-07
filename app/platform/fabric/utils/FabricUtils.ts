@@ -7,15 +7,15 @@ import fs from 'fs-extra';
 import sha from 'js-sha256';
 import asn from 'asn1.js';
 import { Utils } from 'fabric-common';
-import {FabricClient} from './../FabricClient';
-import {ExplorerError} from '../../../common/ExplorerError';
-import {explorerError} from '../../../common/ExplorerMessage'
+import { FabricClient } from '../FabricClient';
+import { ExplorerError } from '../../../common/ExplorerError';
+import { explorerError } from '../../../common/ExplorerMessage';
 
-import {helper} from '../../../common/helper';
+import { helper } from '../../../common/helper';
 
 const logger = helper.getLogger('FabricUtils');
 
-async function createFabricClient(config, persistence) {
+export async function createFabricClient(config, persistence?) {
 	// Create new FabricClient
 	const client = new FabricClient(config);
 	// Initialize fabric client
@@ -37,7 +37,7 @@ async function createFabricClient(config, persistence) {
  * @param {*} dateStr
  * @returns
  */
-async function getBlockTimeStamp(dateStr) {
+export async function getBlockTimeStamp(dateStr) {
 	try {
 		return new Date(dateStr);
 	} catch (err) {
@@ -51,7 +51,7 @@ async function getBlockTimeStamp(dateStr) {
  *
  * @returns
  */
-async function generateDir() {
+export async function generateDir() {
 	const tempDir = `/tmp/${new Date().getTime()}`;
 	try {
 		fs.mkdirSync(tempDir);
@@ -67,7 +67,7 @@ async function generateDir() {
  * @param {*} header
  * @returns
  */
-async function generateBlockHash(header) {
+export async function generateBlockHash(header) {
 	const headerAsn = asn.define('headerAsn', function() {
 		this.seq().obj(
 			this.key('Number').int(),
@@ -94,7 +94,7 @@ async function generateBlockHash(header) {
  * @param {*} config
  * @returns
  */
-function getPEMfromConfig(config) {
+export function getPEMfromConfig(config) {
 	let result = null;
 	if (config) {
 		if (config.path) {
@@ -127,9 +127,3 @@ function readFileSync(config_path) {
 		throw err;
 	}
 }
-
-exports.generateBlockHash = generateBlockHash;
-exports.createFabricClient = createFabricClient;
-exports.getBlockTimeStamp = getBlockTimeStamp;
-exports.generateDir = generateDir;
-exports.getPEMfromConfig = getPEMfromConfig;

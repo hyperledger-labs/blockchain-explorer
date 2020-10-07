@@ -18,5 +18,3 @@ export function ExplorerError(...args: string[]) {
 	this.name = this.constructor.name;
 	this.message = util.format(args);
 }
-
-//require('util').inherits(module.exports, Error);

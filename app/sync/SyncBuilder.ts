@@ -1,12 +1,11 @@
 /*
  *SPDX-License-Identifier: Apache-2.0
  */
-import {explorerConst} from '../common/ExplorerConst'
-import {explorerError} from '../common/ExplorerMessage'
-import {ExplorerError} from '../common/ExplorerError';
+import { explorerConst } from '../common/ExplorerConst';
+import { explorerError } from '../common/ExplorerMessage';
+import { ExplorerError } from '../common/ExplorerError';
 import { ExplorerSender } from './sender/ExplorerSender';
-import {SyncPlatform} from '../platform/fabric/sync/SyncPlatform';
-
+import { SyncPlatform } from '../platform/fabric/sync/SyncPlatform';
 
 /**
  *

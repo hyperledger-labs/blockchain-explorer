@@ -2,9 +2,8 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import {User} from './../models/User';
-
-const { responder } = require('./../../../rest/requestutils');
+import { User } from '../models/User';
+import { responder } from '../../../rest/requestutils';
 
 /**
  *

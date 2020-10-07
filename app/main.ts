@@ -7,22 +7,22 @@
  * Created by shouhewu on 6/8/17.
  *
  */
-import {helper} from './common/helper';
 
 import express from 'express';
 import helmet from 'helmet';
 import path from 'path';
 import http from 'http';
 import https from 'https';
-const fs = require('fs');
 import url from 'url';
 import * as WebSocket from 'ws';
+import * as fs from 'fs';
+import { helper } from './common/helper';
 import appconfig from './appconfig.json';
 
-const logger = helper.getLogger('main');
+import { Explorer } from './Explorer';
+import { ExplorerError } from './common/ExplorerError';
 
-import {Explorer} from './Explorer';
-import {ExplorerError} from './common/ExplorerError';
+const logger = helper.getLogger('main');
 
 const sslEnabled = process.env.SSL_ENABLED || appconfig.sslEnabled;
 const sslCertsPath = process.env.SSL_CERTS_PATH || appconfig.sslCertsPath;
@@ -115,7 +115,9 @@ async function startExplorer() {
 	}
 	const broadcaster = new Broadcaster(server);
 	await explorer.initialize(broadcaster);
-	explorer.getApp().use(express.static(path.join(__dirname, '..', 'client/build')));
+	explorer
+		.getApp()
+		.use(express.static(path.join(__dirname, '..', 'client/build')));
 
 	// ============= start server =======================
 	server.listen(port, () => {

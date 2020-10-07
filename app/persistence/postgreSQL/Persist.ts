@@ -1,20 +1,20 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
  */
-import {PgService} from './PgService';
-import {MetricService} from '../fabric/MetricService';
-import {CRUDService} from '../fabric/CRUDService';
-import {UserDataService} from '../fabric/UserDataService';
+import { PgService } from './PgService';
+import { MetricService } from '../fabric/MetricService';
+import { CRUDService } from '../fabric/CRUDService';
+import { UserDataService } from '../fabric/UserDataService';
 /**
  *
  *
  * @class Persist
  */
-class Persist {
-	pgservice : PgService;
-	metricservice : MetricService;
-	crudService : CRUDService;
-	userdataservice : UserDataService;
+export class Persist {
+	pgservice: PgService;
+	metricservice: MetricService;
+	crudService: CRUDService;
+	userdataservice: UserDataService;
 
 	constructor(pgconfig: any) {
 		this.pgservice = new PgService(pgconfig);
@@ -29,7 +29,7 @@ class Persist {
 	 * @param {*} metricservice
 	 * @memberof Persist
 	 */
-	setMetricService(metricservice : MetricService) {
+	setMetricService(metricservice: MetricService) {
 		this.metricservice = metricservice;
 	}
 
@@ -100,5 +100,3 @@ class Persist {
 		this.pgservice.closeconnection();
 	}
 }
-
-module.exports = Persist;

@@ -2,12 +2,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// @ts-check
+import * as jwt from 'jsonwebtoken';
+import config from '../explorerconfig.json';
 
-const jwt = require('jsonwebtoken');
-// @ts-ignore
-const config = require('../explorerconfig.json');
-// @ts-check
 /**
  *  The Auth Checker middleware function.
  */

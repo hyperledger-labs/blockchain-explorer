@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import path from 'path'
+import path from 'path';
 import { fork } from 'child_process';
 
 /**
@@ -31,12 +31,10 @@ export class ForkListenerHandler {
 	 * @memberof ForkListenerHandler
 	 */
 	async initialize(args) {
-		const _self = this;
-
 		this.syncProcessor = fork(path.resolve(__dirname, '../../sync.js'), args);
 
 		this.syncProcessor.on('message', msg => {
-			_self.platform.getProxy().processSyncMessage(msg);
+			this.platform.getProxy().processSyncMessage(msg);
 		});
 	}
 

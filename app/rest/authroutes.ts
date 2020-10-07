@@ -1,11 +1,9 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
+import passport from 'passport';
 import { helper } from '../common/helper';
-
-import passport from 'passport'
-
-const { responder } = require('./requestutils');
+import { responder } from './requestutils';
 
 const logger = helper.getLogger('Auth');
 
@@ -37,9 +35,9 @@ export async function authroutes(router: any, platform: any) {
 	 * *
 	 * Login
 	 * POST /login -> /login
-	 * curl -X POST -H 'Content-Type: routerlication/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
+	 * curl -X POST -H 'Content-Type: application/json' -d '{ 'user': '<user>', 'password': '<password>', 'network': '<network>' }' -i 'http://<host>:<port>/login'
 	 */
-	router.post('/login', async (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { success: boolean; message: any; token?: any; user?: any; }): any; new(): any; }; }; }, next: any) => {
+	router.post('/login', async (req, res, next) => {
 		logger.debug('req.body', req.body);
 		return passport.authenticate('local-login', (err, token, userData) => {
 			if (!token) {
@@ -57,9 +55,12 @@ export async function authroutes(router: any, platform: any) {
 		})(req, res, next);
 	});
 
-	router.post('/logout', async (req: { body: any; logout: () => void; }, res: { send: () => void; }) => {
-		logger.debug('req.body', req.body);
-		req.logout();
-		res.send();
-	});
+	router.post(
+		'/logout',
+		async (req: { body: any; logout: () => void }, res: { send: () => void }) => {
+			logger.debug('req.body', req.body);
+			req.logout();
+			res.send();
+		}
+	);
 }
