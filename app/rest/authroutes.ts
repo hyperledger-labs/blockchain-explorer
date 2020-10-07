@@ -62,4 +62,4 @@ export async function authroutes(router: any, platform: any) {
 		req.logout();
 		res.send();
 	});
-};
+}

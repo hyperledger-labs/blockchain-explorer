@@ -5,7 +5,7 @@
 import types from './types';
 
 /* Reducers for Dashboard Charts */
-const themeReducer = (state = { mode: 'light' }, action) => {
+const themeReducer = (state = { mode: 'light' }, action = {}) => {
   if (action.type === types.CHANGE_THEME) {
     return {
       ...state,

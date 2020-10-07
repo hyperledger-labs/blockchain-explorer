@@ -8,7 +8,7 @@ import types from './types';
 /* Reducers for Dashboard Charts */
 const initialState = {};
 
-const blockPerHourReducer = (state = initialState, action) => {
+const blockPerHourReducer = (state = initialState, action = {}) => {
   if (action.type === types.BLOCK_CHART_HOUR) {
     return {
       rows: action.payload.blockPerHour.rows,
@@ -19,7 +19,7 @@ const blockPerHourReducer = (state = initialState, action) => {
     return state;
   }
 };
-const errorMessageReducer = (state = initialState, action) => {
+const errorMessageReducer = (state = initialState, action = {}) => {
   if (action.type === types.ERROR_MESSAGE) {
     return {
       error: action.payload,
@@ -29,7 +29,7 @@ const errorMessageReducer = (state = initialState, action) => {
   }
 };
 
-const blockPerMinReducer = (state = initialState, action) => {
+const blockPerMinReducer = (state = initialState, action = {}) => {
   if (action.type === types.BLOCK_CHART_MIN) {
     return {
       rows: action.payload.blockPerMin.rows,
@@ -41,7 +41,7 @@ const blockPerMinReducer = (state = initialState, action) => {
   }
 };
 
-const channelListReducer = (state = initialState, action) => {
+const channelListReducer = (state = initialState, action = {}) => {
   if (action.type === types.CHANNEL_LIST) {
     return {
       list: action.payload.channels,
@@ -53,7 +53,7 @@ const channelListReducer = (state = initialState, action) => {
   }
 };
 
-const channelReducer = (state = initialState, action) => {
+const channelReducer = (state = initialState, action = {}) => {
   if (action.type === types.CHANNEL || action.type === types.CHANGE_CHANNEL) {
     return action.payload.channel;
   } else {
@@ -61,14 +61,14 @@ const channelReducer = (state = initialState, action) => {
   }
 };
 
-const dashStatsReducer = (state = initialState, action) => {
+const dashStatsReducer = (state = initialState, action = {}) => {
   if (action.type === types.DASHBOARD_STATS) {
     return action.payload;
   } else {
     return state;
   }
 };
-const blockActivityReducer = (state = initialState, action) => {
+const blockActivityReducer = (state = initialState, action = {}) => {
   if (action.type === types.BLOCK_ACTIVITY) {
     return {
       rows: action.payload.row,
@@ -79,7 +79,7 @@ const blockActivityReducer = (state = initialState, action) => {
     return state;
   }
 };
-const notificationReducer = (state = initialState, action) => {
+const notificationReducer = (state = initialState, action = {}) => {
   if (action.type === types.NOTIFICATION_LOAD) {
     return action.payload.notification;
   } else {
@@ -87,7 +87,7 @@ const notificationReducer = (state = initialState, action) => {
   }
 };
 
-const peerStatusReducer = (state = initialState, action) => {
+const peerStatusReducer = (state = initialState, action = {}) => {
   if (action.type === types.PEER_STATUS) {
     return {
       list: action.payload.peers,
@@ -99,7 +99,7 @@ const peerStatusReducer = (state = initialState, action) => {
   }
 };
 
-const transactionByOrgReducer = (state = initialState, action) => {
+const transactionByOrgReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_CHART_ORG) {
     return {
       rows: action.payload.rows,
@@ -111,7 +111,7 @@ const transactionByOrgReducer = (state = initialState, action) => {
   }
 };
 
-const transactionPerHourReducer = (state = initialState, action) => {
+const transactionPerHourReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_CHART_HOUR) {
     return {
       rows: action.payload.transactionPerHour.rows,
@@ -123,7 +123,7 @@ const transactionPerHourReducer = (state = initialState, action) => {
   }
 };
 
-const transactionPerMinReducer = (state = initialState, action) => {
+const transactionPerMinReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_CHART_MIN) {
     return {
       rows: action.payload.transactionPerMin.rows,

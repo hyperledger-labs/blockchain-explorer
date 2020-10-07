@@ -7,7 +7,7 @@ import types from './types';
 
 const initialState = {};
 
-const blockListReducer = (state = initialState, action) => {
+const blockListReducer = (state = initialState, action = {}) => {
   if (action.type === types.BLOCK_LIST) {
     return {
       rows: action.payload.rows,
@@ -19,7 +19,7 @@ const blockListReducer = (state = initialState, action) => {
   }
 };
 
-const blockListSearchReducer = (state = initialState, action) => {
+const blockListSearchReducer = (state = initialState, action = {}) => {
   if (action.type === types.BLOCK_LIST_SEARCH) {
     return {
       rows: action.payload.rows,
@@ -31,7 +31,7 @@ const blockListSearchReducer = (state = initialState, action) => {
   }
 };
 
-const chaincodeListReducer = (state = initialState, action) => {
+const chaincodeListReducer = (state = initialState, action = {}) => {
   if (action.type === types.CHAINCODE_LIST) {
     return {
       rows: action.payload.chaincode,
@@ -43,7 +43,7 @@ const chaincodeListReducer = (state = initialState, action) => {
   }
 };
 
-const channelsReducer = (state = initialState, action) => {
+const channelsReducer = (state = initialState, action = {}) => {
   if (action.type === types.CHANNELS) {
     return {
       rows: action.payload.channels,
@@ -56,7 +56,7 @@ const channelsReducer = (state = initialState, action) => {
 
 };
 
-const peerListReducer = (state = initialState, action) => {
+const peerListReducer = (state = initialState, action = {}) => {
   if (action.type === types.PEER_LIST) {
     return {
       rows: action.payload.peers,
@@ -68,7 +68,7 @@ const peerListReducer = (state = initialState, action) => {
   }
 };
 
-const transactionReducer = (state = initialState, action) => {
+const transactionReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION) {
     return {
       transaction: action.payload.row,
@@ -80,7 +80,7 @@ const transactionReducer = (state = initialState, action) => {
   }
 };
 
-const transactionListReducer = (state = initialState, action) => {
+const transactionListReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_LIST) {
     return {
       rows: action.payload.rows,
@@ -92,7 +92,7 @@ const transactionListReducer = (state = initialState, action) => {
   }
 };
 
-const transactionListSearchReducer = (state = initialState, action) => {
+const transactionListSearchReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_LIST_SEARCH) {
     return {
       rows: action.payload.rows,
