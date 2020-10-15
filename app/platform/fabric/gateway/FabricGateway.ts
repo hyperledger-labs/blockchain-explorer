@@ -137,7 +137,7 @@ export class FabricGateway {
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
 		} catch (error) {
-			logger.error(`${error}`);
+			logger.error(`${explorerError.ERROR_1010}: ${JSON.stringify(error, null, 2)}`);
 			throw new ExplorerError(explorerError.ERROR_1010);
 		}
 	}
