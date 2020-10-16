@@ -2,7 +2,7 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-import { Wallets, Gateway } from 'fabric-network';
+import { Identity, Wallets, Gateway } from 'fabric-network';
 import * as fabprotos from 'fabric-protos';
 import { Discoverer, DiscoveryService } from 'fabric-common';
 import concat from 'lodash/concat';
@@ -28,7 +28,7 @@ export class FabricGateway {
 	defaultChannelName: string;
 	fabricCaEnabled: boolean;
 	client: any;
-	clientTlsIdentity: any;
+	clientTlsIdentity: Identity;
 	FSWALLET: string;
 	enableAuthentication: boolean;
 	asLocalhost: boolean;
@@ -48,7 +48,7 @@ export class FabricGateway {
 		this.gateway = new Gateway();
 		this.fabricCaEnabled = false;
 		this.client = null;
-		this.clientTlsIdentity = false;
+		this.clientTlsIdentity = null;
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
 		this.asLocalhost = false;
