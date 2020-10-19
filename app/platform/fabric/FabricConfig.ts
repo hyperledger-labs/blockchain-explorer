@@ -115,6 +115,16 @@ export class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
+	getClientTlsIdentity() {
+		return this.config.client.clientTlsIdentity;
+	}
+
+	/**
+	 *
+	 *
+	 * @returns
+	 * @memberof FabricConfig
+	 */
 	getAdminUser() {
 		if (
 			!this.config.client ||
