@@ -2,7 +2,7 @@
  *SPDX-License-Identifier: Apache-2.0
  */
 
-import { Wallets, Gateway } from 'fabric-network';
+import { X509Identity, Wallets, Gateway } from 'fabric-network';
 import * as fabprotos from 'fabric-protos';
 import { Discoverer, DiscoveryService } from 'fabric-common';
 import concat from 'lodash/concat';
@@ -28,6 +28,7 @@ export class FabricGateway {
 	defaultChannelName: string;
 	fabricCaEnabled: boolean;
 	client: any;
+	clientTlsIdentity: X509Identity;
 	FSWALLET: string;
 	enableAuthentication: boolean;
 	asLocalhost: boolean;
@@ -47,6 +48,7 @@ export class FabricGateway {
 		this.gateway = new Gateway();
 		this.fabricCaEnabled = false;
 		this.client = null;
+		this.clientTlsIdentity = null;
 		this.FSWALLET = null;
 		this.enableAuthentication = false;
 		this.asLocalhost = false;
@@ -121,11 +123,11 @@ export class FabricGateway {
 				clientTlsIdentity: ''
 			};
 
-			if ('clientTlsIdentity' in this.config.client) {
+			const mTlsIdLabel = this.fabricConfig.getClientTlsIdentity();
+			if (mTlsIdLabel) {
 				logger.info('client TLS enabled');
-				const mTlsIdLabel = this.config.client.clientTlsIdentity;
-				const mTlsId = await this.wallet.get(mTlsIdLabel);
-				if (mTlsId !== undefined) {
+				this.clientTlsIdentity = await this.wallet.get(mTlsIdLabel);
+				if (this.clientTlsIdentity !== undefined) {
 					connectionOptions.clientTlsIdentity = mTlsIdLabel;
 				} else {
 					throw new ExplorerError(
@@ -374,7 +376,12 @@ export class FabricGateway {
 			const ds = new DiscoveryService('be discovery service', channel);
 
 			const client = new Client('discovery client');
-			client.setTlsClientCertAndKey();
+			if (this.clientTlsIdentity) {
+				logger.info('client TLS enabled');
+				client.setTlsClientCertAndKey(this.clientTlsIdentity.credentials.certificate, this.clientTlsIdentity.credentials.privateKey);
+			} else {
+				client.setTlsClientCertAndKey();
+			}
 
 			const mspID = this.config.client.organization;
 			const targets = [];

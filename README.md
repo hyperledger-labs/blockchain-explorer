@@ -311,7 +311,7 @@ $ npm install
 $ npm run build
 ```
 
-## Run Hyperledger Explorer 
+## Run Hyperledger Explorer
 
 ### Run Locally in Same Location
 
@@ -320,7 +320,7 @@ $ npm run build
     ```json
     "sync": {
       "type": "local"
-    }   
+    }
     ```
 
 * `npm start`
@@ -342,7 +342,7 @@ $ DISCOVERY_AS_LOCALHOST=false npm start
     ```json
     "sync": {
       "type": "host"
-    }   
+    }
     ```
 
 * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching
