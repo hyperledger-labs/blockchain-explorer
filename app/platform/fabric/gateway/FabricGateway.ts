@@ -123,9 +123,9 @@ export class FabricGateway {
 				clientTlsIdentity: ''
 			};
 
-			if ('clientTlsIdentity' in this.config.client) {
+			const mTlsIdLabel = this.fabricConfig.getClientTlsIdentity();
+			if (mTlsIdLabel) {
 				logger.info('client TLS enabled');
-				const mTlsIdLabel = this.config.client.clientTlsIdentity;
 				this.clientTlsIdentity = await this.wallet.get(mTlsIdLabel);
 				if (this.clientTlsIdentity !== undefined) {
 					connectionOptions.clientTlsIdentity = mTlsIdLabel;
