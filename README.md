@@ -54,7 +54,7 @@ And if you want to refer more detail of each configuration, please refer [README
 
 ## Start Hyperledger Fabric network
 
-In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/master/test_network.html).
+In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
 
 ## Configure
 
