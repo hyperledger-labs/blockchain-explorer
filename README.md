@@ -102,7 +102,7 @@ In this guide, we assume that you've already started test network by following [
               - ./config.json:/opt/explorer/app/platform/fabric/config.json
               - ./connection-profile:/opt/explorer/app/platform/fabric/connection-profile
               - ./organizations:/tmp/crypto
-              - walletstore:/opt/wallet
+              - walletstore:/opt/explorer/wallet
     ```
 
 * When you connect Explorer to your fabric network through bridge network, you need to set DISCOVERY_AS_LOCALHOST to false for disabling hostname mapping into localhost.
