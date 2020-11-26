@@ -139,7 +139,9 @@ export class FabricGateway {
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
 		} catch (error) {
-			logger.error(`${explorerError.ERROR_1010}: ${JSON.stringify(error, null, 2)}`);
+			logger.error(
+				`${explorerError.ERROR_1010}: ${JSON.stringify(error, null, 2)}`
+			);
 			throw new ExplorerError(explorerError.ERROR_1010);
 		}
 	}
@@ -193,13 +195,15 @@ export class FabricGateway {
 		}
 
 		try {
-			const caConfig = this.fabricConfig.getCertificateAuthorities();
-			const tlsCACert = fs.readFileSync(caConfig.serverCertPath, 'utf8');
-
-			const ca = new FabricCAServices(caConfig.caURL[0], {
-				trustedRoots: tlsCACert,
-				verify: false
-			});
+			const caName = this.config.organizations[this.fabricConfig.getOrganization()]
+				.certificateAuthorities[0];
+			const ca = new FabricCAServices(
+				this.config.certificateAuthorities[caName].url,
+				{
+					trustedRoots: this.fabricConfig.getTlsCACertsPem(caName),
+					verify: false
+				}
+			);
 
 			const enrollment = await ca.enroll({
 				enrollmentID: this.fabricConfig.getCaAdminUser(),
@@ -378,7 +382,10 @@ export class FabricGateway {
 			const client = new Client('discovery client');
 			if (this.clientTlsIdentity) {
 				logger.info('client TLS enabled');
-				client.setTlsClientCertAndKey(this.clientTlsIdentity.credentials.certificate, this.clientTlsIdentity.credentials.privateKey);
+				client.setTlsClientCertAndKey(
+					this.clientTlsIdentity.credentials.certificate,
+					this.clientTlsIdentity.credentials.privateKey
+				);
 			} else {
 				client.setTlsClientCertAndKey();
 			}

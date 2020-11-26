@@ -331,21 +331,25 @@ export class FabricConfig {
 	 * @returns
 	 * @memberof FabricConfig
 	 */
-	getCertificateAuthorities() {
-		const caURL = [];
-		let serverCertPath = null;
-
-		if (this.config.certificateAuthorities) {
-			for (const x in this.config.certificateAuthorities) {
-				if (this.config.certificateAuthorities[x].tlsCACerts) {
-					serverCertPath = this.config.certificateAuthorities[x].tlsCACerts.path;
-				}
-				if (this.config.certificateAuthorities[x].url) {
-					caURL.push(this.config.certificateAuthorities[x].url);
-				}
-			}
+	getTlsCACertsPem(certificateAuthority) {
+		const tlsCACerts = this.config.certificateAuthorities[certificateAuthority]
+			.tlsCACerts;
+		if (
+			tlsCACerts === undefined ||
+			(tlsCACerts.path === undefined && tlsCACerts.pem === undefined)
+		) {
+			logger.error(
+				`Not found tlsCACerts configuration: ${certificateAuthority.url}`
+			);
+			return '';
 		}
-		return { caURL, serverCertPath };
+		if (tlsCACerts.path !== undefined) {
+			return fs.readFileSync(
+				path.resolve(__dirname, '../../..', tlsCACerts.path),
+				'utf8'
+			);
+		}
+		return tlsCACerts.pem;
 	}
 
 	/**
