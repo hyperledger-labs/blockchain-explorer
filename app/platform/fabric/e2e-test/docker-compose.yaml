@@ -53,7 +53,7 @@ services:
       - ./configs/config_${NETWORK_MODE}.json:/opt/explorer/app/platform/fabric/config.json
       - ./configs/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
       - ./specs/crypto-config:/tmp/crypto
-      - walletstore:/opt/wallet
+      - walletstore:/opt/explorer/wallet
     command: sh -c "node /opt/explorer/main.js && tail -f /dev/null"
     ports:
       - 8090:8080

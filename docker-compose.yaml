@@ -49,7 +49,7 @@ services:
       - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
       - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
       - ./examples/net1/crypto:/tmp/crypto
-      - walletstore:/opt/wallet
+      - walletstore:/opt/explorer/wallet
     ports:
       - 8080:8080
     depends_on:
