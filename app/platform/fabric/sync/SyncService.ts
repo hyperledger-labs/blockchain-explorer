@@ -212,29 +212,18 @@ export class SyncServices {
 	 * @memberof SyncServices
 	 */
 	async insertNewPeer(peer, channel_genesis_hash, client) {
-		let eventurl = '';
-		let requesturl = peer.endpoint;
 		const network_id = client.getNetworkId();
-		const host_port = peer.endpoint.split(':');
-		const peers = client.getNetworkConfig().peers;
-		if (peers && peers[host_port[0]] && peers[host_port[0]].url) {
-			requesturl = peers[host_port[0]].url;
-		}
-		if (peers && peers[host_port[0]] && peers[host_port[0]].eventUrl) {
-			eventurl = peers[host_port[0]].eventUrl;
-		}
 
 		const peer_row = {
 			mspid: peer.mspid,
-			requests: requesturl.replace(/^grpcs*:\/\//, ''),
-			events: eventurl,
-			server_hostname: host_port[0],
+			requests: peer.endpoint,
+			server_hostname: peer.endpoint,
 			channel_genesis_hash,
 			peer_type: 'PEER'
 		};
 		await this.persistence.getCrudService().savePeer(network_id, peer_row);
 		const channel_peer_row = {
-			peerid: host_port[0],
+			peerid: peer.endpoint,
 			channelid: channel_genesis_hash
 		};
 		await this.persistence
@@ -253,7 +242,7 @@ export class SyncServices {
 	async insertNewOrderers(orderer, channel_genesis_hash, client) {
 		const network_id = client.getNetworkId();
 		const discoveryProtocol = client.fabricGateway.getDiscoveryProtocol();
-		const requesturl = `${discoveryProtocol}://${orderer.host}:${orderer.port}`;
+		const requesturl = `${orderer.host}:${orderer.port}`;
 		logger.debug(
 			'insertNewOrderers discoveryProtocol ',
 			discoveryProtocol,
@@ -263,8 +252,8 @@ export class SyncServices {
 
 		const orderer_row = {
 			mspid: orderer.org_name,
-			requests: requesturl.replace(/^grpcs*:\/\//, ''),
-			server_hostname: orderer.host,
+			requests: requesturl,
+			server_hostname: requesturl,
 			channel_genesis_hash,
 			peer_type: 'ORDERER'
 		};
@@ -351,11 +340,10 @@ export class SyncServices {
 		channel_genesis_hash
 	) {
 		const network_id = client.getNetworkId();
-		const host_port = endpoint.split(':');
 		const chaincode_peer_row = {
 			chaincodeid: chaincode.name,
 			cc_version: chaincode.version,
-			peerid: host_port[0],
+			peerid: endpoint,
 			channelid: channel_genesis_hash
 		};
 		await this.persistence
