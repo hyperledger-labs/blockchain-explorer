@@ -65,11 +65,11 @@ function test() {
 				const peerUrlStrList = peerUrlList.map((elm, idx, array) => {
 					return elm.getText();
 				});
-				expect(peerUrlStrList).to.include('peer0-org1');
-				expect(peerUrlStrList).to.include('peer1-org1');
-				expect(peerUrlStrList).to.include('peer0-org2');
-				expect(peerUrlStrList).to.include('orderer0-ordererorg1');
-				expect(peerUrlStrList).to.include('orderer1-ordererorg1');
+				expect(peerUrlStrList).to.include('peer0-org1:31000');
+				expect(peerUrlStrList).to.include('peer1-org1:31001');
+				expect(peerUrlStrList).to.include('peer0-org2:31002');
+				expect(peerUrlStrList).to.include('orderer0-ordererorg1:30000');
+				expect(peerUrlStrList).to.include('orderer1-ordererorg1:30001');
 			});
 		});
 

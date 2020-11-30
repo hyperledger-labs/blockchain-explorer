@@ -131,7 +131,7 @@ export class Proxy {
 						continue;
 					}
 					for (const peer of org.peers) {
-						if (peer.endpoint.indexOf(node.server_hostname) > -1) {
+						if (peer.endpoint === node.requests) {
 							node.ledger_height_low = peer.ledgerHeight.low;
 							node.ledger_height_high = peer.ledgerHeight.high;
 							node.ledger_height_unsigned = peer.ledgerHeight.unsigned;
@@ -141,16 +141,9 @@ export class Proxy {
 				peers.push(node);
 			} else if (node.peer_type === 'ORDERER') {
 				node.status = 'DOWN';
-				if (discover_results && discover_results.orderers) {
-					const org = discover_results.orderers[node.mspid];
-					for (const endpoint of org.endpoints) {
-						if (endpoint.host.indexOf(node.server_hostname) > -1) {
-							node.ledger_height_low = '-';
-							node.ledger_height_high = '-';
-							node.ledger_height_unsigned = '-';
-						}
-					}
-				}
+				node.ledger_height_low = '-';
+				node.ledger_height_high = '-';
+				node.ledger_height_unsigned = '-';
 				peers.push(node);
 			}
 		}

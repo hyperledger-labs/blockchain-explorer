@@ -26,11 +26,11 @@ function test() {
 				const nodeStrList = nodeLists.map((elm, idx, array) => {
 					return elm.getText();
 				});
-				expect(nodeStrList).to.include('peer0-org1');
-				expect(nodeStrList).to.include('peer1-org1');
-				expect(nodeStrList).to.include('peer0-org2');
-				expect(nodeStrList).to.include('orderer0-ordererorg1');
-				expect(nodeStrList).to.include('orderer1-ordererorg1');
+				expect(nodeStrList).to.include('peer0-org1:31000');
+				expect(nodeStrList).to.include('peer1-org1:31001');
+				expect(nodeStrList).to.include('peer0-org2:31002');
+				expect(nodeStrList).to.include('orderer0-ordererorg1:30000');
+				expect(nodeStrList).to.include('orderer1-ordererorg1:30001');
 			});
 		});
 	});
