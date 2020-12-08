@@ -3,6 +3,6 @@
 	"watch-extensions": "ts",
 	"recursive": true,
 	"spec": ["./app/test/**/*.test.ts"],
-	"timeout": 5000,
+	"timeout": 10000,
 	"extension": ["ts"]
 }

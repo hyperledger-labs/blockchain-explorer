@@ -426,7 +426,7 @@ export class FabricGateway {
 		return targets;
 	}
 
-	async sendRecvDiscoveryResult() {
+	async sendDiscoveryRequest() {
 		try {
 			await this.ds.send({
 				asLocalhost: this.asLocalhost,
@@ -456,7 +456,7 @@ export class FabricGateway {
 		}
 
 		if (this.ds && this.dsTargets.length) {
-			const result = await this.sendRecvDiscoveryResult();
+			const result = await this.sendDiscoveryRequest();
 			return result;
 		}
 
