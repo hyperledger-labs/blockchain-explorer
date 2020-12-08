@@ -1,0 +1,10 @@
+{
+	"extends": "@istanbuljs/nyc-config-typescript",
+	"require": ["ts-node/register"],
+	"extension": [".ts"],
+	"reporter": ["lcov", "text-summary"],
+	"sourceMap": true,
+	"instrument": true,
+	"temp-dir": "app/test/.nyc_output",
+	"report-dir": "app/test/coverage"
+}
