@@ -27,7 +27,7 @@ first-network/channel-artifacts/*
 tmp/wallet/*
 wallet/*
 *.swp
-package-lock.json
+# package-lock.json
 ssl-certs/*.pem
 ssl-certs/*.csr
 0

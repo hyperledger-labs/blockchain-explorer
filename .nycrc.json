@@ -1,0 +1,18 @@
+{
+	"extends": "@istanbuljs/nyc-config-typescript",
+	"require": ["ts-node/register"],
+	"extension": [".ts"],
+	"reporter": ["lcov", "text-summary"],
+	"sourceMap": true,
+	"instrument": true,
+	"temp-dir": "app/test/.nyc_output",
+	"report-dir": "app/test/coverage",
+	"all": true,
+	"include": ["app"],
+	"exclude": ["**/e2e-test", "app/test"],
+	"check-coverage": false,
+	"branches": 80,
+	"lines": 80,
+	"functions": 80,
+	"statements": 80
+}

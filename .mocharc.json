@@ -1,0 +1,8 @@
+{
+	"require": "./node_modules/ts-node/register",
+	"watch-extensions": "ts",
+	"recursive": true,
+	"spec": ["./app/test/**/*.test.ts"],
+	"timeout": 10000,
+	"extension": ["ts"]
+}
