@@ -196,11 +196,13 @@ export class SyncServices {
 		}
 
 		// Insert chaincode
-		await this.insertNewChannelChaincode(
-			client,
-			channel_genesis_hash,
-			discoveryResults
-		);
+		if (discoveryResults) {
+			await this.insertNewChannelChaincode(
+				client,
+				channel_genesis_hash,
+				discoveryResults
+			);
+		}
 	}
 
 	/**

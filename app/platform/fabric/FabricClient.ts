@@ -181,7 +181,7 @@ export class FabricClient {
 			channel_name
 		);
 
-		if ('peers_by_org' in discover_results) {
+		if (discover_results && 'peers_by_org' in discover_results) {
 			for (const org in discover_results.peers_by_org) {
 				logger.info('Discovered', org, discover_results.peers_by_org[org].peers);
 			}
