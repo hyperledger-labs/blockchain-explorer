@@ -15,5 +15,5 @@
 **/client/src/components/Header/*.spec.js
 **/client/src/components/App/*.spec.js
 **/client/wdio.conf.js
-**/client/e2e-test/*.js
+**/client/e2e-test/**/*.js
 
