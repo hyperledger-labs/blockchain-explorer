@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ROOTDIR="$(cd "$(dirname "$0")"/../../../.. && pwd)"
-FABRIC_V1_VERSION=1.4.8
-FABRIC_CA_V1_VERSION=1.4.7
-FABRIC_V2_VERSION=2.2.0
-FABRIC_CA_V2_VERSION=1.4.7
+FABRIC_V1_VERSION=1.4.9
+FABRIC_CA_V1_VERSION=1.4.9
+FABRIC_V2_VERSION=2.2.1
+FABRIC_CA_V2_VERSION=1.4.9
 
 echo "#### Downloaded fabric-test repo"
 

@@ -33,6 +33,7 @@ export class FabricGateway {
 	asLocalhost: boolean;
 	ds: DiscoveryService;
 	dsTargets: Discoverer[];
+	waitingResp: boolean;
 
 	/**
 	 * Creates an instance of FabricGateway.
@@ -427,23 +428,33 @@ export class FabricGateway {
 	}
 
 	async sendDiscoveryRequest() {
+		let result;
 		try {
-			await this.ds.send({
-				asLocalhost: this.asLocalhost,
-				requestTimeout: 5000,
-				refreshAge: 15000,
-				targets: this.dsTargets
-			});
-			logger.info('Succeeded to send discovery request');
+			if (!this.waitingResp) {
+				this.waitingResp = true;
+				await this.ds.send({
+					asLocalhost: this.asLocalhost,
+					requestTimeout: 5000,
+					refreshAge: 15000,
+					targets: this.dsTargets
+				});
+				logger.info('Succeeded to send discovery request');
+			} else {
+				logger.info('Have already been sending a request');
+			}
 
-			const result = await this.ds.getDiscoveryResults(true);
-			return result;
+			result = await this.ds.getDiscoveryResults(true);
 		} catch (error) {
-			logger.error('Failed to send discovery request for channel', error);
-			this.ds.close();
-			this.ds = null;
+			logger.warn('Failed to send discovery request for channel', error);
+			if (this.ds) {
+				this.ds.close();
+				this.ds = null;
+			}
+			result = null;
+		} finally {
+			this.waitingResp = false;
 		}
-		return null;
+		return result;
 	}
 
 	async getDiscoveryResult(channelName) {
