@@ -9,7 +9,7 @@
 			"password": "adminpw"
 		},
 		"adminCredential": {
-			"id": "exploreradmin",
+			"id": "exploreradmin2",
 			"password": "exploreradminpw",
 			"affiliation": "org1.department1"
 		},
@@ -43,19 +43,14 @@
 	"organizations": {
 		"Org1MSP": {
 			"mspid": "Org1MSP",
-			"adminPrivateKey": {
-				"path": "/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
-			},
 			"peers": ["peer0.org1.example.com"],
-			"signedCert": {
-				"path": "/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
-			}
+			"certificateAuthorities": ["ca0"]
 		}
 	},
 	"peers": {
 		"peer0.org1.example.com": {
 			"tlsCACerts": {
-				"path": "/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"path": "/home/atsushi/dev/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://localhost:7051",
 			"grpcOptions": {
@@ -70,7 +65,7 @@
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1/ca/ca.org1-cert.pem"
+				"path": "/home/atsushi/dev/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
 			},
 			"caName": "ca0-org1"
 		}

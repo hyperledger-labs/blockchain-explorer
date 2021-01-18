@@ -42,7 +42,7 @@ This document will describe about the detail of each configuration:
   * `expiresIn`: expressed in seconds or a string describing a time span [zeit/ms](https://github.com/zeit/ms).
     Eg: `60`, `"2 days"`, `"10h"`, `"7d"`. A numeric value is interpreted as a seconds count. If you use a string be sure you provide the time units (days, hours, etc), otherwise milliseconds unit is used by default (`"120"` is equal to `"120ms"`).
 
-* Modify the connection profile (e.g. `app/platform/fabric/connection-profile/first-network.json`) to configure authorization of login user.
+* Modify the connection profile (e.g. `app/platform/fabric/connection-profile/test-network.json`) to configure authorization of login user.
 
     ```json
     "client": {
@@ -87,7 +87,7 @@ First you need to login using admin credential to get a JSON Web token.
     --header 'Content-Type: application/json' --data-raw '{
     "user": "exploreradmin",
     "password": "exploreradminpw",
-    "network": "first-network"
+    "network": "test-network"
     }' | jq .
 
     {
@@ -135,7 +135,7 @@ First you need to login using admin credential to get a JSON Web token.
         {
           "username": "exploreradmin",
           "email": null,
-          "networkName": "first-network",
+          "networkName": "test-network",
           "firstName": null,
           "lastName": null,
           "roles": "admin"
@@ -143,7 +143,7 @@ First you need to login using admin credential to get a JSON Web token.
         {
           "username": "newuser",
           "email": null,
-          "networkName": "first-network",
+          "networkName": "test-network",
           "firstName": null,
           "lastName": null,
           "roles": "user"
@@ -174,7 +174,7 @@ $ curl -s --location --request POST 'localhost:8080/api/unregister' \
 
 ## Enable TLS
 
-* If your fabric network enables TLS, then set `true` to `client.tlsEnable` in the connection profile (e.g. `app/platform/fabric/connection-profile/first-network.json`).
+* If your fabric network enables TLS, then set `true` to `client.tlsEnable` in the connection profile (e.g. `app/platform/fabric/connection-profile/test-network.json`).
   And you also need to specify peer URL with `grpcs://`. If your fabrice network disables TLS, use `grpc://` instead.
 
     ```json
@@ -194,18 +194,18 @@ $ curl -s --location --request POST 'localhost:8080/api/unregister' \
     ```json
     {
         "network-configs": {
-            "first-network": {
-                "name": "firstnetwork",
-                "profile": "./connection-profile/first-network.json"
+            "test-network": {
+                "name": "Test Network",
+                "profile": "./connection-profile/test-network.json"
             }
         },
         "license": "Apache-2.0"
     }
     ```
-  * `first-network` is the name of your connection profile, and can be changed to any name.
+  * `test-network` is the name of your connection profile, and can be changed to any name.
   * `name` is a name you want to give to your fabric network, you can change only value of the key "name".
   * `profile` is the location of your connection profile, you can change only value of the key "profile"
-  * Change `fabric-path` to your fabric network disk path in the `first-network.json` file 
+  * Change `fabric-path` to your fabric network disk path in the `test-network.json` file 
   * Provide the full disk path to the adminPrivateKey config option, it ussually ends with "_sk"\
   e.g.
     ```json
@@ -255,6 +255,42 @@ $ curl -s --location --request POST 'localhost:8080/api/unregister' \
       }
     },
     ```
+
+  * Refer to the following sample connection files:
+    * `examples/net1/connection-profile/test-network-ca.json` (for using Docker)
+      * To use this profile, modify `docker-compose.yaml` as below:
+        ```diff
+        diff --git a/docker-compose.yaml b/docker-compose.yaml
+        index 9478ca1..ea6ae74 100644
+        --- a/docker-compose.yaml
+        +++ b/docker-compose.yaml
+        @@ -46,7 +46,7 @@ services:
+              - LOG_CONSOLE_STDOUT=true
+              - DISCOVERY_AS_LOCALHOST=false
+            volumes:
+        -      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
+        +      - ./examples/net1/config-ca.json:/opt/explorer/app/platform/fabric/config.json
+              - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
+              - /fabric-path/fabric-samples/test-network/organizations:/tmp/crypto
+              - walletstore:/opt/explorer/wallet
+        ```
+    * `app/platform/fabric/connection-profile/test-network-ca.json` (for using source tree)
+      * To use this profile, modify `app/platform/fabric/config.json` as below:
+        ```diff
+        diff --git a/app/platform/fabric/config.json b/app/platform/fabric/config.json
+        index f99d37b..9825060 100644
+        --- a/app/platform/fabric/config.json
+        +++ b/app/platform/fabric/config.json
+        @@ -2,7 +2,7 @@
+                "network-configs": {
+                        "test-network": {
+                                "name": "Test Network",
+        -                       "profile": "./connection-profile/test-network.json"
+        +                       "profile": "./connection-profile/test-network-ca.json"
+                        }
+                },
+                "license": "Apache-2.0"
+        ```
 
 ### Disable using Fabric CA
 
