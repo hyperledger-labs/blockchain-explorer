@@ -19,6 +19,7 @@ const stubConnect = sinon.stub();
 
 // logger
 const stubError = sinon.stub();
+const stubWarn = sinon.stub();
 const stubInfo = sinon.stub();
 
 // Client
@@ -56,6 +57,7 @@ function getFabricGatewayInstance() {
 					getLogger: function() {
 						return {
 							error: stubError,
+							warn: stubWarn,
 							info: stubInfo
 						};
 					}
@@ -180,7 +182,7 @@ describe('sendDiscoveryRequest', () => {
 	it('should throw error when failed to call getDiscoveryResults()', async () => {
 		stubGetDiscoveryResults.throws();
 		await gw.sendDiscoveryRequest();
-		expect(stubError.called).be.equal(true);
+		expect(stubWarn.called).be.equal(true);
 		expect(stubClose.calledOnce).be.equal(true);
 	});
 });

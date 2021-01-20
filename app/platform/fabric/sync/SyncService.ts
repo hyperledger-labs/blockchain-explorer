@@ -5,6 +5,7 @@
 import * as convertHex from 'convert-hex';
 import fabprotos from 'fabric-protos';
 import includes from 'lodash/includes';
+import * as sha from 'js-sha256';
 import { helper } from '../../../common/helper';
 
 import { ExplorerError } from '../../../common/ExplorerError';
@@ -481,7 +482,10 @@ export class SyncServices {
 			const txLen = block.data.data.length;
 			for (let txIndex = 0; txIndex < txLen; txIndex++) {
 				const txObj = block.data.data[txIndex];
-				const txid = txObj.payload.header.channel_header.tx_id;
+				const txStr = JSON.stringify(txObj);
+				const size = Buffer.byteLength(txStr);
+				let txid = txObj.payload.header.channel_header.tx_id;
+
 				let validation_code = '';
 				let endorser_signature = '';
 				let payload_proposal_hash = '';
@@ -570,6 +574,14 @@ export class SyncServices {
 							.IdBytes;
 				}
 
+				if (txObj.payload.header.channel_header.typeString === 'CONFIG') {
+					txid = sha.sha256(txStr);
+					readSet =
+						txObj.payload.data.last_update.payload.data.config_update.read_set;
+					writeSet =
+						txObj.payload.data.last_update.payload.data.config_update.write_set;
+				}
+
 				const read_set = JSON.stringify(readSet, null, 2);
 				const write_set = JSON.stringify(writeSet, null, 2);
 
@@ -602,7 +614,7 @@ export class SyncServices {
 				/* eslint-enable */
 				const transaction_row = {
 					blockid: block.header.number.toString(),
-					txhash: txObj.payload.header.channel_header.tx_id,
+					txhash: txid,
 					createdt: txObj.payload.header.channel_header.timestamp,
 					chaincodename: chaincode,
 					chaincode_id,
