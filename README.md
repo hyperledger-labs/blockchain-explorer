@@ -61,13 +61,13 @@ In this guide, we assume that you've already started test network by following [
 * Copy the following files from repository
 
   - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/master/docker-compose.yaml)
-  - [examples/net1/connection-profile/first-network.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/connection-profile/first-network.json)
+  - [examples/net1/connection-profile/test-network.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/connection-profile/test-network.json)
   - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/config.json)
 
 
   ```
   $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/config.json
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/connection-profile/first-network.json -P connection-profile
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/connection-profile/test-network.json -P connection-profile
   $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/docker-compose.yaml
   ```
 
@@ -78,7 +78,7 @@ In this guide, we assume that you've already started test network by following [
     ```
     docker-compose.yaml
     config.json
-    connection-profile/first-network.json
+    connection-profile/test-network.json
     organizations/ordererOrganizations/
     organizations/peerOrganizations/
     ```
@@ -120,7 +120,7 @@ In this guide, we assume that you've already started test network by following [
           - DISCOVERY_AS_LOCALHOST=false
     ```
 
-* Edit path to admin certificate and secret key in the connection profile (first-network.json). You need to specify with the absolute path on Explorer container.
+* Edit path to admin certificate and secret key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
 
     ```json
       "organizations": {
@@ -213,9 +213,9 @@ $ cd blockchain-explorer/app
     ```json
     {
         "network-configs": {
-            "first-network": {
-                "name": "firstnetwork",
-                "profile": "./connection-profile/first-network.json",
+            "test-network": {
+                "name": "Test Network",
+                "profile": "./connection-profile/test-network.json",
                 "enableAuthentication": false
             }
         },
@@ -223,14 +223,14 @@ $ cd blockchain-explorer/app
     }
     ```
 
-  * `first-network` is the name of your connection profile, and can be changed to any name
+  * `test-network` is the name of your connection profile, and can be changed to any name
   * `name` is a name you want to give to your fabric network, you can change only value of the key `name`
   * `profile` is the location of your connection profile, you can change only value of the key `profile`
 
-* Modify connection profile in the JSON file `app/platform/fabric/connection-profile/first-network.json`:
-  * Change `fabric-path` to your fabric network disk path in the first-network.json file:
+* Modify connection profile in the JSON file `app/platform/fabric/connection-profile/test-network.json`:
+  * Change `fabric-path` to your fabric network disk path in the test-network.json file:
   * Provide the full disk path to the adminPrivateKey config option, it ussually ends with `_sk`, for example:
-    `/fabric-path/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/aaacd899a6362a5c8cc1e6f86d13bfccc777375365bbda9c710bb7119993d71c_sk`
+    `/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk`
   * `adminUser` and `adminPassword` is the credential for user of Explorer to login the dashboard
   * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
 

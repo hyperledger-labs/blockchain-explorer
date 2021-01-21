@@ -1,5 +1,5 @@
 {
-	"name": "first-network",
+	"name": "test-network",
 	"version": "1.0.0",
 	"client": {
 		"tlsEnable": true,
@@ -22,15 +22,6 @@
 		"mychannel": {
 			"peers": {
 				"peer0.org1.example.com": {}
-			},
-			"connection": {
-				"timeout": {
-					"peer": {
-						"endorser": "6000",
-						"eventHub": "6000",
-						"eventReg": "6000"
-					}
-				}
 			}
 		}
 	},
