@@ -9,54 +9,30 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import { SyncServices } from '../platform/fabric/sync/SyncService';
 import * as stubBlock from './block.json';
+import * as stubConfigBlock from './block_config.json';
 
-// DiscoveryService (this.ds)
-const stubSign = sinon.stub();
-const stubGetDiscoveryResults = sinon.stub();
-const stubClose = sinon.stub();
-
-// Discoverer
-const stubConnect = sinon.stub();
+import { ExplorerError } from '../common/ExplorerError';
+import * as FabricConst from '../platform/fabric/utils/FabricConst';
+const fabric_const = FabricConst.fabric.const;
 
 // logger
 const stubError = sinon.stub();
 const stubInfo = sinon.stub();
 const stubDebug = sinon.stub();
 
-const stubPlatform = sinon.stub();
-// const stubPersistence = sinon.stub();
-// const stubClient = sinon.stub();
+const VALID_GENESIS_HASH = '8A+HyzS4sqZynD06BfNW7T1Vtv2SOXAOUJQK4itulus=';
+const VALID_NETWORK_ID = 'test-network-id';
 
-// Client
-const stubSetTlsClientCertAndKey = sinon.stub();
-const stubNewEndpoint = sinon.stub();
+const stubPlatform = {
+	send: sinon.spy()
+};
+const spySaveTransaction = sinon.spy();
+const stubGetChannelGenHash = sinon.stub();
 
 function getSyncServicesInstance() {
 	const { SyncServices } = proxyquire
 		.noCallThru()
 		.load('../platform/fabric/sync/SyncService', {
-			// 'fabric-common': {
-			// 	DiscoveryService: function() {
-			// 		return {
-			// 			build: sinon.stub(),
-			// 			sign: stubSign,
-			// 			send: sinon.stub(),
-			// 			getDiscoveryResults: stubGetDiscoveryResults,
-			// 			close: stubClose
-			// 		};
-			// 	},
-			// 	Client: function() {
-			// 		return {
-			// 			setTlsClientCertAndKey: stubSetTlsClientCertAndKey,
-			// 			newEndpoint: stubNewEndpoint
-			// 		};
-			// 	},
-			// 	Discoverer: function() {
-			// 		return {
-			// 			connect: stubConnect
-			// 		};
-			// 	}
-			// },
 			'convert-hex': {
 				bytesToHex: sinon.stub()
 			},
@@ -66,7 +42,8 @@ function getSyncServicesInstance() {
 						return {
 							error: stubError,
 							info: stubInfo,
-							debug: stubDebug
+							debug: stubDebug,
+							warn: sinon.stub()
 						};
 					}
 				}
@@ -80,46 +57,43 @@ function getSyncServicesInstance() {
 	sinon.stub(config, 'getPeerTlsCACertsPem');
 	const stubGetCrudService = sinon.stub();
 	stubGetCrudService.returns({
-		saveBlock: sinon.stub(),
-		saveTransaction: sinon.stub()
+		saveBlock: sinon.stub().resolves(true),
+		saveTransaction: spySaveTransaction
 	});
 	const stubPersistence = {
 		getCrudService: stubGetCrudService
 	};
 	const sync = new SyncServices(stubPlatform, stubPersistence);
-	// gw.clientTlsIdentity = {
-	// 	credentials: {
-	// 		certificate: 'abc',
-	// 		privateKey: 'def'
-	// 	},
-	// 	mspId: 'org1',
-	// 	type: 'X.509'
-	// };
-
-	// const stubGetNetwork = sinon.stub(gw.gateway, 'getNetwork');
-	// const stubGetChannel = sinon.stub();
-	// stubGetChannel.returns({});
-	// stubGetNetwork.returns(Promise.resolve({ getChannel: stubGetChannel }));
 
 	return sync;
 }
 
-function resetAllStubs() {
-	// DiscoveryService (this.ds)
-	stubSign.reset();
-	stubGetDiscoveryResults.reset();
-	stubClose.reset();
-
-	// Discoverer
-	stubConnect.reset();
-
+function resetAllStubs(sync) {
 	// logger
 	stubError.reset();
 	stubInfo.reset();
 
-	// Client
-	stubSetTlsClientCertAndKey.reset();
-	stubNewEndpoint.reset();
+	sync.blocksInProcess = [];
+	stubGetChannelGenHash.reset();
+	stubPlatform.send.resetHistory();
+	spySaveTransaction.resetHistory();
+}
+
+function setupClient() {
+	const stubGetNetworkID = sinon.stub();
+	stubGetNetworkID.returns(VALID_NETWORK_ID);
+	stubGetChannelGenHash.returns(VALID_GENESIS_HASH);
+	const stubClient = {
+		getNetworkId: stubGetNetworkID,
+		getChannelGenHash: stubGetChannelGenHash,
+		initializeNewChannel: sinon.stub().resolves(true),
+		fabricGateway: {
+			fabricConfig: {
+				getRWSetEncoding: sinon.stub()
+			}
+		}
+	};
+	return stubClient;
 }
 
 describe('processBlockEvent', () => {
@@ -130,91 +104,76 @@ describe('processBlockEvent', () => {
 	});
 
 	beforeEach(() => {
-		resetAllStubs();
+		resetAllStubs(sync);
 	});
 
 	it('should return without error', async () => {
-		const stubGetNetworkID = sinon.stub();
-		stubGetNetworkID.returns('test-network-id');
-		const stubGetChannelGenHash = sinon.stub();
-		stubGetChannelGenHash.returns('8A+HyzS4sqZynD06BfNW7T1Vtv2SOXAOUJQK4itulus=');
-		const stubClient = {
-			getNetworkId: stubGetNetworkID,
-			getChannelGenHash: stubGetChannelGenHash,
-			fabricGateway: {
-				fabricConfig: {
-					getRWSetEncoding: sinon.stub()
-				}
-			}
-		};
-		const targetArray = await sync.processBlockEvent(stubClient, stubBlock);
-		// expect(stubSetTlsClientCertAndKey.calledOnceWith('abc', 'def')).to.be.equal(
-		// 	true
-		// );
-		// expect(stubNewEndpoint.calledOnce).to.be.equal(true);
-		// expect(stubConnect.calledOnce).to.be.equal(true);
-		// expect(targetArray.length).to.be.equal(1);
+		const stubClient = setupClient();
+
+		await expect(sync.processBlockEvent(stubClient, stubBlock)).eventually.to.be
+			.true;
+		sinon.assert.calledOnce(stubPlatform.send);
+		sinon.assert.calledWith(
+			stubPlatform.send,
+			sinon.match({ notify_type: fabric_const.NOTITY_TYPE_BLOCK })
+		);
+		expect(sync.blocksInProcess.length).equals(0);
 	});
 
-	// it('should return without error when not assigned client TLS config', async () => {
-	// 	gw.clientTlsIdentity = undefined;
-	// 	const targetArray = await gw.getDiscoveryServiceTarget();
-	// 	expect(stubSetTlsClientCertAndKey.calledOnceWith()).to.be.equal(true);
-	// 	expect(stubNewEndpoint.calledOnce).to.be.equal(true);
-	// 	expect(stubConnect.calledOnce).to.be.equal(true);
-	// 	expect(targetArray.length).to.be.equal(1);
-	// });
+	it('should throw an error if it has already been in proces', async () => {
+		const stubClient = setupClient();
+		sync.blocksInProcess = ['mychannel_9'];
+
+		await expect(sync.processBlockEvent(stubClient, stubBlock))
+			.to.eventually.be.rejectedWith('Block already in processing')
+			.and.be.an.instanceOf(ExplorerError);
+		sinon.assert.notCalled(stubPlatform.send);
+		expect(sync.blocksInProcess.length).equals(1);
+	});
+
+	it('should raise new channel notification if genesis has not already been stored yet', async () => {
+		const stubClient = setupClient();
+
+		stubGetChannelGenHash.onFirstCall().returns(null);
+		stubGetChannelGenHash.onSecondCall().returns(VALID_GENESIS_HASH);
+		stubClient.getChannelGenHash = stubGetChannelGenHash;
+		const spyInsertDiscoveredCH = sinon.spy(sync, 'insertDiscoveredChannel');
+
+		const clock = sinon.useFakeTimers();
+		await expect(sync.processBlockEvent(stubClient, stubBlock))
+			.to.eventually.be.rejectedWith('mychannel has not been inserted yet')
+			.and.be.an.instanceOf(ExplorerError);
+		clock.tick(20000);
+
+		sinon.assert.calledOnce(spyInsertDiscoveredCH);
+		expect(sync.blocksInProcess.length).equals(0);
+		clock.restore();
+	});
+
+	it('should raise update channel notification if config block is processed', async () => {
+		const stubClient = setupClient();
+
+		const spyUpdateDiscoveredCH = sinon.spy(sync, 'updateDiscoveredChannel');
+
+		const clock = sinon.useFakeTimers();
+		await expect(sync.processBlockEvent(stubClient, stubConfigBlock)).to
+			.eventually.to.be.true;
+		clock.tick(20000);
+
+		sinon.assert.calledWith(
+			spySaveTransaction,
+			VALID_NETWORK_ID,
+			sinon.match(obj => {
+				return 'txhash' in obj && obj['txhash'] !== undefined;
+			}, 'txhash undefined')
+		);
+		sinon.assert.calledOnce(spyUpdateDiscoveredCH);
+		expect(sync.blocksInProcess.length).equals(0);
+		sinon.assert.calledOnce(stubPlatform.send);
+		sinon.assert.calledWith(
+			stubPlatform.send,
+			sinon.match({ notify_type: fabric_const.NOTITY_TYPE_BLOCK })
+		);
+		clock.restore();
+	});
 });
-
-// describe('sendDiscoveryRequest', () => {
-// 	let gw: FabricGateway;
-
-// 	before(async () => {
-// 		gw = getSyncServicesInstance();
-// 		await gw.setupDiscoveryRequest('testChannel');
-// 	});
-
-// 	beforeEach(() => {
-// 		resetAllStubs();
-// 	});
-
-// 	it('should return without error', async () => {
-// 		stubGetDiscoveryResults.returns(Promise.resolve());
-// 		await gw.sendDiscoveryRequest();
-// 		expect(stubError.called).be.equal(false);
-// 	});
-
-// 	it('should throw error when failed to call getDiscoveryResults()', async () => {
-// 		stubGetDiscoveryResults.throws();
-// 		await gw.sendDiscoveryRequest();
-// 		expect(stubError.called).be.equal(true);
-// 		expect(stubClose.calledOnce).be.equal(true);
-// 	});
-// });
-
-// describe('getDiscoveryResult', () => {
-// 	let gw: FabricGateway;
-// 	let stubSetupDiscoveryRequest: sinon.SinonStub;
-
-// 	before(async () => {
-// 		gw = getSyncServicesInstance();
-// 		await gw.setupDiscoveryRequest('testChannel');
-// 		stubSetupDiscoveryRequest = sinon.stub(gw, 'setupDiscoveryRequest');
-// 	});
-
-// 	beforeEach(() => {
-// 		resetAllStubs();
-// 		stubSetupDiscoveryRequest.reset();
-// 	});
-
-// 	it('should return without error', async () => {
-// 		await gw.getDiscoveryResult('testChannel');
-// 		expect(stubSetupDiscoveryRequest.calledOnce).be.equal(false);
-// 	});
-
-// 	it('should return without error if discover service has not been allocated yet', async () => {
-// 		gw.ds = null;
-// 		await gw.getDiscoveryResult('testChannel');
-// 		expect(stubSetupDiscoveryRequest.calledOnce).be.equal(true);
-// 	});
-// });

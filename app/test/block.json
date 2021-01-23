@@ -134,6 +134,7 @@
 							"tls_cert_hash": null,
 							"tx_id": "2f63b0cb5d0cf575073ec9247cfaf04ef42bfceb7723695cc5c14b3724b74a66",
 							"type": 3,
+							"typeString": "ENDORSER_TRANSACTION",
 							"version": 0
 						},
 						"signature_header": {
