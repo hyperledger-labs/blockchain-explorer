@@ -67,7 +67,7 @@ function getFabricGatewayInstance() {
 	const config = new FabricConfig();
 	config.initialize('first-network', {
 		name: 'My first network',
-		profile: './connection-profile/first-network.json'
+		profile: './connection-profile/test-network.json'
 	});
 	sinon.stub(config, 'getPeerTlsCACertsPem');
 
