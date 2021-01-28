@@ -1,3 +1,28 @@
+## v1.1.4
+
+* [2556be6](https://github.com/hyperledger/blockchain-explorer/commit/2556be6) [BE-853](https://jira.hyperledger.org/browse/BE-853) Resolve race condition of discovery request (#212)
+* [d9f846d](https://github.com/hyperledger/blockchain-explorer/commit/d9f846d) [BE-852](https://jira.hyperledger.org/browse/BE-852) Fix to get RWset for config TX synced correctly (#211)
+* [e78a74a](https://github.com/hyperledger/blockchain-explorer/commit/e78a74a) [BE-830](https://jira.hyperledger.org/browse/BE-830) Add examples for fabric CA enabled network (#210)
+* [5adaa93](https://github.com/hyperledger/blockchain-explorer/commit/5adaa93) Bump urijs from 1.19.2 to 1.19.5 in /client (#209)
+* [3ae0d58](https://github.com/hyperledger/blockchain-explorer/commit/3ae0d58) [BE-851](https://jira.hyperledger.org/browse/BE-851) Upgrade fabric version supported by Explorer (#208)
+* [7f5ab1b](https://github.com/hyperledger/blockchain-explorer/commit/7f5ab1b) [BE-850](https://jira.hyperledger.org/browse/BE-850) Migrate gui e2e-test framework to PlayWright (#207)
+* [ed36c28](https://github.com/hyperledger/blockchain-explorer/commit/ed36c28) [BE-834](https://jira.hyperledger.org/browse/BE-834) Fix memory leak issue of sync process (#206)
+* [d3b8b97](https://github.com/hyperledger/blockchain-explorer/commit/d3b8b97) Bump ini from 1.3.5 to 1.3.7 (#204)
+* [7d8e72e](https://github.com/hyperledger/blockchain-explorer/commit/7d8e72e) Bump ini from 1.3.5 to 1.3.7 in /client (#205)
+* [8b8ddc6](https://github.com/hyperledger/blockchain-explorer/commit/8b8ddc6) [BE-829](https://jira.hyperledger.org/browse/BE-829) Distinguish each node with both IP and Port (#203)
+* [ba7739a](https://github.com/hyperledger/blockchain-explorer/commit/ba7739a) [BE-848](https://jira.hyperledger.org/browse/BE-848) walletstore location docker-compose (#202)
+* [3d979e1](https://github.com/hyperledger/blockchain-explorer/commit/3d979e1) [BE-847](https://jira.hyperledger.org/browse/BE-847) Single Line TLSCA Cert PEM in CA (#200)
+* [fdc8d11](https://github.com/hyperledger/blockchain-explorer/commit/fdc8d11) Fix url of the fabric official tuto (#199)
+* [2902885](https://github.com/hyperledger/blockchain-explorer/commit/2902885) [BE-840](https://jira.hyperledger.org/browse/BE-840) Fix discovery error on mutual TLS (#197)
+* [699dfb2](https://github.com/hyperledger/blockchain-explorer/commit/699dfb2) Change to useful log in initialize (#198)
+* [c85c86f](https://github.com/hyperledger/blockchain-explorer/commit/c85c86f) [BE-839](https://jira.hyperledger.org/browse/BE-839) Fix transaction creator certificate sync (#196)
+* [42e0e5c](https://github.com/hyperledger/blockchain-explorer/commit/42e0e5c) [BE-836](https://jira.hyperledger.org/browse/BE-836) Configure eslint for typescript (#195)
+* [5f70976](https://github.com/hyperledger/blockchain-explorer/commit/5f70976) [BE-835](https://jira.hyperledger.org/browse/BE-835) Fixed sonarcloud code smell issues (#194)
+* [72c0997](https://github.com/hyperledger/blockchain-explorer/commit/72c0997) [BE-835](https://jira.hyperledger.org/browse/BE-835) Fixed sonarcloud code smell issues (#193)
+* [34ab649](https://github.com/hyperledger/blockchain-explorer/commit/34ab649) Transform SQL queries to parameterized queries (prepared statements) [BE-833](https://jira.hyperledger.org/browse/BE-833) (#192)
+* [907a93e](https://github.com/hyperledger/blockchain-explorer/commit/907a93e) [BE-835](https://jira.hyperledger.org/browse/BE-835) Fixed sonarcloud code smell issues (#191)
+* [e164633](https://github.com/hyperledger/blockchain-explorer/commit/e164633) [BE-793](https://jira.hyperledger.org/browse/BE-793) Admin User Panel lists all users, allows admin to delete users (#188)
+
 ## v1.1.3
 
 * [a105280](https://github.com/hyperledger/blockchain-explorer/commit/a105280) Fix tsconfig.json for backward compatibility for docker env (#185)
