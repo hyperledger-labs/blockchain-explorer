@@ -4,7 +4,7 @@
 Configuration
 =============
 
-- Modify `explorerconfig.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/explorerconfig.json>`__ to update sync properties:
+- Modify `explorerconfig.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/explorerconfig.json>`__ to update sync properties:
 
   - sync type (``local`` or ``host``), platform, blocksSyncTime(in min) details.
 
@@ -70,7 +70,7 @@ Configuration
 
 .. attention::
 
-			* Please restart Explorer if any changes made to `explorerconfig.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/explorerconfig.json>`__.
+			* Please restart Explorer if any changes made to `explorerconfig.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/explorerconfig.json>`__.
 
 			  * If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching.
 			  * If Hyperledger Fabric network is deployed on other machine, please toggle ``DISCOVERY_AS_LOCALHOST`` in ``start.sh / syncstart.sh to 'false'``.

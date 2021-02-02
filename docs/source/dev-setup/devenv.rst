@@ -90,7 +90,7 @@ The process described here has several goals:
 
 Please follow these steps to have your contribution considered by the approvers:
 
-* Ensure all commits have a Sign-off for DCO, as described in `DCO.md <https://github.com/hyperledger/blockchain-explorer/blob/master/DCO.md>`__.
+* Ensure all commits have a Sign-off for DCO, as described in `DCO.md <https://github.com/hyperledger/blockchain-explorer/blob/main/DCO.md>`__.
 * After you submit your pull request, verify that all `status checks <https://help.github.com/articles/about-status-checks/>`__ are passing.
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s)

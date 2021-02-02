@@ -75,7 +75,7 @@ Submitting your fix
 
 If you just submitted a JIRA for a bug you've discovered, and would like to
 provide a fix, we would welcome that gladly! Please assign the JIRA issue to
-yourself, then you can submit a change request (PR), please follow guidance provided by `CONTRIBUTING.md <https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md>`__.
+yourself, then you can submit a change request (PR), please follow guidance provided by `CONTRIBUTING.md <https://github.com/hyperledger/blockchain-explorer/blob/main/CONTRIBUTING.md>`__.
 
 
 Copyright Notices

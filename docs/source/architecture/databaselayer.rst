@@ -24,9 +24,9 @@ The following diagram shows a high level view of the Hyperledger Explorer data m
 Physical schema
 ~~~~~~~~~~~~~~~~~~
 
-The script `explorerpg.sql <https://github.com/hyperledger/blockchain-explorer/blob/master/app/persistence/fabric/postgreSQL/db/explorerpg.sql>`__ describes
-Hyperledger Explorer database. Creation of the database is a mandatory step and it is done by running the script `createdb.sh <https://github.com/hyperledger/blockchain-explorer/blob/master/app/persistence/fabric/postgreSQL/db/createdb.sh>`__,
-detailed steps and instructions are provided in the `README.md <https://github.com/hyperledger/blockchain-explorer/tree/master#Database-Setup>`__ file.
+The script `explorerpg.sql <https://github.com/hyperledger/blockchain-explorer/blob/main/app/persistence/fabric/postgreSQL/db/explorerpg.sql>`__ describes
+Hyperledger Explorer database. Creation of the database is a mandatory step and it is done by running the script `createdb.sh <https://github.com/hyperledger/blockchain-explorer/blob/main/app/persistence/fabric/postgreSQL/db/createdb.sh>`__,
+detailed steps and instructions are provided in the `README.md <https://github.com/hyperledger/blockchain-explorer/tree/main#Database-Setup>`__ file.
 
 
 

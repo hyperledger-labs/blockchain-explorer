@@ -13,7 +13,7 @@ After the introduction of the "fabric-network" module by the
 `Hyperledger Fabric SDK for NodeJS <https://fabric-sdk-node.github.io/release-1.4/module-fabric-network.html>`__. Hyperledger Explorer uses
 Gateway, and a connection profile to connect to the fabric network. Read more about `Gateway <https://hyperledger-fabric.readthedocs.io/en/release-1.4/developapps/gateway.html>`__.
 
-`FabricGateway <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/gateway/FabricGateway.js>`__ shown in the diagram below.
+`FabricGateway <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/gateway/FabricGateway.js>`__ shown in the diagram below.
 
 
 .. raw:: html
@@ -31,9 +31,9 @@ As of now Hyperledger Explorer is able to connect only to a single Hyperledger F
 able to have more than one network connected.
 
 In previous versions we had a single file
-`config.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/config.json>`__ file that was used to configure
-Hyperledger Explorer, after the minimal configuration we divided in two parts, `config.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/config.json>`__,
-and `connection-profile <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/connection-profile/first-network.json>`__, that described the network properties.
+`config.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/config.json>`__ file that was used to configure
+Hyperledger Explorer, after the minimal configuration we divided in two parts, `config.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/config.json>`__,
+and `connection-profile <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/connection-profile/first-network.json>`__, that described the network properties.
 
 Sample Hyperledger Explorer configuration with one of the fabric sample network first-network, described below:
 
@@ -43,7 +43,7 @@ On another terminal:
 
    cd blockchain-explorer/app/platform/fabric
 
-Modify `config.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/config.json>`__ to point to your first-network network `connection-profile <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/connection-profile/first-network.json>`__:
+Modify `config.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/config.json>`__ to point to your first-network network `connection-profile <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/connection-profile/first-network.json>`__:
 
 .. code-block:: json
 
