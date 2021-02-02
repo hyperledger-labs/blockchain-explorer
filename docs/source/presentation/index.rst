@@ -15,7 +15,7 @@ will be displayed to select the `Network Name`, and enter the user, and password
 
 
 .. important::
-   Expiration time of the `JWT token <https://github.com/hyperledger/blockchain-explorer/blob/master/app/explorerconfig.json>`__, can be configured and by default is set to two hours.
+   Expiration time of the `JWT token <https://github.com/hyperledger/blockchain-explorer/blob/main/app/explorerconfig.json>`__, can be configured and by default is set to two hours.
 
 
 

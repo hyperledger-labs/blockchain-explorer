@@ -8,15 +8,15 @@ Getting Started with Hyperledger Explorer
 
 Hyperledger Explorer can run in your local environment or using docker. Minimum configuration allows you to get it setup up, and running
 in short time.
-There are well defined steps and instructions on how to `Get Started with Hyperledger Explorer <https://github.com/hyperledger/blockchain-explorer/blob/master/README.md>`__ how to get you setup and
+There are well defined steps and instructions on how to `Get Started with Hyperledger Explorer <https://github.com/hyperledger/blockchain-explorer/blob/main/README.md>`__ how to get you setup and
 run HL Explorer successfully. Along with the instructions you may find useful
-`troubleshooting notes <https://github.com/hyperledger/blockchain-explorer/blob/master/TROUBLESHOOT.md>`__, that were collected, and or submitted
+`troubleshooting notes <https://github.com/hyperledger/blockchain-explorer/blob/main/TROUBLESHOOT.md>`__, that were collected, and or submitted
 by community through the `mail listings <https://lists.hyperledger.org/g/explorer/topics>`__  or
 `Rocket Chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__ hyperledger-explorer channel.
 
 .. important::
 
-	See `Release Notes <https://github.com/hyperledger/blockchain-explorer/blob/master/README.md#10-release-notes---->`__ on supported Hyperledger Fabric and Explorer versions.
+	See `Release Notes <https://github.com/hyperledger/blockchain-explorer/blob/main/README.md#10-release-notes---->`__ on supported Hyperledger Fabric and Explorer versions.
 
 ..
 

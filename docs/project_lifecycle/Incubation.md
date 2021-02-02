@@ -20,7 +20,7 @@
 
  - The project has active and diverse set of contributing members representing various constituencies
 
-   - [Contributors](https://github.com/hyperledger/blockchain-explorer/blob/master/MAINTAINERS.rst)
+   - [Contributors](https://github.com/hyperledger/blockchain-explorer/blob/main/MAINTAINERS.rst)
 
  - Hyperledger Explorer project is not highly dependent on any single contributor, current contributors are from DTCC, and Fujitsu.
 
@@ -29,16 +29,16 @@
 - Sufficient test coverage
 
  - The project include a comprehensive unit and integration test suite configured at:
-   [Selenium test](https://github.com/hyperledger/blockchain-explorer/blob/master/client/e2e-setup.sh), and
-   [BDD test](https://github.com/hyperledger/blockchain-explorer/tree/master/app/platform/fabric/e2e-test) and are triggered during the CI/CD builds.
- - Code coverage is setup in both [frontend](https://github.com/hyperledger/blockchain-explorer/blob/master/client/package.json#L58) and [back-end](https://github.com/hyperledger/blockchain-explorer/blob/master/app/test/package.json#L24).
+   [Selenium test](https://github.com/hyperledger/blockchain-explorer/blob/main/client/e2e-setup.sh), and
+   [BDD test](https://github.com/hyperledger/blockchain-explorer/tree/main/app/platform/fabric/e2e-test) and are triggered during the CI/CD builds.
+ - Code coverage is setup in both [frontend](https://github.com/hyperledger/blockchain-explorer/blob/main/client/package.json#L58) and [back-end](https://github.com/hyperledger/blockchain-explorer/blob/main/app/test/package.json#L24).
 
  - [Coverage report example](https://jenkins.hyperledger.org/view/blockchain-explorer/job/blockchain-explorer-merge-x86_64/Code_20Coverage_20Report/) available after each build.
 
  - The project uses use the [Hyperledger standard release taxonomy](https://docs.google.com/document/d/1Vap2giuxQw5b82Htl6BxRzLztrR4JGd2tWkJKP7i5Es/edit).
  - Sufficient user documentation
 
-   - [User documentation](https://github.com/hyperledger/blockchain-explorer/blob/master/README.md)
+   - [User documentation](https://github.com/hyperledger/blockchain-explorer/blob/main/README.md)
 
 
 ## Infrastructure
@@ -59,8 +59,8 @@
 ## Continuous Integration
 
  - [CI/CD](https://dev.azure.com/Hyperledger/blockchain-explorer)
- - [CONTRIBUTING.md](https://github.com/hyperledger/blockchain-explorer/blob/master/CONTRIBUTING.md)
- - [MAINTAINERS.rst](https://github.com/hyperledger/blockchain-explorer/blob/master/MAINTAINERS.rst)
+ - [CONTRIBUTING.md](https://github.com/hyperledger/blockchain-explorer/blob/main/CONTRIBUTING.md)
+ - [MAINTAINERS.rst](https://github.com/hyperledger/blockchain-explorer/blob/main/MAINTAINERS.rst)
 
 ## CII Badge
 

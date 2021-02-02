@@ -2,9 +2,9 @@
 
 name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.rrr)
 trigger:
-- master
+- main
 pr:
-- master
+- main
 
 variables:
   GOPATH: $(Agent.BuildDirectory)/go

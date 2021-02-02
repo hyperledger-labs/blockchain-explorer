@@ -32,8 +32,8 @@ Currently Hyperledger Explorer relies on `Service Discovery <https://hyperledger
    To enable Service Discovery the environment variables `CORE_PEER_GOSSIP_BOOTSTRAP <https://hyperledger-fabric.readthedocs.io/en/release-1.4/gossip.html>`__, and ``CORE_PEER_GOSSIP_EXTERNALENDPOINT`` needs to be added for each peer in the fabric network docker-compose.yaml file.
 
 
-Once the sync process is started either in standalone, or local mode, Hyperledger Explorer will read the `config.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/config.json>`__,
-and will attempt to create a connection that was read from one of the connection profiles, for example `first-network.json <https://github.com/hyperledger/blockchain-explorer/blob/master/app/platform/fabric/connection-profile/first-network.json>`__.
+Once the sync process is started either in standalone, or local mode, Hyperledger Explorer will read the `config.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/config.json>`__,
+and will attempt to create a connection that was read from one of the connection profiles, for example `first-network.json <https://github.com/hyperledger/blockchain-explorer/blob/main/app/platform/fabric/connection-profile/first-network.json>`__.
 
 The first step after establishing the connection, explorer will get the list of the channels, and then loop each channel to get the list of the peers,
 organizations, chaincodes for a specific channel that will be passed to the `Hyperledger Fabric Client SDK <https://github.com/hyperledger/fabric-sdk-node>`__.

@@ -17,7 +17,7 @@ As consequence, it needs to be references always as (see the example below):
 }
 ```
 For a complete **Hyperledger Fabric** network configuration file see examples:
-https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/app/platform/fabric/config.json
+https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/app/platform/fabric/config.json
 
 ## Docker networking
 

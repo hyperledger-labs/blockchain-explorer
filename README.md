@@ -8,9 +8,9 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
 ![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
-[![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/Blockchain-Explorer?branchName=master)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=master)
+[![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/Blockchain-Explorer?branchName=main)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=main)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
-[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=master)](https://blockchain-explorer.readthedocs.io/en/master/?badge=master)
+[![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=main)](https://blockchain-explorer.readthedocs.io/en/main/?badge=main)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/hyperledger/blockchain-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hyperledger/blockchain-explorer/context:javascript)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/hyperledger/blockchain-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hyperledger/blockchain-explorer/alerts/)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyperledger_blockchain-explorer&metric=alert_status)](https://sonarcloud.io/dashboard?id=hyperledger_blockchain-explorer)
@@ -60,15 +60,15 @@ In this guide, we assume that you've already started test network by following [
 
 * Copy the following files from repository
 
-  - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/master/docker-compose.yaml)
-  - [examples/net1/connection-profile/test-network.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/connection-profile/test-network.json)
-  - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/master/examples/net1/config.json)
+  - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/main/docker-compose.yaml)
+  - [examples/net1/connection-profile/test-network.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/connection-profile/test-network.json)
+  - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/config.json)
 
 
   ```
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/config.json
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/examples/net1/connection-profile/test-network.json -P connection-profile
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/master/docker-compose.yaml
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/config.json
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/connection-profile/test-network.json -P connection-profile
+  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/docker-compose.yaml
   ```
 
 * Copy entire crypto artifact directory (e.g. crypto-config/, organizations/) from your fabric network
@@ -166,7 +166,7 @@ In this guide, we assume that you've already started test network by following [
 
 ## Start Hyperledger Fabric network
 
-In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/master/test_network.html).
+In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
 
 ## Clone GIT Repository
 

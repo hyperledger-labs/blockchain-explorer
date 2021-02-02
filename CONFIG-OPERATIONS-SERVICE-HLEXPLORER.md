@@ -43,7 +43,7 @@
 
   #### Setup Prometheus server and Grafana with using Docker
 
-  - In [our sample docker-compose file](https://github.com/hyperledger/blockchain-explorer/blob/master/docker-compose.yaml), we've already done configuration for Prometheus server and Grafana provisioning. If you want to custmise the configuration, please see the following files and the official instructions ( [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/#using-docker) / [Grafana](https://grafana.com/docs/administration/provisioning/#provisioning-grafana) ).
+  - In [our sample docker-compose file](https://github.com/hyperledger/blockchain-explorer/blob/main/docker-compose.yaml), we've already done configuration for Prometheus server and Grafana provisioning. If you want to custmise the configuration, please see the following files and the official instructions ( [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/#using-docker) / [Grafana](https://grafana.com/docs/administration/provisioning/#provisioning-grafana) ).
      ```
      - app/platform/fabric/artifacts/operations/balance-transfer/prometheus.yml
      - app/platform/fabric/artifacts/operations/balance-transfer/balance-transfer-grafana-dashboard.json
