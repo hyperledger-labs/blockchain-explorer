@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 
-import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -21,7 +20,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import { shape, string } from 'prop-types';
-import Container from '../Container'
+import Container from '../Container';
 
 import { authSelectors, authOperations } from '../../state/redux/auth';
 
@@ -458,16 +457,21 @@ export class Register extends Component {
 
 const { errorSelector, registeredSelector } = authSelectors;
 
-export default compose(
-	withStyles(styles),
-	connect(
-		state => ({
-			registered: registeredSelector(state),
-			error: errorSelector(state)
-		}),
-		{
-			register: authOperations.register,
-			userlist: authOperations.userlist
-		}
-	)
+const mapStateToProps = state => {
+	return {
+		registered: registeredSelector(state),
+		error: errorSelector(state)
+	};
+};
+
+const mapDispatchToProps = {
+	register: authOperations.register,
+	userlist: authOperations.userlist
+};
+
+const connectedComponent = connect(
+	mapStateToProps,
+	mapDispatchToProps
 )(Register);
+
+export default withStyles(styles)(connectedComponent);

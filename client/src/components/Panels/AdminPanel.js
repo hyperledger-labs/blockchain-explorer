@@ -3,19 +3,20 @@
  */
 
 import React, { Component } from 'react';
-import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import ExpansionPanel, {
-	ExpansionPanelSummary,
-	ExpansionPanelDetails
-} from '@material-ui/core/ExpansionPanel';
+import {
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	MenuItem,
+	FormControl,
+	FormHelperText,
+	Select,
+	Typography
+} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Typography from '@material-ui/core/Typography';
 import FontAwesome from 'react-fontawesome';
-import { MenuItem } from '@material-ui/core/Menu';
-import { FormControl, FormHelperText } from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import ChannelForm from '../Forms/ChannelForm';
 
 /* istanbul ignore next */
@@ -48,8 +49,8 @@ class AdminPanel extends Component {
 				<Typography variant="headline" className={classes.panel}>
 					<FontAwesome name="cogs" className={classes.panel} /> ADMIN PANEL
 				</Typography>
-				<ExpansionPanel className={classes.panel}>
-					<ExpansionPanelSummary
+				<Accordion className={classes.panel}>
+					<AccordionSummary
 						expandIcon={<ExpandMoreIcon />}
 						className={classes.panel}
 					>
@@ -59,8 +60,8 @@ class AdminPanel extends Component {
 						<Typography variant="caption" className={classes.current}>
 							{this.props.channel.currentChannel} <br />
 						</Typography>
-					</ExpansionPanelSummary>
-					<ExpansionPanelDetails className={classes.panel}>
+					</AccordionSummary>
+					<AccordionDetails className={classes.panel}>
 						{/* <Typography variant='subheading' color="textSecondary">
                             Select Channel
                             </Typography> */}
@@ -102,21 +103,21 @@ class AdminPanel extends Component {
                                     onChange={handleChange}
                                     options={channels} />
                             </div> */}
-					</ExpansionPanelDetails>
-				</ExpansionPanel>
-				<ExpansionPanel className={classes.panel}>
-					<ExpansionPanelSummary
+					</AccordionDetails>
+				</Accordion>
+				<Accordion className={classes.panel}>
+					<AccordionSummary
 						className={classes.panel}
 						expandIcon={<ExpandMoreIcon />}
 					>
 						<Typography variant="subheading" className={classes.panel}>
 							ADD CHANNEL
 						</Typography>
-					</ExpansionPanelSummary>
-					<ExpansionPanelDetails className={classes.panel}>
+					</AccordionSummary>
+					<AccordionDetails className={classes.panel}>
 						<ChannelForm />
-					</ExpansionPanelDetails>
-				</ExpansionPanel>
+					</AccordionDetails>
+				</Accordion>
 			</div>
 		);
 	}
@@ -129,12 +130,7 @@ function mapStateToProps(state, ownProps) {
 		channel: state.channel.channel
 	};
 }
-// function mapDispatchToProps(dispatch){
-//   return {actions: bindActionCreators({...partActions,...secActions}, dispatch)}
-// }
 
 /* istanbul ignore next */
-export default compose(
-	withStyles(styles),
-	connect(mapStateToProps /* ,mapDispatchToProps */)
-)(AdminPanel);
+const connectedComponent = connect(mapStateToProps)(AdminPanel);
+export default withStyles(styles)(connectedComponent);
