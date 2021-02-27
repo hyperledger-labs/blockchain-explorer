@@ -5,10 +5,10 @@
 import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import { unwrap } from '@material-ui/core/test-utils';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import Adapter from 'enzyme-adapter-react-16';
 import { createMuiTheme } from '@material-ui/core/styles';
-import { DashboardView } from './DashboardView';
+import DashboardView from './DashboardView';
 
 Enzyme.configure({ adapter: new Adapter() });
 const ComponentNaked = unwrap(DashboardView);
@@ -183,7 +183,7 @@ const setup = () => {
 		getTxByOrg: jest.fn()
 	};
 
-	const wrapper = shallow(<DashboardView {...props} />);
+	const wrapper = shallow(<ComponentNaked {...props} />);
 
 	return {
 		props,

@@ -5,7 +5,7 @@
 import React from 'react';
 import Enzyme, { shallow, mount } from 'enzyme';
 import { unwrap } from '@material-ui/core/test-utils';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import Adapter from 'enzyme-adapter-react-16';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { LandingPage } from './LandingPage';
@@ -15,23 +15,25 @@ const ComponentNaked = unwrap(LandingPage);
 
 describe('<LandingPage />', () => {
 	it('with shallow', () => {
-		const wrapper = shallow(<ComponentNaked classes={{}} />);
+		const { wrapper } = setup();
 		expect(wrapper.exists()).toBe(true);
 	});
 
 	it('with mount', () => {
+		const { props } = setup();
 		const wrapper = mount(
 			<MuiThemeProvider theme={createMuiTheme()}>
-				<LandingPage classes={{}} />
+				<LandingPage classes={{}} {...props} />
 			</MuiThemeProvider>
 		);
 		expect(wrapper.exists()).toBe(true);
 	});
 
 	it('Check if dark theme is applied correctly', () => {
+		const { props } = setup();
 		const wrapper = mount(
 			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
-				<LandingPage classes={{}} />
+				<LandingPage classes={{}} {...props} />
 			</MuiThemeProvider>
 		);
 		expect(wrapper.exists()).toBe(true);
@@ -45,6 +47,7 @@ const setup = () => {
 			content: 'content'
 		},
 		currentChannel: 'mychannel',
+		getBlockActivity: jest.fn(),
 		getBlockList: jest.fn(),
 		getBlocksPerHour: jest.fn(),
 		getBlocksPerMin: jest.fn(),
@@ -59,7 +62,8 @@ const setup = () => {
 		getTransactionList: jest.fn(),
 		getTransactionPerHour: jest.fn(),
 		getTransactionPerMin: jest.fn(),
-		updateLoadStatus: jest.fn()
+		updateLoadStatus: jest.fn(),
+		userlist: jest.fn()
 	};
 
 	const wrapper = shallow(<LandingPage {...props} />);

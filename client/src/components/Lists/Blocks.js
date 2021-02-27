@@ -128,18 +128,18 @@ export class Blocks extends Component {
 		this.setState({ selection, options: opts });
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentDidUpdate(prevProps, prevState) {
 		if (
 			this.state.search &&
-			nextProps.currentChannel !== this.props.currentChannel
+			this.props.currentChannel !== prevProps.currentChannel
 		) {
 			if (this.interval !== undefined) {
 				clearInterval(this.interval);
 			}
 			this.interval = setInterval(() => {
-				this.searchBlockList(nextProps.currentChannel);
+				this.searchBlockList(this.props.currentChannel);
 			}, 60000);
-			this.searchBlockList(nextProps.currentChannel);
+			this.searchBlockList(this.props.currentChannel);
 		}
 	}
 

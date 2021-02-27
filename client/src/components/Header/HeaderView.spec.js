@@ -71,6 +71,15 @@ const setup = prop => {
 };
 
 describe('HeaderView', () => {
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
+	afterEach(() => {
+		jest.clearAllMocks();
+		jest.useRealTimers();
+	});
+
 	test('HeaderView component should render', () => {
 		const { wrapper } = setup();
 		expect(wrapper.exists()).toBe(true);
