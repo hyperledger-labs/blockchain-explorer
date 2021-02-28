@@ -98,7 +98,7 @@ describe('Auth', () => {
 			nock.cleanAll();
 		});
 
-		test('post login', async done => {
+		test('post login', () => {
 			const userData = {
 				user: 'test@test.com',
 				password: '123456',
@@ -117,11 +117,10 @@ describe('Auth', () => {
 			const expectedActions = [{ type: types.LOGIN }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.login(userData2, network));
-			done();
+			return store.dispatch(operations.login(userData2, network));
 		});
 
-		test('Register', async done => {
+		test('Register', () => {
 			nock(/\w*(\W)/g)
 				.post(`/auth/REGISTER`)
 				.reply(200);
@@ -129,11 +128,10 @@ describe('Auth', () => {
 			const expectedActions = [{ type: types.REGISTER }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.register());
-			done();
+			return store.dispatch(operations.register());
 		});
 
-		test('NetworkList', async done => {
+		test('NetworkList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/auth/networklist`)
 				.reply(200);
@@ -141,8 +139,7 @@ describe('Auth', () => {
 			const expectedActions = [{ type: types.NETWORK }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.network());
-			done();
+			return store.dispatch(operations.network());
 		});
 	});
 });

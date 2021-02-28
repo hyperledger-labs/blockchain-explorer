@@ -23,7 +23,7 @@ describe('Charts', () => {
 
 		const channel = 'mychannel';
 
-		test('blockPerHour', async done => {
+		test('blockPerHour', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blocksByHour/${channel}/1`)
 				.reply(200, {
@@ -33,14 +33,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_CHART_HOUR }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockPerHour('mychannel'));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.BLOCK_CHART_HOUR);
-			done();
+			return store.dispatch(operations.blockPerHour('mychannel')).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.BLOCK_CHART_HOUR);
+			});
 		});
 
-		test('blockPerHour catch error', async done => {
-			spyOn(console, 'error');
+		test('blockPerHour catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/blocksByHour/${channel}/1`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -48,13 +48,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_CHART_HOUR }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockPerHour(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.blockPerHour(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('blockPerMin', async done => {
+		test('blockPerMin', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blocksByMinute/${channel}/1`)
 				.reply(200, {
@@ -64,14 +64,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_CHART_MIN }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockPerMin(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.BLOCK_CHART_MIN);
-			done();
+			return store.dispatch(operations.blockPerMin(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.BLOCK_CHART_MIN);
+			});
 		});
 
-		test('blockPerMin catch error', async done => {
-			spyOn(console, 'error');
+		test('blockPerMin catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/blocksByMinute/${channel}/1`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -79,13 +79,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_CHART_MIN }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockPerMin(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.blockPerMin(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('changeChannel', async done => {
+		test('changeChannel', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/changeChannel/${channel}`)
 				.reply(200, {
@@ -95,14 +95,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANGE_CHANNEL }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.changeChannel(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.CHANGE_CHANNEL);
-			done();
+			return store.dispatch(operations.changeChannel(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.CHANGE_CHANNEL);
+			});
 		});
 
-		test('changeChannel catch error', async done => {
-			spyOn(console, 'error');
+		test('changeChannel catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/changeChannel/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -110,13 +110,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANGE_CHANNEL }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.changeChannel(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.changeChannel(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('channel', async done => {
+		test('channel', () => {
 			nock(/\w*(\W)/g)
 				.get('/api/curChannel')
 				.reply(200, {
@@ -126,14 +126,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANNEL }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channel());
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.CHANNEL);
-			done();
+			return store.dispatch(operations.channel()).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.CHANNEL);
+			});
 		});
 
-		test('channel catch error', async done => {
-			spyOn(console, 'error');
+		test('channel catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get('/api/curChannel')
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -141,13 +141,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANGE_CHANNEL }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channel());
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.channel()).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('channelList', async done => {
+		test('channelList', () => {
 			nock(/\w*(\W)/g)
 				.get('/api/channels')
 				.reply(200, {
@@ -157,14 +157,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANNEL_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channelList());
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.CHANNEL_LIST);
-			done();
+			return store.dispatch(operations.channelList()).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.CHANNEL_LIST);
+			});
 		});
 
-		test('channelList catch error', async done => {
-			spyOn(console, 'error');
+		test('channelList catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get('/api/channels')
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -172,13 +172,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.CHANNEL_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channelList());
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.channelList()).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('dashStats', async done => {
+		test('dashStats', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/status/${channel}`)
 				.reply(200, {
@@ -188,14 +188,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.DASHBOARD_STATS }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.dashStats(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.DASHBOARD_STATS);
-			done();
+			return store.dispatch(operations.dashStats(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.DASHBOARD_STATS);
+			});
 		});
 
-		test('dashStats catch error', async done => {
-			spyOn(console, 'error');
+		test('dashStats catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/status/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -203,10 +203,10 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.DASHBOARD_STATS }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.dashStats(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.dashStats(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
 		test('notification', () => {
@@ -218,7 +218,7 @@ describe('Charts', () => {
 			expect(actions[0].type).toBe(types.NOTIFICATION_LOAD);
 		});
 
-		test('peerStatus', async done => {
+		test('peerStatus', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/peersStatus/${channel}`)
 				.reply(200, {
@@ -228,14 +228,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.PEER_STATUS }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.peerStatus(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.PEER_STATUS);
-			done();
+			return store.dispatch(operations.peerStatus(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.PEER_STATUS);
+			});
 		});
 
-		test('peerStatus catch error', async done => {
-			spyOn(console, 'error');
+		test('peerStatus catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/peersStatus/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -243,13 +243,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.peerStatus }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.peerStatus(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.peerStatus(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('transactionByOrg', async done => {
+		test('transactionByOrg', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txByOrg/${channel}`)
 				.reply(200, {
@@ -259,14 +259,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_ORG }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionByOrg(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.TRANSACTION_CHART_ORG);
-			done();
+			return store.dispatch(operations.transactionByOrg(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.TRANSACTION_CHART_ORG);
+			});
 		});
 
-		test('transactionByOrg catch error', async done => {
-			spyOn(console, 'error');
+		test('transactionByOrg catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/txByOrg/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -274,13 +274,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_ORG }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionByOrg(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.transactionByOrg(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('transactionPerHour', async done => {
+		test('transactionPerHour', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txByHour/${channel}/1`)
 				.reply(200, {
@@ -290,14 +290,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_HOUR }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionPerHour(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.TRANSACTION_CHART_HOUR);
-			done();
+			return store.dispatch(operations.transactionPerHour(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.TRANSACTION_CHART_HOUR);
+			});
 		});
 
-		test('transactionPerHour catch error', async done => {
-			spyOn(console, 'error');
+		test('transactionPerHour catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/txByHour/${channel}/1`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -305,13 +305,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_HOUR }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionPerHour(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.transactionPerHour(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('transactionPerMin', async done => {
+		test('transactionPerMin', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txByMinute/${channel}/1`)
 				.reply(200, {
@@ -321,14 +321,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_MIN }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionPerMin(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.TRANSACTION_CHART_MIN);
-			done();
+			return store.dispatch(operations.transactionPerMin(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.TRANSACTION_CHART_MIN);
+			});
 		});
 
-		test('transactionPerMin catch error', async done => {
-			spyOn(console, 'error');
+		test('transactionPerMin catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/txByMinute/${channel}/1`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -336,13 +336,13 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.TRANSACTION_CHART_MIN }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionPerMin(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.transactionPerMin(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 
-		test('blockActivity', async done => {
+		test('blockActivity', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blockActivity/${channel}`)
 				.reply(200, {
@@ -352,14 +352,14 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_ACTIVITY }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockActivity(channel));
-			const actions = store.getActions();
-			expect(actions[0].type).toBe(types.BLOCK_ACTIVITY);
-			done();
+			return store.dispatch(operations.blockActivity(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions[0].type).toBe(types.BLOCK_ACTIVITY);
+			});
 		});
 
-		test('blockActivity catch error', async done => {
-			spyOn(console, 'error');
+		test('blockActivity catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/blockActivity/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -367,10 +367,10 @@ describe('Charts', () => {
 			const expectedActions = [{ type: types.BLOCK_ACTIVITY }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockActivity(channel));
-			const actions = store.getActions();
-			expect(actions).toEqual([]);
-			done();
+			return store.dispatch(operations.blockActivity(channel)).then(() => {
+				const actions = store.getActions();
+				expect(actions).toEqual([]);
+			});
 		});
 	});
 

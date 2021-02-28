@@ -175,7 +175,7 @@ describe('HeaderView', () => {
 		const spy = jest.spyOn(instance, 'handleDrawClose');
 		wrapper.setState({ notifyDrawer: true });
 		wrapper
-			.find('WithStyles(Drawer)')
+			.find('WithStyles(ForwardRef(Drawer))')
 			.at(0)
 			.simulate('close');
 		expect(wrapper.state('notifyDrawer')).toBe(false);
@@ -188,7 +188,7 @@ describe('HeaderView', () => {
 		const spy = jest.spyOn(instance, 'handleDrawClose');
 		wrapper.setState({ adminDrawer: true });
 		wrapper
-			.find('WithStyles(Drawer)')
+			.find('WithStyles(ForwardRef(Drawer))')
 			.at(1)
 			.simulate('close');
 		expect(wrapper.state('adminDrawer')).toBe(false);
@@ -227,7 +227,7 @@ describe('HeaderView', () => {
 		const spy = jest.spyOn(instance, 'handleThemeChange');
 		wrapper.setState({ adminDrawer: true });
 		wrapper
-			.find('WithStyles(Switch)')
+			.find('WithStyles(ForwardRef(Switch))')
 			.at(0)
 			.simulate('change');
 		expect(props.refresh.mock.calls[0][0]).toBe('dark');
