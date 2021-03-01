@@ -115,31 +115,32 @@ const styles = theme => {
 			}
 		},
 		adminButton: {
-			paddingTop: 0,
+			paddingTop: '4px',
 			marginTop: 0
 		},
 		themeSwitch: {
-			height: 50,
-			lineHeight: '50px',
+			// height: 50,
+			// lineHeight: '50px',
 			textAlign: 'center',
-			marginLeft: 15,
-			width: 100,
-			paddingTop: 0,
-			'@media (max-width: 1415px) and (min-width: 990px)': {
-				display: 'flex'
-			},
-			'@media (max-width: 990px)': {
-				marginLeft: 0
-			}
+			margin: '0 8px 8px 8px'
+			// width: 100,
+			// paddingTop: 0,
+			// '@media (max-width: 1415px) and (min-width: 990px)': {
+			// 	display: 'flex'
+			// },
+			// '@media (max-width: 990px)': {
+			// 	marginLeft: 0
+			// }
 		},
 		bell: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
 			fontSize: '18pt',
-			margin: 8,
+			margin: '8px',
 			float: 'none',
 			'&:hover': {
 				color: dark ? '#c1d7f0' : '#24272a'
-			}
+			},
+			paddingLeft: '12px'
 		},
 		channel: {
 			width: 200,
@@ -159,18 +160,24 @@ const styles = theme => {
 		},
 		sunIcon: {
 			color: dark ? 'rgb(247, 200, 92)' : 'rgb(245, 185, 47)',
+			margin: '8px -12px 8px 8px',
 			'@media (max-width: 1415px) and (min-width: 990px)': {
-				marginTop: 15
-			}
+				margin: 8
+			},
+			fontSize: '18pt'
 		},
 		moonIcon: {
 			color: dark ? '#9cd7f7' : 'rgb(104, 195, 245)',
+			margin: '8px 8px 8px -12px',
+			paddingLeft: '0',
 			'@media (max-width: 1415px) and (min-width: 990px)': {
-				marginTop: 15
-			}
+				margin: 8
+			},
+			fontSize: '18pt'
 		},
 		logout: {
-			marginRight: -3
+			fontSize: '18pt',
+			margin: 8
 		},
 		logoutIcon: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
@@ -179,12 +186,12 @@ const styles = theme => {
 			'&:hover': {
 				color: dark ? '#c1d7f0' : '#24272a'
 			},
-			marginLeft: 5,
-			marginTop: 14,
+			margin: '8px',
 			cursor: 'pointer'
 		},
 		user: {
-			marginRight: -3
+			// margin: 8,
+			// fontSize: '18pt',
 		},
 		userIcon: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
@@ -193,8 +200,7 @@ const styles = theme => {
 			'&:hover': {
 				color: dark ? '#c1d7f0' : '#24272a'
 			},
-			marginLeft: 5,
-			marginTop: 14,
+			margin: 8,
 			cursor: 'pointer'
 		},
 		toggleIcon: {
@@ -522,7 +528,7 @@ export class HeaderView extends Component {
 											</NavLink>
 										</li>
 									))}
-									<div className={classes.adminButton}>
+									<div>
 										<Select
 											className={classes.channel}
 											placeholder="Select Channel..."
@@ -555,25 +561,26 @@ export class HeaderView extends Component {
                   onClick={() => this.handleDrawOpen('adminDrawer')}
                 />
               </div> */}
-									<div className={`${classes.adminButton} ${classes.themeSwitch}`}>
+									<div className={classes.adminButton}>
 										<FontAwesome name="sun-o" className={classes.sunIcon} />
 										<Switch
+											className={classes.themeSwitch}
 											onChange={() => this.handleThemeChange(mode)}
 											checked={dark}
 										/>
 										<FontAwesome name="moon-o" className={classes.moonIcon} />
 									</div>
-									<div className={classNames(classes.adminButton, classes.user)}>
+									<div className={classes.adminButton}>
 										<FontAwesome
 											name="user-plus"
 											className={classes.userIcon}
 											onClick={() => this.registerOpen()}
 										/>
 									</div>
-									<div className={classNames(classes.adminButton, classes.logoutk)}>
+									<div className={classes.adminButton}>
 										<FontAwesome
 											name="sign-out"
-											className={classes.logout}
+											className={classes.logoutIcon}
 											onClick={() => this.logout()}
 										/>
 									</div>
