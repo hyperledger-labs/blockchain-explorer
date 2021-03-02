@@ -1,6 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
 import React, { Component } from 'react';
 
-import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -20,12 +20,8 @@ const styles = theme => ({
 export class Container extends Component {
 	render() {
 		const { classes, children } = this.props;
-		return (
-			<div className={classes.root}>
-				{children}
-			</div>
-		);
+		return <div className={classes.root}>{children}</div>;
 	}
 }
 
-export default compose(withStyles(styles))(Container);
+export default withStyles(styles)(Container);

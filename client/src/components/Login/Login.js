@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 
-import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -328,16 +327,17 @@ export class Login extends Component {
 
 const { authSelector, errorSelector, networkSelector } = authSelectors;
 
-export default compose(
-	withStyles(styles),
-	connect(
-		state => ({
-			auth: authSelector(state),
-			error: errorSelector(state),
-			networks: networkSelector(state)
-		}),
-		{
-			login: authOperations.login
-		}
-	)
-)(Login);
+const mapStateToProps = state => {
+	return {
+		auth: authSelector(state),
+		error: errorSelector(state),
+		networks: networkSelector(state)
+	};
+};
+
+const mapDispatchToProps = {
+	login: authOperations.login
+};
+
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Login);
+export default withStyles(styles)(connectedComponent);

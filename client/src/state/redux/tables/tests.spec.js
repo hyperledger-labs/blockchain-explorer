@@ -24,7 +24,7 @@ describe('Tables', () => {
 		const channel = 'mychannel';
 		const query = 'query';
 
-		test('blockList', async done => {
+		test('blockList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blockAndTxList/${channel}/0`)
 				.reply(200, {
@@ -34,15 +34,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.BLOCK_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockList(channel));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.BLOCK_LIST);
-
-			done();
+			return store.dispatch(operations.blockList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.BLOCK_LIST);
+			});
 		});
 
-		test('blockList catch error', async done => {
-			spyOn(console, 'error');
+		test('blockList catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/blockAndTxList/${channel}/0`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -50,14 +49,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.BLOCK_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockList(channel));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.blockList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('blockListSearch', async done => {
+		test('blockListSearch', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blockAndTxList/${channel}/0?${query}`)
 				.reply(200, {
@@ -67,15 +65,16 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.BLOCK_LIST_SEARCH }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockListSearch(channel, query));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.BLOCK_LIST_SEARCH);
-
-			done();
+			return store
+				.dispatch(operations.blockListSearch(channel, query))
+				.then(() => {
+					const action = store.getActions();
+					expect(action[0].type).toEqual(types.BLOCK_LIST_SEARCH);
+				});
 		});
 
-		test('blockListSearch catch error', async done => {
-			spyOn(console, 'error');
+		test('blockListSearch catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/blockAndTxList/${channel}/0?${query}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -83,14 +82,15 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.BLOCK_LIST_SEARCH }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.blockListSearch(channel, query));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store
+				.dispatch(operations.blockListSearch(channel, query))
+				.then(() => {
+					const action = store.getActions();
+					expect(action).toEqual([]);
+				});
 		});
 
-		test('chaincodeList', async done => {
+		test('chaincodeList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/chaincode/${channel}`)
 				.reply(200, {
@@ -100,15 +100,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.CHAINCODE_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.chaincodeList(channel));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.CHAINCODE_LIST);
-
-			done();
+			return store.dispatch(operations.chaincodeList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.CHAINCODE_LIST);
+			});
 		});
 
-		test('chaincodeList catch error', async done => {
-			spyOn(console, 'error');
+		test('chaincodeList catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/chaincode/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -116,14 +115,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.CHAINCODE_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.chaincodeList(channel));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.chaincodeList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('channels', async done => {
+		test('channels', () => {
 			nock(/\w*(\W)/g)
 				.get('/api/channels/info')
 				.reply(200, {
@@ -133,15 +131,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.CHANNELS }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channels());
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.CHANNELS);
-
-			done();
+			return store.dispatch(operations.channels()).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.CHANNELS);
+			});
 		});
 
-		test('channels catch error', async done => {
-			spyOn(console, 'error');
+		test('channels catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get('/api/channels/info')
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -149,14 +146,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.CHANNELS }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.channels(channel));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.channels(channel)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('peerList', async done => {
+		test('peerList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/peersStatus/${channel}`)
 				.reply(200, {
@@ -166,15 +162,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.PEER_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.peerList(channel));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.PEER_LIST);
-
-			done();
+			return store.dispatch(operations.peerList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.PEER_LIST);
+			});
 		});
 
-		test('peerList catch error', async done => {
-			spyOn(console, 'error');
+		test('peerList catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/peersStatus/${channel}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -182,14 +177,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.PEER_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.peerList(channel));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.peerList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('transaction', async done => {
+		test('transaction', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/transaction/${channel}/1`)
 				.reply(200, {
@@ -199,15 +193,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transaction(channel, 1));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.TRANSACTION);
-
-			done();
+			return store.dispatch(operations.transaction(channel, 1)).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.TRANSACTION);
+			});
 		});
 
-		test('transaction catch error', async done => {
-			spyOn(console, 'error');
+		test('transaction catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/transaction/${channel}/1`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -215,14 +208,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transaction(channel, 1));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.transaction(channel, 1)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('transactionList', async done => {
+		test('transactionList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txList/${channel}/0/0/`)
 				.reply(200, {
@@ -232,15 +224,14 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionList(channel));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.TRANSACTION_LIST);
-
-			done();
+			return store.dispatch(operations.transactionList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action[0].type).toEqual(types.TRANSACTION_LIST);
+			});
 		});
 
-		test('transactionList catch error', async done => {
-			spyOn(console, 'error');
+		test('transactionList catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/txList/${channel}/0/0/`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -248,14 +239,13 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION_LIST }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionList(channel));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store.dispatch(operations.transactionList(channel)).then(() => {
+				const action = store.getActions();
+				expect(action).toEqual([]);
+			});
 		});
 
-		test('transactionListSearch', async done => {
+		test('transactionListSearch', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txList/${channel}/0/0?${query}`)
 				.reply(200, {
@@ -265,15 +255,16 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION_LIST_SEARCH }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionListSearch(channel, query));
-			const action = store.getActions();
-			expect(action[0].type).toEqual(types.TRANSACTION_LIST_SEARCH);
-
-			done();
+			return store
+				.dispatch(operations.transactionListSearch(channel, query))
+				.then(() => {
+					const action = store.getActions();
+					expect(action[0].type).toEqual(types.TRANSACTION_LIST_SEARCH);
+				});
 		});
 
-		test('transactionListSearch catch error', async done => {
-			spyOn(console, 'error');
+		test('transactionListSearch catch error', () => {
+			jest.spyOn(console, 'error');
 			nock(/\w*(\W)/g)
 				.get(`/api/txList/${channel}/0/0?${query}`)
 				.replyWithError({ code: 'ECONNREFUSED' });
@@ -281,11 +272,12 @@ describe('Tables', () => {
 			const expectedActions = [{ type: types.TRANSACTION_LIST_SEARCH }];
 			const store = mockStore(initialState, expectedActions);
 
-			await store.dispatch(operations.transactionListSearch(channel, query));
-			const action = store.getActions();
-			expect(action).toEqual([]);
-
-			done();
+			return store
+				.dispatch(operations.transactionListSearch(channel, query))
+				.then(() => {
+					const action = store.getActions();
+					expect(action).toEqual([]);
+				});
 		});
 	});
 

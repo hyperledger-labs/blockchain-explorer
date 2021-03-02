@@ -7,8 +7,6 @@ import { Transactions } from './Transactions';
 import TransactionView from '../View/TransactionView';
 import moment from 'moment';
 
-jest.useFakeTimers();
-
 const setup = prop => {
 	const propsbase = {
 		classes: {
@@ -219,6 +217,15 @@ const setup = prop => {
 };
 
 describe('Transactions', () => {
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
+	afterEach(() => {
+		jest.clearAllMocks();
+		jest.useRealTimers();
+	});
+
 	test('Transactions and ReactTable components should render', () => {
 		const { wrapper } = setup();
 		expect(wrapper.exists()).toBe(true);
@@ -394,29 +401,15 @@ describe('Transactions', () => {
 		expect(wrapper.find('.pagination-bottom').exists()).toBe(true);
 	});
 
-	test('calls componentDidMount', () => {
-		jest.spyOn(Transactions.prototype, 'componentDidMount');
-		expect(Transactions.prototype.componentDidMount.mock.calls.length).toBe(0);
-	});
-
-	test('calls componentWillReceiveProps', () => {
-		jest.spyOn(Transactions.prototype, 'componentWillReceiveProps');
-		expect(
-			Transactions.prototype.componentWillReceiveProps.mock.calls.length
-		).toBe(0);
-	});
-
 	test('searchTransactionList gets called in componentWillReceiveProps when a new prop is set', () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
 		wrapper.setState({ search: true });
 		const spy = jest.spyOn(instance, 'searchTransactionList');
-		const currentChannel = [
-			{
-				currentChannel: 'MyChannel'
-			}
-		];
-		wrapper.setProps({ currentChannel });
+		const currentChannel = {
+			currentChannel: 'MyChannel'
+		};
+		wrapper.setProps(currentChannel);
 		expect(spy).toHaveBeenCalledTimes(1);
 	});
 
@@ -427,13 +420,11 @@ describe('Transactions', () => {
 		wrapper.setState({ search: true });
 		const spy = jest.spyOn(instance, 'searchTransactionList');
 
-		const currentChannel = [
-			{
-				currentChannel: 'MyChannel'
-			}
-		];
+		const currentChannel = {
+			currentChannel: 'MyChannel'
+		};
 
-		wrapper.setProps({ currentChannel });
+		wrapper.setProps(currentChannel);
 
 		expect(clearInterval).toHaveBeenCalled();
 		expect(spy).toHaveBeenCalledTimes(1);
@@ -487,12 +478,11 @@ describe('Transactions', () => {
 		wrapper.setState({ search: true });
 		const spy = jest.spyOn(instance, 'searchTransactionList');
 
-		const currentChannel = [
-			{
-				currentChannel: 'MyChannel'
-			}
-		];
-		wrapper.setProps({ currentChannel });
+		const currentChannel = {
+			currentChannel: 'MyChannel'
+		};
+
+		wrapper.setProps(currentChannel);
 		expect(spy).toHaveBeenCalledTimes(1);
 		expect(props.getTransactionListSearch).toHaveBeenCalled();
 		expect(props.getTransactionListSearch.mock.calls[0][1]).toContain(

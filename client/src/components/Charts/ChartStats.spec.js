@@ -12,8 +12,6 @@ Enzyme.configure({ adapter: new Adapter() });
 
 const ComponentNaked = unwrap(ChartStats);
 
-jest.useFakeTimers();
-
 const setup = () => {
 	const props = {
 		classes: {
@@ -215,6 +213,14 @@ const setup = () => {
 };
 
 describe('ChartStats', () => {
+	beforeEach(() => {
+		jest.useFakeTimers();
+	});
+
+	afterEach(() => {
+		jest.useRealTimers();
+	});
+
 	test('ChartStats component should render', () => {
 		const { wrapper } = setup();
 		expect(wrapper.exists()).toBe(true);
@@ -326,7 +332,7 @@ describe('ChartStats', () => {
 
 describe('<ChartStats />', () => {
 	it('with shallow', () => {
-		const wrapperone = shallow(<ComponentNaked classes={{}} />);
+		const wrapperone = shallow(<ChartStats classes={{}} />);
 		expect(wrapperone.exists()).toBe(true);
 	});
 

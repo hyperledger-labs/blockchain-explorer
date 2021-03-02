@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
@@ -198,21 +197,25 @@ ChartStats.propTypes = {
 	transactionPerMin: transactionPerMinType.isRequired
 };
 
-export default compose(
-	withStyles(styles),
-	connect(
-		state => ({
-			blockPerHour: blockPerHourSelector(state),
-			blockPerMin: blockPerMinSelector(state),
-			transactionPerHour: transactionPerHourSelector(state),
-			transactionPerMin: transactionPerMinSelector(state),
-			currentChannel: currentChannelSelector(state)
-		}),
-		{
-			getBlocksPerHour: chartOperations.blockPerHour,
-			getBlocksPerMin: chartOperations.blockPerMin,
-			getTransactionPerHour: chartOperations.transactionPerHour,
-			getTransactionPerMin: chartOperations.transactionPerMin
-		}
-	)
+const mapStateToProps = state => {
+	return {
+		blockPerHour: blockPerHourSelector(state),
+		blockPerMin: blockPerMinSelector(state),
+		transactionPerHour: transactionPerHourSelector(state),
+		transactionPerMin: transactionPerMinSelector(state),
+		currentChannel: currentChannelSelector(state)
+	};
+};
+
+const mapDispatchToProps = {
+	getBlocksPerHour: chartOperations.blockPerHour,
+	getBlocksPerMin: chartOperations.blockPerMin,
+	getTransactionPerHour: chartOperations.transactionPerHour,
+	getTransactionPerMin: chartOperations.transactionPerMin
+};
+
+const connectedComponent = connect(
+	mapStateToProps,
+	mapDispatchToProps
 )(ChartStats);
+export default withStyles(styles)(connectedComponent);

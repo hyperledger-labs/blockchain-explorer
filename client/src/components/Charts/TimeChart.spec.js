@@ -84,7 +84,7 @@ describe('TimeChart', () => {
 
 describe('<TimeChart />', () => {
 	it('with shallow', () => {
-		const wrapperone = shallow(<ComponentNaked chartData={{}} classes={{}} />);
+		const wrapperone = shallow(<TimeChart chartData={{}} classes={{}} />);
 		expect(wrapperone.exists()).toBe(true);
 	});
 

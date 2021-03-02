@@ -1,6 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
 import React, { Component } from 'react';
 
-import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -27,7 +27,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { shape, string } from 'prop-types';
 import { authSelectors, authOperations } from '../../state/redux/auth';
 import { userListType, getUserListType } from '../types';
-import Container from '../Container'
+import Container from '../Container';
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -248,17 +248,19 @@ Users.propTypes = {
 	userlists: userListType.isRequired,
 	userlist: getUserListType.isRequired
 };
-export default compose(
-	withStyles(styles),
-	connect(
-		state => ({
-			error: errorSelector(state),
-			userlists: userlistSelector(state),
-			unregistered: unregisteredSelector(state)
-		}),
-		{
-			userlist: userlist,
-			unregister: unregister
-		}
-	)
-)(Users);
+
+const mapStateToProps = state => {
+	return {
+		error: errorSelector(state),
+		userlists: userlistSelector(state),
+		unregistered: unregisteredSelector(state)
+	};
+};
+
+const mapDispatchToProps = {
+	userlist: userlist,
+	unregister: unregister
+};
+
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Users);
+export default withStyles(styles)(connectedComponent);

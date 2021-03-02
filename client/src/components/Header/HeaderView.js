@@ -4,7 +4,6 @@
 /* eslint-disable */
 
 import React, { Component } from 'react';
-import compose from 'recompose/compose';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -226,7 +225,7 @@ export class HeaderView extends Component {
 	}
 
 	componentDidMount() {
-		const { channels: channelArr , currentChannel } = this.props;
+		const { channels: channelArr, currentChannel } = this.props;
 		const arr = [];
 		let selectedValue = {};
 		channelArr.forEach(element => {
@@ -652,30 +651,34 @@ HeaderView.propTypes = {
 
 const { modeSelector } = themeSelectors;
 
-export default compose(
-	withStyles(styles),
-	connect(
-		state => ({
-			currentChannel: currentChannelSelector(state),
-			channels: channelsSelector(state),
-			mode: modeSelector(state)
-		}),
-		{
-			getBlockList: blockList,
-			getBlocksPerHour: blockPerHour,
-			getBlocksPerMin: blockPerMin,
-			getChaincodeList: chaincodeList,
-			getChangeChannel: changeChannel, // not in syncdata
-			getChannels: channels,
-			getDashStats: dashStats,
-			getPeerList: peerList,
-			getPeerStatus: peerStatus,
-			getBlockActivity: blockActivity,
-			getTransactionByOrg: transactionByOrg,
-			getTransactionList: transactionList,
-			getTransactionPerHour: transactionPerHour,
-			getTransactionPerMin: transactionPerMin,
-			logout: authOperations.logout
-		}
-	)
+const mapStateToProps = state => {
+	return {
+		currentChannel: currentChannelSelector(state),
+		channels: channelsSelector(state),
+		mode: modeSelector(state)
+	};
+};
+
+const mapDispatchToProps = {
+	getBlockList: blockList,
+	getBlocksPerHour: blockPerHour,
+	getBlocksPerMin: blockPerMin,
+	getChaincodeList: chaincodeList,
+	getChangeChannel: changeChannel, // not in syncdata
+	getChannels: channels,
+	getDashStats: dashStats,
+	getPeerList: peerList,
+	getPeerStatus: peerStatus,
+	getBlockActivity: blockActivity,
+	getTransactionByOrg: transactionByOrg,
+	getTransactionList: transactionList,
+	getTransactionPerHour: transactionPerHour,
+	getTransactionPerMin: transactionPerMin,
+	logout: authOperations.logout
+};
+
+const connectedComponent = connect(
+	mapStateToProps,
+	mapDispatchToProps
 )(HeaderView);
+export default withStyles(styles)(connectedComponent);

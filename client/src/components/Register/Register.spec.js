@@ -3,7 +3,6 @@
  */
 
 import Enzyme, { shallow, mount } from 'enzyme';
-import { unwrap } from '@material-ui/core/test-utils';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Adapter from 'enzyme-adapter-react-16';
 import { createMuiTheme } from '@material-ui/core/styles';
@@ -11,11 +10,9 @@ import { Register } from './Register';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-const ComponentNaked = unwrap(Register);
-
 describe('<Register />', () => {
 	it('with shallow', () => {
-		const wrapper = shallow(<ComponentNaked classes={{}} />);
+		const wrapper = shallow(<Register classes={{}} />);
 		expect(wrapper.exists()).toBe(true);
 	});
 
