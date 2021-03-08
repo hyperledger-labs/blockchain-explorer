@@ -446,3 +446,46 @@ $ curl -s --location --request POST 'localhost:8080/api/unregister' \
     }
     ```
 
+## Add a subdomain by adding proxy server
+
+* By putting a proxy server (NGINX server), you can change domain that users access. (e.g. change from `http://my.example.com` to `http://my.example.com/explorer`.
+  * First, prepare configuration file `nginx_subdomain.conf` on root directory of explorer project for NGINX server as follow.
+    ```
+    server {
+    
+        location /explorer/ {
+            proxy_pass http://explorer.mynetwork.com:8080/;
+        }
+
+        location / {
+            proxy_pass http://explorer.mynetwork.com:8080/;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "Upgrade";
+            proxy_set_header Host $host;
+        }
+    }
+    ```
+  * Add a service of proxy server to `docker-compose.yaml`
+    ```diff
+    diff --git a/docker-compose.yaml b/docker-compose.yaml
+    index 9478ca1..a0c9d03 100644
+    --- a/docker-compose.yaml
+    +++ b/docker-compose.yaml
+    @@ -57,3 +57,14 @@ services:
+            condition: service_healthy
+        networks:
+          - mynetwork.com
+    +
+    +  my-custom-nginx-container:
+    +    image: nginx:latest
+    +    container_name: my-custom-nginx-container
+    +    hostname: my-custom-nginx-container
+    +    volumes:
+    +      - ./nginx_subdomain.conf:/etc/nginx/conf.d/default.conf
+    +    ports:
+    +      - 80:80
+    +    networks:
+    +      - mynetwork.com
+    ```
+  * Start the proxy server with `docker-compose up -d` and access `http://localhost/explorer`.
