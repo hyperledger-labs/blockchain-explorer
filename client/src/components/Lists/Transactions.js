@@ -97,11 +97,19 @@ export class Transactions extends Component {
 			filtered: [],
 			sorted: [],
 			err: false,
-			from: moment().subtract(1, 'days')
+			from: moment().subtract(1, 'days'),
+			//transactionId: '',
+			directLinkSearchResultsFlag: false,
+			directLinkDialogDoneFlag: false
 		};
 	}
 
 	componentDidMount() {
+		const { getTransaction } = this.props;
+		if (this.props.transactionId) {
+			getTransaction('ChannelNotSpecified', this.props.transactionId);
+			this.setState({ directLinkSearchResultsFlag: true });
+		}
 		const { transactionList } = this.props;
 		const selection = {};
 		transactionList.forEach(element => {
@@ -131,6 +139,9 @@ export class Transactions extends Component {
 
 	componentWillUnmount() {
 		clearInterval(this.interVal);
+		if (this.props.transactionId) {
+			this.props.removeTransactionId();
+		}
 	}
 
 	handleCustomRender(selected, options) {
@@ -162,6 +173,9 @@ export class Transactions extends Component {
 		const { currentChannel, getTransaction } = this.props;
 		await getTransaction(currentChannel, tid);
 		this.setState({ dialogOpen: true });
+		if (this.props.transactionId) {
+			this.setState({ directLinkDialogDoneFlag: true });
+		}
 	};
 
 	handleMultiSelect = value => {
@@ -181,6 +195,11 @@ export class Transactions extends Component {
 		}, 60000);
 		await this.searchTransactionList();
 		this.setState({ search: true });
+		if (this.props.transactionId) {
+			this.setState({ directLinkSearchResultsFlag: false });
+			const { getTransaction } = this.props;
+			await getTransaction('ChannelNotSpecified', 'TransactionNotSpecified');
+		}
 	};
 
 	handleClearSearch = () => {
@@ -292,12 +311,28 @@ export class Transactions extends Component {
 				filterAll: true
 			}
 		];
-
+		/*
 		const transactionList = this.state.search
 			? this.props.transactionListSearch
 			: this.props.transactionList;
+		*/
+
 		const { transaction } = this.props;
 		const { dialogOpen } = this.state;
+		let transactionList;
+		if (transaction && this.state.directLinkSearchResultsFlag) {
+			let tlArray = [{}];
+			tlArray[0] = transaction;
+			transactionList = tlArray;
+			if (!this.state.directLinkDialogDoneFlag) {
+				this.handleDialogOpen(this.props.transactionId);
+			}
+		} else {
+			transactionList = this.state.search
+				? this.props.transactionListSearch
+				: this.props.transactionList;
+		}
+
 		return (
 			<div>
 				<div className={`${classes.filter} row searchRow`}>
