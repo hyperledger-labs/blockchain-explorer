@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-FROM node:14.16.0-alpine3.13 AS BUILD_IMAGE
+FROM node:13-alpine AS BUILD_IMAGE
 
 # default values pf environment variables
 # that are used inside container
@@ -18,10 +18,10 @@ COPY . .
 
 # install required dependencies by NPM packages:
 # current dependencies are: python, make, g++
-RUN apk add --no-cache --virtual npm-deps python make g++ curl bash && \
-    python -m ensurepip && \
+RUN apk add --no-cache --virtual npm-deps python3 make g++ curl bash && \
+    python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
-    pip install --upgrade pip setuptools && \
+    pip3 install --upgrade pip setuptools && \
     rm -r /root/.cache
 
 # install node-prune (https://github.com/tj/node-prune)
@@ -43,7 +43,7 @@ RUN rm -rf node_modules/rxjs/_esm5/
 RUN rm -rf node_modules/rxjs/_esm2015/
 RUN rm -rf node_modules/grpc/deps/grpc/third_party/
 
-FROM node:10.19-alpine3.9
+FROM node:13-alpine
 
 # database configuration
 ENV DATABASE_HOST 127.0.0.1
