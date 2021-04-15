@@ -176,4 +176,12 @@ describe('processBlockEvent', () => {
 		);
 		clock.restore();
 	});
+
+	it("should be done without any errors when config block doesn't have any payload in last updated data", async () => {
+		const stubClient = setupClient();
+
+		stubConfigBlock.data.data[0].payload.data.last_update.payload = null;
+		await expect(sync.processBlockEvent(stubClient, stubConfigBlock)).to
+			.eventually.to.be.true;
+	});
 });

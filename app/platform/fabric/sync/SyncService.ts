@@ -602,9 +602,9 @@ export class SyncServices {
 			if (txObj.payload.header.channel_header.typeString === 'CONFIG') {
 				txid = sha.sha256(txStr);
 				readSet =
-					txObj.payload.data.last_update.payload.data.config_update.read_set;
+					txObj.payload.data.last_update.payload?.data.config_update.read_set;
 				writeSet =
-					txObj.payload.data.last_update.payload.data.config_update.write_set;
+					txObj.payload.data.last_update.payload?.data.config_update.write_set;
 			}
 
 			const read_set = JSON.stringify(readSet, null, 2);
