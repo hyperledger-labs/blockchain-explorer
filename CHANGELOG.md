@@ -1,3 +1,20 @@
+## v1.1.5
+
+* [5ce121a](https://github.com/hyperledger/blockchain-explorer/commit/5ce121a) Be 862 Fix sync error  (#228)
+* [b28b16e](https://github.com/hyperledger/blockchain-explorer/commit/b28b16e) Be 694 UI link to trans (#227)
+* [f658497](https://github.com/hyperledger/blockchain-explorer/commit/f658497) Bump y18n from 3.2.1 to 3.2.2 (#226)
+* [a3ec219](https://github.com/hyperledger/blockchain-explorer/commit/a3ec219) Bump pygments from 2.1.3 to 2.7.4 in /docs (#225)
+* [8c85d2a](https://github.com/hyperledger/blockchain-explorer/commit/8c85d2a) Bump jinja2 from 2.10.1 to 2.11.3 in /docs (#224)
+* [183a717](https://github.com/hyperledger/blockchain-explorer/commit/183a717) new file repolint-json (#223)
+* [157423b](https://github.com/hyperledger/blockchain-explorer/commit/157423b) Bump react-dev-utils from 11.0.3 to 11.0.4 in /client (#222)
+* [356804b](https://github.com/hyperledger/blockchain-explorer/commit/356804b) [BE-858](https://jira.hyperledger.org/browse/BE-858) Upgrade base image of Explorer container image (#220)
+* [b330520](https://github.com/hyperledger/blockchain-explorer/commit/b330520) Bump elliptic from 6.5.3 to 6.5.4 (#221)
+* [ab91ca7](https://github.com/hyperledger/blockchain-explorer/commit/ab91ca7) [BE-801](https://jira.hyperledger.org/browse/BE-801) Add the steps to configure a subdomain (#219)
+* [9834430](https://github.com/hyperledger/blockchain-explorer/commit/9834430) Fix layout of icons on navigation bar (#218)
+* [88b534d](https://github.com/hyperledger/blockchain-explorer/commit/88b534d) [BE-820](https://jira.hyperledger.org/browse/BE-820) fix vulnerabilities (#216)
+* [44a3065](https://github.com/hyperledger/blockchain-explorer/commit/44a3065) Change default branch to main (#215)
+* [0eb3340](https://github.com/hyperledger/blockchain-explorer/commit/0eb3340) [BE-854](https://jira.hyperledger.org/browse/BE-854) v1.1.4 release (2) (#214)
+
 ## v1.1.4
 
 * [2556be6](https://github.com/hyperledger/blockchain-explorer/commit/2556be6) [BE-853](https://jira.hyperledger.org/browse/BE-853) Resolve race condition of discovery request (#212)
