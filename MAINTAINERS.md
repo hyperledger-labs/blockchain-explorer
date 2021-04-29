@@ -9,6 +9,7 @@ Maintainers
 | Name | GitHub | Chat | email
 |------|--------|------|----------------------
 | Atsushi Neki | [nekia][nekia] | nekia | <atsushin@fast.au.fujitsu.com>
+| Anil Kumar | [anilkumargr][anilkumargr] | anilkumargr | <anil.special2018@gmail.com>
 | Jeeva Sankarapandian | [jeevasang][jeevasang] | jeevasang | <jeevasang@gmail.com>
 | Mekia Edwards | [mekiae] | edwardsm26 | <dev.edwardsm@gmail.com>
 
@@ -37,3 +38,4 @@ Maintainers
 [xspeedcruiser]: https://github.com/xspeedcruiser
 [umadiraju]: https://github.com/umadiraju
 [mekiae]: https://github.com/mekiae
+[anilkumargr]: https://github.com/anilspecial
