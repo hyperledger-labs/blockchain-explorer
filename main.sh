@@ -18,7 +18,7 @@ function print_help() {
 
 function do_install() {
 	VERBOSE=${VERBOSE:+-ddd}
-	npm install $VERBOSE
+	(npm install $VERBOSE && npm run build)
 	(cd client && npm install $VERBOSE && npm run build)
 }
 
