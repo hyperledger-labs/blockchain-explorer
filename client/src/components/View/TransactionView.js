@@ -106,6 +106,14 @@ export class TransactionView extends Component {
 			);
 		}
 		if (transaction) {
+			let baseUrl =
+				window.location.protocol +
+				'//' +
+				window.location.hostname +
+				':' +
+				window.location.port;
+			let directLink =
+				baseUrl + '/?tab=transactions&transId=' + transaction.txhash;
 			return (
 				<Modal>
 					{modalClasses => (
@@ -165,6 +173,19 @@ export class TransactionView extends Component {
 											<tr>
 												<th>Time:</th>
 												<td>{transaction.createdt}</td>
+											</tr>
+											<tr>
+												<th>Direct Link:</th>
+												<td>
+													{directLink}
+													<button type="button" className={modalClasses.copyBtn}>
+														<div className={modalClasses.copy}>Copy</div>
+														<div className={modalClasses.copied}>Copied</div>
+														<CopyToClipboard text={directLink}>
+															<FontAwesome name="copy" />
+														</CopyToClipboard>
+													</button>
+												</td>
 											</tr>
 											<tr>
 												<th style={reads}>Reads:</th>
