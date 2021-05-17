@@ -202,7 +202,7 @@ $ cd blockchain-explorer/app
     export DATABASE_PORT=5432
     export DATABASE_DATABASE=fabricexplorer
     export DATABASE_USERNAME=hppoc
-    export DATABASE_PASSWD=pass12345
+    export DATABASE_PASSWD=password
     ```
   **Important** repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
 
