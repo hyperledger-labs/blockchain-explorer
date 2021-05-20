@@ -376,12 +376,16 @@ export class SyncServices {
 		if (results) {
 			for (const result of results) {
 				// Get block by number
-				const block = await client.fabricGateway.queryBlock(
-					channel_name,
-					result.missing_id
-				);
-				if (block) {
-					await this.processBlockEvent(client, block);
+				try {
+					const block = await client.fabricGateway.queryBlock(
+						channel_name,
+						result.missing_id
+					);
+					if (block) {
+						await this.processBlockEvent(client, block);
+					}
+				} catch {
+					logger.error(`Failed to process Block # ${result.missing_id}`);
 				}
 			}
 		} else {

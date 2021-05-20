@@ -22,6 +22,7 @@ const stubDebug = sinon.stub();
 
 const VALID_GENESIS_HASH = '8A+HyzS4sqZynD06BfNW7T1Vtv2SOXAOUJQK4itulus=';
 const VALID_NETWORK_ID = 'test-network-id';
+const VALID_CHANNEL_NAME = 'testchannel';
 
 const stubPlatform = {
 	send: sinon.spy()
@@ -58,10 +59,18 @@ function getSyncServicesInstance() {
 	const stubGetCrudService = sinon.stub();
 	stubGetCrudService.returns({
 		saveBlock: sinon.stub().resolves(true),
-		saveTransaction: spySaveTransaction
+		saveTransaction: spySaveTransaction,
+		getChannel: sinon.stub()
+	});
+	const stubGetMetricService = sinon.stub();
+	stubGetMetricService.returns({
+		findMissingBlockNumber: sinon
+			.stub()
+			.returns([{ missing_id: 1 }, { missing_id: 2 }])
 	});
 	const stubPersistence = {
-		getCrudService: stubGetCrudService
+		getCrudService: stubGetCrudService,
+		getMetricService: stubGetMetricService
 	};
 	const sync = new SyncServices(stubPlatform, stubPersistence);
 
@@ -87,10 +96,19 @@ function setupClient() {
 		getNetworkId: stubGetNetworkID,
 		getChannelGenHash: stubGetChannelGenHash,
 		initializeNewChannel: sinon.stub().resolves(true),
+		initializeChannelFromDiscover: sinon.stub(),
 		fabricGateway: {
 			fabricConfig: {
 				getRWSetEncoding: sinon.stub()
-			}
+			},
+			queryChainInfo: sinon.stub().returns({ height: { low: 10 } }),
+			queryBlock: sinon.fake((channel_name, missing_id) => {
+				if (channel_name === VALID_CHANNEL_NAME) {
+					return stubBlock;
+				} else {
+					return null;
+				}
+			})
 		}
 	};
 	return stubClient;
@@ -183,5 +201,39 @@ describe('processBlockEvent', () => {
 		stubConfigBlock.data.data[0].payload.data.last_update.payload = null;
 		await expect(sync.processBlockEvent(stubClient, stubConfigBlock)).to
 			.eventually.to.be.true;
+	});
+});
+
+describe('synchBlocks', () => {
+	let sync: SyncServices;
+
+	before(() => {
+		sync = getSyncServicesInstance();
+	});
+
+	beforeEach(() => {
+		resetAllStubs(sync);
+	});
+
+	it('should return without error', async () => {
+		const stubClient = setupClient();
+		const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
+
+		await sync.synchBlocks(stubClient, VALID_CHANNEL_NAME);
+		expect(stubProcessBlockEvent.calledTwice).to.be.true;
+		stubProcessBlockEvent.restore();
+	});
+
+	it('should return without error when processBlockEvent throws exception', async () => {
+		const stubClient = setupClient();
+		const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
+		stubProcessBlockEvent.onFirstCall().throws('Block already in processing');
+		stubError.reset();
+
+		await sync.synchBlocks(stubClient, VALID_CHANNEL_NAME);
+		expect(stubProcessBlockEvent.calledTwice).to.be.true;
+		expect(stubError.calledWith('Failed to process Block # 1')).to.be.true;
+		expect(stubError.calledWith('Failed to process Block # 2')).to.be.false;
+		stubProcessBlockEvent.restore();
 	});
 });
