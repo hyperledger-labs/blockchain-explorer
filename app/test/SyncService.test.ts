@@ -204,7 +204,7 @@ describe('processBlockEvent', () => {
 	});
 });
 
-describe('synchBlocks', () => {
+describe('syncBlocks', () => {
 	let sync: SyncServices;
 
 	before(() => {
@@ -219,7 +219,7 @@ describe('synchBlocks', () => {
 		const stubClient = setupClient();
 		const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
 
-		await sync.synchBlocks(stubClient, VALID_CHANNEL_NAME);
+		await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME);
 		expect(stubProcessBlockEvent.calledTwice).to.be.true;
 		stubProcessBlockEvent.restore();
 	});
@@ -230,7 +230,7 @@ describe('synchBlocks', () => {
 		stubProcessBlockEvent.onFirstCall().throws('Block already in processing');
 		stubError.reset();
 
-		await sync.synchBlocks(stubClient, VALID_CHANNEL_NAME);
+		await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME);
 		expect(stubProcessBlockEvent.calledTwice).to.be.true;
 		expect(stubError.calledWith('Failed to process Block # 1')).to.be.true;
 		expect(stubError.calledWith('Failed to process Block # 2')).to.be.false;
