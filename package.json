@@ -49,7 +49,7 @@
 		"swagger-ui-express": "^4.0.5",
 		"utf8-bytes": "0.0.1",
 		"winston": "^2.2.0",
-		"ws": "^5.1.1",
+		"ws": "^7.4.6",
 		"yn": "^4.0.0"
 	},
 	"license": "Apache-2.0",
