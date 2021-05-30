@@ -100,15 +100,14 @@ export class SyncPlatform {
 		}
 
 		// Updating the client network and other details to DB
-		const res = await this.syncService.synchNetworkConfigToDB(this.client);
-		if (!res) {
-			return;
-		}
-
-		setInterval(() => {
+		await (async function updateNetworkConfig(sync) {
 			logger.info('Updating the client network and other details to DB');
-			this.syncService.synchNetworkConfigToDB(this.client);
-		}, 30000);
+			const res = await sync.syncService.synchNetworkConfigToDB(sync.client);
+			if (!res) {
+				logger.error('Failed to update network config to DB');
+			}
+			setTimeout(updateNetworkConfig, 30000, sync);
+		})(this);
 
 		// Start event
 		this.eventHub = new FabricEvent(this.client, this.syncService);
@@ -118,9 +117,11 @@ export class SyncPlatform {
 		 * Setting interval for validating any missing block from the current client ledger
 		 * Set blocksSyncTime property in platform config.json in minutes
 		 */
-		setInterval(() => {
-			this.isChannelEventHubConnected();
-		}, this.blocksSyncTime);
+		(function validateMissingBlocks(sync) {
+			sync.isChannelEventHubConnected();
+			setTimeout(validateMissingBlocks, sync.blocksSyncTime, sync);
+		})(this);
+
 		logger.debug(
 			'******* Initialization end for child client process %s ******',
 			this.network_id
@@ -137,7 +138,7 @@ export class SyncPlatform {
 			// Validate channel event is connected
 			const status = this.eventHub.isChannelEventHubConnected(channel_name);
 			if (status) {
-				await this.syncService.synchBlocks(this.client, channel_name);
+				await this.syncService.syncBlocks(this.client, channel_name);
 			} else {
 				// Channel client is not connected then it will reconnect
 				this.eventHub.connectChannelEventHub(channel_name);

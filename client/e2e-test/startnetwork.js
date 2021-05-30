@@ -141,7 +141,7 @@ startNetwork = async () => {
 	}
 
 	// Wait for a while to get ready to start REST API server
-	await new Promise(r => setTimeout(r, 20000));
+	await new Promise(r => setTimeout(r, 40000));
 };
 
 startNetwork();

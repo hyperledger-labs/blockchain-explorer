@@ -107,6 +107,9 @@ export class SyncServices {
 			} else {
 				return false;
 			}
+
+			// Need that chaincode table is synced up to existing chaincode at this moment
+			await this.insertNewChannelChaincode(client, channel_genesis_hash, null);
 		}
 		return true;
 	}
@@ -305,7 +308,7 @@ export class SyncServices {
 			await this.persistence
 				.getCrudService()
 				.saveChaincode(network_id, chaincode_row);
-			if (discoveryResults && discoveryResults.peers_by_org) {
+			if (discoveryResults?.peers_by_org) {
 				for (const org_name in discoveryResults.peers_by_org) {
 					const org = discoveryResults.peers_by_org[org_name];
 					for (const peer of org.peers) {
@@ -354,12 +357,13 @@ export class SyncServices {
 			.saveChaincodPeerRef(network_id, chaincode_peer_row);
 	}
 
-	async synchBlocks(client, channel_name) {
+	async syncBlocks(client, channel_name) {
 		const network_id = client.getNetworkId();
 
 		const synch_key = `${network_id}_${channel_name}`;
+		logger.info(`syncBlocks: Start >> ${synch_key}`);
 		if (this.synchInProcess.includes(synch_key)) {
-			logger.info(`Block synch in process for >> ${network_id}_${channel_name}`);
+			logger.info(`syncBlocks: Block sync in process for >> ${synch_key}`);
 			return;
 		}
 		this.synchInProcess.push(synch_key);
@@ -393,6 +397,7 @@ export class SyncServices {
 		}
 		const index = this.synchInProcess.indexOf(synch_key);
 		this.synchInProcess.splice(index, 1);
+		logger.info(`syncBlocks: Finish >> ${synch_key}`);
 	}
 
 	async updateDiscoveredChannel(client, channel_name, channel_genesis_hash) {

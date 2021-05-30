@@ -439,7 +439,8 @@
 				"@typescript-eslint/no-explicit-any": "off",
 				"@typescript-eslint/explicit-module-boundary-types": "off",
 				"no-console": ["error"],
-				"import/extensions": ["off"]
+				"import/extensions": ["off"],
+				"wrap-iife": ["error", "inside"]
 			}
 		}
 	]
