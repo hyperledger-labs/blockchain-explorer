@@ -100,7 +100,7 @@ export class SyncPlatform {
 		}
 
 		// Updating the client network and other details to DB
-		(async function updateNetworkConfig(sync) {
+		await (async function updateNetworkConfig(sync) {
 			logger.info('Updating the client network and other details to DB');
 			const res = await sync.syncService.synchNetworkConfigToDB(sync.client);
 			if (!res) {

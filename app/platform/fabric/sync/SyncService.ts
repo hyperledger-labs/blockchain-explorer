@@ -107,6 +107,9 @@ export class SyncServices {
 			} else {
 				return false;
 			}
+
+			// Need that chaincode table is synced up to existing chaincode at this moment
+			await this.insertNewChannelChaincode(client, channel_genesis_hash, null);
 		}
 		return true;
 	}
@@ -305,7 +308,7 @@ export class SyncServices {
 			await this.persistence
 				.getCrudService()
 				.saveChaincode(network_id, chaincode_row);
-			if (discoveryResults && discoveryResults.peers_by_org) {
+			if (discoveryResults?.peers_by_org) {
 				for (const org_name in discoveryResults.peers_by_org) {
 					const org = discoveryResults.peers_by_org[org_name];
 					for (const peer of org.peers) {
