@@ -5,9 +5,20 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse } from 'reactstrap';
+import {
+	Nav,
+	Navbar,
+	NavbarBrand,
+	NavbarToggler,
+	Collapse,
+	NavItem,
+	Form,
+	Dropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem
+} from 'reactstrap';
 import { HashRouter as Router, NavLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
 import FontAwesome from 'react-fontawesome';
@@ -142,6 +153,16 @@ const styles = theme => {
 			},
 			paddingLeft: '12px'
 		},
+		userdropdown: {
+			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
+			fontSize: '20pt',
+			margin: '8px',
+			float: 'none',
+			'&:hover': {
+				color: dark ? '#c1d7f0' : '#24272a'
+			},
+			paddingLeft: '12px'
+		},
 		channel: {
 			width: 200,
 			margin: 8,
@@ -189,10 +210,6 @@ const styles = theme => {
 			margin: '8px',
 			cursor: 'pointer'
 		},
-		user: {
-			// margin: 8,
-			// fontSize: '18pt',
-		},
 		userIcon: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
 			fontSize: '18pt',
@@ -226,7 +243,8 @@ export class HeaderView extends Component {
 			isLoading: true,
 			modalOpen: false,
 			registerOpen: false,
-			selectedChannel: {}
+			selectedChannel: {},
+			dropdownOpen: false
 		};
 	}
 
@@ -479,7 +497,8 @@ export class HeaderView extends Component {
 			adminDrawer,
 			modalOpen,
 			registerOpen,
-			notifications
+			notifications,
+			dropdownOpen
 		} = this.state;
 		const links = [
 			{ to: '/', label: 'DASHBOARD', exact: true },
@@ -503,7 +522,6 @@ export class HeaderView extends Component {
 					<div>
 						<Navbar className={classes.navbarHeader} expand="lg" fixed="top">
 							<NavbarBrand href="/">
-								{' '}
 								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
 							</NavbarBrand>
 							<NavbarToggler onClick={this.toggle}>
@@ -516,7 +534,7 @@ export class HeaderView extends Component {
 									onMouseLeave={this.closeToggle}
 								>
 									{links.map(({ to, label, ...props }) => (
-										<li key={to}>
+										<NavItem key={to}>
 											<NavLink
 												to={to}
 												className={classes.tab}
@@ -526,9 +544,9 @@ export class HeaderView extends Component {
 											>
 												{label}
 											</NavLink>
-										</li>
+										</NavItem>
 									))}
-									<div>
+									<Form inline>
 										<Select
 											className={classes.channel}
 											placeholder="Select Channel..."
@@ -540,8 +558,8 @@ export class HeaderView extends Component {
 											onFocus={this.reloadChannels.bind(this)}
 											options={stateChannels}
 										/>
-									</div>
-									{
+									</Form>
+									<Form inline>
 										<div className={classes.adminButton}>
 											<FontAwesome
 												name="bell"
@@ -551,39 +569,46 @@ export class HeaderView extends Component {
 											/>
 											<Badge badgeContent={notifyCount} color="primary" />
 										</div>
-									}
-									{/*
-              //Use when Admin functionality is required
-              <div className={classes.adminButton}>
-                <FontAwesome
-                  name='cog'
-                  className='cog'
-                  onClick={() => this.handleDrawOpen('adminDrawer')}
-                />
-              </div> */}
-									<div className={classes.adminButton}>
-										<FontAwesome name="sun-o" className={classes.sunIcon} />
-										<Switch
-											className={classes.themeSwitch}
-											onChange={() => this.handleThemeChange(mode)}
-											checked={dark}
-										/>
-										<FontAwesome name="moon-o" className={classes.moonIcon} />
-									</div>
-									<div className={classes.adminButton}>
-										<FontAwesome
-											name="user-plus"
-											className={classes.userIcon}
-											onClick={() => this.registerOpen()}
-										/>
-									</div>
-									<div className={classes.adminButton}>
-										<FontAwesome
-											name="sign-out"
-											className={classes.logoutIcon}
-											onClick={() => this.logout()}
-										/>
-									</div>
+									</Form>
+									<Form inline>
+										<Dropdown
+											isOpen={dropdownOpen}
+											toggle={() => this.setState({ dropdownOpen: !dropdownOpen })}
+										>
+											<DropdownToggle nav>
+												<FontAwesome name="user" className={classes.userdropdown} />
+											</DropdownToggle>
+											<DropdownMenu>
+												<DropdownItem>
+													<div className={classes.adminButton}>
+														<FontAwesome name="sun-o" className={classes.sunIcon} />
+														<Switch
+															className={classes.themeSwitch}
+															onChange={() => this.handleThemeChange(mode)}
+															checked={dark}
+														/>
+														<FontAwesome name="moon-o" className={classes.moonIcon} />
+													</div>
+												</DropdownItem>
+												<DropdownItem>
+													<div className={classes.userIcon}>
+														<FontAwesome
+															name="user-plus"
+															onClick={() => this.registerOpen()}
+														/>{' '}
+														User management
+													</div>
+												</DropdownItem>
+												<DropdownItem divider />
+												<DropdownItem>
+													<div className={classes.logoutIcon}>
+														<FontAwesome name="sign-out" onClick={() => this.logout()} /> Sign
+														out
+													</div>
+												</DropdownItem>
+											</DropdownMenu>
+										</Dropdown>
+									</Form>
 								</Nav>
 							</Collapse>
 						</Navbar>
