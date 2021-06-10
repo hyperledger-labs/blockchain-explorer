@@ -1,3 +1,19 @@
+## v1.1.6
+
+* [ffb7916](https://github.com/hyperledger/blockchain-explorer/commit/ffb7916) [BE-871](https://jira.hyperledger.org/browse/BE-871) Introduce dropdown to put together icons (#247)
+* [973904e](https://github.com/hyperledger/blockchain-explorer/commit/973904e) Update fabric-sdk-node to v2.2.6 (#246)
+* [44ae9ee](https://github.com/hyperledger/blockchain-explorer/commit/44ae9ee) [BE-855](https://jira.hyperledger.org/browse/BE-855) Stop unnecessary sync process triggered by FabricEvent (#240)
+* [7e3f1b6](https://github.com/hyperledger/blockchain-explorer/commit/7e3f1b6) Bump ws from 7.4.1 to 7.4.6 in /client/e2e-test (#245)
+* [a11b16a](https://github.com/hyperledger/blockchain-explorer/commit/a11b16a) Bump ws from 5.2.2 to 7.4.6 (#244)
+* [68db6aa](https://github.com/hyperledger/blockchain-explorer/commit/68db6aa) Bump browserslist from 4.16.3 to 4.16.6 (#242)
+* [cbced97](https://github.com/hyperledger/blockchain-explorer/commit/cbced97) Bump dns-packet from 1.3.1 to 1.3.4 in /client (#241)
+* [3cf27da](https://github.com/hyperledger/blockchain-explorer/commit/3cf27da) [BE-855](https://jira.hyperledger.org/browse/BE-855) Add try catch block to handle block in-process exception (#239)
+* [a8869bc](https://github.com/hyperledger/blockchain-explorer/commit/a8869bc) Be 870 display direct trans link (#237)
+* [9443432](https://github.com/hyperledger/blockchain-explorer/commit/9443432) [BE-868](https://jira.hyperledger.org/browse/BE-868) Fixed jsrsasign security vulnerabilities (#236)
+* [21477e3](https://github.com/hyperledger/blockchain-explorer/commit/21477e3) add typescript compilation on main.sh install (#234)
+* [d8a7bd6](https://github.com/hyperledger/blockchain-explorer/commit/d8a7bd6) Added new maintainer name (#232)
+* [2ae596e](https://github.com/hyperledger/blockchain-explorer/commit/2ae596e) Be 865 repolinter codeofconduct (#231)
+
 ## v1.1.5
 
 * [5ce121a](https://github.com/hyperledger/blockchain-explorer/commit/5ce121a) Be 862 Fix sync error  (#228)

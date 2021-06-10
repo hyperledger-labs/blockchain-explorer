@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {helper} from '../../../common/helper';
+import { helper } from '../../../common/helper';
 
 const logger = helper.getLogger('FabricEvent');
 
@@ -12,10 +12,9 @@ const logger = helper.getLogger('FabricEvent');
  * @class FabricEvent
  */
 export class FabricEvent {
-
-	client : any;
-	fabricServices : any;
-	static channelEventHubs : any;
+	client: any;
+	fabricServices: any;
+	static channelEventHubs: any;
 
 	/**
 	 * Creates an instance of FabricEvent.
@@ -47,7 +46,7 @@ export class FabricEvent {
 				continue;
 			}
 
-			this.createChannelEventHub(channel_name);
+			await this.createChannelEventHub(channel_name);
 		}
 	}
 
@@ -71,7 +70,7 @@ export class FabricEvent {
 					}
 				},
 				{
-					startBlock: 1,
+					// Keep startBlock undefined because expecting to start listening from the current block.
 					type: 'full'
 				}
 			);

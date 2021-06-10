@@ -24,7 +24,7 @@ export function dbroutes(router: Router, platform: Platform) {
 	router.get('/status/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			dbStatusMetrics.getStatus(extReq.network, channel_genesis_hash, data => {
 				if (data && data.chaincodeCount && data.txCount && data.peerCount) {
 					return res.send(data);
@@ -52,7 +52,7 @@ export function dbroutes(router: Router, platform: Platform) {
 			const number = parseInt(req.params.number);
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			if (!isNaN(number) && channel_genesis_hash) {
-				const extReq = req as ExtRequest;
+				const extReq = (req as unknown) as ExtRequest;
 				const row = await dbCrudService.getTxCountByBlockNum(
 					extReq.network,
 					channel_genesis_hash,
@@ -88,7 +88,7 @@ export function dbroutes(router: Router, platform: Platform) {
 		const txid = req.params.txid;
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (txid && txid !== '0' && channel_genesis_hash) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			dbCrudService
 				.getTransactionByID(extReq.network, channel_genesis_hash, txid)
 				.then((row: { createdt: string | number | Date }) => {
@@ -105,7 +105,7 @@ export function dbroutes(router: Router, platform: Platform) {
 	router.get('/blockActivity/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			dbCrudService
 				.getBlockActivityList(extReq.network, channel_genesis_hash)
 				.then((row: any) => {
@@ -143,7 +143,7 @@ export function dbroutes(router: Router, platform: Platform) {
 				txid = 0;
 			}
 			if (channel_genesis_hash) {
-				const extReq = req as ExtRequest;
+				const extReq = (req as unknown) as ExtRequest;
 				dbCrudService
 					.getTxList(
 						extReq.network,
@@ -179,7 +179,7 @@ export function dbroutes(router: Router, platform: Platform) {
 	router.get('/chaincode/:channel', (req, res) => {
 		const channelName = req.params.channel;
 		if (channelName) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			dbStatusMetrics.getTxPerChaincode(
 				extReq.network,
 				channelName,
@@ -210,7 +210,7 @@ export function dbroutes(router: Router, platform: Platform) {
 	router.get('/peers/:channel_genesis_hash', (req, res) => {
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channel_genesis_hash) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			dbStatusMetrics.getPeerList(
 				extReq.network,
 				channel_genesis_hash,
@@ -244,7 +244,7 @@ export function dbroutes(router: Router, platform: Platform) {
 				req.query.to as string
 			);
 			if (channel_genesis_hash && !isNaN(blockNum)) {
-				const extReq = req as ExtRequest;
+				const extReq = (req as unknown) as ExtRequest;
 				return dbCrudService
 					.getBlockAndTxList(
 						extReq.network,
@@ -276,7 +276,7 @@ export function dbroutes(router: Router, platform: Platform) {
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			return dbStatusMetrics
 				.getTxByMinute(extReq.network, channel_genesis_hash, hours)
 				.then(handleResult(req, res));
@@ -298,7 +298,7 @@ export function dbroutes(router: Router, platform: Platform) {
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			return dbStatusMetrics
 				.getTxByHour(extReq.network, channel_genesis_hash, days)
 				.then(handleResult(req, res));
@@ -319,7 +319,7 @@ export function dbroutes(router: Router, platform: Platform) {
 		const hours = parseInt(req.params.hours);
 
 		if (channel_genesis_hash && !isNaN(hours)) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			return dbStatusMetrics
 				.getBlocksByMinute(extReq.network, channel_genesis_hash, hours)
 				.then(handleResult(req, res));
@@ -349,7 +349,7 @@ export function dbroutes(router: Router, platform: Platform) {
 		const days = parseInt(req.params.days);
 
 		if (channel_genesis_hash && !isNaN(days)) {
-			const extReq = req as ExtRequest;
+			const extReq = (req as unknown) as ExtRequest;
 			return dbStatusMetrics
 				.getBlocksByHour(extReq.network, channel_genesis_hash, days)
 				.then(handleResult(req, res));
