@@ -181,7 +181,7 @@ export class Login extends Component {
 			this.setState(() => ({
 				autoLoginAttempted: true
 			}));
-			await this.performLogin({ network: networks[0].name });
+			await this.performLogin({ network: networks[0].id });
 		}
 	}
 
