@@ -434,13 +434,26 @@ export class FabricGateway {
 			if (!this.waitingResp) {
 				this.waitingResp = true;
 				logger.info('Sending discovery request...');
-				await this.ds.send({
-					asLocalhost: this.asLocalhost,
-					requestTimeout: 5000,
-					refreshAge: 15000,
-					targets: this.dsTargets
-				});
-				logger.info('Succeeded to send discovery request');
+				await this.ds
+          .send({
+            asLocalhost: this.asLocalhost,
+            requestTimeout: 5000,
+            refreshAge: 15000,
+            targets: this.dsTargets,
+          })
+          .then(() => {
+            logger.info('Succeeded to send discovery request');
+          })
+          .catch(error => {
+            if (error) {
+              logger.warn(
+                'Failed to send discovery request for channel',
+                error,
+              );
+              this.waitingResp = false;
+              this.ds.close();
+            }
+          });
 			} else {
 				logger.info('Have already been sending a request');
 				return null;
