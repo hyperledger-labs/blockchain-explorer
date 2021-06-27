@@ -58,7 +58,10 @@ process.on('unhandledRejection', (up : {message : string}) => {
 	} else {
 		logger.error(up);
 	}
-	shutDown();
+  // prevent timeout error from calling shutdown
+	if (!up.message.includes('REQUEST TIMEOUT')) {
+    shutDown();
+  }
 });
 process.on('uncaughtException', up => {
 	logger.error(

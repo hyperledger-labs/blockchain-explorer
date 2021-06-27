@@ -360,6 +360,15 @@ export class SyncServices {
 	async syncBlocks(client, channel_name) {
 		const network_id = client.getNetworkId();
 
+    // Get channel information from ledger
+    const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
+
+    if (!channelInfo) {
+      logger.info(
+        `syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`,
+      );
+      return;
+    }
 		const synch_key = `${network_id}_${channel_name}`;
 		logger.info(`syncBlocks: Start >> ${synch_key}`);
 		if (this.synchInProcess.includes(synch_key)) {
@@ -368,8 +377,6 @@ export class SyncServices {
 		}
 		this.synchInProcess.push(synch_key);
 
-		// Get channel information from ledger
-		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
 		const channel_genesis_hash = client.getChannelGenHash(channel_name);
 		const blockHeight = parseInt(channelInfo.height.low) - 1;
 		// Query missing blocks from DB

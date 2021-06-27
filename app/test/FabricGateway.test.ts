@@ -10,6 +10,7 @@ import sinon from 'sinon';
 import { FabricGateway } from '../platform/fabric/gateway/FabricGateway';
 
 // DiscoveryService (this.ds)
+const stubSend = sinon.stub();
 const stubSign = sinon.stub();
 const stubGetDiscoveryResults = sinon.stub();
 const stubClose = sinon.stub();
@@ -35,7 +36,7 @@ function getFabricGatewayInstance() {
 					return {
 						build: sinon.stub(),
 						sign: stubSign,
-						send: sinon.stub(),
+						send: stubSend,
 						getDiscoveryResults: stubGetDiscoveryResults,
 						close: stubClose
 					};
@@ -91,6 +92,7 @@ function getFabricGatewayInstance() {
 
 function resetAllStubs() {
 	// DiscoveryService (this.ds)
+  stubSend.reset();
 	stubSign.reset();
 	stubGetDiscoveryResults.reset();
 	stubClose.reset();
@@ -173,17 +175,24 @@ describe('sendDiscoveryRequest', () => {
 		resetAllStubs();
 	});
 
+  it('should throw error when discoveryService.sends() throw error', async () => {
+    stubSend.rejects(Promise.reject(new Error('REQUEST TIMEOUT')));
+    await gw.sendDiscoveryRequest();
+    expect(stubWarn.called).be.equal(true);
+    expect(stubClose.calledOnce).be.equal(true);
+  });
+
+  it('should throw error when failed to call getDiscoveryResults()', async () => {
+    stubGetDiscoveryResults.throws();
+    await gw.sendDiscoveryRequest();
+    expect(stubWarn.called).be.equal(true);
+    expect(stubClose.calledOnce).be.equal(true);
+  });
+
 	it('should return without error', async () => {
 		stubGetDiscoveryResults.returns(Promise.resolve());
 		await gw.sendDiscoveryRequest();
 		expect(stubError.called).be.equal(false);
-	});
-
-	it('should throw error when failed to call getDiscoveryResults()', async () => {
-		stubGetDiscoveryResults.throws();
-		await gw.sendDiscoveryRequest();
-		expect(stubWarn.called).be.equal(true);
-		expect(stubClose.calledOnce).be.equal(true);
 	});
 });
 
