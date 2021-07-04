@@ -120,13 +120,18 @@ In this guide, we assume that you've already started test network by following [
           - DISCOVERY_AS_LOCALHOST=false
     ```
 
-* Edit path to admin certificate and secret key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
+* Edit path to admin certificate and secret (private) key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
 
     ```json
       "organizations": {
         "Org1MSP": {
           "adminPrivateKey": {
             "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+          ...
+          ...
+          "signedCert": {
+            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+          }
     ```
 
 ## Start container services
