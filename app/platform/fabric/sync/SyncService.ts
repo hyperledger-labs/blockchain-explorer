@@ -357,18 +357,16 @@ export class SyncServices {
 			.saveChaincodPeerRef(network_id, chaincode_peer_row);
 	}
 
-	async syncBlocks(client, channel_name) {
+	async syncBlocks(client, channel_name, noDiscovery) {
 		const network_id = client.getNetworkId();
 
-    // Get channel information from ledger
-    const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
+		// Get channel information from ledger
+		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
 
-    if (!channelInfo) {
-      logger.info(
-        `syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`,
-      );
-      return;
-    }
+		if (!channelInfo) {
+			logger.info(`syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`);
+			return;
+		}
 		const synch_key = `${network_id}_${channel_name}`;
 		logger.info(`syncBlocks: Start >> ${synch_key}`);
 		if (this.synchInProcess.includes(synch_key)) {
@@ -393,7 +391,7 @@ export class SyncServices {
 						result.missing_id
 					);
 					if (block) {
-						await this.processBlockEvent(client, block);
+						await this.processBlockEvent(client, block, noDiscovery);
 					}
 				} catch {
 					logger.error(`Failed to process Block # ${result.missing_id}`);
@@ -410,7 +408,6 @@ export class SyncServices {
 	async updateDiscoveredChannel(client, channel_name, channel_genesis_hash) {
 		const network_id = client.getNetworkId();
 		// get discovery and insert new peer, orders details to db
-		await client.initializeChannelFromDiscover(channel_name);
 		await this.insertFromDiscoveryResults(
 			client,
 			channel_name,
@@ -459,7 +456,7 @@ export class SyncServices {
 	 * @returns
 	 * @memberof SyncServices
 	 */
-	async processBlockEvent(client, block) {
+	async processBlockEvent(client, block, noDiscovery) {
 		const network_id = client.getNetworkId();
 		// Get the first transaction
 		const first_tx = block.data.data[0];
@@ -492,7 +489,10 @@ export class SyncServices {
 		}
 		this.blocksInProcess.push(blockPro_key);
 
-		if (header.channel_header.typeString === fabric_const.BLOCK_TYPE_CONFIG) {
+		if (
+			!noDiscovery &&
+			header.channel_header.typeString === fabric_const.BLOCK_TYPE_CONFIG
+		) {
 			setTimeout(
 				async (cli, chName, chGenHash) => {
 					await this.updateDiscoveredChannel(cli, chName, chGenHash);
@@ -629,9 +629,11 @@ export class SyncServices {
 			const chaincode_id = String.fromCharCode.apply(null, chaincodeID);
 			// checking new chaincode is deployed
 			if (
+				!noDiscovery &&
 				header.channel_header.typeString ===
 					fabric_const.BLOCK_TYPE_ENDORSER_TRANSACTION &&
-				chaincode === fabric_const.CHAINCODE_LSCC
+				(chaincode === fabric_const.CHAINCODE_LSCC ||
+					chaincode === fabric_const.CHAINCODE_LIFECYCLE)
 			) {
 				setTimeout(
 					async (cli, chName, chGenHash) => {

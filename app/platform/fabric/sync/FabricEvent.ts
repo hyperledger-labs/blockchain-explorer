@@ -66,7 +66,12 @@ export class FabricEvent {
 				async event => {
 					// Skip first block, it is process by peer event hub
 					if (!(event.blockNumber.low === 0 && event.blockNumber.high === 0)) {
-						await this.fabricServices.processBlockEvent(this.client, event.blockData);
+						const noDiscovery = false;
+						await this.fabricServices.processBlockEvent(
+							this.client,
+							event.blockData,
+							noDiscovery
+						);
 					}
 				},
 				{

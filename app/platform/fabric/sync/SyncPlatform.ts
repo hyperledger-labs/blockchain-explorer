@@ -117,10 +117,11 @@ export class SyncPlatform {
 		 * Setting interval for validating any missing block from the current client ledger
 		 * Set blocksSyncTime property in platform config.json in minutes
 		 */
-		(function validateMissingBlocks(sync) {
-			sync.isChannelEventHubConnected();
-			setTimeout(validateMissingBlocks, sync.blocksSyncTime, sync);
-		})(this);
+		// During initial sync-up phase, disable discovery request
+		(function validateMissingBlocks(sync: SyncPlatform, noDiscovery: boolean) {
+			sync.isChannelEventHubConnected(noDiscovery);
+			setTimeout(validateMissingBlocks, sync.blocksSyncTime, sync, false);
+		})(this, true);
 
 		logger.debug(
 			'******* Initialization end for child client process %s ******',
@@ -133,12 +134,12 @@ export class SyncPlatform {
 	 *
 	 * @memberof SyncPlatform
 	 */
-	async isChannelEventHubConnected() {
+	async isChannelEventHubConnected(noDiscovery: boolean) {
 		for (const channel_name of this.client.getChannels()) {
 			// Validate channel event is connected
 			const status = this.eventHub.isChannelEventHubConnected(channel_name);
 			if (status) {
-				await this.syncService.syncBlocks(this.client, channel_name);
+				await this.syncService.syncBlocks(this.client, channel_name, noDiscovery);
 			} else {
 				// Channel client is not connected then it will reconnect
 				this.eventHub.connectChannelEventHub(channel_name);
