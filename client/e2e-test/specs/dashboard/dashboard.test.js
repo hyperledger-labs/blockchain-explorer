@@ -73,8 +73,9 @@ describe('Dashboard view', () => {
 		const blkList = blkListElm.map(async (elm, idx, array) => {
 			return await elm.innerText();
 		});
+
 		await Promise.all(blkList).then(list => {
-			expect(list).to.include.members(['Block 5', 'Block 4', 'Block 3']);
+			expect(list.length).to.be.equal(3);
 		});
 	});
 
