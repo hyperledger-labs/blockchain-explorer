@@ -1,3 +1,12 @@
+## v1.1.7
+
+* [ae60298](https://github.com/hyperledger/blockchain-explorer/commit/ae60298) [BE-876](https://jira.hyperledger.org/browse/BE-876) Stop unnecessary discovery request (#255)
+* [fef5460](https://github.com/hyperledger/blockchain-explorer/commit/fef5460) Bugfix: tailing ampersand sign prevents container from restarting (#254)
+* [ba59056](https://github.com/hyperledger/blockchain-explorer/commit/ba59056) [BE-857](https://jira.hyperledger.org/browse/BE-857) Change invoking function of lifecycle scc to allow non-admin client access (#252)
+* [cc51dff](https://github.com/hyperledger/blockchain-explorer/commit/cc51dff) Bugfix: timeout error crashing explorer (#253)
+* [4a931ca](https://github.com/hyperledger/blockchain-explorer/commit/4a931ca) Bugfix: disable enableAuthentication auth auto login using wrong network key issue (#250)
+* [fbda93e](https://github.com/hyperledger/blockchain-explorer/commit/fbda93e) Bump glob-parent from 5.1.1 to 5.1.2 in /client/e2e-test (#249)
+
 ## v1.1.6
 
 * [ffb7916](https://github.com/hyperledger/blockchain-explorer/commit/ffb7916) [BE-871](https://jira.hyperledger.org/browse/BE-871) Introduce dropdown to put together icons (#247)
