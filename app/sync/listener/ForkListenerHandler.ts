@@ -31,7 +31,12 @@ export class ForkListenerHandler {
 	 * @memberof ForkListenerHandler
 	 */
 	async initialize(args) {
-		this.syncProcessor = fork(path.resolve(__dirname, '../../sync.js'), args);
+		this.syncProcessor = fork(path.resolve(__dirname, '../../sync.js'), args, {
+			env: {
+				...process.env,
+				FORK: '1'
+			}
+		});
 
 		this.syncProcessor.on('message', msg => {
 			this.platform.getProxy().processSyncMessage(msg);
