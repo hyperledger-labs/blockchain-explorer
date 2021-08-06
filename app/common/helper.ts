@@ -103,6 +103,7 @@ export class helper {
 			};
 
 			if (moduleName === 'main') {
+				// Should initiate logger once with tcp-server appender
 				logConfig.appenders = {
 					...logConfig.appenders,
 					server: { type: 'tcp-server' }

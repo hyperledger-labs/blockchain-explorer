@@ -34,6 +34,7 @@ export class ForkListenerHandler {
 		this.syncProcessor = fork(path.resolve(__dirname, '../../sync.js'), args, {
 			env: {
 				...process.env,
+				// Mark forked process explicitly for logging using TCP server
 				FORK: '1'
 			}
 		});
