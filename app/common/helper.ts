@@ -68,45 +68,68 @@ export class helper {
 			consoleLevel = process.env.LOG_LEVEL_CONSOLE;
 		}
 
-		const logConfig = {
-			appenders: {
-				app: {
-					type: 'dateFile',
-					filename: appLog,
-					maxLogSize: 8 * 1024 * 1024,
-					daysToKeep: 7
+		let logConfig: any = {};
+		if (!yn(process.env.FORK)) {
+			logConfig = {
+				appenders: {
+					app: {
+						type: 'dateFile',
+						filename: appLog,
+						maxLogSize: 8 * 1024 * 1024,
+						daysToKeep: 7
+					},
+					db: {
+						type: 'dateFile',
+						filename: dbLog,
+						maxLogSize: 8 * 1024 * 1024,
+						daysToKeep: 7
+					},
+					console: {
+						type: 'dateFile',
+						filename: consoleLog,
+						maxLogSize: 8 * 1024 * 1024,
+						daysToKeep: 7
+					},
+					consoleFilter: {
+						type: 'logLevelFilter',
+						appender: 'console',
+						level: consoleLevel
+					}
 				},
-				db: {
-					type: 'dateFile',
-					filename: dbLog,
-					maxLogSize: 8 * 1024 * 1024,
-					daysToKeep: 7
-				},
-				console: {
-					type: 'dateFile',
-					filename: consoleLog,
-					maxLogSize: 8 * 1024 * 1024,
-					daysToKeep: 7
-				},
-				consoleFilter: {
-					type: 'logLevelFilter',
-					appender: 'console',
-					level: consoleLevel
+				categories: {
+					default: { appenders: ['consoleFilter', 'app'], level: appLevel },
+					PgService: { appenders: ['consoleFilter', 'db'], level: dbLevel }
 				}
-			},
-			categories: {
-				default: { appenders: ['consoleFilter', 'app'], level: appLevel },
-				PgService: { appenders: ['consoleFilter', 'db'], level: dbLevel }
-			}
-		};
+			};
 
-		if (process.env.LOG_CONSOLE_STDOUT) {
-			if (yn(process.env.LOG_CONSOLE_STDOUT)) {
-				logConfig.appenders.console = {
-					...logConfig.appenders.console,
-					type: 'console'
+			if (moduleName === 'main') {
+				// Should initiate logger once with tcp-server appender
+				logConfig.appenders = {
+					...logConfig.appenders,
+					server: { type: 'tcp-server' }
 				};
 			}
+
+			if (process.env.LOG_CONSOLE_STDOUT) {
+				if (yn(process.env.LOG_CONSOLE_STDOUT)) {
+					logConfig.appenders.console = {
+						...logConfig.appenders.console,
+						type: 'console'
+					};
+				}
+			}
+		} else {
+			logConfig = {
+				appenders: {
+					network: {
+						type: 'tcp'
+					}
+				},
+				categories: {
+					default: { appenders: ['network'], level: appLevel },
+					PgService: { appenders: ['network'], level: dbLevel }
+				}
+			};
 		}
 
 		log4js.configure(logConfig);

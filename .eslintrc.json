@@ -398,7 +398,9 @@
 					"sqlcharacter",
 					"peerlist",
 					"www",
-					"craetedat"
+					"craetedat",
+					"tcp",
+					"appender"
 				],
 				"skipWordIfMatch": [
 					"^\\d+px",
