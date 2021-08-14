@@ -27,13 +27,13 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
+| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.6](release_notes/v1.1.6.md)</b> (Jun 06, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.5](release_notes/v1.1.5.md)</b> (Apr 20, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.4](release_notes/v1.1.4.md)</b> (Jan 29, 2021)  | [v1.4 to v2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.3](release_notes/v1.1.3.md)</b> (Sep 28, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.2](release_notes/v1.1.2.md)</b> (Aug 12, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.1](release_notes/v1.1.1.md)</b> (Jul 17, 2020)  | [v1.4.0 to v2.1.1](https://hyperledger-fabric.readthedocs.io/en/release-2.1) | [12.16.x](https://nodejs.org/en/download/releases) |
 
 ---
 
