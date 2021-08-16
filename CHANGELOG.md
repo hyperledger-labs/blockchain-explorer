@@ -1,3 +1,10 @@
+## v1.1.8
+
+* [fd38eb8](https://github.com/hyperledger/blockchain-explorer/commit/fd38eb8) [BE-881](https://jira.hyperledger.org/browse/BE-881) Update package-lock.json files
+* [1448548](https://github.com/hyperledger/blockchain-explorer/commit/1448548) [BE-880](https://jira.hyperledger.org/browse/BE-880) Fix incorrect multi-process logging (#260)
+* [79ec06f](https://github.com/hyperledger/blockchain-explorer/commit/79ec06f) Bump tar from 6.1.0 to 6.1.4 (#259)
+* [3ed0435](https://github.com/hyperledger/blockchain-explorer/commit/3ed0435) docs: add code snippet for admin cert modification (#257) (#258)
+
 ## v1.1.7
 
 * [ae60298](https://github.com/hyperledger/blockchain-explorer/commit/ae60298) [BE-876](https://jira.hyperledger.org/browse/BE-876) Stop unnecessary discovery request (#255)
