@@ -26,9 +26,9 @@
 		}
 	},
 	"channels": {
-		"commonchannel": {
+		"org1channel": {
 			"peers": {
-				"peer0-org1": {}
+				"peer0.org1.example.com": {}
 			},
 			"connection": {
 				"timeout": {
@@ -43,38 +43,38 @@
 	},
 	"organizations": {
 		"org1": {
-			"mspid": "Org1ExampleCom",
+			"mspid": "Org1MSP",
 			"adminPrivateKey": {
-				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk"
+				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
 			},
-			"peers": ["peer0-org1"],
+			"peers": ["peer0.org1.example.com"],
 			"certificateAuthorities": ["ca0"],
 			"signedCert": {
-				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
 			}
 		}
 	},
 	"peers": {
-		"peer0-org1": {
+		"peer0.org1.example.com": {
 			"tlsCACerts": {
-				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt"
+				"path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
-			"url": "grpcs://localhost:31000",
+			"url": "grpcs://peer0.org1.example.com:7051",
 			"grpcOptions": {
-				"ssl-target-name-override": "peer0-org1"
+				"ssl-target-name-override": "peer0.org1.example.com"
 			}
 		}
 	},
 	"certificateAuthorities": {
 		"ca0": {
-			"url": "https://localhost:32000",
+			"url": "https://ca_org1:7054",
 			"httpOptions": {
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "./app/platform/fabric/e2e-test/specs/crypto-config/peerOrganizations/org1/ca/ca.org1-cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
 			},
-			"caName": "ca0-org1"
+			"caName": "ca_org1"
 		}
 	}
 }

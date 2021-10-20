@@ -9,7 +9,7 @@ volumes:
 networks:
   mynetwork.com:
     external:
-      name: net_test
+      name: fabric_test
 
 services:
 
@@ -40,15 +40,15 @@ services:
       - DATABASE_DATABASE=fabricexplorer
       - DATABASE_USERNAME=hppoc
       - DATABASE_PASSWD=password
-      - LOG_LEVEL_APP=debug
-      - LOG_LEVEL_DB=debug
-      - LOG_LEVEL_CONSOLE=info
+      - LOG_LEVEL_APP=info
+      - LOG_LEVEL_DB=info
+      - LOG_LEVEL_CONSOLE=debug
       - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
     volumes:
-      - ./examples/net1/config.json:/opt/explorer/app/platform/fabric/config.json
-      - ./examples/net1/connection-profile:/opt/explorer/app/platform/fabric/connection-profile
-      - /fabric-path/fabric-samples/test-network/organizations:/tmp/crypto
+      - ${EXPLORER_CONFIG_FILE_PATH}:/opt/explorer/app/platform/fabric/config.json
+      - ${EXPLORER_PROFILE_DIR_PATH}:/opt/explorer/app/platform/fabric/connection-profile
+      - ${FABRIC_CRYPTO_PATH}:/tmp/crypto
       - walletstore:/opt/explorer/wallet
     ports:
       - 8080:8080

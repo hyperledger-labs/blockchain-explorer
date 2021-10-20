@@ -27,31 +27,31 @@ DELAY=10
 
 pushd ${SCRIPTPATH}/..
 
-cp ./configs/config_${NETWORK_MODE}.json ${ROOTPATH}/app/platform/fabric/config.json
+# cp ./configs/config_${NETWORK_MODE}.json ${ROOTPATH}/app/platform/fabric/config.json
 
 if [ ${NETWORK_MODE} == "single-pem" ]; then
   tmpf=$(mktemp)
-  cat specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/keystore/priv_sk | \
+  cat ${ROOTPATH}/test/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk | \
   awk '{printf "%s\\n",$0} END {print ""}' | \
-  xargs -0 -I{} jq '.organizations.org1.adminPrivateKey.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  xargs -0 -I{} jq '.organizations.org1.adminPrivateKey.pem = "{}"' ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json \
   > "$tmpf"
-  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+  mv -f "$tmpf" ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json
 
-  cat specs/crypto-config/peerOrganizations/org1/users/Admin@org1/msp/signcerts/Admin@org1-cert.pem | \
+  cat ${ROOTPATH}/test/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem | \
   awk '{printf "%s\\n",$0} END {print ""}' | \
-  xargs -0 -I{} jq '.organizations.org1.signedCert.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  xargs -0 -I{} jq '.organizations.org1.signedCert.pem = "{}"' ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json \
   > "$tmpf"
-  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+  mv -f "$tmpf" ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json
 
-  cat specs/crypto-config/peerOrganizations/org1/peers/peer0-org1.org1/tls/ca.crt | \
+  cat ${ROOTPATH}/test/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt | \
   awk '{printf "%s\\n",$0} END {print ""}' | \
-  xargs -0 -I{} jq '.peers."peer0-org1".tlsCACerts.pem = "{}"' configs/connection-profile/org1-network-pem.json \
+  xargs -0 -I{} jq '.peers."peer0.org1.example.com".tlsCACerts.pem = "{}"' ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json \
   > "$tmpf"
-  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+  mv -f "$tmpf" ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json
 
-  jq '.client.adminCredential.id = "exploreradmin2"' configs/connection-profile/org1-network-pem.json \
+  jq '.client.adminCredential.id = "exploreradmin2"' ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json \
   > "$tmpf"
-  mv -f "$tmpf" configs/connection-profile/org1-network-pem.json
+  mv -f "$tmpf" ${ROOTPATH}/test/api/connection-profile/org1-network-pem.json
 fi
 popd
 
@@ -59,9 +59,9 @@ popd
 pushd ${ROOTPATH}
 
 if [ $CLEANUP -eq 1 ]; then
-  ./build_docker_image.sh -d
-  docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml down -v
-  docker-compose -f ./app/platform/fabric/e2e-test/docker-compose.yaml up -d explorerdb.mynetwork.com
+  # ./build_docker_image.sh
+  docker-compose down -v
+  docker-compose up -d explorerdb.mynetwork.com
   echo "#### Starting DB container ..."
 
   rc=1
@@ -77,12 +77,19 @@ if [ $CLEANUP -eq 1 ]; then
   done
   echo "#### Started DB container"
 
-  rm -rf logs wallet
+  # rm -rf logs wallet
 fi
 
 # export LOG_LEVEL_CONSOLE=debug
+export EXPLORER_CONFIG_FILE_PATH=${ROOTPATH}/test/api/config_${NETWORK_MODE}.json
+export EXPLORER_PROFILE_DIR_PATH=${ROOTPATH}/test/api/connection-profile
+export FABRIC_CRYPTO_PATH=${ROOTPATH}/test/fabric-samples/test-network/organizations
 export EXPLORER_SYNC_BLOCKSYNCTIME_SEC=5
-npm start
+
+pushd ${ROOTPATH}
+docker-compose up -d
+popd
+
 echo "#### Starting Explorer process ..."
 
 rc=1
@@ -92,7 +99,7 @@ while
 do
   sleep $DELAY
   set -x
-  cat logs/console/console.log 2>/dev/null | grep -q "Please open web browser to access"
+  docker logs explorer.mynetwork.com 2>&1 | grep -q "Please open web browser to access"
   rc=$?
   set +x
 done
