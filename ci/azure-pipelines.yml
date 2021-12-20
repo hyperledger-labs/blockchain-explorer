@@ -9,13 +9,13 @@ pr:
 variables:
   GOPATH: $(Agent.BuildDirectory)/go
   PATH: $(Agent.BuildDirectory)/go/bin:/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin
-  GO_VER: 1.13.8
-  NODE_VER: 10.19
+  GO_VER: 1.16.4
+  NODE_VER: 12.13
 
 jobs:
 - job: TestsWithCoverage
   pool:
-    vmImage: ubuntu-16.04
+    vmImage: ubuntu-20.04
   steps:
 
   - template: install_deps.yml
@@ -39,47 +39,13 @@ jobs:
       summaryFileLocation: $(System.DefaultWorkingDirectory)/client/coverage.xml
       pathToSources: $(System.DefaultWorkingDirectory)/client
 
-- job: SanityChecks_v1_4
+- job: SanityChecks
   pool:
-    vmImage: ubuntu-16.04
+    vmImage: ubuntu-20.04
   steps:
   - template: install_deps.yml
   - checkout: self
   - script: |
       npm install
-      npm run e2e-api-test-v1
+      npm run e2e-api-test
     displayName: Run Sanity Checks for v1.4
-
-- job: SanityChecks_v2_1
-  pool:
-    vmImage: ubuntu-16.04
-  steps:
-  - template: install_deps.yml
-  - checkout: self
-  - script: |
-      npm install
-      npm run e2e-api-test-v2
-    displayName: Run Sanity Checks for v2.1
-
-- job: GUITests_v1_4
-  pool:
-    vmImage: ubuntu-16.04
-  steps:
-  - template: install_deps.yml
-  - checkout: self
-  - script: |
-      npm install
-      npm run e2e-gui-test-v1
-    displayName: Run GUI Tests for v1.4
-
-- job: GUITests_v2_1
-  pool:
-    vmImage: ubuntu-16.04
-  steps:
-  - template: install_deps.yml
-  - checkout: self
-  - script: |
-      npm install
-      npm run e2e-gui-test-v2
-    displayName: Run GUI Tests for v2.1
-  

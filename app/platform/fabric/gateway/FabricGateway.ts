@@ -105,6 +105,7 @@ export class FabricGateway {
 					signedCertPem,
 					adminPrivateKeyPem
 				);
+				logger.info('1');
 			}
 
 			if (!this.tlsEnable) {
@@ -112,11 +113,13 @@ export class FabricGateway {
 			} else {
 				Client.setConfigSetting('discovery-protocol', 'grpcs');
 			}
+			logger.info('2');
 
 			// Set connection options; identity and wallet
 			this.asLocalhost =
 				String(Client.getConfigSetting('discovery-as-localhost', 'true')) ===
 				'true';
+			logger.info('3');
 
 			const connectionOptions = {
 				identity: explorerAdminId,
@@ -127,6 +130,7 @@ export class FabricGateway {
 				},
 				clientTlsIdentity: ''
 			};
+			logger.info('4', connectionOptions);
 
 			const mTlsIdLabel = this.fabricConfig.getClientTlsIdentity();
 			if (mTlsIdLabel) {
@@ -140,6 +144,7 @@ export class FabricGateway {
 					);
 				}
 			}
+			logger.info('5', this.config);
 
 			// Connect to gateway
 			await this.gateway.connect(this.config, connectionOptions);
@@ -433,25 +438,22 @@ export class FabricGateway {
 				this.waitingResp = true;
 				logger.info('Sending discovery request...');
 				await this.ds
-          .send({
-            asLocalhost: this.asLocalhost,
-            requestTimeout: 5000,
-            refreshAge: 15000,
-            targets: this.dsTargets,
-          })
-          .then(() => {
-            logger.info('Succeeded to send discovery request');
-          })
-          .catch(error => {
-            if (error) {
-              logger.warn(
-                'Failed to send discovery request for channel',
-                error,
-              );
-              this.waitingResp = false;
-              this.ds.close();
-            }
-          });
+					.send({
+						asLocalhost: this.asLocalhost,
+						requestTimeout: 5000,
+						refreshAge: 15000,
+						targets: this.dsTargets
+					})
+					.then(() => {
+						logger.info('Succeeded to send discovery request');
+					})
+					.catch(error => {
+						if (error) {
+							logger.warn('Failed to send discovery request for channel', error);
+							this.waitingResp = false;
+							this.ds.close();
+						}
+					});
 			} else {
 				logger.info('Have already been sending a request');
 				return null;

@@ -2,7 +2,7 @@
 	"network-configs": {
 		"org1-network": {
 			"name": "org1-network",
-			"profile": "./e2e-test/configs/connection-profile/org1-network.json"
+			"profile": "./connection-profile/org1-network-disable-auth.json"
 		}
 	},
 	"license": "Apache-2.0"

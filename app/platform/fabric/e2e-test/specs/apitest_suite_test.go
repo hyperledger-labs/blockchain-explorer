@@ -41,9 +41,8 @@ func dumpLog() {
 	fmt.Println("=== Dump Explorer app log ===")
 	fmt.Println(cwd)
 	os.Chdir(relativePahtToRoot)
-	cmd := exec.Command("cat", "logs/console/console.log")
+	cmd := exec.Command("docker", "logs", "explorer.mynetwork.com")
 	session, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Expect(err).ShouldNot(HaveOccurred())
 	session.Wait()
-	fmt.Println(session.Out)
 }
