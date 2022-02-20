@@ -16,7 +16,7 @@ project, you will need a `Linux Foundation account <https://identity.linuxfounda
 You will need to use your LF ID to access to all the Hyperledger community tools, including:
 
  * `Jira <https://jira.hyperledger.org/projects/BE/issues>`__.
- * `RocketChat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__.
+ * `Discord <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.
  * `Mailing list <https://lists.hyperledger.org/g/explorer>`__.
 
 
@@ -29,14 +29,14 @@ We always appreciate such bug reports as it reduces our effort and will help us 
 Please use the search functionality to ensure that the bug/feature request you are trying to file does not exist already.
 If it exists, you can always add additional information to the JIRA issue in the comments sections and start watching for updates.
 All the issue here will be added to our backlog and prioritized in the upcoming sprints.
-You can contact the developers for any general problems or questions on `Hyperledger Explorer Chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__.
+You can contact the developers for any general problems or questions on `Discord <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.
 
 
 Communications
 --------------
 
-We use `RocketChat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__ for communication
-and Zoom meeting™ for screen sharing between developers. Our
+
+We use `Discord <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.  for communication and Zoom meeting™ for screen sharing between developers. Our
 development planning and prioritization is done in
 `JIRA <https://jira.hyperledger.org/secure/RapidBoard.jspa?rapidView=155&view=planning>`__, and we take longer running
 discussions/decisions to the `mailing

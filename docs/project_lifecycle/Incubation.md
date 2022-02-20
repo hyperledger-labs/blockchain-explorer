@@ -53,8 +53,7 @@
 - Other communication means used, such as slack channels, are set up
 
  - Hyperledger Explorer [wiki](https://wiki.hyperledger.org/display/explorer/Hyperledger+Explorer)
- - [Rochet chat hyperledger-explorer](https://chat.hyperledger.org/channel/hyperledger-explorer)
- - [Rochet chat developer channel](https://chat.hyperledger.org/channel/hlexplorer-developers)
+ - Chat on [Discord](https://discord.com/channels/905194001349627914/941483844308185138). [Please join our discord server first](https://discord.gg/hyperledger).
 
 ## Continuous Integration
 
