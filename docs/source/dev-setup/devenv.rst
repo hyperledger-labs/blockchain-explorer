@@ -72,7 +72,8 @@ To contribute changes, use the following workflow:
 * Create a pull-request (PR) on the Hyperledger Explorer doc repository. If the PR addresses an existing Jira issue,include the issue number in the PR title in square brackets (for example, `[BE-234]`).
 * Add labels to identify the type of your PR. _For example, if your PR fixes a bug, add the "bug" label.
 * If the PR address an existing Jira issue, comment in the Jira issue with the PR number.
-* Ensure your changes are reviewed. Select the reviewers you would like to review your PR. If you don't know who to choose, simply select the reviewers proposed by GitHub or leave blank and let us know on `Hyperledger Explorer chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__.
+* Ensure your changes are reviewed. Select the reviewers you would like to review your PR. If you don't know who to choose, simply select the reviewers proposed by GitHub or leave blank and let us know on `chat <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.
+
 * Make any required changes on your contribution from the reviewers feedback. Make the changes, commit to your branch, and push to your remote fork.
 * When your PR is validated, all tests passed and your branch has no conflicts with the target branch, you can "squash and merge" your PR and you're done.
 
@@ -103,7 +104,8 @@ reasonable chance to look at PR in their local business hours.
 
 If an approver intends to be the primary reviewer of a PR they should set themselves as the assignee on GitHub and say so in a reply to the PR. Only the primary approver of a change should actually do the merge, except in rare cases (e.g. they are unavailable in a reasonable timeframe).
 
-If a PR has gone 2 work days without an approver emerging, please ask on `Hyperledger Explorer Rocketchat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__
+If a PR has gone 2 work days without an approver emerging, please ask on `Discord <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.
+
 
 
 

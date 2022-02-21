@@ -12,7 +12,7 @@ There are well defined steps and instructions on how to `Get Started with Hyperl
 run HL Explorer successfully. Along with the instructions you may find useful
 `troubleshooting notes <https://github.com/hyperledger/blockchain-explorer/blob/main/TROUBLESHOOT.md>`__, that were collected, and or submitted
 by community through the `mail listings <https://lists.hyperledger.org/g/explorer/topics>`__  or
-`Rocket Chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__ hyperledger-explorer channel.
+`Discord <https://discord.com/channels/905194001349627914/941483844308185138>`__. `Please join our discord server first <https://discord.gg/hyperledger>`__.
 
 .. important::
 

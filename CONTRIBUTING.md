@@ -1,4 +1,3 @@
-
 <!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
 # Contributing to Hyperledger Explorer
@@ -10,7 +9,7 @@ We welcome contributions to the Hyperledger Explorer Project in many forms like 
 
 We track all bugs and feature requests on [Hyperledger Explorer Jira](https://jira.hyperledger.org/projects/BE/issues). Please send a detailed bug report with relevant logs and steps to reproduce the issue when you encounter an issue. We always appreciate such bug reports as it reduces our effort and will help us fix the bug easily. Please use the search functionality to ensure that the bug/feature request you are trying to file does not exist already. If it exists, you can always add additional information to the JIRA issue in the comments sections and start watching for updates. All the issue here will be added to our backlog and prioritized in the upcoming sprints.
 
-You can contact the developers for any general problems or questions on [Hyperledger Chat](https://chat.hyperledger.org/channel/hyperledger-explorer).
+You can contact the developers for any general problems or questions on [Discord](https://discord.com/channels/905194001349627914/941483844308185138). [Please join our discord server first](https://discord.gg/hyperledger).
 
 ## Documentation updates
 

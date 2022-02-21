@@ -1,10 +1,10 @@
 
 <!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
-# Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url] [![](https://img.shields.io/badge/Stack%20Overflow-Hyperledger%20Explorer-brightgreen)](https://stackoverflow.com/search?tab=newest&q=hyperledger%20explorer%20hyperledger-explorer)
+# Hyperledger Explorer [![join the chat][chat-image]][chat-url] [![](https://img.shields.io/badge/Stack%20Overflow-Hyperledger%20Explorer-brightgreen)](https://stackoverflow.com/search?tab=newest&q=hyperledger%20explorer%20hyperledger-explorer)
 
-[rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer
-[rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
+[chat-url]: https://discord.gg/hyperledger
+[chat-image]: https://img.shields.io/discord/905194001349627914?logo=Hyperledger&style=plastic.svg
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
 ![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />

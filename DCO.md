@@ -5,4 +5,4 @@ As per section 13.a of the [Hyperledger Charter](https://www.hyperledger.org/abo
 
 The sign off needs to be using your legal name, not a pseudonym.  Git has a built-in mechanism to allow this with the `-s` or `--signoff` argument to `git commit` command, providing your `user.name` and `user.email` have been setup correctly.
 
-If you have any questions, you can reach us on [hyperledger-explorer channel](https://chat.hyperledger.org/channel/hyperledger-explorer).
+If you have any questions, you can reach us on on [Discord](https://discord.com/channels/905194001349627914/941483844308185138). [Please join our discord server first](https://discord.gg/hyperledger).

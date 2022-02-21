@@ -20,7 +20,7 @@ To build Hyperledger Explorer:
 .. note::
 
 
-			`Ask in chat <https://chat.hyperledger.org/channel/hyperledger-explorer>`__  what is the branch name of the latest being in development
+			`Ask in chat <https://discord.com/channels/905194001349627914/941483844308185138>`__.  what is the branch name of the latest being in development. `Please join our discord server first <https://discord.gg/hyperledger>`__.
 
 
 Running the unit tests
