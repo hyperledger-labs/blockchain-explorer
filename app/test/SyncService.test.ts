@@ -35,9 +35,6 @@ function getSyncServicesInstance() {
 	const { SyncServices } = proxyquire
 		.noCallThru()
 		.load('../platform/fabric/sync/SyncService', {
-			'convert-hex': {
-				bytesToHex: sinon.stub()
-			},
 			'../../../common/helper': {
 				helper: {
 					getLogger: function() {

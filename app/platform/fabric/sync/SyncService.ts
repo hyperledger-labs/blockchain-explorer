@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as convertHex from 'convert-hex';
 import fabprotos from 'fabric-protos';
 import includes from 'lodash/includes';
 import * as sha from 'js-sha256';
@@ -554,15 +553,15 @@ export class SyncServices {
 			}
 			let envelope_signature = txObj.signature;
 			if (envelope_signature !== undefined) {
-				envelope_signature = convertHex.bytesToHex(envelope_signature);
+				envelope_signature = Buffer.from(envelope_signature).toString('hex');
 			}
 			let payload_extension = txObj.payload.header.channel_header.extension;
 			if (payload_extension !== undefined) {
-				payload_extension = convertHex.bytesToHex(payload_extension);
+				payload_extension = Buffer.from(payload_extension).toString('hex');
 			}
 			let creator_nonce = txObj.payload.header.signature_header.nonce;
 			if (creator_nonce !== undefined) {
-				creator_nonce = convertHex.bytesToHex(creator_nonce);
+				creator_nonce = Buffer.from(creator_nonce).toString('hex');
 			}
 			/* eslint-disable */
 			const creator_id_bytes =
@@ -598,14 +597,15 @@ export class SyncServices {
 					let inputs = '';
 					for (const input of chaincode_proposal_input) {
 						inputs =
-							(inputs === '' ? inputs : `${inputs},`) + convertHex.bytesToHex(input);
+							(inputs === '' ? inputs : `${inputs},`) +
+							Buffer.from(input).toString('hex');
 					}
 					chaincode_proposal_input = inputs;
 				}
 				endorser_signature =
 					txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
 				if (endorser_signature !== undefined) {
-					endorser_signature = convertHex.bytesToHex(endorser_signature);
+					endorser_signature = Buffer.from(endorser_signature).toString('hex');
 				}
 				payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
 					'hex'
