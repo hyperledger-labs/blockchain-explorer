@@ -554,29 +554,14 @@ export class SyncServices {
 			}
 			let envelope_signature = txObj.signature;
 			if (envelope_signature !== undefined) {
-				console.log('-----envelope_signature-----');
-				console.log('raw:', envelope_signature);
-				console.log('convertHex:', convertHex.bytesToHex(envelope_signature));
-				console.log('toString:', Buffer.from(envelope_signature).toString('hex'));
-				console.log('++++++++++++++++++++++++++++');
 				envelope_signature = convertHex.bytesToHex(envelope_signature);
 			}
 			let payload_extension = txObj.payload.header.channel_header.extension;
 			if (payload_extension !== undefined) {
-				console.log('-----payload_extension-----');
-				console.log('raw:', payload_extension);
-				console.log('convertHex:', convertHex.bytesToHex(payload_extension));
-				console.log('toString:', Buffer.from(payload_extension).toString('hex'));
-				console.log('+++++++++++++++++++++++++++');
 				payload_extension = convertHex.bytesToHex(payload_extension);
 			}
 			let creator_nonce = txObj.payload.header.signature_header.nonce;
 			if (creator_nonce !== undefined) {
-				console.log('-----creator_nonce-----');
-				console.log('raw:', creator_nonce);
-				console.log('convertHex:', convertHex.bytesToHex(creator_nonce));
-				console.log('toString:', Buffer.from(creator_nonce).toString('hex'));
-				console.log('+++++++++++++++++++++++');
 				creator_nonce = convertHex.bytesToHex(creator_nonce);
 			}
 			/* eslint-disable */
@@ -614,22 +599,12 @@ export class SyncServices {
 					for (const input of chaincode_proposal_input) {
 						inputs =
 							(inputs === '' ? inputs : `${inputs},`) + convertHex.bytesToHex(input);
-						console.log('-----input-----');
-						console.log('raw:', input);
-						console.log('convertHex:', convertHex.bytesToHex(input));
-						console.log('toString:', Buffer.from(input).toString('hex'));
-						console.log('+++++++++++++++');
 					}
 					chaincode_proposal_input = inputs;
 				}
 				endorser_signature =
 					txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
 				if (endorser_signature !== undefined) {
-					console.log('-----endorser_signature-----');
-					console.log(endorser_signature);
-					console.log('convertHex:', convertHex.bytesToHex(endorser_signature));
-					console.log('toString:', Buffer.from(endorser_signature).toString('hex'));
-					console.log('++++++++++++++++++++++++++++');
 					endorser_signature = convertHex.bytesToHex(endorser_signature);
 				}
 				payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
