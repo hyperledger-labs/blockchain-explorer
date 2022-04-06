@@ -20,14 +20,14 @@
 
 Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open source utility to browse activity on the underlying blockchain network. Users have the ability to configure and build Hyperledger Explorer on MacOS and Ubuntu.
 
-**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it. 
+**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
 
 
 # Release Notes
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
-| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
+| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.6](release_notes/v1.1.6.md)</b> (Jun 06, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.5](release_notes/v1.1.5.md)</b> (Apr 20, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
@@ -58,6 +58,13 @@ In this guide, we assume that you've already started test network by following [
 
 ## Configure
 
+* Create a new directory (e.g. `explorer`)
+
+    ```bash
+    mkdir explorer
+    cd explorer
+    ```
+
 * Copy the following files from repository
 
   - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/main/docker-compose.yaml)
@@ -65,13 +72,17 @@ In this guide, we assume that you've already started test network by following [
   - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/config.json)
 
 
-  ```
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/config.json
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/connection-profile/test-network.json -P connection-profile
-  $ wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/docker-compose.yaml
+  ```bash
+  wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/config.json
+  wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/connection-profile/test-network.json -P connection-profile
+  wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/docker-compose.yaml
   ```
 
-* Copy entire crypto artifact directory (e.g. crypto-config/, organizations/) from your fabric network
+* Copy entire crypto artifact directory (organizations/) from your fabric network (e.g /fabric-samples/test-network)
+
+    ```bash
+    cp -r ../fabric-samples/test-network/organizations/ .
+    ```
 
 * Now you should have the following files and directory structure.
 
@@ -83,7 +94,7 @@ In this guide, we assume that you've already started test network by following [
     organizations/peerOrganizations/
     ```
 
-* Edit network name and path to volumes to be mounted on Explorer container (docker-compose.yaml) to align with your environment
+* Edit environmental variables in `docker-compose.yaml` to align with your environment
 
     ```yaml
         networks:
@@ -105,6 +116,14 @@ In this guide, we assume that you've already started test network by following [
               - walletstore:/opt/explorer/wallet
     ```
 
+    Alternative option is to export environmental variables in your shell.
+
+    ```bash
+    export EXPLORER_CONFIG_FILE_PATH=./config.json
+    export EXPLORER_PROFILE_DIR_PATH=./connection-profile
+    export FABRIC_CRYPTO_PATH=./organizations
+    ```
+
 * When you connect Explorer to your fabric network through bridge network, you need to set DISCOVERY_AS_LOCALHOST to false for disabling hostname mapping into localhost.
 
     ```yaml
@@ -120,19 +139,22 @@ In this guide, we assume that you've already started test network by following [
           - DISCOVERY_AS_LOCALHOST=false
     ```
 
-* Edit path to admin certificate and secret (private) key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
+* Replace user's certificates to admin certificate and secret (private) key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
 
+    Before:
     ```json
-      "organizations": {
-        "Org1MSP": {
-          "adminPrivateKey": {
-            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
-          ...
-          ...
-          "signedCert": {
-            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
-          }
+    "adminPrivateKey": {
+	    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk"
+	}
     ```
+
+    After:
+    ```json
+    "adminPrivateKey": {
+	    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+	}
+    ```
+    **Make sure you replace all paths.**
 
 ## Start container services
 
