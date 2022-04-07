@@ -275,58 +275,80 @@ $ cd blockchain-explorer/app
     ```
     $ cd blockchain-explorer/app/persistence/fabric/postgreSQL/db
     $ ./createdb.sh
+    $ createdb `whoami`
     ```
 
 Connect to the PostgreSQL database and run DB status commands:
 
+* **Ubuntu**
+
+    ```shell
+    sudo -u postgres psql -c '\l'
+    sudo -u postgres psql $DATABASE_DATABASE -c '\d'
+    ```
+
+* **MacOS**
+
+    ```shell
+    psql -c '\l'
+    psql $DATABASE_DATABASE -c '\d'
+    ```
+
+Expected output
 ```shell
 $ sudo -u postgres psql -c '\l'
-                                List of databases
-      Name      |  Owner   | Encoding | Collate |  Ctype  |   Access privileges
-----------------+----------+----------+---------+---------+-----------------------
- fabricexplorer | hppoc    | UTF8     | C.UTF-8 | C.UTF-8 |
- postgres       | postgres | UTF8     | C.UTF-8 | C.UTF-8 |
- template0      | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
-                |          |          |         |         | postgres=CTc/postgres
- template1      | postgres | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
-                |          |          |         |         | postgres=CTc/postgres
+                                     List of databases
+      Name      |        Owner        | Encoding | Collate |  Ctype  |   Access privileges
+----------------+---------------------+----------+---------+---------+-----------------------
+ fabricexplorer | $DATABASE_USERNAME  | UTF8     | C.UTF-8 | C.UTF-8 |
+ postgres       | postgres            | UTF8     | C.UTF-8 | C.UTF-8 |
+ template0      | postgres            | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                |                     |          |         |         | postgres=CTc/postgres
+ template1      | postgres            | UTF8     | C.UTF-8 | C.UTF-8 | =c/postgres          +
+                |                     |          |         |         | postgres=CTc/postgres
 (4 rows)
 
-$ sudo -u postgres psql fabricexplorer -c '\d'
+$ sudo -u postgres psql $DATABASE_DATABASE -c '\d'
                    List of relations
- Schema |           Name            |   Type   | Owner
---------+---------------------------+----------+-------
- public | blocks                    | table    | hppoc
- public | blocks_id_seq             | sequence | hppoc
- public | chaincodes                | table    | hppoc
- public | chaincodes_id_seq         | sequence | hppoc
- public | channel                   | table    | hppoc
- public | channel_id_seq            | sequence | hppoc
- public | orderer                   | table    | hppoc
- public | orderer_id_seq            | sequence | hppoc
- public | peer                      | table    | hppoc
- public | peer_id_seq               | sequence | hppoc
- public | peer_ref_chaincode        | table    | hppoc
- public | peer_ref_chaincode_id_seq | sequence | hppoc
- public | peer_ref_channel          | table    | hppoc
- public | peer_ref_channel_id_seq   | sequence | hppoc
- public | transactions              | table    | hppoc
- public | transactions_id_seq       | sequence | hppoc
- public | write_lock                | table    | hppoc
- public | write_lock_write_lock_seq | sequence | hppoc
+ Schema |           Name            |   Type   |       Owner
+--------+---------------------------+----------+-------------------
+ public | blocks                    | table    | $DATABASE_USERNAME
+ public | blocks_id_seq             | sequence | $DATABASE_USERNAME
+ public | chaincodes                | table    | $DATABASE_USERNAME
+ public | chaincodes_id_seq         | sequence | $DATABASE_USERNAME
+ public | channel                   | table    | $DATABASE_USERNAME
+ public | channel_id_seq            | sequence | $DATABASE_USERNAME
+ public | orderer                   | table    | $DATABASE_USERNAME
+ public | orderer_id_seq            | sequence | $DATABASE_USERNAME
+ public | peer                      | table    | $DATABASE_USERNAME
+ public | peer_id_seq               | sequence | $DATABASE_USERNAME
+ public | peer_ref_chaincode        | table    | $DATABASE_USERNAME
+ public | peer_ref_chaincode_id_seq | sequence | $DATABASE_USERNAME
+ public | peer_ref_channel          | table    | $DATABASE_USERNAME
+ public | peer_ref_channel_id_seq   | sequence | $DATABASE_USERNAME
+ public | transactions              | table    | $DATABASE_USERNAME
+ public | transactions_id_seq       | sequence | $DATABASE_USERNAME
+ public | write_lock                | table    | $DATABASE_USERNAME
+ public | write_lock_write_lock_seq | sequence | $DATABASE_USERNAME
 (18 rows)
 
 ```
+
+(On MacOS, expect to see your `` `whoami` `` rather than `postgres`. Entries with
+`$DATABASE_USERNAME` will have the valuei of that parameter, whether set as an
+environment variable or as a JSON keyval; it will not show the literal string.)
 
 ## Build Hyperledger Explorer
 
 **Important:** repeat the below steps after every git pull
 
-* `./main.sh install`
-  * To install, run tests, and build project
+From the root of the repository:
+
 - `./main.sh clean`
   * To clean the /node_modules, client/node_modules client/build, client/coverage, app/test/node_modules
    directories
+* `./main.sh install`
+  * To install, run tests, and build project
 
 Or
 
