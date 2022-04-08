@@ -18,16 +18,16 @@
 
 ![](docs/source/images/Hyperledger_Explorer_Logo_Color.png)
 
-Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open source utility to browse activity on the underlying blockchain network. Users have the ability to configure and build Hyperledger Explorer on MacOS and Ubuntu.
+Hyperledger Explorer is a simple, powerful, easy-to-use, well-maintained, open-source utility to browse activity on the underlying blockchain network. Users can configure and build Hyperledger Explorer on macOS and Ubuntu.
 
-**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it. 
+**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
 
 
 # Release Notes
 
 | Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
-| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
+| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.6](release_notes/v1.1.6.md)</b> (Jun 06, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.5](release_notes/v1.1.5.md)</b> (Apr 20, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
@@ -38,7 +38,7 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well maintained, open s
 ---
 
 There are 2 options to get Explorer started. Following are the software dependencies required for each option.
-And if you want to refer more detail of each configuration, please refer [README-CONFIG.md](README-CONFIG.md).
+And if you want to know more about each configuration, please refer [README-CONFIG.md](README-CONFIG.md).
 
 # Quick start (using Docker)
 
@@ -54,26 +54,37 @@ And if you want to refer more detail of each configuration, please refer [README
 
 ## Start Hyperledger Fabric network
 
-In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
+This guide assumes that you've already started the test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
 
 ## Configure
 
-* Copy the following files from repository
+* Create a new directory (e.g. `explorer`)
+
+    ```bash
+    mkdir explorer
+    cd explorer
+    ```
+
+* Copy the following files from the repository
 
   - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/main/docker-compose.yaml)
   - [examples/net1/connection-profile/test-network.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/connection-profile/test-network.json)
   - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/config.json)
 
 
-  ```
+  ```bash
   wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/config.json
   wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/examples/net1/connection-profile/test-network.json -P connection-profile
   wget https://raw.githubusercontent.com/hyperledger/blockchain-explorer/main/docker-compose.yaml
   ```
 
-* Copy entire crypto artifact directory (e.g. crypto-config/, organizations/) from your fabric network
+* Copy entire crypto artifact directory (organizations/) from your fabric network (e.g /fabric-samples/test-network)
 
-* Now you should have the following files and directory structure.
+    ```bash
+    cp -r ../fabric-samples/test-network/organizations/ .
+    ```
+
+* Now, you should have the following files and directory structure.
 
     ```
     docker-compose.yaml
@@ -83,7 +94,7 @@ In this guide, we assume that you've already started test network by following [
     organizations/peerOrganizations/
     ```
 
-* Edit network name and path to volumes to be mounted on Explorer container (docker-compose.yaml) to align with your environment
+* Edit environmental variables in `docker-compose.yaml` to align with your environment
 
     ```yaml
         networks:
@@ -105,7 +116,15 @@ In this guide, we assume that you've already started test network by following [
               - walletstore:/opt/explorer/wallet
     ```
 
-* When you connect Explorer to your fabric network through bridge network, you need to set DISCOVERY_AS_LOCALHOST to false for disabling hostname mapping into localhost.
+    An alternative option is to export environment variables in your shell.
+
+    ```bash
+    export EXPLORER_CONFIG_FILE_PATH=./config.json
+    export EXPLORER_PROFILE_DIR_PATH=./connection-profile
+    export FABRIC_CRYPTO_PATH=./organizations
+    ```
+
+* When you connect Explorer to your fabric network through the bridge network, you need to set `DISCOVERY_AS_LOCALHOST` to `false` for disabling hostname mapping into localhost.
 
     ```yaml
     services:
@@ -120,19 +139,22 @@ In this guide, we assume that you've already started test network by following [
           - DISCOVERY_AS_LOCALHOST=false
     ```
 
-* Edit path to admin certificate and secret (private) key in the connection profile (test-network.json). You need to specify with the absolute path on Explorer container.
+* Replace the user's certificate with an admin certificate and a secret (private) key in the connection profile (test-network.json). You need to specify the absolute path on the Explorer container.
 
+    Before:
     ```json
-      "organizations": {
-        "Org1MSP": {
-          "adminPrivateKey": {
-            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
-          ...
-          ...
-          "signedCert": {
-            "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
-          }
+    "adminPrivateKey": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk"
+    }
     ```
+
+    After:
+    ```json
+    "adminPrivateKey": {
+        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+    }
+    ```
+    **Make sure you replace all paths.**
 
 ## Start container services
 
@@ -150,7 +172,7 @@ In this guide, we assume that you've already started test network by following [
     $ docker-compose down
     ```
 
-* In the docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet), if you would like to clear these named volumes up, run the following:
+* In the docker-compose.yaml, two named volumes are allocated for persistent data (for Postgres data and user wallet). If you would like to clear these named volumes up, run the following:
 
     ```shell
     $ docker-compose down -v
@@ -171,7 +193,7 @@ In this guide, we assume that you've already started test network by following [
 
 ## Start Hyperledger Fabric network
 
-In this guide, we assume that you've already started test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
+This guide assumes that you've already started the test network by following [Hyperledger Fabric official tutorial](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html).
 
 ## Clone GIT Repository
 
@@ -200,7 +222,7 @@ $ cd blockchain-explorer/app
     }
     ```
 
-  * Another alternative to configure database settings is to use environment variables, example of settings:
+  * Another alternative to configuring database settings is to use environment variables:
 
     ```shell
     export DATABASE_HOST=127.0.0.1
@@ -209,7 +231,7 @@ $ cd blockchain-explorer/app
     export DATABASE_USERNAME=hppoc
     export DATABASE_PASSWD=pass12345
     ```
-  **Important** repeat after every git pull (in some case you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
+  **Important** repeat after every git pull (in some cases, you may need to apply permission to db/ directory, from blockchain-explorer/app/persistence/fabric/postgreSQL run: `chmod -R 775 db/`
 
 ## Update configuration
 
@@ -228,18 +250,18 @@ $ cd blockchain-explorer/app
     }
     ```
 
-  * `test-network` is the name of your connection profile, and can be changed to any name
-  * `name` is a name you want to give to your fabric network, you can change only value of the key `name`
-  * `profile` is the location of your connection profile, you can change only value of the key `profile`
+  * `test-network` is the name of your connection profile and can be changed to any name
+  * `name` is a name you want to give to your fabric network. You can change the only value of the key `name`
+  * `profile` is the location of your connection profile. You can change the only value of the key `profile`
 
 * Modify connection profile in the JSON file `app/platform/fabric/connection-profile/test-network.json`:
   * Change `fabric-path` to your fabric network disk path in the test-network.json file:
-  * Provide the full disk path to the adminPrivateKey config option, it ussually ends with `_sk`, for example:
+  * Provide the full disk path to the adminPrivateKey config option. It usually ends with `_sk`, for example:
     `/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk`
-  * `adminUser` and `adminPassword` is the credential for user of Explorer to login the dashboard
-  * `enableAuthentication` is a flag to enable authentication using a login page, setting to false will skip authentication.
+  * `adminUser` and `adminPassword` is the credential for the user of Explorer to log in to the dashboard
+  * `enableAuthentication` is a flag to enable authentication using a login page. Setting to false will skip authentication.
 
-## Run create database script:
+## Run `create` database script:
 
 * **Ubuntu**
 
@@ -318,7 +340,7 @@ $ npm run build
 
 ## Run Hyperledger Explorer
 
-### Run Locally in Same Location
+### Run Locally in the Same Location
 
 * Modify `app/explorerconfig.json` to update sync settings.
 
@@ -334,7 +356,7 @@ $ npm run build
 * `npm run app-stop`
   * It will stop the node server
 
-**Note:** If Hyperledger Fabric network is deployed on other machine, please define the following environment variable
+**Note:** If the Hyperledger Fabric network is deployed on other machines, please define the following environment variable
 
 ```
 $ DISCOVERY_AS_LOCALHOST=false npm start
@@ -350,7 +372,7 @@ $ DISCOVERY_AS_LOCALHOST=false npm start
     }
     ```
 
-* If the Hyperledger Explorer was used previously in your browser be sure to clear the cache before relaunching
+* If the Hyperledger Explorer was used previously in your browser, be sure to clear the cache before relaunching
 
 * `./syncstart.sh`
   * It will have the sync node up
@@ -358,7 +380,7 @@ $ DISCOVERY_AS_LOCALHOST=false npm start
 * `./syncstop.sh`
   * It will stop the sync node
 
-**Note:** If Hyperledger Fabric network is deployed on other machine, please define the following environment variable
+**Note:** If the Hyperledger Fabric network is deployed on other machines, please define the following environment variable
 
 ```
 $ DISCOVERY_AS_LOCALHOST=false ./syncstart.sh
@@ -366,12 +388,12 @@ $ DISCOVERY_AS_LOCALHOST=false ./syncstart.sh
 
 # Configuration
 
-Please refer [README-CONFIG.md](README-CONFIG.md) for more detail of each configuration.
+Please refer [README-CONFIG.md](README-CONFIG.md) for more detail on each configuration.
 
 
 # Logs
 
-* Please visit the `./logs/console` folder to view the logs relating to console and `./logs/app` to view the application logs and visit the `./logs/db` to view the database logs.
+* Please visit the `./logs/console` folder to view the logs relating to the console and `./logs/app` to view the application logs, and visit the `./logs/db` to view the database logs.
 
 # Troubleshooting
 
