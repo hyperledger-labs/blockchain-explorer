@@ -351,7 +351,7 @@ $ npm run build
     ```
 
 * `npm start`
-  * It will have the backend and GUI service up
+  * It will have the backend and GUI service up, for as long as the process runs
 
 * `npm run app-stop`
   * It will stop the node server

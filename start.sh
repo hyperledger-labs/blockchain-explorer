@@ -20,4 +20,11 @@ export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-false}
 export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
 export EXPLORER_APP_ROOT=${EXPLORER_APP_ROOT:-dist}
 
+function log_exit() {
+  echo "Server stopped"
+  exit
+}
+trap log_exit SIGINT EXIT
+echo "Server running..."
+
 node ${EXPLORER_APP_ROOT}/main.js name - hyperledger-explorer
