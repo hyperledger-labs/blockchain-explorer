@@ -57,7 +57,7 @@ export class FabricClient {
 		} catch (error) {
 			// TODO in case of the failure, should terminate explorer?
 			logger.error(error);
-			throw new ExplorerError(error);
+			throw new ExplorerError(explorerError.ERROR_1009);
 		}
 
 		// Getting channels from queryChannels
