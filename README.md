@@ -277,7 +277,9 @@ $ cd blockchain-explorer/app
     $ ./createdb.sh
     ```
 
-Connect to the PostgreSQL database and run DB status commands:
+Connect to the PostgreSQL database and run DB status commands. To export the
+settings from `app/explorerconfig.json` to the environment, run `source
+app/exportConfig.sh`; this will set `$DATABASE_DATABASE` and related envvars.
 
 ```shell
 $ sudo -u postgres psql -c '\l'
