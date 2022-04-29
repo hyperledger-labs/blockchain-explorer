@@ -140,7 +140,7 @@ export class Proxy {
 				}
 				// Sometime 'peers_by_org' property is not included in discover result
 				if(typeof node.ledger_height_low === 'undefined')
-                	node.ledger_height_low = '-';
+					node.ledger_height_low = '-';
 				if(typeof node.ledger_height_high === 'undefined')
 					node.ledger_height_high = '-';
 				if(typeof node.ledger_height_unsigned === 'undefined')
