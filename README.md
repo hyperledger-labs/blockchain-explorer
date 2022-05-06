@@ -408,6 +408,10 @@ $ DISCOVERY_AS_LOCALHOST=false npm start
 $ DISCOVERY_AS_LOCALHOST=false ./syncstart.sh
 ```
 
+# Updating Docker image
+
+To build a new version of the Docker image, use `npm run-script docker_build`. This creates a new image, which will become `hyperledger-explorer:latest` (distinct from the canonical images, which are `hyperledger/explorer`, with a `/`). This is a distinct build from the local version used in the Quick Start process. Run this image with `docker-compose down && docker-compose up -d`; both commands are needed.
+
 # Configuration
 
 Please refer [README-CONFIG.md](README-CONFIG.md) for more detail on each configuration.
