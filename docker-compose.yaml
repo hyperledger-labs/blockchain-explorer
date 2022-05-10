@@ -8,8 +8,7 @@ volumes:
 
 networks:
   mynetwork.com:
-    external:
-      name: fabric_test
+    name: fabric_test
 
 services:
 
@@ -45,13 +44,14 @@ services:
       - LOG_LEVEL_CONSOLE=debug
       - LOG_CONSOLE_STDOUT=true
       - DISCOVERY_AS_LOCALHOST=false
+      - PORT=${PORT:-8080}
     volumes:
       - ${EXPLORER_CONFIG_FILE_PATH}:/opt/explorer/app/platform/fabric/config.json
       - ${EXPLORER_PROFILE_DIR_PATH}:/opt/explorer/app/platform/fabric/connection-profile
       - ${FABRIC_CRYPTO_PATH}:/tmp/crypto
       - walletstore:/opt/explorer/wallet
     ports:
-      - 8080:8080
+      - ${PORT:-8080}:${PORT:-8080}
     depends_on:
       explorerdb.mynetwork.com:
         condition: service_healthy
