@@ -278,7 +278,9 @@ $ cd blockchain-explorer/app
     $ createdb `whoami`
     ```
 
-Connect to the PostgreSQL database and run DB status commands:
+Connect to the PostgreSQL database and run DB status commands. To export the
+settings from `app/explorerconfig.json` to the environment, run `source
+app/exportConfig.sh`; this will set `$DATABASE_DATABASE` and related envvars.
 
 * **Ubuntu**
 
@@ -373,7 +375,7 @@ $ npm run build
     ```
 
 * `npm start`
-  * It will have the backend and GUI service up
+  * It will have the backend and GUI service up, for as long as the process runs
 
 * `npm run app-stop`
   * It will stop the node server
