@@ -67,6 +67,7 @@ This guide assumes that you've already started the test network by following [Hy
 
 * Copy the following files from the repository
 
+  - [.env](https://github.com/hyperledger/blockchain-explorer/blob/main/.env)
   - [docker-compose.yaml](https://github.com/hyperledger/blockchain-explorer/blob/main/docker-compose.yaml)
   - [examples/net1/connection-profile/test-network.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/connection-profile/test-network.json)
   - [examples/net1/config.json](https://github.com/hyperledger/blockchain-explorer/blob/main/examples/net1/config.json)

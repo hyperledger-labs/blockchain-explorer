@@ -19,6 +19,7 @@ export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-false}
 
 export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
 export EXPLORER_APP_ROOT=${EXPLORER_APP_ROOT:-dist}
+export PORT=${PORT:-8080}
 
 function log_exit() {
   echo "Server stopped"
