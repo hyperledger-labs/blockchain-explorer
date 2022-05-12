@@ -75,20 +75,17 @@ export class helper {
 					app: {
 						type: 'dateFile',
 						filename: appLog,
-						maxLogSize: 8 * 1024 * 1024,
-						daysToKeep: 7
+						numBackups: 7
 					},
 					db: {
 						type: 'dateFile',
 						filename: dbLog,
-						maxLogSize: 8 * 1024 * 1024,
-						daysToKeep: 7
+						numBackups: 7
 					},
 					console: {
 						type: 'dateFile',
 						filename: consoleLog,
-						maxLogSize: 8 * 1024 * 1024,
-						daysToKeep: 7
+						numBackups: 7
 					},
 					consoleFilter: {
 						type: 'logLevelFilter',
