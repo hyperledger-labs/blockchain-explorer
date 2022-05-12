@@ -1,10 +1,16 @@
 
 <!-- (SPDX-License-Identifier: CC-BY-4.0) -->  <!-- Ensure there is a newline before, and after, this line -->
 
-# Hyperledger Explorer [![join the chat][rocketchat-image]][rocketchat-url] [![](https://img.shields.io/badge/Stack%20Overflow-Hyperledger%20Explorer-brightgreen)](https://stackoverflow.com/search?tab=newest&q=hyperledger%20explorer%20hyperledger-explorer)
+# Hyperledger Explorer
 
-[rocketchat-url]:https://chat.hyperledger.org/channel/hyperledger-explorer
-[rocketchat-image]:https://open.rocket.chat/images/join-chat.svg
+:warning: :warning: :warning:
+
+**As of the 12th May 2022, the Hyperledger Explorer project is in End of Life status. None of the maintainers are actively developing new features. None of the maintainers are actively providing support via GitHub issues. However, if you wish to submit code changes via pull requests, these will be merged.**
+
+**If you wish to contribute, please reach out to [TSC mailing list](https://lists.hyperledger.org/g/tsc/messages)
+
+:warning: :warning: :warning:
+
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
 ![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
