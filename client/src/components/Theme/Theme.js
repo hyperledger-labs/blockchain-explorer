@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import indigo from '@material-ui/core/colors/indigo';
@@ -20,43 +20,43 @@ import 'slick-carousel/slick/slick-theme.css';
 import 'font-awesome/css/font-awesome.min.css';
 
 class Theme extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-    };
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			loading: true
+		};
+	}
 
-  render() {
-    const { mode, children } = this.props;
-    return (
-      <MuiThemeProvider theme={this.getTheme(mode)}>
-        <CssBaseline />
-        {children}
-      </MuiThemeProvider>
-    );
-  }
+	render() {
+		const { mode, children } = this.props;
+		return (
+			<MuiThemeProvider theme={this.getTheme(mode)}>
+				<CssBaseline />
+				{children}
+			</MuiThemeProvider>
+		);
+	}
 
-  getTheme(mode) {
-    return createMuiTheme({
-      palette: {
-        contrastThreshold: 3,
-        tonalOffset: 0.2,
-        background: { paper: mode === 'dark' ? '#453e68' : '#ffffff' },
-        primary: { ...indigo, dark: '#242036' },
-        secondary: lightBlue,
-        error: {
-          main: red[500],
-        },
-        toggleClass: true,
-        type: mode,
-      },
-    });
-  }
+	getTheme(mode) {
+		return createMuiTheme({
+			palette: {
+				contrastThreshold: 3,
+				tonalOffset: 0.2,
+				background: { paper: mode === 'dark' ? '#453e68' : '#ffffff' },
+				primary: { ...indigo, dark: '#242036' },
+				secondary: lightBlue,
+				error: {
+					main: red[500]
+				},
+				toggleClass: true,
+				type: mode
+			}
+		});
+	}
 }
 
 const { modeSelector } = themeSelectors;
 
 export default connect(state => ({
-  mode: modeSelector(state),
+	mode: modeSelector(state)
 }))(Theme);
