@@ -38,18 +38,18 @@
 		"org1": {
 			"mspid": "Org1MSP",
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
 			},
 			"peers": ["peer0.org1.example.com"],
 			"signedCert": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem"
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0.org1.example.com": {
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://peer0.org1.example.com:7051",
 			"grpcOptions": {

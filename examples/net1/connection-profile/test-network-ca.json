@@ -49,7 +49,7 @@
 	"peers": {
 		"peer0.org1.example.com": {
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://peer0.org1.example.com:7051"
 		}
@@ -61,7 +61,7 @@
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "/tmp/crypto/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
 			},
 			"caName": "ca0-org1"
 		}
