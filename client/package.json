@@ -19,7 +19,7 @@
 		"lodash": "^4.17.19",
 		"match-sorter": "^2.2.1",
 		"moment": "^2.22.2",
-		"moment-timezone": "^0.5.16",
+		"moment-timezone": "^0.5.35",
 		"nock": "^9.3.3",
 		"pg": "^7.4.1",
 		"prop-types": "^15.6.2",
