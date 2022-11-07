@@ -19,7 +19,7 @@ import {
 	DropdownMenu,
 	DropdownItem
 } from 'reactstrap';
-import { HashRouter as Router, NavLink } from 'react-router-dom';
+import { HashRouter as Router, Link, NavLink } from 'react-router-dom';
 import Switch from '@material-ui/core/Switch';
 import FontAwesome from 'react-fontawesome';
 import Drawer from '@material-ui/core/Drawer';
@@ -56,6 +56,13 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
+import { AppBar, Box, Icon, IconButton, Toolbar } from '@material-ui/core';
+import {
+	AccountCircle,
+	Menu,
+	Notifications,
+	Settings
+} from '@material-ui/icons';
 
 const {
 	blockPerHour,
@@ -83,21 +90,23 @@ const { channelsSelector } = tableSelectors;
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
-	const darkNavbar = dark && {
-		background: 'linear-gradient(to right, rgb(236, 233, 252), #4d4575)'
-	};
 	return {
-		logo: {
-			width: 260,
-			height: 50,
-			'@media (max-width: 1415px) and (min-width: 990px)': {
-				width: 200,
-				height: 40
-			}
+		appBar: {
+			boxShadow:
+				'0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15) !important'
 		},
-		navbarHeader: {
-			backgroundColor: '#e8e8e8',
-			...darkNavbar
+		toolbar: {
+			display: 'flex',
+			justifyContent: 'space-between'
+		},
+		logo: {
+			width: 122,
+			height: 32,
+			marginLeft: 16,
+			'@media (max-width: 1415px) and (min-width: 990px)': {
+				width: 122,
+				height: 32
+			}
 		},
 		tab: {
 			color: dark ? '#242036' : '#000000',
@@ -510,121 +519,55 @@ export class HeaderView extends Component {
 		];
 
 		return (
-			<div>
-				{/* production */}
-				{/* development */}
-				<Websocket
-					url={webSocketUrl}
-					onMessage={this.handleData.bind(this)}
-					reconnect
-				/>
-				<Router>
-					<div>
-						<Navbar className={classes.navbarHeader} expand="lg" fixed="top">
-							<NavbarBrand href="/">
-								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
-							</NavbarBrand>
-							<NavbarToggler onClick={this.toggle}>
-								<FontAwesome name="bars" className={classes.toggleIcon} />
-							</NavbarToggler>
-							<Collapse isOpen={this.state.isOpen} navbar>
-								<Nav
-									className="ml-auto navbar-left"
-									navbar
-									onMouseLeave={this.closeToggle}
-								>
-									{links.map(({ to, label, ...props }) => (
-										<NavItem key={to}>
-											<NavLink
-												to={to}
-												className={classes.tab}
-												activeClassName={classes.activeTab}
-												onClick={this.toggle}
-												{...props}
-											>
-												{label}
-											</NavLink>
-										</NavItem>
-									))}
-									<Form inline>
-										<Select
-											className={classes.channel}
-											placeholder="Select Channel..."
-											required
-											name="form-field-name"
-											isLoading={isLoading}
-											value={selectedChannel}
-											onChange={this.handleChange}
-											onFocus={this.reloadChannels.bind(this)}
-											options={stateChannels}
-										/>
-									</Form>
-									<Form inline>
-										<div className={classes.adminButton}>
-											<FontAwesome
-												name="bell"
-												data-command="bell"
-												className={classes.bell}
-												onClick={() => this.handleDrawOpen('notifyDrawer')}
-											/>
-											<Badge badgeContent={notifyCount} color="primary" />
-										</div>
-									</Form>
-									<Form inline>
-										<Dropdown
-											isOpen={dropdownOpen}
-											toggle={() => this.setState({ dropdownOpen: !dropdownOpen })}
-										>
-											<DropdownToggle nav>
-												<FontAwesome name="user" className={classes.userdropdown} />
-											</DropdownToggle>
-											<DropdownMenu>
-												<DropdownItem>
-													<div className={classes.adminButton}>
-														<FontAwesome name="sun-o" className={classes.sunIcon} />
-														<Switch
-															className={classes.themeSwitch}
-															onChange={() => this.handleThemeChange(mode)}
-															checked={dark}
-														/>
-														<FontAwesome name="moon-o" className={classes.moonIcon} />
-													</div>
-												</DropdownItem>
-												<DropdownItem>
-													<div className={classes.userIcon}>
-														<FontAwesome
-															name="user-plus"
-															onClick={() => this.registerOpen()}
-														/>{' '}
-														User management
-													</div>
-												</DropdownItem>
-												<DropdownItem divider />
-												<DropdownItem>
-													<div className={classes.logoutIcon}>
-														<FontAwesome name="sign-out" onClick={() => this.logout()} /> Sign
-														out
-													</div>
-												</DropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									</Form>
-								</Nav>
-							</Collapse>
-						</Navbar>
-						<Drawer
+			<Router>
+				<div>
+					{/* production */}
+					{/* development */}
+					<Websocket
+						url={webSocketUrl}
+						onMessage={this.handleData.bind(this)}
+						reconnect
+					/>
+					<AppBar
+						position="static"
+						color="background.paper"
+						className={classes.appBar}
+					>
+						<Toolbar className={classes.toolbar}>
+							<div>
+								<IconButton edge="start" color="action.active">
+									<Menu fontSize="large" />
+								</IconButton>
+								<Link to="/">
+									<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
+								</Link>
+							</div>
+							<div>
+								<IconButton>
+									<Notifications fontSize="large" />
+								</IconButton>
+								<IconButton>
+									<AccountCircle fontSize="large" />
+								</IconButton>
+								<IconButton>
+									<Settings fontSize="large" />
+								</IconButton>
+							</div>
+						</Toolbar>
+
+						{/* <Drawer
 							anchor="right"
 							open={notifyDrawer}
-							onClose={() => this.handleDrawClose('notifyDrawer')}
+							onClose={() => this.handleDrawClose("notifyDrawer")}
 						>
 							<div tabIndex={0} role="button">
 								<NotificationsPanel notifications={notifications} />
 							</div>
-						</Drawer>
-						<Drawer
+						</Drawer> */}
+						{/* <Drawer
 							anchor="right"
 							open={adminDrawer}
-							onClose={() => this.handleDrawClose('adminDrawer')}
+							onClose={() => this.handleDrawClose("adminDrawer")}
 						>
 							<div tabIndex={0} role="button">
 								<AdminPanel />
@@ -637,9 +580,8 @@ export class HeaderView extends Component {
 							maxWidth="md"
 						>
 							<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
-							{/* <Register onClose={this.registerClose} onRegister={this.onRegister} /> */}
-						</Dialog>
-						<Dialog
+						</Dialog> */}
+						{/* <Dialog
 							open={modalOpen}
 							onClose={this.handleClose}
 							fullWidth={false}
@@ -655,10 +597,10 @@ export class HeaderView extends Component {
 									className={classes.loader}
 								/>
 							</div>
-						</Dialog>
-					</div>
-				</Router>
-			</div>
+						</Dialog> */}
+					</AppBar>
+				</div>
+			</Router>
 		);
 	}
 }

@@ -24,9 +24,6 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		background: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9'
-		},
 		view: {
 			paddingTop: 85,
 			paddingLeft: 0,
@@ -176,7 +173,7 @@ export class DashboardView extends Component {
 		}
 		const { classes } = this.props;
 		return (
-			<div className={classes.background}>
+			<div>
 				<div className={classes.view}>
 					<Row>
 						<Col sm="12">

@@ -7,9 +7,6 @@ import { connect } from 'react-redux';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import indigo from '@material-ui/core/colors/indigo';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import red from '@material-ui/core/colors/red';
 import { themeSelectors } from '../../state/redux/theme';
 import '../../static/css/main.css';
 import '../../static/css/main-dark.css';
@@ -40,16 +37,9 @@ class Theme extends Component {
 	getTheme(mode) {
 		return createMuiTheme({
 			palette: {
-				contrastThreshold: 3,
-				tonalOffset: 0.2,
-				background: { paper: mode === 'dark' ? '#453e68' : '#ffffff' },
-				primary: { ...indigo, dark: '#242036' },
-				secondary: lightBlue,
-				error: {
-					main: red[500]
-				},
-				toggleClass: true,
-				type: mode
+				action: {
+					active: 'rgba(0, 0, 0, 0.54)'
+				}
 			}
 		});
 	}
