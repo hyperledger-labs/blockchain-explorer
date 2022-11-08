@@ -1,33 +1,15 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-/* eslint-disable */
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import {
-	Nav,
-	Navbar,
-	NavbarBrand,
-	NavbarToggler,
-	Collapse,
-	NavItem,
-	Form,
-	Dropdown,
-	DropdownToggle,
-	DropdownMenu,
-	DropdownItem
-} from 'reactstrap';
-import { HashRouter as Router, Link, NavLink } from 'react-router-dom';
-import Switch from '@material-ui/core/Switch';
-import FontAwesome from 'react-fontawesome';
+import { HashRouter as Router, Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Websocket from 'react-websocket';
-import Badge from '@material-ui/core/Badge';
 import Dialog from '@material-ui/core/Dialog';
 import Loader from 'react-loader-spinner';
-import Select from '../Styled/Select';
 import NotificationsPanel from '../Panels/NotificationsPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import AdminPanel from '../Panels/AdminPanel';
@@ -36,8 +18,6 @@ import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
-
-// import Enroll from '../Enroll';
 
 import {
 	currentChannelType,
@@ -56,11 +36,23 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
-import { AppBar, Box, Icon, IconButton, Toolbar } from '@material-ui/core';
+import {
+	AppBar,
+	Divider,
+	IconButton,
+	List,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
+	Popover,
+	Toolbar
+} from '@material-ui/core';
 import {
 	AccountCircle,
+	ExitToApp,
 	Menu,
 	Notifications,
+	PersonAdd,
 	Settings
 } from '@material-ui/icons';
 
@@ -389,19 +381,6 @@ export class HeaderView extends Component {
 		}
 	};
 
-	/**enrollOpen = () => {
-    this.setState(() => ({ enrollOpen: true }));
-  };
-
-  enrollClose = () => {
-    this.setState(() => ({ enrollOpen: false }));
-  };
-
-  onEnroll = user => {
-    alert(JSON.stringify(user, null, 2));
-    this.enrollClose();
-  }; */
-
 	handleDrawOpen = drawer => {
 		switch (drawer) {
 			case 'notifyDrawer': {
@@ -491,23 +470,18 @@ export class HeaderView extends Component {
 	}
 
 	render() {
-		const { mode, classes } = this.props;
+		const { classes } = this.props;
 		const { hostname, port } = window.location;
 		const webSocketProtocol =
 			window.location.protocol === 'https:' ? 'wss' : 'ws';
 		const webSocketUrl = `${webSocketProtocol}://${hostname}:${port}/`;
-		const dark = mode === 'dark';
 		const {
-			isLoading,
-			selectedChannel,
-			channels: stateChannels,
-			notifyCount,
 			notifyDrawer,
 			adminDrawer,
 			modalOpen,
 			registerOpen,
 			notifications,
-			dropdownOpen
+			anchorEl
 		} = this.state;
 		const links = [
 			{ to: '/', label: 'DASHBOARD', exact: true },
@@ -518,11 +492,11 @@ export class HeaderView extends Component {
 			{ to: '/channels', label: 'CHANNELS' }
 		];
 
+		const dropdownOpen = Boolean(anchorEl);
+
 		return (
 			<Router>
 				<div>
-					{/* production */}
-					{/* development */}
 					<Websocket
 						url={webSocketUrl}
 						onMessage={this.handleData.bind(this)}
@@ -543,10 +517,10 @@ export class HeaderView extends Component {
 								</Link>
 							</div>
 							<div>
-								<IconButton>
+								<IconButton onClick={() => this.handleDrawOpen('notifyDrawer')}>
 									<Notifications fontSize="large" />
 								</IconButton>
-								<IconButton>
+								<IconButton onClick={e => this.setState({ anchorEl: e.currentTarget })}>
 									<AccountCircle fontSize="large" />
 								</IconButton>
 								<IconButton>
@@ -554,20 +528,19 @@ export class HeaderView extends Component {
 								</IconButton>
 							</div>
 						</Toolbar>
-
-						{/* <Drawer
+						<Drawer
 							anchor="right"
 							open={notifyDrawer}
-							onClose={() => this.handleDrawClose("notifyDrawer")}
+							onClose={() => this.handleDrawClose('notifyDrawer')}
 						>
 							<div tabIndex={0} role="button">
 								<NotificationsPanel notifications={notifications} />
 							</div>
-						</Drawer> */}
-						{/* <Drawer
+						</Drawer>
+						<Drawer
 							anchor="right"
 							open={adminDrawer}
-							onClose={() => this.handleDrawClose("adminDrawer")}
+							onClose={() => this.handleDrawClose('adminDrawer')}
 						>
 							<div tabIndex={0} role="button">
 								<AdminPanel />
@@ -580,8 +553,8 @@ export class HeaderView extends Component {
 							maxWidth="md"
 						>
 							<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
-						</Dialog> */}
-						{/* <Dialog
+						</Dialog>
+						<Dialog
 							open={modalOpen}
 							onClose={this.handleClose}
 							fullWidth={false}
@@ -597,7 +570,36 @@ export class HeaderView extends Component {
 									className={classes.loader}
 								/>
 							</div>
-						</Dialog> */}
+						</Dialog>
+						<Popover
+							open={dropdownOpen}
+							anchorEl={anchorEl}
+							onClose={() => this.setState({ anchorEl: null })}
+							anchorOrigin={{
+								vertical: 'bottom',
+								horizontal: 'center'
+							}}
+							transformOrigin={{
+								vertical: 'top',
+								horizontal: 'center'
+							}}
+						>
+							<List>
+								<ListItem button onClick={() => this.registerOpen()}>
+									<ListItemIcon>
+										<PersonAdd />
+									</ListItemIcon>
+									<ListItemText primary="User Management" />
+								</ListItem>
+								<Divider />
+								<ListItem button onClick={() => this.logout()}>
+									<ListItemIcon>
+										<ExitToApp />
+									</ListItemIcon>
+									<ListItemText primary="Sign Out" />
+								</ListItem>
+							</List>
+						</Popover>
 					</AppBar>
 				</div>
 			</Router>
