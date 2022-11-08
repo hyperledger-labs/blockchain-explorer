@@ -19,6 +19,8 @@ import { authSelectors } from '../../state/redux/auth';
 import Login from '../Login';
 
 import Private from '../Route';
+import { drawerOpenSelector } from '../../state/redux/core/selectors';
+import { AppDrawer } from '../AppDrawer';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -61,16 +63,18 @@ export class App extends Component {
 	render() {
 		const { auth } = this.props;
 		const { loading } = this.state;
+
 		if (auth && loading) {
 			return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
 		}
 		const { classes, mode, error } = this.props;
 		const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
 		return (
-			<div className={className}>
-				{auth && <Header refresh={this.refreshComponent} />}
-				{error && <ErrorMessage message={error} />}
-				<Router>
+			<Router>
+				<div className={className}>
+					{auth && <Header refresh={this.refreshComponent} />}
+					{auth && <AppDrawer />}
+					{error && <ErrorMessage message={error} />}
 					<Switch>
 						<Route
 							exact
@@ -79,9 +83,9 @@ export class App extends Component {
 						/>
 						<Private path="/" render={routeprops => <Main {...routeprops} />} />
 					</Switch>
-				</Router>
-				{auth && <Footer />}
-			</div>
+					{auth && <Footer />}
+				</div>
+			</Router>
 		);
 	}
 }
@@ -95,7 +99,8 @@ const mapStateToProps = state => {
 	return {
 		error: errorMessageSelector(state),
 		mode: modeSelector(state),
-		auth: authSelector(state)
+		auth: authSelector(state),
+		drawerOpen: drawerOpenSelector(state)
 	};
 };
 

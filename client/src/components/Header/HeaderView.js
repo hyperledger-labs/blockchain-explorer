@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { HashRouter as Router, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Websocket from 'react-websocket';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,6 +18,7 @@ import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
+import { coreActions } from '../../state/redux/core';
 
 import {
 	currentChannelType,
@@ -470,7 +471,7 @@ export class HeaderView extends Component {
 	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes, toggleDrawer } = this.props;
 		const { hostname, port } = window.location;
 		const webSocketProtocol =
 			window.location.protocol === 'https:' ? 'wss' : 'ws';
@@ -483,126 +484,116 @@ export class HeaderView extends Component {
 			notifications,
 			anchorEl
 		} = this.state;
-		const links = [
-			{ to: '/', label: 'DASHBOARD', exact: true },
-			{ to: '/network', label: 'NETWORK' },
-			{ to: '/blocks', label: 'BLOCKS' },
-			{ to: '/transactions', label: 'TRANSACTIONS' },
-			{ to: '/chaincodes', label: 'CHAINCODES' },
-			{ to: '/channels', label: 'CHANNELS' }
-		];
 
 		const dropdownOpen = Boolean(anchorEl);
 
 		return (
-			<Router>
-				<div>
-					<Websocket
-						url={webSocketUrl}
-						onMessage={this.handleData.bind(this)}
-						reconnect
-					/>
-					<AppBar
-						position="static"
-						color="background.paper"
-						className={classes.appBar}
+			<>
+				<Websocket
+					url={webSocketUrl}
+					onMessage={this.handleData.bind(this)}
+					reconnect
+				/>
+				<AppBar
+					position="static"
+					color="background.paper"
+					className={classes.appBar}
+				>
+					<Toolbar className={classes.toolbar}>
+						<div>
+							<IconButton edge="start" color="action.active" onClick={toggleDrawer}>
+								<Menu fontSize="large" />
+							</IconButton>
+							<Link to="/">
+								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
+							</Link>
+						</div>
+						<div>
+							<IconButton onClick={() => this.handleDrawOpen('notifyDrawer')}>
+								<Notifications fontSize="large" />
+							</IconButton>
+							<IconButton onClick={e => this.setState({ anchorEl: e.currentTarget })}>
+								<AccountCircle fontSize="large" />
+							</IconButton>
+							<IconButton>
+								<Settings fontSize="large" />
+							</IconButton>
+						</div>
+					</Toolbar>
+					<Drawer
+						anchor="right"
+						open={notifyDrawer}
+						onClose={() => this.handleDrawClose('notifyDrawer')}
 					>
-						<Toolbar className={classes.toolbar}>
-							<div>
-								<IconButton edge="start" color="action.active">
-									<Menu fontSize="large" />
-								</IconButton>
-								<Link to="/">
-									<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
-								</Link>
-							</div>
-							<div>
-								<IconButton onClick={() => this.handleDrawOpen('notifyDrawer')}>
-									<Notifications fontSize="large" />
-								</IconButton>
-								<IconButton onClick={e => this.setState({ anchorEl: e.currentTarget })}>
-									<AccountCircle fontSize="large" />
-								</IconButton>
-								<IconButton>
-									<Settings fontSize="large" />
-								</IconButton>
-							</div>
-						</Toolbar>
-						<Drawer
-							anchor="right"
-							open={notifyDrawer}
-							onClose={() => this.handleDrawClose('notifyDrawer')}
-						>
-							<div tabIndex={0} role="button">
-								<NotificationsPanel notifications={notifications} />
-							</div>
-						</Drawer>
-						<Drawer
-							anchor="right"
-							open={adminDrawer}
-							onClose={() => this.handleDrawClose('adminDrawer')}
-						>
-							<div tabIndex={0} role="button">
-								<AdminPanel />
-							</div>
-						</Drawer>
-						<Dialog
-							open={registerOpen}
-							onClose={this.registerClose}
-							fullWidth={false}
-							maxWidth="md"
-						>
-							<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
-						</Dialog>
-						<Dialog
-							open={modalOpen}
-							onClose={this.handleClose}
-							fullWidth={false}
-							maxWidth="md"
-						>
-							<div className={classes.channelLoader}>
-								<h4>Loading Channel Details</h4>
-								<Loader
-									type="ThreeDots"
-									color="#005069"
-									height={70}
-									width={70}
-									className={classes.loader}
-								/>
-							</div>
-						</Dialog>
-						<Popover
-							open={dropdownOpen}
-							anchorEl={anchorEl}
-							onClose={() => this.setState({ anchorEl: null })}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'center'
-							}}
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'center'
-							}}
-						>
-							<List>
-								<ListItem button onClick={() => this.registerOpen()}>
-									<ListItemIcon>
-										<PersonAdd />
-									</ListItemIcon>
-									<ListItemText primary="User Management" />
-								</ListItem>
-								<Divider />
-								<ListItem button onClick={() => this.logout()}>
-									<ListItemIcon>
-										<ExitToApp />
-									</ListItemIcon>
-									<ListItemText primary="Sign Out" />
-								</ListItem>
-							</List>
-						</Popover>
-					</AppBar>
-				</div>
-			</Router>
+						<div tabIndex={0} role="button">
+							<NotificationsPanel notifications={notifications} />
+						</div>
+					</Drawer>
+					<Drawer
+						anchor="right"
+						open={adminDrawer}
+						onClose={() => this.handleDrawClose('adminDrawer')}
+					>
+						<div tabIndex={0} role="button">
+							<AdminPanel />
+						</div>
+					</Drawer>
+					<Dialog
+						open={registerOpen}
+						onClose={this.registerClose}
+						fullWidth={false}
+						maxWidth="md"
+					>
+						<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
+					</Dialog>
+					<Dialog
+						open={modalOpen}
+						onClose={this.handleClose}
+						fullWidth={false}
+						maxWidth="md"
+					>
+						<div className={classes.channelLoader}>
+							<h4>Loading Channel Details</h4>
+							<Loader
+								type="ThreeDots"
+								color="#005069"
+								height={70}
+								width={70}
+								className={classes.loader}
+							/>
+						</div>
+					</Dialog>
+					<Popover
+						open={dropdownOpen}
+						anchorEl={anchorEl}
+						onClose={() => this.setState({ anchorEl: null })}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center'
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center'
+						}}
+					>
+						<List>
+							<ListItem button onClick={() => this.registerOpen()}>
+								<ListItemIcon>
+									<PersonAdd />
+								</ListItemIcon>
+								<ListItemText primary="User Management" />
+							</ListItem>
+							<Divider />
+							<ListItem button onClick={() => this.logout()}>
+								<ListItemIcon>
+									<ExitToApp />
+								</ListItemIcon>
+								<ListItemText primary="Sign Out" />
+							</ListItem>
+						</List>
+					</Popover>
+				</AppBar>
+			</>
 		);
 	}
 }
@@ -650,7 +641,8 @@ const mapDispatchToProps = {
 	getTransactionList: transactionList,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
-	logout: authOperations.logout
+	logout: authOperations.logout,
+	toggleDrawer: coreActions.toggleDrawer
 };
 
 const connectedComponent = connect(
