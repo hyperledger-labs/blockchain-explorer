@@ -18,6 +18,9 @@ import {
 	peerStatusType,
 	transactionByOrgType
 } from '../types';
+import StatCard from '../StatCard/StatCard';
+import { Grid } from '@material-ui/core';
+import { SwapHoriz, Widgets } from '@material-ui/icons';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -165,25 +168,41 @@ export class DashboardView extends Component {
 			);
 		}
 		const { classes } = this.props;
+
 		return (
-			<div className={classes.view}>
-				<Row>
-					<Col sm="12">
-						<Card className={classes.blocks}>
-							<div className={`${classes.statistic} ${classes.vdivide}`}>
-								<Row>
-									<Col sm="4">
-										<Avatar className={`${classes.avatar} ${classes.block}`}>
-											<FontAwesome name="cube" />
-										</Avatar>
-									</Col>
-									<Col sm="4">
-										<h1 className={classes.count}>{dashStats.latestBlock}</h1>
-									</Col>
-								</Row>
-								BLOCKS
-							</div>
-							<div className={`${classes.statistic} ${classes.vdivide}`}>
+			<Grid container spacing={3}>
+				{/* <div className={`${classes.statistic} ${classes.vdivide}`}>
+							<Row>
+								<Col sm="4">
+									<Avatar className={`${classes.avatar} ${classes.block}`}>
+										<FontAwesome name="cube" />
+									</Avatar>
+								</Col>
+								<Col sm="4">
+									<h1 className={classes.count}>{dashStats.latestBlock}</h1>
+								</Col>
+							</Row>
+							BLOCKS
+						</div> */}
+				<Grid item xs={6}>
+					<Grid container spacing={2}>
+						<Grid item xs={6}>
+							<StatCard
+								count={dashStats.latestBlock}
+								label="BLOCKS"
+								icon={<Widgets color="action" />}
+							/>
+						</Grid>
+						<Grid item xs={6}>
+							<StatCard
+								count={dashStats.txCount}
+								label="TRANSACTIONS"
+								icon={<SwapHoriz color="action" />}
+							/>
+						</Grid>
+					</Grid>
+				</Grid>
+				{/* <div className={`${classes.statistic} ${classes.vdivide}`}>
 								<Row>
 									<Col sm="4">
 										<Avatar className={`${classes.avatar} ${classes.transaction}`}>
@@ -195,38 +214,9 @@ export class DashboardView extends Component {
 									</Col>
 								</Row>
 								TRANSACTIONS
-							</div>
-							<div className={`${classes.statistic} ${classes.vdivide}`}>
-								<Row>
-									<Col sm="4">
-										<Avatar className={`${classes.avatar} ${classes.node}`}>
-											<FontAwesome name="users" />
-										</Avatar>
-									</Col>
-									<Col sm="4">
-										<h1 className={classes.count}>{dashStats.peerCount}</h1>
-									</Col>
-								</Row>
-								NODES
-							</div>
-							<div className={classes.statistic}>
-								<Row>
-									<Col sm="4">
-										<Avatar className={`${classes.avatar} ${classes.chaincode}`}>
-											<FontAwesome name="handshake-o" />
-										</Avatar>
-									</Col>
-									<Col sm="4">
-										<h1 className={classes.count}>{dashStats.chaincodeCount}</h1>
-									</Col>
-								</Row>
-								CHAINCODES
-							</div>
-						</Card>
-					</Col>
-				</Row>
-				<Row>
-					<Col sm="6">
+							</div> */}
+				{/* <Grid item xs={6}>
+					<Grid xs={6}>
 						<Card className={classes.section}>
 							<PeersHealth peerStatus={peerStatus} />
 						</Card>
@@ -236,8 +226,8 @@ export class DashboardView extends Component {
 								blockList={blockActivity}
 							/>
 						</Card>
-					</Col>
-					<Col sm="6">
+					</Grid>
+					<Grid xs={6}>
 						<Card className={classes.section}>
 							<ChartStats />
 						</Card>
@@ -246,9 +236,9 @@ export class DashboardView extends Component {
 							<hr />
 							<OrgPieChart transactionByOrg={transactionByOrg} />
 						</Card>
-					</Col>
-				</Row>
-			</div>
+					</Grid>
+				</Grid> */}
+			</Grid>
 		);
 	}
 }

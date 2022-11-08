@@ -7,7 +7,7 @@ import { drawerOpenSelector } from '../../state/redux/core/selectors';
 const styles = theme => {
 	return {
 		main: {
-			minWidth: 900,
+			minWidth: 1132,
 			paddingTop: `calc(${HEADER_HEIGHT} + 20px)`,
 			padding: '0 24px',
 			transition: theme.transitions.create(['margin'], {

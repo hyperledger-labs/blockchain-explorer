@@ -46,7 +46,8 @@ class Theme extends Component {
 					default: 'rgba(250, 250, 250, 1)'
 				},
 				text: {
-					primary: 'rgba(25, 25, 25, 1)'
+					primary: 'rgba(25, 25, 25, 1)',
+					secondary: 'rgba(66, 66, 66, 1)'
 				},
 				action: {
 					active: 'rgba(0, 0, 0, 0.54)'
