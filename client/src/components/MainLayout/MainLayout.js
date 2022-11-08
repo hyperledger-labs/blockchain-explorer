@@ -1,13 +1,14 @@
 import { withStyles } from '@material-ui/styles';
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { DRAWER_WIDTH } from '../../constants/styles';
+import { DRAWER_WIDTH, HEADER_HEIGHT } from '../../constants/styles';
 import { drawerOpenSelector } from '../../state/redux/core/selectors';
 
 const styles = theme => {
 	return {
 		main: {
 			minWidth: 900,
+			paddingTop: `calc(${HEADER_HEIGHT} + 20px)`,
 			padding: '0 24px',
 			transition: theme.transitions.create(['margin'], {
 				easing: theme.transitions.easing.sharp,

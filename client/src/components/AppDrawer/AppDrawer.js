@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { coreActions } from '../../state/redux/core';
 import { drawerOpenSelector } from '../../state/redux/core/selectors';
 import DrawerListItem from './DrawerListItem';
-import { DRAWER_WIDTH } from '../../constants/styles';
+import { DRAWER_WIDTH, HEADER_HEIGHT } from '../../constants/styles';
 
 const LINKS = [
 	{ to: '/dashboard', label: 'DASHBOARD', icon: <Dashboard /> },
@@ -35,15 +35,12 @@ const styles = theme => {
 			width: DRAWER_WIDTH,
 			height: '100%',
 			display: 'flex',
-			paddingTop: 'calc(48px + 24px)',
+			paddingTop: `calc(${HEADER_HEIGHT} + 24px)`,
 			paddingBottom: '16px',
 			zIndex: zIndex.appBar - 1,
 			border: 'none',
 			boxShadow:
-				'0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
-			'@media (min-width: 600px)': {
-				paddingTop: 'calc(64px + 24px)'
-			}
+				'0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)'
 		},
 		subtitle: {
 			'& .MuiTypography-body1': {

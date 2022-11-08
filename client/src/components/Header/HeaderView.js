@@ -56,6 +56,7 @@ import {
 	PersonAdd,
 	Settings
 } from '@material-ui/icons';
+import { HEADER_HEIGHT } from '../../constants/styles';
 
 const {
 	blockPerHour,
@@ -89,6 +90,7 @@ const styles = theme => {
 				'0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15) !important'
 		},
 		toolbar: {
+			height: HEADER_HEIGHT,
 			display: 'flex',
 			justifyContent: 'space-between'
 		},
@@ -499,7 +501,7 @@ export class HeaderView extends Component {
 					color="background.paper"
 					className={classes.appBar}
 				>
-					<Toolbar className={classes.toolbar}>
+					<Toolbar className={classes.toolbar} variant="dense">
 						<div>
 							<IconButton edge="start" color="action.active" onClick={toggleDrawer}>
 								<Menu fontSize="large" />

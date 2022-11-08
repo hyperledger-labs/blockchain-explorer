@@ -24,9 +24,6 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		view: {
-			paddingTop: 85
-		},
 		blocks: {
 			height: 175,
 			marginBottom: 20,
