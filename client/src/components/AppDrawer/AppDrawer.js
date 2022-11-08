@@ -16,7 +16,7 @@ import DrawerListItem from './DrawerListItem';
 import { DRAWER_WIDTH } from '../../constants/styles';
 
 const LINKS = [
-	{ to: '/', label: 'DASHBOARD', exact: true, icon: <Dashboard /> },
+	{ to: '/dashboard', label: 'DASHBOARD', icon: <Dashboard /> },
 	{ to: '/network', label: 'NETWORK', icon: <NetworkCheck /> },
 	{ to: '/blocks', label: 'BLOCKS', icon: <Widgets /> },
 	{ to: '/transactions', label: 'TRANSACTIONS', icon: <SwapHoriz /> },

@@ -504,7 +504,7 @@ export class HeaderView extends Component {
 							<IconButton edge="start" color="action.active" onClick={toggleDrawer}>
 								<Menu fontSize="large" />
 							</IconButton>
-							<Link to="/">
+							<Link to="/dashboard">
 								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
 							</Link>
 						</div>

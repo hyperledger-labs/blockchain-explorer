@@ -5,7 +5,12 @@
 //import React from 'react';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+	HashRouter as Router,
+	Redirect,
+	Route,
+	Switch
+} from 'react-router-dom';
 import BlocksView from './View/BlocksView';
 import NetworkView from './View/NetworkView';
 import TransactionsView from './View/TransactionsView';
@@ -140,7 +145,7 @@ export const Main = props => {
 				<Switch>
 					<Private
 						exact
-						path="/"
+						path="/dashboard"
 						render={routeprops => (
 							<DashboardView {...{ ...dashboardViewProps, ...routeprops }} />
 						)}
@@ -184,6 +189,7 @@ export const Main = props => {
 							/>
 						)}
 					/>
+					<Redirect to="dashboard" />
 					<Route exact render={routeprops => <PageNotFound {...routeprops} />} />
 				</Switch>
 			</Router>
