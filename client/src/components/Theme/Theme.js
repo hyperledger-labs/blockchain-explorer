@@ -36,7 +36,15 @@ class Theme extends Component {
 
 	getTheme(mode) {
 		return createMuiTheme({
+			typography: {
+				caption: {
+					color: 'rgba(0, 0, 0, 0.6)'
+				}
+			},
 			palette: {
+				text: {
+					primary: 'rgba(25, 25, 25, 1)'
+				},
 				action: {
 					active: 'rgba(0, 0, 0, 0.54)'
 				}
