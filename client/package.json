@@ -28,6 +28,7 @@
 		"react-d3-graph": "^1.0.1",
 		"react-datepicker": "^1.6.0",
 		"react-dom": "^16.2.0",
+		"react-error-overlay": "6.0.9",
 		"react-event-timeline": "^1.5.4",
 		"react-fontawesome": "^1.6.1",
 		"react-js-pagination": "^3.0.1",
