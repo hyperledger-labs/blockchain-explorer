@@ -25,11 +25,7 @@ const styles = theme => {
 	const dark = type === 'dark';
 	return {
 		view: {
-			paddingTop: 85,
-			paddingLeft: 0,
-			width: '80%',
-			marginLeft: '10%',
-			marginRight: '10%'
+			paddingTop: 85
 		},
 		blocks: {
 			height: 175,
@@ -173,90 +169,88 @@ export class DashboardView extends Component {
 		}
 		const { classes } = this.props;
 		return (
-			<div>
-				<div className={classes.view}>
-					<Row>
-						<Col sm="12">
-							<Card className={classes.blocks}>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.block}`}>
-												<FontAwesome name="cube" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.latestBlock}</h1>
-										</Col>
-									</Row>
-									BLOCKS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.transaction}`}>
-												<FontAwesome name="list-alt" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.txCount}</h1>
-										</Col>
-									</Row>
-									TRANSACTIONS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.node}`}>
-												<FontAwesome name="users" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.peerCount}</h1>
-										</Col>
-									</Row>
-									NODES
-								</div>
-								<div className={classes.statistic}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.chaincode}`}>
-												<FontAwesome name="handshake-o" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.chaincodeCount}</h1>
-										</Col>
-									</Row>
-									CHAINCODES
-								</div>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
-						<Col sm="6">
-							<Card className={classes.section}>
-								<PeersHealth peerStatus={peerStatus} />
-							</Card>
-							<Card className={classes.section}>
-								<TimelineStream
-									notifications={notifications}
-									blockList={blockActivity}
-								/>
-							</Card>
-						</Col>
-						<Col sm="6">
-							<Card className={classes.section}>
-								<ChartStats />
-							</Card>
-							<Card className={`${classes.section} ${classes.center}`}>
-								<h5>Transactions by Organization</h5>
-								<hr />
-								<OrgPieChart transactionByOrg={transactionByOrg} />
-							</Card>
-						</Col>
-					</Row>
-				</div>
+			<div className={classes.view}>
+				<Row>
+					<Col sm="12">
+						<Card className={classes.blocks}>
+							<div className={`${classes.statistic} ${classes.vdivide}`}>
+								<Row>
+									<Col sm="4">
+										<Avatar className={`${classes.avatar} ${classes.block}`}>
+											<FontAwesome name="cube" />
+										</Avatar>
+									</Col>
+									<Col sm="4">
+										<h1 className={classes.count}>{dashStats.latestBlock}</h1>
+									</Col>
+								</Row>
+								BLOCKS
+							</div>
+							<div className={`${classes.statistic} ${classes.vdivide}`}>
+								<Row>
+									<Col sm="4">
+										<Avatar className={`${classes.avatar} ${classes.transaction}`}>
+											<FontAwesome name="list-alt" />
+										</Avatar>
+									</Col>
+									<Col sm="4">
+										<h1 className={classes.count}>{dashStats.txCount}</h1>
+									</Col>
+								</Row>
+								TRANSACTIONS
+							</div>
+							<div className={`${classes.statistic} ${classes.vdivide}`}>
+								<Row>
+									<Col sm="4">
+										<Avatar className={`${classes.avatar} ${classes.node}`}>
+											<FontAwesome name="users" />
+										</Avatar>
+									</Col>
+									<Col sm="4">
+										<h1 className={classes.count}>{dashStats.peerCount}</h1>
+									</Col>
+								</Row>
+								NODES
+							</div>
+							<div className={classes.statistic}>
+								<Row>
+									<Col sm="4">
+										<Avatar className={`${classes.avatar} ${classes.chaincode}`}>
+											<FontAwesome name="handshake-o" />
+										</Avatar>
+									</Col>
+									<Col sm="4">
+										<h1 className={classes.count}>{dashStats.chaincodeCount}</h1>
+									</Col>
+								</Row>
+								CHAINCODES
+							</div>
+						</Card>
+					</Col>
+				</Row>
+				<Row>
+					<Col sm="6">
+						<Card className={classes.section}>
+							<PeersHealth peerStatus={peerStatus} />
+						</Card>
+						<Card className={classes.section}>
+							<TimelineStream
+								notifications={notifications}
+								blockList={blockActivity}
+							/>
+						</Card>
+					</Col>
+					<Col sm="6">
+						<Card className={classes.section}>
+							<ChartStats />
+						</Card>
+						<Card className={`${classes.section} ${classes.center}`}>
+							<h5>Transactions by Organization</h5>
+							<hr />
+							<OrgPieChart transactionByOrg={transactionByOrg} />
+						</Card>
+					</Col>
+				</Row>
 			</div>
 		);
 	}

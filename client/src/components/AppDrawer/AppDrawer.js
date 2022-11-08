@@ -13,8 +13,7 @@ import { connect } from 'react-redux';
 import { coreActions } from '../../state/redux/core';
 import { drawerOpenSelector } from '../../state/redux/core/selectors';
 import DrawerListItem from './DrawerListItem';
-
-const DRAWER_WIDTH = 260;
+import { DRAWER_WIDTH } from '../../constants/styles';
 
 const LINKS = [
 	{ to: '/', label: 'DASHBOARD', exact: true, icon: <Dashboard /> },
