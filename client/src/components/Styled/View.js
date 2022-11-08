@@ -18,7 +18,6 @@ const styles = theme => {
 			display: 'block',
 			marginLeft: 'auto',
 			marginRight: 'auto',
-			width: '80%',
 			backgroundColor: dark ? 'transparent' : undefined
 		},
 		card: {
