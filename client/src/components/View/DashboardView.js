@@ -169,21 +169,10 @@ export class DashboardView extends Component {
 		}
 		const { classes } = this.props;
 
+		console.log(notifications, blockActivity);
+
 		return (
 			<Grid container spacing={3}>
-				{/* <div className={`${classes.statistic} ${classes.vdivide}`}>
-							<Row>
-								<Col sm="4">
-									<Avatar className={`${classes.avatar} ${classes.block}`}>
-										<FontAwesome name="cube" />
-									</Avatar>
-								</Col>
-								<Col sm="4">
-									<h1 className={classes.count}>{dashStats.latestBlock}</h1>
-								</Col>
-							</Row>
-							BLOCKS
-						</div> */}
 				<Grid item xs={6}>
 					<Grid container spacing={2}>
 						<Grid item xs={6}>
@@ -200,31 +189,18 @@ export class DashboardView extends Component {
 								icon={<SwapHoriz color="action" />}
 							/>
 						</Grid>
-					</Grid>
-				</Grid>
-				{/* <div className={`${classes.statistic} ${classes.vdivide}`}>
-								<Row>
-									<Col sm="4">
-										<Avatar className={`${classes.avatar} ${classes.transaction}`}>
-											<FontAwesome name="list-alt" />
-										</Avatar>
-									</Col>
-									<Col sm="4">
-										<h1 className={classes.count}>{dashStats.txCount}</h1>
-									</Col>
-								</Row>
-								TRANSACTIONS
-							</div> */}
-				{/* <Grid item xs={6}>
-					<Grid xs={6}>
-						<Card className={classes.section}>
-							<PeersHealth peerStatus={peerStatus} />
-						</Card>
-						<Card className={classes.section}>
+						<Grid item xs>
 							<TimelineStream
 								notifications={notifications}
 								blockList={blockActivity}
 							/>
+						</Grid>
+					</Grid>
+				</Grid>
+				{/* <Grid item xs={6}>
+					<Grid xs={6}>
+						<Card className={classes.section}>
+							<PeersHealth peerStatus={peerStatus} />
 						</Card>
 					</Grid>
 					<Grid xs={6}>
