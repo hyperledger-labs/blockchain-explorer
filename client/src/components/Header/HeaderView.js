@@ -495,7 +495,7 @@ export class HeaderView extends Component {
 					reconnect
 				/>
 				<AppBar
-					position="static"
+					position="fixed"
 					color="background.paper"
 					className={classes.appBar}
 				>

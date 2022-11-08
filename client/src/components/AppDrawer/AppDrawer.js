@@ -30,6 +30,9 @@ const styles = theme => {
 
 	return {
 		paper: {
+			position: 'fixed',
+			top: 0,
+			left: 0,
 			width: DRAWER_WIDTH,
 			height: '100%',
 			display: 'flex',
