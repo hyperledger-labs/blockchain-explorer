@@ -4,7 +4,6 @@
 
 //import React from 'react';
 import React, { useState, useEffect } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import BlocksView from './View/BlocksView';
@@ -31,6 +30,7 @@ import {
 import PageNotFound from './View/PageNotFound';
 
 import Private from './Route';
+import MainLayout from './MainLayout/MainLayout';
 
 const {
 	currentChannelSelector,
@@ -52,19 +52,8 @@ const {
 	transactionListSearchSelector
 } = tableSelectors;
 
-const styles = theme => {
-	const { type } = theme.palette;
-	const dark = type === 'dark';
-	return {
-		main: {
-			color: dark ? '#ffffff' : undefined
-		}
-	};
-};
-
 export const Main = props => {
 	const {
-		classes,
 		blockList,
 		blockActivity,
 		chaincodeList,
@@ -146,8 +135,8 @@ export const Main = props => {
 	}
 
 	return (
-		<Router>
-			<div className={classes.main}>
+		<MainLayout>
+			<Router>
 				<Switch>
 					<Private
 						exact
@@ -197,8 +186,8 @@ export const Main = props => {
 					/>
 					<Route exact render={routeprops => <PageNotFound {...routeprops} />} />
 				</Switch>
-			</div>
-		</Router>
+			</Router>
+		</MainLayout>
 	);
 };
 
@@ -239,4 +228,4 @@ const connectedComponent = connect(
 		getTransactionListSearch: tableOperations.transactionListSearch
 	}
 )(Main);
-export default withStyles(styles)(connectedComponent);
+export default connectedComponent;

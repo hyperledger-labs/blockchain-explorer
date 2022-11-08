@@ -6,10 +6,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import classnames from 'classnames';
 import Main from '../Main';
 import Header from '../Header';
-import Footer from '../Footer';
 import LandingPage from '../View/LandingPage';
 import ErrorMessage from '../ErrorMessage';
 import { chartSelectors } from '../../state/redux/charts';
@@ -24,11 +22,8 @@ import { AppDrawer } from '../AppDrawer';
 
 /* istanbul ignore next */
 const styles = theme => {
-	const { type } = theme.palette;
-	const dark = type === 'dark';
 	return {
 		app: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : 'rgb(240, 245, 249)',
 			position: 'absolute',
 			top: 0,
 			left: 0,
@@ -67,11 +62,11 @@ export class App extends Component {
 		if (auth && loading) {
 			return <LandingPage updateLoadStatus={this.updateLoadStatus} />;
 		}
-		const { classes, mode, error } = this.props;
-		const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
+		const { error } = this.props;
+
 		return (
 			<Router>
-				<div className={className}>
+				<div>
 					{auth && <Header refresh={this.refreshComponent} />}
 					{auth && <AppDrawer />}
 					{error && <ErrorMessage message={error} />}
@@ -83,7 +78,6 @@ export class App extends Component {
 						/>
 						<Private path="/" render={routeprops => <Main {...routeprops} />} />
 					</Switch>
-					{auth && <Footer />}
 				</div>
 			</Router>
 		);
