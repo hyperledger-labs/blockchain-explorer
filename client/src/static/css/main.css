@@ -47,12 +47,6 @@ div.menuItems > nav {
 	border-bottom: 2px #000000 solid;
 }
 
-/*Scroll Bar Styling*/
-::-webkit-scrollbar {
-	width: 0px; /* remove scrollbar space */
-	background: transparent; /* optional: just make scrollbar invisible */
-}
-
 /* Table and List  */
 #root
 	> div
