@@ -107,6 +107,8 @@ export class ChartStats extends Component {
 					indicatorColor="primary"
 					textColor="primary"
 					onChange={(_, tab) => this.toggle(tab)}
+					variant="scrollable"
+					scrollButtons="auto"
 				>
 					<Tab label="BLOCKS/HOUR" value="1" />
 					<Tab label="BLOCKS/MIN" value="2" />
