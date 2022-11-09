@@ -43,6 +43,9 @@ class Theme extends Component {
 				}
 			},
 			palette: {
+				primary: {
+					main: 'rgba(24, 32, 97, 1)'
+				},
 				background: {
 					default: 'rgba(250, 250, 250, 1)'
 				},

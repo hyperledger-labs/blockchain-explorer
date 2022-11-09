@@ -3,11 +3,8 @@
  */
 
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
-import { TabContent, TabPane, Nav, NavItem, NavLink } from 'reactstrap';
-import classnames from 'classnames';
 import { chartSelectors, chartOperations } from '../../state/redux/charts';
 import TimeChart from './TimeChart';
 import {
@@ -21,6 +18,8 @@ import {
 	transactionPerHourType,
 	transactionPerMinType
 } from '../types';
+import { Tab, Tabs } from '@material-ui/core';
+import TabPanel from '../TabPanel';
 
 const {
 	blockPerHourSelector,
@@ -29,18 +28,6 @@ const {
 	transactionPerHourSelector,
 	transactionPerMinSelector
 } = chartSelectors;
-
-/* istanbul ignore next */
-const styles = theme => {
-	const { type } = theme.palette;
-	const dark = type === 'dark';
-	return {
-		chart: {
-			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#453e68' : undefined
-		}
-	};
-};
 
 export class ChartStats extends Component {
 	constructor(props) {
@@ -110,76 +97,34 @@ export class ChartStats extends Component {
 			blockPerHour,
 			blockPerMin,
 			transactionPerHour,
-			transactionPerMin,
-			classes
+			transactionPerMin
 		} = this.props;
 
 		return (
-			<div className={classes.chart}>
-				<Nav tabs>
-					<NavItem>
-						<NavLink
-							className={classnames({
-								active: activeTab === '1'
-							})}
-							onClick={() => {
-								this.toggle('1');
-							}}
-						>
-							BLOCKS / HOUR
-						</NavLink>
-					</NavItem>
-					<NavItem>
-						<NavLink
-							className={classnames({
-								active: activeTab === '2'
-							})}
-							onClick={() => {
-								this.toggle('2');
-							}}
-						>
-							BLOCKS / MIN
-						</NavLink>
-					</NavItem>
-					<NavItem>
-						<NavLink
-							className={classnames({
-								active: activeTab === '3'
-							})}
-							onClick={() => {
-								this.toggle('3');
-							}}
-						>
-							TX / HOUR
-						</NavLink>
-					</NavItem>
-					<NavItem>
-						<NavLink
-							className={classnames({
-								active: activeTab === '4'
-							})}
-							onClick={() => {
-								this.toggle('4');
-							}}
-						>
-							TX / MIN
-						</NavLink>
-					</NavItem>
-				</Nav>
-				<TabContent activeTab={activeTab}>
-					<TabPane tabId="1">
-						<TimeChart chartData={this.timeDataSetup(blockPerHour)} />
-					</TabPane>
-					<TabPane tabId="2">
-						<TimeChart chartData={this.timeDataSetup(blockPerMin)} />
-					</TabPane>
-					<TabPane tabId="3">
-						<TimeChart chartData={this.timeDataSetup(transactionPerHour)} />
-					</TabPane>
-					<TabPane tabId="4">
-						<TimeChart chartData={this.timeDataSetup(transactionPerMin)} />
-					</TabPane>
-				</TabContent>
+			<div style={{ width: '100%' }}>
+				<Tabs
+					value={activeTab}
+					indicatorColor="primary"
+					textColor="primary"
+					onChange={(_, tab) => this.toggle(tab)}
+				>
+					<Tab label="BLOCKS/HOUR" value="1" />
+					<Tab label="BLOCKS/MIN" value="2" />
+					<Tab label="TX/HOUR" value="3" />
+					<Tab label="TX/MIN" value="4" />
+				</Tabs>
+				<TabPanel value={activeTab} tab="1">
+					<TimeChart chartData={this.timeDataSetup(blockPerHour)} />
+				</TabPanel>
+				<TabPanel value={activeTab} tab="2">
+					<TimeChart chartData={this.timeDataSetup(blockPerMin)} />
+				</TabPanel>
+				<TabPanel value={activeTab} tab="3">
+					<TimeChart chartData={this.timeDataSetup(transactionPerHour)} />
+				</TabPanel>
+				<TabPanel value={activeTab} tab="4">
+					<TimeChart chartData={this.timeDataSetup(transactionPerMin)} />
+				</TabPanel>
 			</div>
 		);
 	}
@@ -218,4 +163,4 @@ const connectedComponent = connect(
 	mapStateToProps,
 	mapDispatchToProps
 )(ChartStats);
-export default withStyles(styles)(connectedComponent);
+export default connectedComponent;
