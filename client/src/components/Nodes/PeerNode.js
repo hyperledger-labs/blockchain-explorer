@@ -3,17 +3,11 @@ import { Box, Chip, styled, Typography } from '@material-ui/core';
 
 const PeerNode = props => {
 	const { orgName, port, status } = props.data;
-	console.log(props);
-	console.log(orgName, port, status);
 
 	return (
 		<Node>
-			<Handle type="target" position={Position.Top} style={{ display: 'none' }} />
-			<Handle
-				type="source"
-				position={Position.Bottom}
-				style={{ display: 'none' }}
-			/>
+			<Handle type="target" position={Position.Top} />
+			<Handle type="source" position={Position.Bottom} />
 			<Box
 				flex={1}
 				display="flex"
@@ -37,7 +31,13 @@ const Node = styled('div')({
 	display: 'flex',
 	padding: '15px 14px',
 	border: '1px solid rgba(0, 0, 0, 0.42)',
-	borderRadius: '8px'
+	borderRadius: '8px',
+	'& .react-flow__handle.connectable': {
+		minWidth: 0,
+		minHeight: 0,
+		width: 0,
+		height: 0
+	}
 });
 
 const OrgText = styled(Typography)({

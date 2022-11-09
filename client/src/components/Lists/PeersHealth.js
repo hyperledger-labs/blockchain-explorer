@@ -5,7 +5,8 @@
 import React from 'react';
 import { peerStatusType } from '../types';
 import ReactFlow from 'reactflow';
-import PeerNode from '../Peers/PeerNode';
+import PeerNode from '../Nodes/PeerNode';
+import OrdererNode from '../Nodes/OrdererNode';
 
 const PEER_NODE_CRITERIA = 4;
 
@@ -54,7 +55,7 @@ const PeersHealth = ({ peerStatus }) => {
 				id: String(0),
 				data: peerData[0],
 				position: { x: 0, y: 0 },
-				type: 'group'
+				type: 'orderer'
 		  }
 		: null;
 
@@ -64,7 +65,8 @@ const PeersHealth = ({ peerStatus }) => {
 			return {
 				id: String(index + 1),
 				data: datum,
-				position: getPeerNodePosition(index + 1)
+				position: getPeerNodePosition(index + 1),
+				type: 'peer'
 			};
 		})
 	];
@@ -92,19 +94,13 @@ const PeersHealth = ({ peerStatus }) => {
 			fitView
 			fitViewOptions={{ padding: 0.2 }}
 			proOptions={{ hideAttribution: true }}
-			nodeTypes={{ default: PeerNode }}
+			nodeTypes={{ peer: PeerNode, orderer: OrdererNode }}
 			zoomOnDoubleClick={false}
 			nodesDraggable={false}
 			nodesConnectable={false}
 			nodesFocusable={false}
 			edgesFocusable={false}
 			elementsSelectable={false}
-			style={{
-				padding: 0,
-				'.react-flow__node-default': {
-					padding: 0
-				}
-			}}
 		/>
 	);
 };

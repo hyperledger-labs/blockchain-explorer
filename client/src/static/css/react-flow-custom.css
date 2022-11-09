@@ -1,9 +1,0 @@
-.react-flow__node-default,
-.react-flow__node-input,
-.react-flow__node-output,
-.react-flow__node-group {
-	padding: 0 !important;
-	border-radius: 0 !important;
-	border: none !important;
-	color: inherit !important;
-}
