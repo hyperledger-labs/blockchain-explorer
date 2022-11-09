@@ -8,12 +8,13 @@ import {
 	Widgets
 } from '@material-ui/icons';
 import { withStyles } from '@material-ui/styles';
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { coreActions } from '../../state/redux/core';
 import { drawerOpenSelector } from '../../state/redux/core/selectors';
 import DrawerListItem from './DrawerListItem';
 import { DRAWER_WIDTH, HEADER_HEIGHT } from '../../constants/styles';
+import { useHistory } from 'react-router-dom';
 
 const LINKS = [
 	{ to: '/dashboard', label: 'DASHBOARD', icon: <Dashboard /> },
@@ -59,42 +60,42 @@ const styles = theme => {
 	};
 };
 
-class AppDrawer extends Component {
-	render() {
-		const { classes, drawerOpen, toggleDrawer } = this.props;
+const AppDrawer = ({ classes, drawerOpen, toggleDrawer }) => {
+	const history = useHistory();
+	console.log(history.location.pathname);
 
-		return (
-			<Drawer
-				open={drawerOpen}
-				onClose={toggleDrawer}
-				variant="persistent"
-				PaperProps={{
-					className: classes.paper
-				}}
-			>
-				<List>
-					{LINKS.map(link => (
-						<DrawerListItem
-							key={link.to}
-							to={link.to}
-							icon={link.icon}
-							label={link.label}
-							exact={link.exact}
-						/>
-					))}
-				</List>
-				<Box className={classes.termsSection}>
-					<div>개인정보 보호 정책 ㅣ이용 약관ㅣ도움말</div>
-					<div>All deefun. ⓒ 2019. Korea</div>
-				</Box>
-			</Drawer>
-		);
-	}
-}
+	return (
+		<Drawer
+			open={drawerOpen}
+			onClose={toggleDrawer}
+			variant="persistent"
+			PaperProps={{
+				className: classes.paper
+			}}
+		>
+			<List>
+				{LINKS.map(link => (
+					<DrawerListItem
+						key={link.to}
+						to={link.to}
+						icon={link.icon}
+						label={link.label}
+						exact={link.exact}
+					/>
+				))}
+			</List>
+			<Box className={classes.termsSection}>
+				<div>개인정보 보호 정책 ㅣ이용 약관ㅣ도움말</div>
+				<div>All deefun. ⓒ 2019. Korea</div>
+			</Box>
+		</Drawer>
+	);
+};
 
 const mapStateToProps = state => {
 	return {
-		drawerOpen: drawerOpenSelector(state)
+		drawerOpen: drawerOpenSelector(state),
+		router: state.router
 	};
 };
 
