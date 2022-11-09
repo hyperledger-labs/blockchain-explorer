@@ -210,11 +210,6 @@ export class DashboardView extends Component {
 					<Card className={classes.section}>
 						<ChartStats />
 					</Card>
-					<Card className={`${classes.section} ${classes.center}`}>
-						<h5>Transactions by Organization</h5>
-						<hr />
-						<OrgPieChart transactionByOrg={transactionByOrg} />
-					</Card>
 				</Grid>
 			</Grid>
 		);
