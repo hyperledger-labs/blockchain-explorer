@@ -16,7 +16,12 @@ import { chartDataType } from '../types';
 
 export const TimeChart = ({ chartData }) => (
 	<ResponsiveContainer width="100%" height={225}>
-		<AreaChart data={chartData.displayData}>
+		<AreaChart
+			data={chartData.displayData}
+			margin={{
+				right: 40
+			}}
+		>
 			<defs>
 				<linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
 					<stop offset="10%" stopColor="#D4E4FE" stopOpacity={1} />
@@ -29,8 +34,9 @@ export const TimeChart = ({ chartData }) => (
 				className="datetime"
 				tickLine={false}
 				axisLine={false}
-				tickCount={5}
+				tickMargin={12}
 			/>
+
 			<YAxis
 				domain={[0, chartData.dataMax]}
 				dataKey="count"
