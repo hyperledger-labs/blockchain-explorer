@@ -1,0 +1,34 @@
+@font-face {
+	font-family: 'Noto Sans KR';
+	font-weight: 400;
+	src: url('../fonts/Noto_Sans_KR/NotoSansKR-Regular.otf');
+}
+
+@font-face {
+	font-family: 'Noto Sans KR';
+	font-weight: 500;
+	src: url('../fonts/Noto_Sans_KR/NotoSansKR-Medium.otf');
+}
+
+@font-face {
+	font-family: 'Noto Sans KR';
+	font-weight: 700;
+	src: url('../fonts/Noto_Sans_KR/NotoSansKR-Bold.otf');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	font-weight: 400;
+	src: url('../fonts/Roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Roboto';
+	font-weight: 500;
+	src: url('../fonts/Roboto/Roboto-Medium.ttf');
+}
+@font-face {
+	font-family: 'Roboto';
+	font-weight: 700;
+	src: url('../fonts/Roboto/Roboto-Bold.ttf');
+}
