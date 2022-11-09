@@ -10,8 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
 import { blockListType, notificationsType } from '../types';
-import { Divider, IconButton } from '@material-ui/core';
-import { Fullscreen } from '@material-ui/icons';
+import { Divider } from '@material-ui/core';
 import TimelineItem from '../TimelineItem/TimelineItem';
 
 /* istanbul ignore next */
@@ -60,16 +59,15 @@ export class TimelineStream extends Component {
 	};
 
 	render() {
-		const { notifications, classes } = this.props;
+		const { notifications, classes, button } = this.props;
 		const { blockHash, dialogOpenBlockHash } = this.state;
+
 		return (
 			<>
 				<div className={classes.card}>
 					<div className={classes.title}>
 						<Typography variant="h6">BLOCKS</Typography>
-						<IconButton>
-							<Fullscreen />
-						</IconButton>
+						{button}
 					</div>
 					<Divider />
 					<Timeline lineColor="rgba(189, 189, 189, 1)" lineStyle={{ width: '1px' }}>

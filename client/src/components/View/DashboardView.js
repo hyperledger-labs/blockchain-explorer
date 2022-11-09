@@ -19,8 +19,9 @@ import {
 	transactionByOrgType
 } from '../types';
 import StatCard from '../StatCard/StatCard';
-import { Grid } from '@material-ui/core';
-import { SwapHoriz, Widgets } from '@material-ui/icons';
+import { Grid, IconButton } from '@material-ui/core';
+import { Fullscreen, SwapHoriz, Widgets } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -169,8 +170,6 @@ export class DashboardView extends Component {
 		}
 		const { classes } = this.props;
 
-		console.log(notifications, blockActivity);
-
 		return (
 			<Grid container spacing={3}>
 				<Grid item xs={6}>
@@ -193,27 +192,30 @@ export class DashboardView extends Component {
 							<TimelineStream
 								notifications={notifications}
 								blockList={blockActivity}
+								button={
+									<Link to="/dashboard/blocks">
+										<IconButton>
+											<Fullscreen />
+										</IconButton>
+									</Link>
+								}
 							/>
 						</Grid>
 					</Grid>
 				</Grid>
-				{/* <Grid item xs={6}>
-					<Grid xs={6}>
-						<Card className={classes.section}>
-							<PeersHealth peerStatus={peerStatus} />
-						</Card>
-					</Grid>
-					<Grid xs={6}>
-						<Card className={classes.section}>
-							<ChartStats />
-						</Card>
-						<Card className={`${classes.section} ${classes.center}`}>
-							<h5>Transactions by Organization</h5>
-							<hr />
-							<OrgPieChart transactionByOrg={transactionByOrg} />
-						</Card>
-					</Grid>
-				</Grid> */}
+				<Grid item xs={6}>
+					<Card className={classes.section}>
+						<PeersHealth peerStatus={peerStatus} />
+					</Card>
+					<Card className={classes.section}>
+						<ChartStats />
+					</Card>
+					<Card className={`${classes.section} ${classes.center}`}>
+						<h5>Transactions by Organization</h5>
+						<hr />
+						<OrgPieChart transactionByOrg={transactionByOrg} />
+					</Card>
+				</Grid>
 			</Grid>
 		);
 	}

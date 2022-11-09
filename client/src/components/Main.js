@@ -35,6 +35,7 @@ import PageNotFound from './View/PageNotFound';
 
 import Private from './Route';
 import MainLayout from './MainLayout/MainLayout';
+import DashBoardBlockView from './View/DashboardBlockView';
 
 const {
 	currentChannelSelector,
@@ -101,6 +102,10 @@ export const Main = props => {
 		blockActivity
 	};
 
+	const dashboardBlocksViewProps = {
+		blockActivity
+	};
+
 	const networkViewProps = {
 		peerList
 	};
@@ -147,6 +152,15 @@ export const Main = props => {
 						path="/dashboard"
 						render={routeprops => (
 							<DashboardView {...{ ...dashboardViewProps, ...routeprops }} />
+						)}
+					/>
+					<Private
+						exact
+						path="/dashboard/blocks"
+						render={routeprops => (
+							<DashBoardBlockView
+								{...{ ...dashboardBlocksViewProps, ...routeprops }}
+							/>
 						)}
 					/>
 					<Private
