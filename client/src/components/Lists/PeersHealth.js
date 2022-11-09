@@ -92,7 +92,7 @@ const PeersHealth = ({ peerStatus }) => {
 			nodes={nodes}
 			edges={edges}
 			fitView
-			fitViewOptions={{ padding: 0.2 }}
+			fitViewOptions={{ padding: 0.5 }}
 			proOptions={{ hideAttribution: true }}
 			nodeTypes={{ peer: PeerNode, orderer: OrdererNode }}
 			zoomOnDoubleClick={false}
