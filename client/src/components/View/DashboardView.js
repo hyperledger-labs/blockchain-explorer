@@ -4,14 +4,10 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Row, Col } from 'reactstrap';
-import FontAwesome from 'react-fontawesome';
 import Card from '@material-ui/core/Card';
-import Avatar from '@material-ui/core/Avatar';
 import ChartStats from '../Charts/ChartStats';
 import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
-import OrgPieChart from '../Charts/OrgPieChart';
 import {
 	blockListType,
 	dashStatsType,
@@ -81,8 +77,10 @@ const styles = theme => {
 		section: {
 			height: 335,
 			marginBottom: '2%',
-			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#3c3558' : undefined
+			border: `1px solid #EEEEEE`,
+			backgroundColor: '#FFF',
+			boxShadow: 'inset 1px -1px 0px rgba(102, 102, 102, 0.2)',
+			borderRadius: '12px'
 		},
 		center: {
 			textAlign: 'center'
@@ -149,7 +147,7 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
+		const { dashStats, peerStatus, blockActivity } = this.props;
 		const { hasDbError, notifications } = this.state;
 		if (hasDbError) {
 			return (
