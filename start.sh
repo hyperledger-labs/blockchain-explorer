@@ -15,7 +15,7 @@ echo "**************************************************************************
 export LOG_LEVEL_APP=${LOG_LEVEL_APP:-debug}
 export LOG_LEVEL_DB=${LOG_LEVEL_DB:-debug}
 export LOG_LEVEL_CONSOLE=${LOG_LEVEL_CONSOLE:-info}
-export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-false}
+export LOG_CONSOLE_STDOUT=${LOG_CONSOLE_STDOUT:-true}
 
 export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
 export EXPLORER_APP_ROOT=${EXPLORER_APP_ROOT:-dist}

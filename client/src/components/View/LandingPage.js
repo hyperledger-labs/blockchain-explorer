@@ -63,9 +63,6 @@ const styles = theme => {
 		? (document.body.style.backgroundColor = '#242036')
 		: (document.body.style.backgroundColor = '#f0f5f9');
 	return {
-		background: {
-			backgroundColor: '#f0f5f9'
-		},
 		content: {
 			marginTop: 450,
 			marginLeft: 550,

@@ -1,33 +1,15 @@
 /**
  *    SPDX-License-Identifier: Apache-2.0
  */
-/* eslint-disable */
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import {
-	Nav,
-	Navbar,
-	NavbarBrand,
-	NavbarToggler,
-	Collapse,
-	NavItem,
-	Form,
-	Dropdown,
-	DropdownToggle,
-	DropdownMenu,
-	DropdownItem
-} from 'reactstrap';
-import { HashRouter as Router, NavLink } from 'react-router-dom';
-import Switch from '@material-ui/core/Switch';
-import FontAwesome from 'react-fontawesome';
+import { Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import Websocket from 'react-websocket';
-import Badge from '@material-ui/core/Badge';
 import Dialog from '@material-ui/core/Dialog';
 import Loader from 'react-loader-spinner';
-import Select from '../Styled/Select';
 import NotificationsPanel from '../Panels/NotificationsPanel';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import AdminPanel from '../Panels/AdminPanel';
@@ -36,8 +18,7 @@ import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
-
-// import Enroll from '../Enroll';
+import { coreActions } from '../../state/redux/core';
 
 import {
 	currentChannelType,
@@ -56,6 +37,26 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
+import {
+	AppBar,
+	Divider,
+	IconButton,
+	List,
+	ListItem,
+	ListItemIcon,
+	ListItemText,
+	Popover,
+	Toolbar
+} from '@material-ui/core';
+import {
+	AccountCircle,
+	ExitToApp,
+	Menu,
+	Notifications,
+	PersonAdd,
+	Settings
+} from '@material-ui/icons';
+import { HEADER_HEIGHT } from '../../constants/styles';
 
 const {
 	blockPerHour,
@@ -83,21 +84,24 @@ const { channelsSelector } = tableSelectors;
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
-	const darkNavbar = dark && {
-		background: 'linear-gradient(to right, rgb(236, 233, 252), #4d4575)'
-	};
 	return {
-		logo: {
-			width: 260,
-			height: 50,
-			'@media (max-width: 1415px) and (min-width: 990px)': {
-				width: 200,
-				height: 40
-			}
+		appBar: {
+			boxShadow:
+				'0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15) !important'
 		},
-		navbarHeader: {
-			backgroundColor: '#e8e8e8',
-			...darkNavbar
+		toolbar: {
+			height: HEADER_HEIGHT,
+			display: 'flex',
+			justifyContent: 'space-between'
+		},
+		logo: {
+			width: 122,
+			height: 32,
+			marginLeft: 16,
+			'@media (max-width: 1415px) and (min-width: 990px)': {
+				width: 122,
+				height: 32
+			}
 		},
 		tab: {
 			color: dark ? '#242036' : '#000000',
@@ -380,19 +384,6 @@ export class HeaderView extends Component {
 		}
 	};
 
-	/**enrollOpen = () => {
-    this.setState(() => ({ enrollOpen: true }));
-  };
-
-  enrollClose = () => {
-    this.setState(() => ({ enrollOpen: false }));
-  };
-
-  onEnroll = user => {
-    alert(JSON.stringify(user, null, 2));
-    this.enrollClose();
-  }; */
-
 	handleDrawOpen = drawer => {
 		switch (drawer) {
 			case 'notifyDrawer': {
@@ -482,183 +473,129 @@ export class HeaderView extends Component {
 	}
 
 	render() {
-		const { mode, classes } = this.props;
+		const { classes, toggleDrawer } = this.props;
 		const { hostname, port } = window.location;
 		const webSocketProtocol =
 			window.location.protocol === 'https:' ? 'wss' : 'ws';
 		const webSocketUrl = `${webSocketProtocol}://${hostname}:${port}/`;
-		const dark = mode === 'dark';
 		const {
-			isLoading,
-			selectedChannel,
-			channels: stateChannels,
-			notifyCount,
 			notifyDrawer,
 			adminDrawer,
 			modalOpen,
 			registerOpen,
 			notifications,
-			dropdownOpen
+			anchorEl
 		} = this.state;
-		const links = [
-			{ to: '/', label: 'DASHBOARD', exact: true },
-			{ to: '/network', label: 'NETWORK' },
-			{ to: '/blocks', label: 'BLOCKS' },
-			{ to: '/transactions', label: 'TRANSACTIONS' },
-			{ to: '/chaincodes', label: 'CHAINCODES' },
-			{ to: '/channels', label: 'CHANNELS' }
-		];
+
+		const dropdownOpen = Boolean(anchorEl);
 
 		return (
-			<div>
-				{/* production */}
-				{/* development */}
+			<>
 				<Websocket
 					url={webSocketUrl}
 					onMessage={this.handleData.bind(this)}
 					reconnect
 				/>
-				<Router>
-					<div>
-						<Navbar className={classes.navbarHeader} expand="lg" fixed="top">
-							<NavbarBrand href="/">
+				<AppBar
+					position="fixed"
+					color="background.paper"
+					className={classes.appBar}
+				>
+					<Toolbar className={classes.toolbar} variant="dense">
+						<div>
+							<IconButton edge="start" color="action.active" onClick={toggleDrawer}>
+								<Menu fontSize="large" />
+							</IconButton>
+							<Link to="/dashboard">
 								<img src={Logo} className={classes.logo} alt="Hyperledger Logo" />
-							</NavbarBrand>
-							<NavbarToggler onClick={this.toggle}>
-								<FontAwesome name="bars" className={classes.toggleIcon} />
-							</NavbarToggler>
-							<Collapse isOpen={this.state.isOpen} navbar>
-								<Nav
-									className="ml-auto navbar-left"
-									navbar
-									onMouseLeave={this.closeToggle}
-								>
-									{links.map(({ to, label, ...props }) => (
-										<NavItem key={to}>
-											<NavLink
-												to={to}
-												className={classes.tab}
-												activeClassName={classes.activeTab}
-												onClick={this.toggle}
-												{...props}
-											>
-												{label}
-											</NavLink>
-										</NavItem>
-									))}
-									<Form inline>
-										<Select
-											className={classes.channel}
-											placeholder="Select Channel..."
-											required
-											name="form-field-name"
-											isLoading={isLoading}
-											value={selectedChannel}
-											onChange={this.handleChange}
-											onFocus={this.reloadChannels.bind(this)}
-											options={stateChannels}
-										/>
-									</Form>
-									<Form inline>
-										<div className={classes.adminButton}>
-											<FontAwesome
-												name="bell"
-												data-command="bell"
-												className={classes.bell}
-												onClick={() => this.handleDrawOpen('notifyDrawer')}
-											/>
-											<Badge badgeContent={notifyCount} color="primary" />
-										</div>
-									</Form>
-									<Form inline>
-										<Dropdown
-											isOpen={dropdownOpen}
-											toggle={() => this.setState({ dropdownOpen: !dropdownOpen })}
-										>
-											<DropdownToggle nav>
-												<FontAwesome name="user" className={classes.userdropdown} />
-											</DropdownToggle>
-											<DropdownMenu>
-												<DropdownItem>
-													<div className={classes.adminButton}>
-														<FontAwesome name="sun-o" className={classes.sunIcon} />
-														<Switch
-															className={classes.themeSwitch}
-															onChange={() => this.handleThemeChange(mode)}
-															checked={dark}
-														/>
-														<FontAwesome name="moon-o" className={classes.moonIcon} />
-													</div>
-												</DropdownItem>
-												<DropdownItem>
-													<div className={classes.userIcon}>
-														<FontAwesome
-															name="user-plus"
-															onClick={() => this.registerOpen()}
-														/>{' '}
-														User management
-													</div>
-												</DropdownItem>
-												<DropdownItem divider />
-												<DropdownItem>
-													<div className={classes.logoutIcon}>
-														<FontAwesome name="sign-out" onClick={() => this.logout()} /> Sign
-														out
-													</div>
-												</DropdownItem>
-											</DropdownMenu>
-										</Dropdown>
-									</Form>
-								</Nav>
-							</Collapse>
-						</Navbar>
-						<Drawer
-							anchor="right"
-							open={notifyDrawer}
-							onClose={() => this.handleDrawClose('notifyDrawer')}
-						>
-							<div tabIndex={0} role="button">
-								<NotificationsPanel notifications={notifications} />
-							</div>
-						</Drawer>
-						<Drawer
-							anchor="right"
-							open={adminDrawer}
-							onClose={() => this.handleDrawClose('adminDrawer')}
-						>
-							<div tabIndex={0} role="button">
-								<AdminPanel />
-							</div>
-						</Drawer>
-						<Dialog
-							open={registerOpen}
-							onClose={this.registerClose}
-							fullWidth={false}
-							maxWidth="md"
-						>
-							<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
-							{/* <Register onClose={this.registerClose} onRegister={this.onRegister} /> */}
-						</Dialog>
-						<Dialog
-							open={modalOpen}
-							onClose={this.handleClose}
-							fullWidth={false}
-							maxWidth="md"
-						>
-							<div className={classes.channelLoader}>
-								<h4>Loading Channel Details</h4>
-								<Loader
-									type="ThreeDots"
-									color="#005069"
-									height={70}
-									width={70}
-									className={classes.loader}
-								/>
-							</div>
-						</Dialog>
-					</div>
-				</Router>
-			</div>
+							</Link>
+						</div>
+						<div>
+							<IconButton onClick={() => this.handleDrawOpen('notifyDrawer')}>
+								<Notifications fontSize="large" />
+							</IconButton>
+							<IconButton onClick={e => this.setState({ anchorEl: e.currentTarget })}>
+								<AccountCircle fontSize="large" />
+							</IconButton>
+							<IconButton>
+								<Settings fontSize="large" />
+							</IconButton>
+						</div>
+					</Toolbar>
+					<Drawer
+						anchor="right"
+						open={notifyDrawer}
+						onClose={() => this.handleDrawClose('notifyDrawer')}
+					>
+						<div tabIndex={0} role="button">
+							<NotificationsPanel notifications={notifications} />
+						</div>
+					</Drawer>
+					<Drawer
+						anchor="right"
+						open={adminDrawer}
+						onClose={() => this.handleDrawClose('adminDrawer')}
+					>
+						<div tabIndex={0} role="button">
+							<AdminPanel />
+						</div>
+					</Drawer>
+					<Dialog
+						open={registerOpen}
+						onClose={this.registerClose}
+						fullWidth={false}
+						maxWidth="md"
+					>
+						<UsersPanal onClose={this.registerClose} onRegister={this.onRegister} />
+					</Dialog>
+					<Dialog
+						open={modalOpen}
+						onClose={this.handleClose}
+						fullWidth={false}
+						maxWidth="md"
+					>
+						<div className={classes.channelLoader}>
+							<h4>Loading Channel Details</h4>
+							<Loader
+								type="ThreeDots"
+								color="#005069"
+								height={70}
+								width={70}
+								className={classes.loader}
+							/>
+						</div>
+					</Dialog>
+					<Popover
+						open={dropdownOpen}
+						anchorEl={anchorEl}
+						onClose={() => this.setState({ anchorEl: null })}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center'
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center'
+						}}
+					>
+						<List>
+							<ListItem button onClick={() => this.registerOpen()}>
+								<ListItemIcon>
+									<PersonAdd />
+								</ListItemIcon>
+								<ListItemText primary="User Management" />
+							</ListItem>
+							<Divider />
+							<ListItem button onClick={() => this.logout()}>
+								<ListItemIcon>
+									<ExitToApp />
+								</ListItemIcon>
+								<ListItemText primary="Sign Out" />
+							</ListItem>
+						</List>
+					</Popover>
+				</AppBar>
+			</>
 		);
 	}
 }
@@ -706,7 +643,8 @@ const mapDispatchToProps = {
 	getTransactionList: transactionList,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
-	logout: authOperations.logout
+	logout: authOperations.logout,
+	toggleDrawer: coreActions.toggleDrawer
 };
 
 const connectedComponent = connect(

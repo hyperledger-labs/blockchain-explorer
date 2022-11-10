@@ -2,11 +2,14 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-//import React from 'react';
 import React, { useState, useEffect } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+	HashRouter as Router,
+	Redirect,
+	Route,
+	Switch
+} from 'react-router-dom';
 import BlocksView from './View/BlocksView';
 import NetworkView from './View/NetworkView';
 import TransactionsView from './View/TransactionsView';
@@ -31,6 +34,8 @@ import {
 import PageNotFound from './View/PageNotFound';
 
 import Private from './Route';
+import MainLayout from './MainLayout/MainLayout';
+import DashBoardBlockView from './View/DashboardBlockView';
 
 const {
 	currentChannelSelector,
@@ -52,19 +57,8 @@ const {
 	transactionListSearchSelector
 } = tableSelectors;
 
-const styles = theme => {
-	const { type } = theme.palette;
-	const dark = type === 'dark';
-	return {
-		main: {
-			color: dark ? '#ffffff' : undefined
-		}
-	};
-};
-
 export const Main = props => {
 	const {
-		classes,
 		blockList,
 		blockActivity,
 		chaincodeList,
@@ -108,6 +102,10 @@ export const Main = props => {
 		blockActivity
 	};
 
+	const dashboardBlocksViewProps = {
+		blockActivity
+	};
+
 	const networkViewProps = {
 		peerList
 	};
@@ -146,14 +144,23 @@ export const Main = props => {
 	}
 
 	return (
-		<Router>
-			<div className={classes.main}>
+		<MainLayout>
+			<Router>
 				<Switch>
 					<Private
 						exact
-						path="/"
+						path="/dashboard"
 						render={routeprops => (
 							<DashboardView {...{ ...dashboardViewProps, ...routeprops }} />
+						)}
+					/>
+					<Private
+						exact
+						path="/dashboard/blocks"
+						render={routeprops => (
+							<DashBoardBlockView
+								{...{ ...dashboardBlocksViewProps, ...routeprops }}
+							/>
 						)}
 					/>
 					<Private
@@ -195,10 +202,11 @@ export const Main = props => {
 							/>
 						)}
 					/>
+					<Redirect to="dashboard" />
 					<Route exact render={routeprops => <PageNotFound {...routeprops} />} />
 				</Switch>
-			</div>
-		</Router>
+			</Router>
+		</MainLayout>
 	);
 };
 
@@ -239,4 +247,4 @@ const connectedComponent = connect(
 		getTransactionListSearch: tableOperations.transactionListSearch
 	}
 )(Main);
-export default withStyles(styles)(connectedComponent);
+export default connectedComponent;

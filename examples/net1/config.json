@@ -2,7 +2,8 @@
 	"network-configs": {
 		"test-network": {
 			"name": "Test Network",
-			"profile": "./connection-profile/test-network.json"
+			"profile": "./connection-profile/test-network.json",
+			"enableAuthentication": false
 		}
 	},
 	"license": "Apache-2.0"

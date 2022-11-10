@@ -30,6 +30,9 @@ RUN curl -sfL https://install.goreleaser.com/github.com/tj/node-prune.sh | bash 
 # install NPM dependencies
 RUN npm install && npm run build && npm prune --production
 
+# install node-prune
+RUN curl -sf https://gobinaries.com/tj/node-prune | sh
+
 # build explorer app
 RUN cd client && npm install && npm prune --production && yarn build
 

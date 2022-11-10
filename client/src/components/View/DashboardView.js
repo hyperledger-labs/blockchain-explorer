@@ -4,36 +4,26 @@
 
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { Row, Col } from 'reactstrap';
-import FontAwesome from 'react-fontawesome';
 import Card from '@material-ui/core/Card';
-import Avatar from '@material-ui/core/Avatar';
 import ChartStats from '../Charts/ChartStats';
 import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
-import OrgPieChart from '../Charts/OrgPieChart';
 import {
 	blockListType,
 	dashStatsType,
 	peerStatusType,
 	transactionByOrgType
 } from '../types';
+import StatCard from '../StatCard/StatCard';
+import { Grid, IconButton } from '@material-ui/core';
+import { Fullscreen, SwapHoriz, Widgets } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		background: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9'
-		},
-		view: {
-			paddingTop: 85,
-			paddingLeft: 0,
-			width: '80%',
-			marginLeft: '10%',
-			marginRight: '10%'
-		},
 		blocks: {
 			height: 175,
 			marginBottom: 20,
@@ -87,8 +77,10 @@ const styles = theme => {
 		section: {
 			height: 335,
 			marginBottom: '2%',
-			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#3c3558' : undefined
+			border: `1px solid #EEEEEE`,
+			backgroundColor: '#FFF',
+			boxShadow: 'inset 1px -1px 0px rgba(102, 102, 102, 0.2)',
+			borderRadius: '12px'
 		},
 		center: {
 			textAlign: 'center'
@@ -155,7 +147,7 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
+		const { dashStats, peerStatus, blockActivity } = this.props;
 		const { hasDbError, notifications } = this.state;
 		if (hasDbError) {
 			return (
@@ -175,92 +167,49 @@ export class DashboardView extends Component {
 			);
 		}
 		const { classes } = this.props;
+
 		return (
-			<div className={classes.background}>
-				<div className={classes.view}>
-					<Row>
-						<Col sm="12">
-							<Card className={classes.blocks}>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.block}`}>
-												<FontAwesome name="cube" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.latestBlock}</h1>
-										</Col>
-									</Row>
-									BLOCKS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.transaction}`}>
-												<FontAwesome name="list-alt" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.txCount}</h1>
-										</Col>
-									</Row>
-									TRANSACTIONS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.node}`}>
-												<FontAwesome name="users" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.peerCount}</h1>
-										</Col>
-									</Row>
-									NODES
-								</div>
-								<div className={classes.statistic}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.chaincode}`}>
-												<FontAwesome name="handshake-o" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.chaincodeCount}</h1>
-										</Col>
-									</Row>
-									CHAINCODES
-								</div>
-							</Card>
-						</Col>
-					</Row>
-					<Row>
-						<Col sm="6">
-							<Card className={classes.section}>
-								<PeersHealth peerStatus={peerStatus} />
-							</Card>
-							<Card className={classes.section}>
-								<TimelineStream
-									notifications={notifications}
-									blockList={blockActivity}
-								/>
-							</Card>
-						</Col>
-						<Col sm="6">
-							<Card className={classes.section}>
-								<ChartStats />
-							</Card>
-							<Card className={`${classes.section} ${classes.center}`}>
-								<h5>Transactions by Organization</h5>
-								<hr />
-								<OrgPieChart transactionByOrg={transactionByOrg} />
-							</Card>
-						</Col>
-					</Row>
-				</div>
-			</div>
+			<Grid container spacing={3}>
+				<Grid item xs={6}>
+					<Grid container spacing={2}>
+						<Grid item xs={6}>
+							<StatCard
+								count={dashStats.latestBlock}
+								label="BLOCKS"
+								icon={<Widgets color="action" />}
+							/>
+						</Grid>
+						<Grid item xs={6}>
+							<StatCard
+								count={dashStats.txCount}
+								label="TRANSACTIONS"
+								icon={<SwapHoriz color="action" />}
+							/>
+						</Grid>
+						<Grid item xs>
+							<TimelineStream
+								notifications={notifications}
+								blockList={blockActivity}
+								button={
+									<Link to="/dashboard/blocks">
+										<IconButton>
+											<Fullscreen />
+										</IconButton>
+									</Link>
+								}
+							/>
+						</Grid>
+					</Grid>
+				</Grid>
+				<Grid item xs={6}>
+					<Card className={classes.section}>
+						<PeersHealth peerStatus={peerStatus} />
+					</Card>
+					<Card className={classes.section}>
+						<ChartStats />
+					</Card>
+				</Grid>
+			</Grid>
 		);
 	}
 }

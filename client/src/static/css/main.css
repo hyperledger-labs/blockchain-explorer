@@ -4,8 +4,12 @@
 body {
 	line-height: normal;
 	font-size: 16px;
-	font-family: 'Roboto Condensed', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background-color: rgba(250, 250, 250, 1) !important;
 	-webkit-font-smoothing: antialiased !important;
+}
+
+body * {
+	font-family: 'Roboto', 'Noto Sans KR', Helvetica, Arial, sans-serif;
 }
 #root > div > div:nth-child(1) > nav > a {
 	font-size: 30pt;
@@ -44,12 +48,6 @@ div.menuItems > nav > ul > li {
 div.menuItems > nav {
 	border-top: 2px #000000 solid;
 	border-bottom: 2px #000000 solid;
-}
-
-/*Scroll Bar Styling*/
-::-webkit-scrollbar {
-	width: 0px; /* remove scrollbar space */
-	background: transparent; /* optional: just make scrollbar invisible */
 }
 
 /* Table and List  */
