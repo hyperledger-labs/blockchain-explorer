@@ -44,19 +44,19 @@
 		"org2": {
 			"mspid": "Org2MSP",
 			"adminPrivateKey": {
-				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/priv_sk"
+				"path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/priv_sk"
 			},
 			"peers": ["peer0.org2.example.com"],
 			"certificateAuthorities": ["ca0"],
 			"signedCert": {
-				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/cert.pem"
 			}
 		}
 	},
 	"peers": {
 		"peer0.org2.example.com": {
 			"tlsCACerts": {
-				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+				"path": "/tmp/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
 			},
 			"url": "grpcs://peer0.org2.example.com:9051",
 			"grpcOptions": {
@@ -71,7 +71,7 @@
 				"verify": false
 			},
 			"tlsCACerts": {
-				"path": "/Users/hot9998/dev/ssvt/hyperledger/blockchain-explorer/organizations/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
+				"path": "/tmp/crypto/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
 			},
 			"caName": "ca_org2"
 		}
