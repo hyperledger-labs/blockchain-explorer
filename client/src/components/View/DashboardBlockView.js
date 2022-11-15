@@ -14,6 +14,7 @@ class DashBoardBlockView extends Component {
 
 	componentDidMount() {
 		const { blockActivity } = this.props;
+		console.log(blockActivity);
 		this.setNotifications(blockActivity);
 	}
 
