@@ -469,6 +469,70 @@ $ ./install-fabric.sh
 $ ./network up createChannel
 ```
 
+### fabric 네트워크 관련 환경 설정
+
+fabric test network에 접근하기 위해 네트워크 설정이 필요합니다.  
+키 파일 경로 부분을 전부 실제 로컬 PC에 해당하는 경로로 수정합니다.
+
+
+`/app/platform/fabric/connection-profile/test-network.json`
+
+```json
+  // before
+  ...
+	"organizations": {
+		"Org1MSP": {
+			"mspid": "Org1MSP",
+			"adminPrivateKey": {
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/fabric/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+			},
+			"peers": ["peer0.org1.example.com"],
+			"signedCert": {
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/fabric/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0.org1.example.com": {
+			"tlsCACerts": {
+				"path": "/Users/hot9998/dev/ssvt/hyperledger/fabric/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+			},
+			"url": "grpcs://localhost:7051",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0.org1.example.com"
+			}
+		}
+	}
+
+  // after
+  ...
+	"organizations": {
+		"Org1MSP": {
+			"mspid": "Org1MSP",
+			"adminPrivateKey": {
+				"path": "<실제 fabric 경로>/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+			},
+			"peers": ["peer0.org1.example.com"],
+			"signedCert": {
+				"path": "<실제 fabric 경로>/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0.org1.example.com": {
+			"tlsCACerts": {
+				"path": "<실제 fabric 경로>/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+			},
+			"url": "grpcs://localhost:7051",
+			"grpcOptions": {
+				"ssl-target-name-override": "peer0.org1.example.com"
+			}
+		}
+	}
+```
+
+
+
 ### 블록체인 익스플로러 실행
 
 [https://github.com/hyperledger/blockchain-explorer](https://github.com/hyperledger/blockchain-explorer)
