@@ -30,15 +30,15 @@ Hyperledger Explorer is a simple, powerful, easy-to-use, well-maintained, open-s
 
 # Release Notes
 
-| Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
-| --                                                          | --                                                               | --                                                |
-| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.6](release_notes/v1.1.6.md)</b> (Jun 06, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.5](release_notes/v1.1.5.md)</b> (Apr 20, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.4](release_notes/v1.1.4.md)</b> (Jan 29, 2021)  | [v1.4 to v2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.3](release_notes/v1.1.3.md)</b> (Sep 28, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
-| <b>[v1.1.2](release_notes/v1.1.2.md)</b> (Aug 12, 2020)  | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases) |
+| Hyperledger Explorer Version                            | Fabric Version Supported                                                     | NodeJS Version Supported                                                |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021) | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3)     | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
+| <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021) | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3)     | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases)           |
+| <b>[v1.1.6](release_notes/v1.1.6.md)</b> (Jun 06, 2021) | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3)     | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases)           |
+| <b>[v1.1.5](release_notes/v1.1.5.md)</b> (Apr 20, 2021) | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3)     | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases)           |
+| <b>[v1.1.4](release_notes/v1.1.4.md)</b> (Jan 29, 2021) | [v1.4 to v2.2](https://hyperledger-fabric.readthedocs.io/en/release-2.2)     | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases)           |
+| <b>[v1.1.3](release_notes/v1.1.3.md)</b> (Sep 28, 2020) | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases)                      |
+| <b>[v1.1.2](release_notes/v1.1.2.md)</b> (Aug 12, 2020) | [v1.4.0 to v2.2.0](https://hyperledger-fabric.readthedocs.io/en/release-2.2) | [12.16.x](https://nodejs.org/en/download/releases)                      |
 
 ---
 
@@ -436,3 +436,59 @@ Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting 
 # License
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.
+
+
+----
+## 클라이언트 개발
+
+### NVM
+
+node.js v12를 사용하므로 nvm을 사용하여 node.js 버전을 맞춰줘야합니다.
+
+```bash
+$ nvm use
+```
+
+### fabric test network 설치
+
+[Install Fabric and Fabric Samples - hyperledger-fabricdocs main documentation](https://hyperledger-fabric.readthedocs.io/en/latest/install.html)
+
+위 가이드에 따라 Fabirc binary, 도커 이미지 설치 및 sample 다운로드
+
+```bash
+$ ./install-fabric.sh
+```
+
+### fabric test network 실행
+
+[Using the Fabric test network - hyperledger-fabricdocs main documentation](https://hyperledger-fabric.readthedocs.io/en/latest/test_network.html)
+
+위 가이드에 따라 network 실행 및 createChannel 수행
+
+```bash
+$ ./network up createChannel
+```
+
+### 블록체인 익스플로러 실행
+
+[https://github.com/hyperledger/blockchain-explorer](https://github.com/hyperledger/blockchain-explorer)
+
+해당 문서의 using codebase 가이드에 따라 블록체인 익스플로러 실행
+
+
+### 개발환경 실행
+
+디렉토리 루트에서 `npm start` 명령어로 실행 한 후 client 디렉토리에서 마찬가지로 `npm start` 명렁어로 실행하면 개발 환경으로 클라이언트 실행 가능
+
+## 배포용 이미지 빌드
+
+배포용 이미지를 빌드하기 위해 아래 명령어를 입력합니다.  
+(쿠버네티스 배포 용으로 linux/amd64 플랫폼 이미지로 빌드됩니다)
+
+```
+$ npm run docker_build
+
+$ docker images
+REPOSITORY             TAG       IMAGE ID       CREATED             SIZE
+hyperledger-explorer   latest    b920ab4c4834   About an hour ago   264MB
+```
