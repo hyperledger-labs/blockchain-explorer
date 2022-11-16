@@ -539,6 +539,13 @@ fabric test network에 접근하기 위해 네트워크 설정이 필요합니�
 
 해당 문서의 using codebase 가이드에 따라 블록체인 익스플로러 실행
 
+### 의존성 설치
+디렉토리 루트에서 서버 및 클라이언트 의존성 설치를 진행합니다.
+
+```bash
+$ ./main.sh clean
+$ ./main.sh install
+```
 
 ### 개발환경 실행
 
