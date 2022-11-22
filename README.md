@@ -2,14 +2,6 @@
 
 # Hyperledger Explorer
 
-:warning: :warning: :warning:
-
-**Hyperledger Explorer has been moved to End of Life status by the original project maintainers.  Although Hyperledger Explorer is not currently being developed or maintained, the code is still available under an open source license so you would be welcome to reactivate this project. If you are interested in continuing development of this code, please consider submitting a PR at https://github.com/hyperledger/hyperledger-hip and sending and email to tsc@lists.hyperledger.org. See more details about project proposals at: https://hyperledger.github.io/hyperledger-hip/**
-
-**If you wish to contribute, please reach out to the [TSC mailing list](https://lists.hyperledger.org/g/tsc/messages)**
-
-:warning: :warning: :warning:
-
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
 ![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
@@ -21,16 +13,15 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyperledger_blockchain-explorer&metric=alert_status)](https://sonarcloud.io/dashboard?id=hyperledger_blockchain-explorer)
 <!-- badges -->
 
-![](docs/source/images/Hyperledger_Explorer_Logo_Color.png)
 
-Hyperledger Explorer is a simple, powerful, easy-to-use, well-maintained, open-source utility to browse activity on the underlying blockchain network. Users can configure and build Hyperledger Explorer on macOS and Ubuntu.
+Explorer is a simple, powerful, easy-to-use, well-maintained, open-source utility to browse activity on the underlying blockchain network. Users can configure and build Hyperledger Explorer on macOS and Ubuntu.
 
-**Update!** Hyperledger Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
+**Update!** Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
 
 
 # Release Notes
 
-| Hyperledger Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
+| Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
 | <b>[v1.1.8](release_notes/v1.1.8.md)</b> (Aug 14, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
 | <b>[v1.1.7](release_notes/v1.1.7.md)</b> (Jul 04, 2021)  | [v1.4 to v2.3](https://hyperledger-fabric.readthedocs.io/en/release-2.3) | [^12.13.1, ^14.13.1](https://nodejs.org/en/download/releases) |
