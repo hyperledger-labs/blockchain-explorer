@@ -11,6 +11,7 @@ import {
 	Switch
 } from 'react-router-dom';
 import BlocksView from './View/BlocksView';
+import Blocks from './Lists/Blocks';
 import NetworkView from './View/NetworkView';
 import TransactionsView from './View/TransactionsView';
 import ChaincodeView from './View/ChaincodeView';
