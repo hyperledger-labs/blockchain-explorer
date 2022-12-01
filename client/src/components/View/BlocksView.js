@@ -4,46 +4,40 @@
 
 import React from 'react';
 import View from '../Styled/View';
-// import Blocks from '../Lists/Blocks'; 기존에 있었던 BLOCKS탭 컴포넌트
 import Blocks from '../CustomBlocks/Blocks';
-import {
-	blockListType,
-	currentChannelType,
-	getTransactionType,
-	transactionType
-} from '../types';
 
-export const BlocksView = ({
-	blockList,
-	currentChannel,
-	getTransaction,
-	transaction,
-	blockListSearch,
-	getBlockListSearch,
-	transactionByOrg
-}) => (
+// import Blocks from '../Lists/Blocks'; 기존에 있었던 BLOCKS탭 컴포넌트
+// import {
+// 	blockListType,
+// 	currentChannelType,
+// 	getTransactionType,
+// 	transactionType
+// } from '../types';
+
+export const BlocksView = () => (
 	<View>
-		<Blocks
-			blockList={blockList}
-			currentChannel={currentChannel}
-			transaction={transaction}
-			getTransaction={getTransaction}
-			transactionByOrg={transactionByOrg}
-			blockListSearch={blockListSearch}
-			getBlockListSearch={getBlockListSearch}
-		/>
+		<Blocks />
 	</View>
 );
 
-BlocksView.propTypes = {
-	blockList: blockListType.isRequired,
-	currentChannel: currentChannelType.isRequired,
-	getTransaction: getTransactionType.isRequired,
-	transaction: transactionType
-};
+// BlocksView.propTypes = {
+// 	blockList: blockListType.isRequired,
+// 	currentChannel: currentChannelType.isRequired,
+// 	getTransaction: getTransactionType.isRequired,
+// 	transaction: transactionType
+// };
 
-BlocksView.defaultProps = {
-	transaction: null
-};
+// BlocksView.defaultProps = {
+// 	transaction: null
+// };
 
 export default BlocksView;
+
+// 기존에 받아오던 props들
+// blockList={blockList}
+// 			currentChannel={currentChannel}
+// 			transaction={transaction}
+// 			getTransaction={getTransaction}
+// 			transactionByOrg={transactionByOrg}
+// 			blockListSearch={blockListSearch}
+// 			getBlockListSearch={getBlockListSearch}

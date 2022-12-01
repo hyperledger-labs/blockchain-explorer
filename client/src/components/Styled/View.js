@@ -11,8 +11,8 @@ const styles = theme => {
 	const dark = type === 'dark';
 	return {
 		fullwidth: {
-			width: '100%',
-			marginTop: 105
+			width: '100%'
+			// marginTop: 105 이거 왜들어가있는거지
 		},
 		display: {
 			display: 'block',
