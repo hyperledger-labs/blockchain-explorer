@@ -66,5 +66,7 @@ COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/dist ./app/
 COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/client/build ./client/build/
 COPY --from=BUILD_IMAGE $EXPLORER_APP_PATH/node_modules ./node_modules/
 
+EXPOSE 8080
+
 # run blockchain explorer main app
 CMD npm run app-start && tail -f /dev/null

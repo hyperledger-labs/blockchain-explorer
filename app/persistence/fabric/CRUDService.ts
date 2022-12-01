@@ -95,9 +95,18 @@ export class CRUDService {
 		to: any,
 		orgs: string
 	) {
-		let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
-       inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name where  t.blockid >= $1 and t.id >= $2 and
-							t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `;
+		let sqlTxList = ` select 
+							t.creator_msp_id,
+							t.txhash,t.type,
+							t.chaincodename,
+							t.createdt,
+							channel.name as channelName 
+						from transactions as t
+       					inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name 
+						where  t.blockid >= $1 and t.id >= $2 and
+							   t.channel_genesis_hash = $3 and 
+							   t.network_name = $4 and 
+							   t.createdt between $5 and $6 `;
 		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to];
 
 		if (orgs && orgs.length > 0) {
@@ -115,8 +124,7 @@ export class CRUDService {
 	 *
 	 * @param {*} channel_genesis_hash
 	 * @param {*} blockNum
-	 * @param {*} from
-	 * @param {*} to
+	 * @param {*} limit
 	 * @param {*} orgs
 	 * @returns
 	 * @memberof CRUDService
@@ -125,11 +133,10 @@ export class CRUDService {
 		network_name: any,
 		channel_genesis_hash: any,
 		blockNum: any,
-		from: any,
-		to: any,
+		limit: any,
 		orgs: string[]
 	) {
-		const values = [channel_genesis_hash, network_name, from, to];
+		const values = [channel_genesis_hash, network_name, limit];
 		let byOrgs = '';
 		if (orgs && orgs.length > 0) {
 			values.push(orgs);
@@ -139,13 +146,29 @@ export class CRUDService {
 		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
 
 		const sqlBlockTxList = `select a.* from  (
-	  select (select c.name from channel c where c.channel_genesis_hash =$1 and c.network_name = $2) 
-	  	as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
-        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${byOrgs} and 
-         channel_genesis_hash = $1 and network_name = $2 and createdt between $3 and $4) from blocks where
-         blocks.channel_genesis_hash =$1 and blocks.network_name = $2 and blocknum >= 0 and blocks.createdt between $3 and $4
-									order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
-
+				select (
+					select c.name from channel c 
+						where c.channel_genesis_hash =$1 and c.network_name = $2
+					) as channelname, 
+				blocks.blocknum,
+				blocks.txcount,
+				blocks.datahash,
+				blocks.blockhash,
+				blocks.prehash,
+				blocks.createdt,
+				blocks.blksize, 
+				(
+					SELECT array_agg(txhash) as txhash FROM transactions 
+						where blockid = blocks.blocknum ${byOrgs} 
+							and channel_genesis_hash = $1 
+							and network_name = $2 
+				) from blocks 
+					where blocks.channel_genesis_hash =$1 
+						and blocks.network_name = $2 
+						and blocknum >= 0 
+					order by blocks.blocknum desc limit $3
+				)  a 
+				where  a.txhash IS NOT NULL`;
 		logger.debug('sqlBlockTxList ', sqlBlockTxList);
 
 		return this.sql.getRowsBySQlQuery(sqlBlockTxList, values);

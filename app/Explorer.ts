@@ -45,7 +45,6 @@ export class Explorer {
 		});
 		// apply rate limiter to all requests
 		this.app.use(limiter);
-
 		this.app.use(bodyParser.json());
 		this.app.use(
 			bodyParser.urlencoded({

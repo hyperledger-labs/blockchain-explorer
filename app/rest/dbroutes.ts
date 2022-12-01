@@ -239,19 +239,16 @@ export function dbroutes(router: Router, platform: Platform) {
 			const channel_genesis_hash = req.params.channel_genesis_hash;
 			const blockNum = parseInt(req.params.blocknum);
 			const orgs = requtil.parseOrgsArray(req.query);
-			const { from, to } = requtil.queryDatevalidator(
-				req.query.from as string,
-				req.query.to as string
-			);
+
 			if (channel_genesis_hash && !isNaN(blockNum)) {
 				const extReq = (req as unknown) as ExtRequest;
+
 				return dbCrudService
 					.getBlockAndTxList(
 						extReq.network,
 						channel_genesis_hash,
 						blockNum,
-						from,
-						to,
+						req.query.limit,
 						orgs
 					)
 					.then(handleResult(req, res));
