@@ -69,16 +69,10 @@ const BlockBar = ({ block }) => {
 		setIsOpen(prev => !prev);
 	};
 
-	let expandData = JSON.stringify(expandObj);
-	expandData = JSON.parse(expandData);
+	let json = JSON.stringify(expandObj);
+	json = JSON.parse(json);
 
-	const data = JSON.parse(expandData.row.write_set[1].set[0].value);
-	let dataArr = [];
-
-	for (const property in data) {
-		dataArr.push({ [property]: data[property] });
-	}
-
+	const transactions = json.row.write_set[1].set;
 	return (
 		<>
 			<Bar onClick={handleToggle} isOpen={isOpen}>
@@ -105,21 +99,32 @@ const BlockBar = ({ block }) => {
 
 				<TransactionTitle>Transactions</TransactionTitle>
 
-				{dataArr.map(data => (
-					<TransactionCard>
-						<Label gap={79}>
-							<div>type</div>
-							<Value>{Object.keys(data)}</Value>
-						</Label>
+				{transactions.map(data => {
+					let { key, value } = data;
+					const type = key.split('/')[0] === 'ct' ? 'ctg' : key.split('/')[0];
+					value = JSON.parse(value);
+					let arr = [];
+					for (let property in value) {
+						arr.push(`${[property]} : ${value[property]}`);
+					}
+					return (
+						<TransactionCard>
+							<Label gap={79}>
+								<div>type</div>
+								<Value>{type}</Value>
+							</Label>
 
-						<Label gap={71}>
-							<div>Value</div>
-							<TransactionValueContainer>
-								<Value>{Object.values(data)}</Value>
-							</TransactionValueContainer>
-						</Label>
-					</TransactionCard>
-				))}
+							<Label gap={71}>
+								<div>Value</div>
+								<TransactionValueContainer>
+									{arr.map(value => (
+										<Value>{value}</Value>
+									))}
+								</TransactionValueContainer>
+							</Label>
+						</TransactionCard>
+					);
+				})}
 			</DropDownContainer>
 		</>
 	);
@@ -187,6 +192,7 @@ const TransactionTitle = styled.div`
 
 const TransactionValueContainer = styled.div`
 	width: 100%;
+	padding: 12px;
 	border-radius: 6px;
 	background-color: #eeeeee;
 `;

@@ -23,7 +23,7 @@ const styles = theme => {
 		card: {
 			color: dark ? '#ffffff' : undefined,
 			backgroundColor: dark ? '#453e68' : undefined,
-			// overflow: 'scroll',
+			overflow: 'auto',
 			height: '80vh'
 		}
 	};

@@ -31,6 +31,18 @@ const blockObj = {
 			createdt: '2022-11-29T05:10:07.704Z',
 			blksize: 4,
 			txhash: ['af1b10424186debd35a46ba40e2423377f97d9c439c292d65de59a9a4f825f8e']
+		},
+		{
+			channelname: 'mychannel',
+			blocknum: 25,
+			txcount: 1,
+			datahash: 'e103e164e0b97a9d99fa32d61913eaaa492914565bf98ce0dbe8006c8e32a973',
+			blockhash:
+				'c4bd1f2cad9dca76c2e8631c9ea471f2838d672457c4cbf046a059972ccee44a',
+			prevhash: 'f7e9a59099f98f313f9e2d74d5e7d87f075bd43f72fe1491563b10b3ce27698f',
+			createdt: '2022-11-29T05:10:07.704Z',
+			blksize: 4,
+			txhash: ['af1b10424186debd35a46ba40e2423377f97d9c439c292d65de59a9a4f825f8e']
 		}
 	]
 };
@@ -38,7 +50,6 @@ const blockObj = {
 const Blocks = () => {
 	let json = JSON.stringify(blockObj);
 	json = JSON.parse(json);
-
 	const { rows } = json;
 
 	return (
