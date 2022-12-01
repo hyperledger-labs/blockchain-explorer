@@ -12,7 +12,7 @@ const styles = theme => {
 	return {
 		fullwidth: {
 			width: '100%'
-			// marginTop: 105 이거 왜들어가있는거지
+			// marginTop: 105 ?
 		},
 		display: {
 			display: 'block',
@@ -22,7 +22,9 @@ const styles = theme => {
 		},
 		card: {
 			color: dark ? '#ffffff' : undefined,
-			backgroundColor: dark ? '#453e68' : undefined
+			backgroundColor: dark ? '#453e68' : undefined,
+			// overflow: 'scroll',
+			height: '80vh'
 		}
 	};
 };
