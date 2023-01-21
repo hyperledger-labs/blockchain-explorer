@@ -5,12 +5,12 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
 ![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
-[![Build Status](https://dev.azure.com/Hyperledger/blockchain-explorer/_apis/build/status/Blockchain-Explorer?branchName=main)](https://dev.azure.com/Hyperledger/blockchain-explorer/_build/latest?definitionId=41&branchName=main)
+[![Build Status](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/build.yaml/badge.svg
+)](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/build.yaml/badge.svg
+)
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
 [![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=main)](https://blockchain-explorer.readthedocs.io/en/main/?badge=main)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/hyperledger/blockchain-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hyperledger/blockchain-explorer/context:javascript)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/hyperledger/blockchain-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/hyperledger/blockchain-explorer/alerts/)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=hyperledger_blockchain-explorer&metric=alert_status)](https://sonarcloud.io/dashboard?id=hyperledger_blockchain-explorer)
+[![Test](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/test.yaml/badge.svg)](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/test.yaml/badge.svg)
 <!-- badges -->
 
 
