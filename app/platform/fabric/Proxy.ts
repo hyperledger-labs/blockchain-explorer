@@ -8,6 +8,10 @@ import { NetworkService } from './service/NetworkService';
 import { ExplorerError } from '../../common/ExplorerError';
 import { explorerError } from '../../common/ExplorerMessage';
 import * as FabricConst from './utils/FabricConst';
+import { SyncPlatform } from './sync/SyncPlatform';
+import { convertValidationCode, jsonObjSize, SyncServices } from './sync/SyncService';
+import * as sha from 'js-sha256';
+import * as FabricUtils from './utils/FabricUtils';
 
 const fabric_const = FabricConst.fabric.const;
 
@@ -404,5 +408,193 @@ export class Proxy {
 				msg.notify_type
 			);
 		}
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockNo
+	 * @returns
+	 * @memberof Proxy
+	 */
+	async fetchDataByBlockNo(network_id: string, channel_genesis_hash: string, blockNo: number) {
+		return await this.dataByBlockNo(network_id, channel_genesis_hash, blockNo);
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} txnId
+	 * @returns
+	 * @memberof Proxy
+	 */
+	async fetchDataByTxnId(network_id: string, channel_genesis_hash: string, txnId: string) {
+		const results = await this.persistence.getCrudService().getTransactionByID(network_id, channel_genesis_hash, txnId);
+		if (results == null) {
+			return await this.queryTxFromLedger(network_id, channel_genesis_hash, txnId);
+		}
+		return results;
+	}
+
+	async queryTxFromLedger(network_id: string, channel_genesis_hash: string, txnId: string) {
+		let syncPlatform = new SyncPlatform(this.persistence, null)
+		let sync = new SyncServices(syncPlatform, this.persistence);
+		const client = this.platform.getClient(network_id);
+		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
+		try {
+			const txn = await client.fabricGateway.queryTransaction(channel_name, txnId);
+			logger.info("Transaction details from query Transaction ", txn);
+			if (txn) {
+				//Formatting of transaction details
+				const txObj = txn.transactionEnvelope;
+				const txStr = JSON.stringify(txObj);
+				let txid = txObj.payload.header.channel_header.tx_id;
+				let validation_code = '';
+				let payload_proposal_hash = '';
+				let chaincode = '';
+				let rwset;
+				let readSet;
+				let writeSet;
+				let chaincodeID;
+				let mspId = [];
+
+				sync.convertFormatOfValue(
+					'value',
+					client.fabricGateway.fabricConfig.getRWSetEncoding(),
+					txObj
+				);
+				if (txid && txid !== '') {
+					const val_code = txn.validationCode;
+					validation_code = convertValidationCode(val_code);
+				}
+				if (txObj.payload.data.actions !== undefined) {
+					chaincode =
+						txObj.payload.data.actions[0].payload.action.proposal_response_payload
+							.extension.chaincode_id.name;
+					chaincodeID = new Uint8Array(
+						txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension
+					);
+					mspId = txObj.payload.data.actions[0].payload.action.endorsements.map(
+						endorsement => endorsement.endorser.mspid
+					);
+					rwset =
+						txObj.payload.data.actions[0].payload.action.proposal_response_payload
+							.extension.results.ns_rwset;
+
+					readSet = rwset.map(rw => ({
+						chaincode: rw.namespace,
+						set: rw.rwset.reads
+					}));
+
+					writeSet = rwset.map(rw => ({
+						chaincode: rw.namespace,
+						set: rw.rwset.writes
+					}));
+
+					payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
+						'hex'
+					);
+				}
+				if (txObj.payload.header.channel_header.typeString === 'CONFIG') {
+					txid = sha.sha256(txStr);
+					readSet =
+						txObj.payload.data.last_update.payload?.data.config_update.read_set;
+					writeSet =
+						txObj.payload.data.last_update.payload?.data.config_update.write_set;
+				}
+
+				const chaincode_id = String.fromCharCode.apply(null, chaincodeID);
+				const transaction = {
+					channel_name,
+					txhash: txid,
+					createdt: txObj.payload.header.channel_header.timestamp,
+					chaincodename: chaincode,
+					chaincode_id,
+					creator_msp_id: txObj.payload.header.signature_header.creator.mspid,
+					endorser_msp_id: mspId,
+					type: txObj.payload.header.channel_header.typeString,
+					readSet,
+					writeSet,
+					validation_code,
+					payload_proposal_hash,
+				};
+				return transaction;
+			}
+			return txn;
+		}
+		catch (e) {
+			logger.debug('No transaction found with this txn id >> ', e);
+		}
+	}
+
+	/**
+	 *
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} startBlockNo
+	 * @param {*} endBlockNo
+	 * @returns
+	 * @memberof Proxy
+	 */
+	async fetchDataByBlockRange(network_id: string, channel_genesis_hash: string, startBlockNo: number, endBlockNo: number) {
+		let blockValue, blockArray = [];
+		for (let index = startBlockNo; index <= endBlockNo; index++) {
+			blockValue = await this.dataByBlockNo(network_id, channel_genesis_hash, index);
+			if (blockValue != "response_payloads is null") {
+				blockArray.push(blockValue);
+			}
+			else
+				break;
+		}
+		if (blockArray.length > 0) {
+			return blockArray;
+		}
+		return blockValue;
+	}
+
+	//Re-usable component to fetch data using block no and block range
+	async dataByBlockNo(network_id: string, channel_genesis_hash: string, blockNo: number) {
+		const client = this.platform.getClient(network_id);
+		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
+		//fetch data from postgress
+		const results = await this.persistence.getCrudService().getBlockByBlocknum(network_id, channel_genesis_hash, blockNo);
+		if (results == null) {
+			const block = await this.getBlockByNumber(network_id, channel_genesis_hash, blockNo);
+			if (block != "response_payloads is null") {
+				logger.info("block details from gateway", block);
+				const first_tx = block.data.data[0];
+				const header = first_tx.payload.header;
+				const createdt = await FabricUtils.getBlockTimeStamp(
+					header.channel_header.timestamp
+				);
+				const blockhash = await FabricUtils.generateBlockHash(block.header);
+				//For transaction id
+				const txLen = block.data.data.length;
+				let txArray = [];
+				for (let txIndex = 0; txIndex < txLen; txIndex++) {
+					const txObj = block.data.data[txIndex];
+					let txid = txObj.payload.header.channel_header.tx_id;
+					txArray.push(txid);
+				}
+				const blockData = {
+					channelname: channel_name,
+					blocknum: block.header.number.toString(),
+					datahash: block.header.data_hash.toString('hex'),
+					prehash: block.header.previous_hash.toString('hex'),
+					txcount: block.data.data.length,
+					createdt,
+					prev_blockhash: '',
+					blockhash,
+					channel_genesis_hash,
+					blksize: jsonObjSize(block),
+					txhash: txArray
+				};
+				return blockData;
+			}
+			return block;
+		}
+		return results;
 	}
 }

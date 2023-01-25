@@ -180,4 +180,71 @@ export async function platformroutes(
 			});
 		});
 	});
+
+	/**
+	 * *
+	 * Block by block number
+	 * GET /fetchDataByBlockNo
+	 * curl -i 'http://<host>:<port>/fetchDataByBlockNo/<channel_genesis_hash>/<blockNo>'
+	 */
+	router.get('/fetchDataByBlockNo/:channel_genesis_hash/:blockNo', (req, res) => {
+		const blockNo = parseInt(req.params.blockNo);
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+		proxy.fetchDataByBlockNo(req.network, channel_genesis_hash, blockNo).then((data: any) => {
+			if (data != "response_payloads is null") {
+				res.send({ status: 200, data: data });
+			}
+			else{
+				res.send({ status: 404, data: "Block not found" });
+			}
+		});
+	});
+
+	/**
+	 * *
+	 * Blocks by block range
+	 * GET /fetchDataByBlockRange
+	 * curl -i 'http://<host>:<port>/fetchDataByBlockRange/<channel_genesis_hash>/<startBlockNo>/<endBlockNo>'
+	 */	
+	router.get('/fetchDataByBlockRange/:channel_genesis_hash/:startBlockNo/:endBlockNo', (req, res) => {
+		const startBlockNo = parseInt(req.params.startBlockNo);
+		const endBlockNo = parseInt(req.params.endBlockNo);
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+		if (startBlockNo < endBlockNo) {
+			proxy.fetchDataByBlockRange(req.network, channel_genesis_hash, startBlockNo, endBlockNo).then((data: any) => {
+				if (data != "response_payloads is null") {
+					res.send({ status: 200, data: data });
+				}
+				else{
+					res.send({ status: 404, data: "Block(s) not found" });
+				}
+			});
+		}
+		else {
+			return requtil.invalidRequest(req, res);
+		}
+
+	});
+
+
+	/**
+	 * *
+	 * Transaction by txn id
+	 * GET /fetchDataByTxnId
+	 * curl -i 'http://<host>:<port>/fetchDataByTxnId/<channel_genesis_hash>/<txnId>'
+	 */
+	router.get('/fetchDataByTxnId/:channel_genesis_hash/:txnId', (req, res) => {
+		const txnId = req.params.txnId;
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+		proxy.fetchDataByTxnId(req.network, channel_genesis_hash, txnId).then((data: any) => {
+			if (data != null) {
+				res.send({ status: 200, data: data });
+			}
+			else{
+				res.send({ status: 404, data: "Transaction not found" });
+			}
+		});
+	});
+
+
 } // End platformroutes()
