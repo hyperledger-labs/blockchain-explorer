@@ -108,6 +108,7 @@ export class Proxy {
 	async getPeersStatus(network_id, channel_genesis_hash) {
 		const client = await this.platform.getClient(network_id);
 		const channel_name = client.getChannelNameByHash(channel_genesis_hash);
+		let orderersList = await client.fabricGateway.getActiveOrderersList(channel_name);
 		const nodes = await this.persistence
 			.getMetricService()
 			.getPeerList(network_id, channel_genesis_hash);
@@ -123,9 +124,10 @@ export class Proxy {
 		const peers = [];
 
 		for (const node of nodes) {
+			 node.status = "";
 			if (node.peer_type === 'PEER') {
-				node.status = 'DOWN';
 				if (discover_results && discover_results.peers_by_org) {
+					node.status = "DOWN";
 					const org = discover_results.peers_by_org[node.mspid];
 					if (org === undefined) {
 						continue;
@@ -135,23 +137,35 @@ export class Proxy {
 							node.ledger_height_low = peer.ledgerHeight.low;
 							node.ledger_height_high = peer.ledgerHeight.high;
 							node.ledger_height_unsigned = peer.ledgerHeight.unsigned;
+							node.status = 'UP';	
 						}
 					}
 				}
 				// Sometime 'peers_by_org' property is not included in discover result
-				if(typeof node.ledger_height_low === 'undefined')
+				if (typeof node.ledger_height_low === 'undefined') {
 					node.ledger_height_low = '-';
-				if(typeof node.ledger_height_high === 'undefined')
+				}
+				if (typeof node.ledger_height_high === 'undefined') {
 					node.ledger_height_high = '-';
-				if(typeof node.ledger_height_unsigned === 'undefined')
+				}
+				if (typeof node.ledger_height_unsigned === 'undefined') {
 					node.ledger_height_unsigned = '-';
+				}
 				peers.push(node);
 			} else if (node.peer_type === 'ORDERER') {
 				node.status = 'DOWN';
 				node.ledger_height_low = '-';
 				node.ledger_height_high = '-';
 				node.ledger_height_unsigned = '-';
-				peers.push(node);
+				let orderersCount = orderersList.length;
+				if (orderersCount != 0) {
+					for (const orderer of orderersList) {
+						if (orderer.name === node.requests && orderer.connected == true) {
+							node.status = 'UP';
+						}
+					}
+				}
+				peers.push(node);			
 			}
 		}
 
