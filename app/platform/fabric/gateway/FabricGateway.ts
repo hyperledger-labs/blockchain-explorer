@@ -488,4 +488,17 @@ export class FabricGateway {
 
 		return null;
 	}
+
+	async getActiveOrderersList(channel_name) {
+		const network = await this.gateway.getNetwork(channel_name);
+		let orderers = [];
+		for (let [orderer, ordererMetadata] of network.discoveryService.channel.committers) {
+			let ordererAtrributes = {
+				name: orderer,
+				connected: ordererMetadata.connected
+			}
+			orderers.push(ordererAtrributes);
+		}
+		return orderers;
+	}
 }
