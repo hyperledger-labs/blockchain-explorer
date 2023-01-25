@@ -501,4 +501,26 @@ export class FabricGateway {
 		}
 		return orderers;
 	}
+
+	async queryTransaction(channelName:string, txnId:string) {
+		try {
+			const network = await this.gateway.getNetwork(this.defaultChannelName);
+			// Get the contract from the network.
+			const contract = network.getContract('qscc');
+			const resultByte = await contract.evaluateTransaction(
+				'GetTransactionByID',
+				channelName,
+				txnId
+			);
+			const resultJson = BlockDecoder.decodeTransaction(resultByte);
+			logger.debug('queryTransaction', resultJson);
+			return resultJson;
+		} catch (error) {
+			logger.error(
+				`Failed to get transaction ${txnId} from channel ${channelName} : `,
+				error
+			);
+			return null;
+		}
+	}
 }

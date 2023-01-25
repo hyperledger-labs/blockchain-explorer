@@ -758,7 +758,7 @@ export class SyncServices {
 	}
 }
 // Transaction validation code
-function convertValidationCode(code) {
+export function convertValidationCode(code) {
 	if (typeof code === 'string') {
 		return code;
 	}
@@ -766,7 +766,7 @@ function convertValidationCode(code) {
 }
 
 // Calculate data size of json object
-function jsonObjSize(json) {
+export function jsonObjSize(json) {
 	let bytes = 0;
 
 	function sizeOf(obj) {

@@ -475,6 +475,30 @@ export class CRUDService {
 		}
 	}
 	// Orderer BE-303
+
+	/**
+	 *
+	 * Returns the block by block number.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockNo
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async getBlockByBlocknum(network_name:any, channel_genesis_hash:any, blockNo:any) {
+		const sqlBlockTxList = `select a.* from  (
+				select (select c.name from channel c where c.channel_genesis_hash =$1 and c.network_name = $2) 
+					as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
+				  SELECT  array_agg(txhash) as txhash FROM transactions where blockid = $3 and 
+				   channel_genesis_hash = $1 and network_name = $2) from blocks where
+				   blocks.channel_genesis_hash =$1 and blocks.network_name = $2 and blocknum = $3)  a where  a.txhash IS NOT NULL`;
+
+		const row: any = await this.sql.getRowsBySQlCase(
+			sqlBlockTxList,
+			[channel_genesis_hash, network_name, blockNo]);
+		return row;
+	}
+
 }
 
 /**
