@@ -237,6 +237,42 @@ export class CRUDService {
 		return false;
 	}
 
+	/**
+	 *
+	 * @param network_name
+	 * @param channel_genesis_hash
+	 * @param blockCount
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async deleteBlock(network_name, channel_genesis_hash, blockCount) {
+		const count: any = await this.sql.getRowsBySQlCase(
+			' select count(*) as count from blocks  where channel_genesis_hash=$1 and network_name = $2 ',
+			[channel_genesis_hash, network_name]
+		);
+
+		const rowCount: number = count.count;
+		var rowsToDelete: number = 0;
+		if (rowCount > blockCount) {
+			rowsToDelete = rowCount - blockCount;
+		}
+
+		if (rowsToDelete > 0) {
+			await this.sql.updateBySql(
+				`delete from transactions where blockid in ( select blocknum from blocks where channel_genesis_hash=$1 and network_name = $2 order by blocknum limit $3) `,
+				[channel_genesis_hash, network_name, rowsToDelete]
+			);
+
+			await this.sql.updateBySql(
+				`delete from blocks where id in ( select id from blocks where channel_genesis_hash=$1 and network_name = $2 order by blocknum limit $3) `,
+				[channel_genesis_hash, network_name, rowsToDelete]
+			);
+
+			return true;
+		}
+		return false;
+	}
+
 	/* eslint-enable */
 
 	/**

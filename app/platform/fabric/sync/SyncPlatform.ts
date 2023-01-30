@@ -37,6 +37,7 @@ export class SyncPlatform {
 	syncService: any;
 	blocksSyncTime: number;
 	network_config: Record<string, any>;
+	blockCount: number;
 
 	/**
 	 * Creates an instance of SyncPlatform.
@@ -54,6 +55,7 @@ export class SyncPlatform {
 		this.syncService = new SyncServices(this, this.persistence);
 		this.blocksSyncTime = 60000;
 		this.network_config = null;
+		this.blockCount = 1000;
 	}
 
 	/**
@@ -85,6 +87,8 @@ export class SyncPlatform {
 			this.network_id = args[0];
 			this.network_name = args[1];
 		}
+
+		this.blockCount = network_configs[this.network_id].blockCount;
 
 		logger.info(explorerError.MESSAGE_1002, this.network_id, this.network_name);
 
@@ -119,7 +123,7 @@ export class SyncPlatform {
 		 */
 		// During initial sync-up phase, disable discovery request
 		(function validateMissingBlocks(sync: SyncPlatform, noDiscovery: boolean) {
-			sync.isChannelEventHubConnected(noDiscovery);
+			sync.isChannelEventHubConnected(noDiscovery, sync.blockCount);
 			setTimeout(validateMissingBlocks, sync.blocksSyncTime, sync, false);
 		})(this, true);
 
@@ -134,12 +138,19 @@ export class SyncPlatform {
 	 *
 	 * @memberof SyncPlatform
 	 */
-	async isChannelEventHubConnected(noDiscovery: boolean) {
+	async isChannelEventHubConnected(noDiscovery: boolean, blockCount: number) {
 		for (const channel_name of this.client.getChannels()) {
 			// Validate channel event is connected
-			const status = this.eventHub.isChannelEventHubConnected(channel_name);
+			const status: boolean = this.eventHub.isChannelEventHubConnected(
+				channel_name
+			);
 			if (status) {
-				await this.syncService.syncBlocks(this.client, channel_name, noDiscovery);
+				await this.syncService.syncBlocks(
+					this.client,
+					channel_name,
+					noDiscovery,
+					blockCount
+				);
 			} else {
 				// Channel client is not connected then it will reconnect
 				this.eventHub.connectChannelEventHub(channel_name);

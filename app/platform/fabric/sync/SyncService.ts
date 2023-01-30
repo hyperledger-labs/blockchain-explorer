@@ -356,7 +356,7 @@ export class SyncServices {
 			.saveChaincodPeerRef(network_id, chaincode_peer_row);
 	}
 
-	async syncBlocks(client, channel_name, noDiscovery) {
+	async syncBlocks(client, channel_name, noDiscovery, blockCount) {
 		const network_id = client.getNetworkId();
 
 		// Get channel information from ledger
@@ -399,6 +399,12 @@ export class SyncServices {
 		} else {
 			logger.debug('Missing blocks not found for %s', channel_name);
 		}
+
+		const successDeleteBlock = await this.persistence
+			.getCrudService()
+			.deleteBlock(network_id, channel_genesis_hash, blockCount);
+		logger.info('result of DeleteBlock ', successDeleteBlock);
+
 		const index = this.synchInProcess.indexOf(synch_key);
 		this.synchInProcess.splice(index, 1);
 		logger.info(`syncBlocks: Finish >> ${synch_key}`);
