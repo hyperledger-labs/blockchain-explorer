@@ -553,15 +553,19 @@ export class SyncServices {
 			}
 			let envelope_signature = txObj.signature;
 			if (envelope_signature !== undefined) {
-				envelope_signature = Buffer.from(envelope_signature).toString('hex');
+				envelope_signature = Buffer.from(
+					JSON.stringify(envelope_signature)
+				).toString('hex');
 			}
 			let payload_extension = txObj.payload.header.channel_header.extension;
 			if (payload_extension !== undefined) {
-				payload_extension = Buffer.from(payload_extension).toString('hex');
+				payload_extension = Buffer.from(JSON.stringify(payload_extension)).toString(
+					'hex'
+				);
 			}
 			let creator_nonce = txObj.payload.header.signature_header.nonce;
 			if (creator_nonce !== undefined) {
-				creator_nonce = Buffer.from(creator_nonce).toString('hex');
+				creator_nonce = Buffer.from(JSON.stringify(creator_nonce)).toString('hex');
 			}
 			/* eslint-disable */
 			const creator_id_bytes =
@@ -598,14 +602,16 @@ export class SyncServices {
 					for (const input of chaincode_proposal_input) {
 						inputs =
 							(inputs === '' ? inputs : `${inputs},`) +
-							Buffer.from(input).toString('hex');
+							Buffer.from(JSON.stringify(input)).toString('hex');
 					}
 					chaincode_proposal_input = inputs;
 				}
 				endorser_signature =
 					txObj.payload.data.actions[0].payload.action.endorsements[0].signature;
 				if (endorser_signature !== undefined) {
-					endorser_signature = Buffer.from(endorser_signature).toString('hex');
+					endorser_signature = Buffer.from(
+						JSON.stringify(endorser_signature)
+					).toString('hex');
 				}
 				payload_proposal_hash = txObj.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash.toString(
 					'hex'
