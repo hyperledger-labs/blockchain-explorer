@@ -82,31 +82,51 @@ export class CRUDService {
 	 * @param {*} txid
 	 * @param {*} from
 	 * @param {*} to
+	 * @param {*} page
+	 * @param {*} size
 	 * @param {*} orgs
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	getTxList(
+	async getTxList(
 		network_name: any,
 		channel_genesis_hash: any,
 		blockNum: any,
 		txid: any,
 		from: any,
 		to: any,
-		orgs: string
+		orgs: string,
+		page: number,
+		size: number
 	) {
+		var countOfTxns: number;
 		let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
        inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name where  t.blockid >= $1 and t.id >= $2 and
 							t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `;
-		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to];
-
+		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to, page, size];
+		if (page == 1) {
+			let sqlTxCount: string;
+			const filterValues = [blockNum, txid, channel_genesis_hash, network_name, from, to];
+			sqlTxCount = ` select count(*) from transactions as t inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name
+			where t.blockid >= $1 and t.id >= $2 and t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `
+			if (orgs && orgs.length > 0) {
+				sqlTxCount += ' and t.creator_msp_id = ANY($7)';
+				filterValues.push(orgs);
+			}
+			countOfTxns = await this.sql.getRowsCountBySQlQuery(sqlTxCount, filterValues)
+		}
 		if (orgs && orgs.length > 0) {
-			sqlTxList += ' and t.creator_msp_id = ANY($7)';
+			sqlTxList += ' and t.creator_msp_id = ANY($9)';
 			values.push(orgs);
 		}
-		sqlTxList += ' order by t.createdt desc';
+		sqlTxList += ' order by t.createdt desc LIMIT $8 OFFSET (($7 - 1) * $8)';
+		let txnsData = await this.sql.getRowsBySQlQuery(sqlTxList, values);
+		let response = {
+			txnsData: txnsData,
+			noOfpages: Math.ceil(countOfTxns / size)
+		}
 
-		return this.sql.getRowsBySQlQuery(sqlTxList, values);
+		return response;
 	}
 
 	/**
