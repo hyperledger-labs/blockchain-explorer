@@ -124,9 +124,9 @@ export function dbroutes(router: Router, platform: Platform) {
 	 * GET /txList/
 	 * curl -i 'http://<host>:<port>/txList/<channel_genesis_hash>/<blocknum>/<txid>/<limitrows>/<offset>'
 	 * Response:
-	 * {'rows':[{'id':56,'channelname':'mychannel','blockid':24,
+	 * {'rows':{"txnsData": [{'id':56,'channelname':'mychannel','blockid':24,
 	 * 'txhash':'c42c4346f44259628e70d52c672d6717d36971a383f18f83b118aaff7f4349b8',
-	 * 'createdt':'2018-03-09T19:40:59.000Z','chaincodename':'mycc'}]}
+	 * 'createdt':'2018-03-09T19:40:59.000Z','chaincodename':'mycc'}], "noOfpages": 1}
 	 */
 	router.get(
 		'/txList/:channel_genesis_hash/:blocknum/:txid',
@@ -139,12 +139,13 @@ export function dbroutes(router: Router, platform: Platform) {
 				req.query.from as string,
 				req.query.to as string
 			);
+			const { page, size } = req.query;
 			if (isNaN(txid)) {
 				txid = 0;
 			}
 			if (channel_genesis_hash) {
 				const extReq = (req as unknown) as ExtRequest;
-				dbCrudService
+				let data = await dbCrudService
 					.getTxList(
 						extReq.network,
 						channel_genesis_hash,
@@ -152,9 +153,17 @@ export function dbroutes(router: Router, platform: Platform) {
 						txid,
 						from,
 						to,
-						orgs
+						orgs,
+						page,
+						size
 					)
-					.then(handleResult(req, res));
+				if (data) {
+					return res.send({
+						status: 200,
+						rows: data
+					});
+				}
+				return requtil.notFound(req, res);
 			} else {
 				return requtil.invalidRequest(req, res);
 			}
