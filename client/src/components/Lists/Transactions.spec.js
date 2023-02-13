@@ -5,6 +5,7 @@
 import ReactTable from '../Styled/Table';
 import { Transactions } from './Transactions';
 import TransactionView from '../View/TransactionView';
+import { TablePagination } from '@mui/material';
 import moment from 'moment';
 
 const setup = prop => {
@@ -198,6 +199,8 @@ const setup = prop => {
 				write_set: []
 			}
 		],
+		transactionListSearchTotalPages: 5,
+		transactionListTotalPages: 5,
 		getTransactionList: jest.fn(),
 		getTransactionListSearch: jest.fn(),
 		getTransaction: jest.fn(),
@@ -386,19 +389,11 @@ describe('Transactions', () => {
 		expect(wrapper.state('dialogOpen')).toBe(true);
 	});
 
-	test('pagination when transactionList is greater than 4', () => {
-		const { wrapper, props } = setup();
-		const { transactionList } = props;
-		const transactions = transactionList;
-		const transaction = transactionList[0];
-		Array.prototype.push.apply(transactions, [
-			transaction,
-			transaction,
-			transaction
-		]);
-		expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
-		wrapper.setProps({ transactionList: transactions });
-		expect(wrapper.find('.pagination-bottom').exists()).toBe(true);
+	test('pagination when transactionList is greater than 0', () => {
+		const { wrapper } = setup();
+		expect(wrapper.find(TablePagination).exists()).toBe(true);
+		wrapper.setProps({ transactionListSearch: []});
+		expect(wrapper.find(TablePagination).exists()).toBe(false);
 	});
 
 	test('searchTransactionList gets called in componentWillReceiveProps when a new prop is set', () => {
@@ -475,7 +470,7 @@ describe('Transactions', () => {
 		const { props, wrapper } = setup();
 		const instance = wrapper.instance();
 		wrapper.setState({ orgs: ['org_a', 'org_b'] });
-		wrapper.setState({ search: true });
+		wrapper.setState({ search: true, queryFlag: true });
 		const spy = jest.spyOn(instance, 'searchTransactionList');
 
 		const currentChannel = {
@@ -537,12 +532,11 @@ describe('Transactions', () => {
 	test('Simulate onClick when a clear button is clicked', async () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
-		wrapper.setState({ search: true });
+		wrapper.setState({ search: true, orgs: ['org_a', 'org_b'] });
 
 		await wrapper.find('.btn-primary').simulate('click');
 		wrapper.update();
 
-		expect(wrapper.state('search')).toBe(false);
 		expect(wrapper.state('orgs').length).toBe(0);
 	});
 

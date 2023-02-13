@@ -12,6 +12,7 @@ import ReactTable from '../Styled/Table';
 import TransactionView from '../View/TransactionView';
 import DatePicker from '../Styled/DatePicker';
 import MultiSelect from '../Styled/MultiSelect';
+import { TablePagination } from '@mui/material';
 
 import {
 	currentChannelType,
@@ -84,7 +85,17 @@ const styles = theme => {
 		}
 	};
 };
-
+const tablePaginationStyle = {
+	display: 'flex',
+	justifyContent: 'end',
+	padding: '0px 15px',
+	marginBottom: '15px',
+	alignItems: 'baseline',
+	'.MuiToolbar-root': {
+		alignItems: 'baseline',
+	}
+}
+const rowsPerPageOptions=[5,10,25,50,100];
 export class Transactions extends Component {
 	constructor(props) {
 		super(props);
@@ -100,7 +111,12 @@ export class Transactions extends Component {
 			from: moment().subtract(1, 'days'),
 			//transactionId: '',
 			directLinkSearchResultsFlag: false,
-			directLinkDialogDoneFlag: false
+			directLinkDialogDoneFlag: false,
+			page: 0,
+			rowsPerPage:10,
+			searchClick: false,
+			queryFlag: false,
+			defaultQuery: true
 		};
 	}
 
@@ -119,7 +135,8 @@ export class Transactions extends Component {
 		this.props.transactionByOrg.forEach(val => {
 			opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
 		});
-		this.setState({ selection, options: opts });
+		this.setState({ selection, options: opts, defaultQuery: true });
+		this.handleSearch();
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -136,9 +153,13 @@ export class Transactions extends Component {
 			this.searchTransactionList(nextProps.currentChannel);
 		}
 	}
-
+	componentDidUpdate(prevProps,prevState) {
+		if(prevState.page!=this.state.page || prevState.rowsPerPage!=this.state.rowsPerPage || this.state.searchClick){
+			this.handleSearch();
+		}
+	}
 	componentWillUnmount() {
-		clearInterval(this.interVal);
+		clearInterval(this.interval);
 		if (this.props.transactionId) {
 			this.props.removeTransactionId();
 		}
@@ -156,17 +177,28 @@ export class Transactions extends Component {
 	}
 
 	searchTransactionList = async channel => {
-		let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-			this.state.to
-		).toString()}`;
-		for (let i = 0; i < this.state.orgs.length; i++) {
-			query += `&&orgs=${this.state.orgs[i]}`;
+		let pageParams = { page: this.state.page + 1, size: this.state.rowsPerPage }
+		let query = '';
+		if (this.state.queryFlag) {
+			query = this.state.from ? `from=${new Date(this.state.from).toString()}&to=${new Date(
+				this.state.to
+			).toString()}` : ``;
+			for (let i = 0; i < this.state.orgs.length; i++) {
+				query += `&orgs=${this.state.orgs[i]}`;
+			}
+			this.setState({ queryFlag: false });
+		}
+		else if (this.state.defaultQuery) {
+			query = '';
+			this.setState({ defaultQuery: false })
+		} else {
+			query = this.props.transactionListSearchQuery
 		}
 		let channelhash = this.props.currentChannel;
 		if (channel !== undefined) {
 			channelhash = channel;
 		}
-		await this.props.getTransactionListSearch(channelhash, query);
+		await this.props.getTransactionListSearch(channelhash, query, pageParams);
 	};
 
 	handleDialogOpen = async tid => {
@@ -194,7 +226,7 @@ export class Transactions extends Component {
 			this.searchTransactionList();
 		}, 60000);
 		await this.searchTransactionList();
-		this.setState({ search: true });
+		this.setState({ search: true, searchClick: false });
 		if (this.props.transactionId) {
 			this.setState({ directLinkSearchResultsFlag: false });
 			const { getTransaction } = this.props;
@@ -204,7 +236,6 @@ export class Transactions extends Component {
 
 	handleClearSearch = () => {
 		this.setState({
-			search: false,
 			to: moment(),
 			orgs: [],
 			err: false,
@@ -217,7 +248,9 @@ export class Transactions extends Component {
 		const data = Object.assign({}, selection, { [row.index]: !val });
 		this.setState({ selection: data });
 	};
-
+	handlePageChange = (_e,page)=>{this.setState({page:page})}
+	handleRowsChange = (e)=>{this.setState({page: 0, rowsPerPage: e.target.value});}
+	
 	render() {
 		const { classes } = this.props;
 		const columnHeaders = [
@@ -320,6 +353,7 @@ export class Transactions extends Component {
 		const { transaction } = this.props;
 		const { dialogOpen } = this.state;
 		let transactionList;
+		let noOfPages;
 		if (transaction && this.state.directLinkSearchResultsFlag) {
 			let tlArray = [{}];
 			tlArray[0] = transaction;
@@ -328,9 +362,8 @@ export class Transactions extends Component {
 				this.handleDialogOpen(this.props.transactionId);
 			}
 		} else {
-			transactionList = this.state.search
-				? this.props.transactionListSearch
-				: this.props.transactionList;
+			transactionList = this.props.transactionListSearch;
+			noOfPages = this.props.transactionListSearchTotalPages;
 		}
 
 		return (
@@ -344,6 +377,8 @@ export class Transactions extends Component {
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
+							popperPlacement='bottom'
+							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }}
 							onChange={date => {
 								if (date > this.state.to) {
 									this.setState({ err: true, from: date });
@@ -361,11 +396,13 @@ export class Transactions extends Component {
 							showTimeSelect
 							timeIntervals={5}
 							dateFormat="LLL"
+							popperPlacement='bottom'
+							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }} 
 							onChange={date => {
-								if (date > this.state.from) {
-									this.setState({ to: date, err: false });
-								} else {
+								if (date < this.state.from) {
 									this.setState({ err: true, to: date });
+								} else {
+									this.setState({ to: date, err: false });
 								}
 							}}
 						>
@@ -396,9 +433,9 @@ export class Transactions extends Component {
 						<Button
 							className={classes.searchButton}
 							color="success"
-							disabled={this.state.err}
+							disabled={this.state.err || (!this.state.from != !this.state.to)}
 							onClick={async () => {
-								await this.handleSearch();
+								this.setState({page:0, searchClick:true, queryFlag: true, defaultQuery: false })
 							}}
 						>
 							Search
@@ -428,7 +465,7 @@ export class Transactions extends Component {
 				<ReactTable
 					data={transactionList}
 					columns={columnHeaders}
-					defaultPageSize={10}
+					pageSize={this.state.rowsPerPage}
 					list
 					filterable
 					sorted={this.state.sorted}
@@ -441,9 +478,23 @@ export class Transactions extends Component {
 					}}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={transactionList.length >= 5}
+					showPaginationBottom={false}
 				/>
-
+				{transactionList.length > 0 && <TablePagination page={this.state.page}
+					sx={tablePaginationStyle}
+					rowsPerPage={this.state.rowsPerPage}
+					labelDisplayedRows={() => `Page ${this.state.page + 1} of ${noOfPages}`}
+					rowsPerPageOptions={rowsPerPageOptions}
+					onRowsPerPageChange={this.handleRowsChange}
+					onPageChange={this.handlePageChange}
+					backIconButtonProps={{
+						disabled: this.state.page === 0,
+					}}
+					nextIconButtonProps={{
+						disabled: this.state.page + 1 === noOfPages,
+					}}
+					className={classes.tablePagination}
+					labelRowsPerPage={'Items per page'} />}
 				<Dialog
 					open={dialogOpen}
 					onClose={this.handleDialogClose}

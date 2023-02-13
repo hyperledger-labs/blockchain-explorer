@@ -114,18 +114,19 @@ const transaction = (channel, transactionId) => dispatch =>
 			console.error(error);
 		});
 
-const transactionListSearch = (channel, query) => dispatch =>
-	get(`/api/txList/${channel}/0/0?${query}`)
+const transactionListSearch = (channel, query, pageParams) => dispatch =>
+	get(`/api/txList/${channel}/0/0?${query?query:''}&page=${pageParams?.page||1}&size=${pageParams?.size||10}`)
 		.then(resp => {
-			dispatch(actions.getTransactionListSearch(resp));
+			let params={page:pageParams?.page||1,size:pageParams?.size ||10}
+			dispatch(actions.getTransactionListSearch({...resp,query,pageParams:params}));
 		})
 		.catch(error => {
 			console.error(error);
 		});
 
 /* istanbul ignore next */
-const transactionList = channel => dispatch =>
-	get(`/api/txList/${channel}/0/0/`)
+const transactionList = (channel,params) => dispatch =>
+	get(`/api/txList/${channel}/0/0/?page=${params.page}&size=${params.size}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
