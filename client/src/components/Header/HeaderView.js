@@ -74,11 +74,12 @@ const {
 	chaincodeList,
 	channels,
 	peerList,
-	transactionList
+	transactionList,
+	transactionListSearch
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { channelsSelector } = tableSelectors;
+const { channelsSelector, transactionListSearchPageParamSelector, transactionListSearchQuerySelector } = tableSelectors;
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -458,6 +459,9 @@ export class HeaderView extends Component {
 			getPeerStatus,
 			getTransactionByOrg,
 			getTransactionList,
+			getTransactionListSearch,
+			transactionListSearchPageParam,
+			transactionListSearchQuery,
 			getTransactionPerHour,
 			getTransactionPerMin,
 			getBlockActivity
@@ -474,7 +478,7 @@ export class HeaderView extends Component {
 			getPeerList(currentChannel),
 			getPeerStatus(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionList(currentChannel),
+			getTransactionListSearch(currentChannel,transactionListSearchQuery,transactionListSearchPageParam),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel)
 		]);
@@ -687,7 +691,9 @@ const mapStateToProps = state => {
 	return {
 		currentChannel: currentChannelSelector(state),
 		channels: channelsSelector(state),
-		mode: modeSelector(state)
+		mode: modeSelector(state),
+		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),
+		transactionListSearchQuery: transactionListSearchQuerySelector(state),
 	};
 };
 
@@ -704,6 +710,7 @@ const mapDispatchToProps = {
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
 	getTransactionList: transactionList,
+	getTransactionListSearch:transactionListSearch,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
 	logout: authOperations.logout

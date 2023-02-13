@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
-import { tableOperations } from '../../state/redux/tables';
+import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
@@ -48,12 +48,14 @@ const {
 	chaincodeList,
 	channels,
 	peerList,
-	transactionList
+	transactionList,
+	transactionListSearch
 } = tableOperations;
 
 const { userlist } = authOperations;
 
 const { currentChannelSelector } = chartSelectors;
+const { transactionListSearchPageParamSelector, transactionListSearchQuerySelector} = tableSelectors;//transactionListSearchPageParamSelector, transactionListSearchQuerySelector  //vimp
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -118,9 +120,11 @@ export class LandingPage extends Component {
 			getBlockActivity,
 			getTransactionByOrg,
 			getTransactionList,
+			getTransactionListSearch,
 			getTransactionPerHour,
 			getTransactionPerMin,
 			updateLoadStatus,
+			query,pageParams,
 			userlist: userlistData
 			// getUserList
 		} = this.props;
@@ -143,7 +147,7 @@ export class LandingPage extends Component {
 			getPeerStatus(currentChannel),
 			getBlockActivity(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionList(currentChannel),
+			getTransactionListSearch(currentChannel,query,pageParams),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel),
 			userlistData()
@@ -218,7 +222,9 @@ LandingPage.defaultProps = {
 
 const mapStateToProps = state => {
 	return {
-		currentChannel: currentChannelSelector(state)
+		currentChannel: currentChannelSelector(state),
+		pageParams: transactionListSearchPageParamSelector(state),
+		query: transactionListSearchQuerySelector(state)
 	};
 };
 
@@ -235,7 +241,7 @@ const mapDispatchToProps = {
 	getPeerStatus: peerStatus,
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
-	getTransactionList: transactionList,
+	getTransactionListSearch: transactionListSearch,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
 	userlist: userlist

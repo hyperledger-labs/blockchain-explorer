@@ -83,7 +83,8 @@ const transactionReducer = (state = initialState, action = {}) => {
 const transactionListReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_LIST) {
     return {
-      rows: action.payload.rows,
+      rows: action.payload.rows?.txnsData,
+      noOfpages: action.payload.rows?.noOfpages || state.noOfpages,
       loaded: true,
       errors: action.error,
     };
@@ -95,9 +96,12 @@ const transactionListReducer = (state = initialState, action = {}) => {
 const transactionListSearchReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_LIST_SEARCH) {
     return {
-      rows: action.payload.rows,
+      rows: action.payload.rows?.txnsData,
+      noOfpages: action.payload.rows?.noOfpages || state.noOfpages,
       loaded: true,
       errors: action.error,
+      query: action.payload.query,
+      pageParams: action.payload.pageParams
     };
   } else {
     return state;

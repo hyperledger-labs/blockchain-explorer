@@ -25,7 +25,11 @@ export const TransactionsView = ({
 	transactionByOrg,
 	transactionListSearch,
 	transactionId,
-	removeTransactionId
+	removeTransactionId,
+	transactionListSearchTotalPages,
+	transactionListTotalPages,
+	transactionListSearchPageParam,
+	transactionListSearchQuery
 }) => (
 	<View>
 		<Transactions
@@ -40,6 +44,10 @@ export const TransactionsView = ({
 			transactionListSearch={transactionListSearch}
 			transactionId={transactionId}
 			removeTransactionId={removeTransactionId}
+			transactionListSearchTotalPages={transactionListSearchTotalPages}
+			transactionListTotalPages={transactionListTotalPages}
+			transactionListSearchPageParam={transactionListSearchPageParam}
+			transactionListSearchQuery={transactionListSearchQuery}
 		/>
 	</View>
 );

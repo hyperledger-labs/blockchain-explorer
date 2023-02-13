@@ -23,7 +23,7 @@ describe('Tables', () => {
 
 		const channel = 'mychannel';
 		const query = 'query';
-
+		const pageParams = {page:1,size:10};
 		test('blockList', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/blockAndTxList/${channel}/0`)
@@ -247,16 +247,16 @@ describe('Tables', () => {
 
 		test('transactionListSearch', () => {
 			nock(/\w*(\W)/g)
-				.get(`/api/txList/${channel}/0/0?${query}`)
+				.get(`/api/txList/${channel}/0/0?${query}&page=${pageParams?.page}&size=${pageParams?.size}`)
 				.reply(200, {
-					rows: [{ test: 'rows' }]
+					rows: {txnsData:[{ test: 'rows' }]}
 				});
 
 			const expectedActions = [{ type: types.TRANSACTION_LIST_SEARCH }];
 			const store = mockStore(initialState, expectedActions);
 
 			return store
-				.dispatch(operations.transactionListSearch(channel, query))
+				.dispatch(operations.transactionListSearch(channel, query, pageParams))
 				.then(() => {
 					const action = store.getActions();
 					expect(action[0].type).toEqual(types.TRANSACTION_LIST_SEARCH);
@@ -339,7 +339,7 @@ describe('Tables', () => {
 		});
 
 		test('transactionListSearchReducer', () => {
-			const payload = { rows: 'test' };
+			const payload = { rows: {txnsData: 'test', noOfPages:2} };
 			const action = actions.getTransactionListSearch(payload);
 
 			const newState = reducers(initialState, action);

@@ -49,7 +49,11 @@ const {
 	transactionSelector,
 	transactionListSelector,
 	blockListSearchSelector,
-	transactionListSearchSelector
+	transactionListSearchSelector,
+	transactionListTotalPagesSelector,
+	transactionListSearchTotalPagesSelector,
+	transactionListSearchPageParamSelector,
+	transactionListSearchQuerySelector
 } = tableSelectors;
 
 const styles = theme => {
@@ -80,7 +84,11 @@ export const Main = props => {
 		blockListSearch,
 		transactionListSearch,
 		getBlockListSearch,
-		getTransactionListSearch
+		getTransactionListSearch,
+		transactionListSearchTotalPages,
+		transactionListTotalPages,
+		transactionListSearchQuery,
+		transactionListSearchPageParam
 	} = props;
 
 	const blocksViewProps = {
@@ -119,7 +127,11 @@ export const Main = props => {
 		getTransaction,
 		transactionByOrg,
 		transactionListSearch,
-		getTransactionListSearch
+		getTransactionListSearch,
+		transactionListSearchTotalPages,
+		transactionListTotalPages,
+		transactionListSearchPageParam,
+		transactionListSearchQuery
 	};
 
 	const [transactionId, setTransactionId] = useState('');
@@ -231,6 +243,10 @@ const connectedComponent = connect(
 		transactionList: transactionListSelector(state),
 		blockListSearch: blockListSearchSelector(state),
 		transactionListSearch: transactionListSearchSelector(state),
+		transactionListTotalPages: transactionListTotalPagesSelector(state),
+		transactionListSearchTotalPages: transactionListSearchTotalPagesSelector(state),
+		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),//vimp
+		transactionListSearchQuery: transactionListSearchQuerySelector(state),
 		blockActivity: blockActivitySelector(state)
 	}),
 	{
