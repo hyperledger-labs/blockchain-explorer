@@ -254,6 +254,21 @@ export async function platformroutes(
 			}
 		});
 	});
-
+	
+	/**
+	 * Return channel metadata
+	 * GET /metadata
+	 * curl -i 'http://<host>:<port>/metadata/<chaincode>'
+	 */
+	router.get('/metadata/:chaincode', (req, res) => {
+		const chaincode = req.params.chaincode;
+		if (chaincode) {
+			proxy.getContractMetadata(req.network, chaincode).then((data: any) => {
+				res.send({ status: 200, data: data });
+			});
+		} else {
+			return requtil.invalidRequest(req, res);
+		}
+	});
 
 } // End platformroutes()

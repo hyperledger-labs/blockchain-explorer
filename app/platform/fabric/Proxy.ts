@@ -597,4 +597,24 @@ export class Proxy {
 		}
 		return results;
 	}
+	
+	/*
+	 * @param {*} contract_name
+	 * @returns
+	 * @memberof Proxy
+	 */
+	async getContractMetadata(network_id, contract_name) {
+		const client = this.platform.getClient(network_id);
+		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
+		let metadata;
+		try {
+			metadata = await client.fabricGateway.queryContractMetadata(channel_name, contract_name);
+		} catch (e) {
+			logger.debug('getContractMetadata >> ', e);
+		} if (metadata) {
+			return metadata;
+		}
+		logger.error('response_payloads is null');
+		return 'response_payloads is null';
+	}
 }
