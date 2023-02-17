@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: explorer-config
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-app
+    app.kubernetes.io/name: {{ .Release.Name }}-app
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}  
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }} 
+data:
+
+  test-network.json: |-
+      {
+      "name": "basic-network",
+      "version": "1.0.0",
+      "client": {
+        "tlsEnable": true,
+        "adminCredential": {
+          "id": "{{ .Values.explorer.username  | default "exploreradmin"}}",
+          "password": "{{ .Values.explorer.password | default "exploreradminpw"}}"
+        },
+        "enableAuthentication": true,
+        "organization": "{{ .Values.network.mspid}}",
+        "connection": {
+          "timeout": {
+            "peer": {
+              "endorser": "300"
+            },
+            "orderer": "300"
+          }
+        }
+      },
+      "channels": {
+        "{{ .Values.network.channel}}": {
+          "peers": {
+            "{{ .Values.network.peername}}": {}
+          },
+          "connection": {
+            "timeout": {
+              "peer": {
+                "endorser": "6000",
+                "eventHub": "6000",
+                "eventReg": "6000"
+              }
+            }
+          }
+        }
+      },
+      "organizations": {
+        "{{ .Values.network.mspid}}": {
+          "mspid": "{{ .Values.network.mspid}}",
+          "adminPrivateKey": {
+            "pem": "{{ .Values.network.adminPrivateKey}}"
+
+          },
+          "peers": [
+            "{{ .Values.network.peername}}"
+          ],
+          "signedCert": {
+            "pem": "{{ .Values.network.signedCert}}"
+          }
+        }
+      },
+      "peers": {
+        "{{ .Values.network.peername}}": {
+          "tlsCACerts": {
+            "pem": "{{ .Values.network.tlsCACerts}}"
+          },
+          "url": "{{ .Values.network.peerurl}}"
+        }
+      }
+      }
+
+  config.json: |- 
+      {
+      "network-configs": {
+        "basic-network": {
+          "name": "basic-network",
+          "profile": "./test-network.json"
+        }
+      },
+      "license": "Apache-2.0"
+      }
+
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: explorer-env
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-app
+    app.kubernetes.io/name: {{ .Release.Name }}-app
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }}     
+data:
+  DATABASE_HOST: {{ .Release.Name }}-db
+  DATABASE_DATABASE: {{ $.Values.db.database | default "fabricexplorer" }}
+  DATABASE_USERNAME: {{ $.Values.db.database_username | default "hppoc" }}
+  DATABASE_PASSWD: {{ $.Values.db.database_password | default "password" }}
+  LOG_LEVEL_APP: {{ $.Values.explorer.logging.app_log | default "debug"  }}
+  LOG_LEVEL_DB: {{ $.Values.explorer.logging.db_log | default "debug" }}
+  LOG_CONSOLE_STDOUT: "{{ $.Values.explorer.logging.log_console_stdout | default "true" }}"
+  DISCOVERY_AS_LOCALHOST: "{{ $.Values.explorer.logging.discovery_as_localhost  | default "false" }}" 

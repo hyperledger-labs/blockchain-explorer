@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-app-test"
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: telnet
+      image: busybox
+      command: ['telnet']
+      args: ['{{ .Release.Name }}-app:{{ .Values.explorer.service.port }}']
+  restartPolicy: Never

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-app
+    app.kubernetes.io/name: {{ .Release.Name }}-app
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }}      
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-app
+      app.kubernetes.io/name: {{ .Release.Name }}-app
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-app
+        app.kubernetes.io/name: {{ .Release.Name }}-app
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: explorer-config
+          configMap:
+            name: explorer-config
+            items:
+              - key: config.json
+                path: config.json
+              - key: test-network.json
+                path: test-network.json
+
+      containers:
+        - name: {{ .Release.Name }}-app
+          image: "{{ .Values.explorer.image.repository }}:{{ .Values.explorer.image.tag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: explorer-env
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          ports:
+            - containerPort: {{ .Values.explorer.service.port }}
+          
+          volumeMounts:
+            - mountPath: /opt/explorer/app/platform/fabric/config.json
+              name: explorer-config
+              subPath: config.json
+            - mountPath: /opt/explorer/app/platform/fabric/test-network.json
+              name: explorer-config
+              subPath: test-network.json

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-db
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-db
+    app.kubernetes.io/name: {{ .Release.Name }}-db
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}  
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }}  
+spec:
+  serviceName: {{ .Release.Name }}-db
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-db
+      app.kubernetes.io/name: {{ .Release.Name }}-db
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-db
+        app.kubernetes.io/name: {{ .Release.Name }}-db
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec: 
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+        envFrom:
+        - configMapRef:
+            name: explorer-db-env
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      
+        ports:
+        - containerPort: {{ .Values.db.service.port }}
+
+
