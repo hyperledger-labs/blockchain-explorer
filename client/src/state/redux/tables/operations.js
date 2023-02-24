@@ -89,6 +89,46 @@ const peerList = channel => dispatch =>
 			console.error(error);
 		});
 
+const txnList = (channel, query) => dispatch =>
+	get(`/api/fetchDataByTxnId/${channel}/${query}`)
+		.then(resp => {
+			if (resp.status === 500) {
+				dispatch(
+					actions.getErroMessage(
+						'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+					)
+				);
+			} else if (resp.status === 400) {
+				dispatch(actions.getErroMessage(resp.error));
+			} else {
+				dispatch(actions.getTxnList(resp));
+			}
+			dispatch(actions.getBlockSearch({ data: {} }));
+		})
+		.catch(error => {
+			console.error(error);
+		});
+
+const blockSearch = (channel, query) => dispatch =>
+	get(`/api/fetchDataByBlockNo/${channel}/${query}`)
+		.then(resp => {
+			if (resp.status === 500) {
+				dispatch(
+					actions.getErroMessage(
+						'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+					)
+				);
+			} else if (resp.status === 400) {
+				dispatch(actions.getErroMessage(resp.error));
+			} else {
+				dispatch(actions.getBlockSearch(resp));
+			}
+			dispatch(actions.getTxnList({ data: {} }));
+		})
+		.catch(error => {
+			console.error(error);
+		});
+
 /* istanbul ignore next */
 const transaction = (channel, transactionId) => dispatch =>
 	get(`/api/transaction/${channel}/${transactionId}`)
@@ -163,6 +203,8 @@ export default {
 	chaincodeList,
 	channels,
 	peerList,
+	txnList, 
+	blockSearch, 
 	transaction,
 	transactionList,
 	transactionListSearch,
