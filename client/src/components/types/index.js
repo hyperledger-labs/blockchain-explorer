@@ -118,6 +118,8 @@ export const getChannelListType = func;
 export const getChannelsType = func;
 export const getDashStatsType = func;
 export const getPeerListType = func;
+export const getTxnListType = func;
+export const getBlockSearchType = func;
 export const getPeerStatusType = func;
 export const getTransactionInfoType = func;
 export const getTransactionListType = func;
@@ -152,6 +154,10 @@ export const peerListType = arrayOf(
 		server_hostname: string.isRequired
 	})
 );
+
+export const txnListType = any;
+
+export const blockSearchType = any;
 
 export const peerStatusType = arrayOf(
 	shape({

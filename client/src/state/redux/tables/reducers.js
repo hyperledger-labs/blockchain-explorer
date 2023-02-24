@@ -73,6 +73,31 @@ const blockRangeSearchReducer = (state = initialState, action = {}) => {
 		return state;
 	}
 };
+
+const txnListReducer = (state = initialState, action = {}) => {
+  if (action.type === types.TXN_LIST) {
+    return {
+      rows: action.payload,
+      loaded: true,
+      errors: action.error,
+    };
+  } else {
+    return state;
+  }
+};
+
+const blockSearchReducer = (state = initialState, action = {}) => {
+  if (action.type === types.BLOCK_SEARCH) {
+    return {
+      rows: action.payload,
+      loaded: true,
+      errors: action.error,
+    };
+  } else {
+    return state;
+  }
+};
+
 const transactionReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION) {
     return {
@@ -118,6 +143,8 @@ const reducer = combineReducers({
   channels: channelsReducer,
   peerList: peerListReducer,
 	blockRangeSearch: blockRangeSearchReducer,
+  txnList: txnListReducer,
+  blockSearch: blockSearchReducer,
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,

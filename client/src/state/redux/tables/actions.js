@@ -34,6 +34,16 @@ const getBlockRangeSearch = resp => ({
 	payload: resp.data
 });
 
+const getTxnList = resp =>  ({
+  type: types.TXN_LIST,
+  payload: resp.data,
+});
+
+const getBlockSearch = resp =>  ({
+  type: types.BLOCK_SEARCH,
+  payload: resp.data,
+});
+
 const getTransaction = transaction => ({
   type: types.TRANSACTION,
   payload: transaction,
@@ -53,6 +63,8 @@ export default {
   getChannels,
   getPeerList,
   getBlockRangeSearch,
+  getTxnList,
+  getBlockSearch,
   getTransaction,
   getTransactionList,
   getBlockListSearch,
