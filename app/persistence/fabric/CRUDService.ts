@@ -499,6 +499,115 @@ export class CRUDService {
 		return row;
 	}
 
+	/**
+	 *
+	 * Delete the old data based on time purge.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} daysToPurge
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async deleteOldData(channel_genesis_hash: string, network_id: string, daysToPurge: number) {
+		//Fetching the blockto and block from value as per the days required
+		let blockfrom = await this.sql.updateBySql(
+			`SELECT CASE WHEN MIN(blocknum) is null THEN 0 ELSE MIN(blocknum) end as blockfrom FROM blocks WHERE createdt < CURRENT_DATE - INTERVAL '1 day' *$1 and  channel_genesis_hash=$2 and network_name = $3`,
+			[daysToPurge, channel_genesis_hash, network_id]);
+		let blockto = await this.sql.updateBySql(
+			`SELECT CASE WHEN MAX(blocknum) is null THEN 0 ELSE MAX(blocknum) end as blockto FROM blocks WHERE createdt < CURRENT_DATE - INTERVAL '1 day' *$1 and channel_genesis_hash=$2 and network_name = $3`,
+			[daysToPurge, channel_genesis_hash, network_id]);
+		if (blockto[0].blockto != 0) {
+			//Deleting the txn and blocks table
+			await this.sql.updateBySql(
+				`DELETE FROM transactions WHERE blockid>= $1 and blockid<=$2 and channel_genesis_hash=$3 and network_name = $4`,
+				[blockfrom[0].blockfrom, blockto[0].blockto, channel_genesis_hash, network_id]
+			);
+			await this.sql.updateBySql(
+				`DELETE FROM blocks WHERE blocknum>= $1 and blocknum<=$2 and channel_genesis_hash=$3 and network_name = $4`,
+				[blockfrom[0].blockfrom, blockto[0].blockto, channel_genesis_hash, network_id]
+			);
+			await this.explorerTableUpdation(
+				blockfrom[0].blockfrom, blockto[0].blockto, "TIME", channel_genesis_hash, network_id);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * Fetch block to value from explorer_audit table.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} mode
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async fetchLastBlockToFromExplorerAudit(mode: string, channel_genesis_hash: string, network_id: string) {
+		let blocktoValue = await this.sql.updateBySql(
+			`SELECT blockto FROM explorer_audit where mode =$1 and channel_genesis_hash=$2 and network_name = $3`, [mode, channel_genesis_hash, network_id]);
+		return blocktoValue[0].blockto;
+
+	}
+
+	/**
+	 *
+	 * Delete the old data based on block count purge.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockCount
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async deleteBlock(network_name: string, channel_genesis_hash: string, blockCount: number) {
+		const count: any = await this.sql.getRowsBySQlCase(
+			' select count(*) as count from blocks  where channel_genesis_hash=$1 and network_name = $2 ',
+			[channel_genesis_hash, network_name]
+		);
+		const rowCount: number = count.count;
+		let rowsToDelete: number = 0;
+		if (rowCount > blockCount) {
+			rowsToDelete = rowCount - blockCount;
+		}
+		if (rowsToDelete > 0) {
+			let blockfrom = await this.sql.updateBySql(
+				`SELECT min(blocknum) as blockfrom FROM blocks WHERE channel_genesis_hash=$1 and network_name = $2`, [channel_genesis_hash, network_name]);
+			let blockto = await this.sql.updateBySql(
+				`SELECT max(blocknum) as blockto FROM blocks WHERE channel_genesis_hash=$1 and network_name = $2`, [channel_genesis_hash, network_name]);
+			await this.sql.updateBySql(
+				`DELETE FROM transactions WHERE blockid>= $1 and blockid<=$2 and channel_genesis_hash=$3 and network_name = $4`,
+				[blockfrom[0].blockfrom, blockto[0].blockto - blockCount, channel_genesis_hash, network_name]
+			);
+			await this.sql.updateBySql(
+				`DELETE FROM blocks WHERE blocknum>= $1 and blocknum<=$2 and channel_genesis_hash=$3 and network_name = $4`,
+				[blockfrom[0].blockfrom, blockto[0].blockto - blockCount, channel_genesis_hash, network_name]
+			);
+			await this.explorerTableUpdation(
+				blockfrom[0].blockfrom, blockto[0].blockto - blockCount, "BLOCKCOUNT", channel_genesis_hash, network_name);
+
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * Update the explorer_audit table based on the details of purge.
+	 *
+	 * @param {*} channel_genesis_hash
+	 * @param {*} blockFrom
+	 * @param {*} blockTo
+	 * @param {*} purgeMode
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async explorerTableUpdation(blockFrom: number, blockTo: number, purgeMode: string, channel_genesis_hash: string, network_name: string) {
+		const updateReponse = await this.sql.updateBySql(
+			`insert into explorer_audit (lastupdated,status,blockfrom,blockto,mode,channel_genesis_hash,network_name) values ($1,$2,$3,$4,$5,$6,$7) on conflict(mode,channel_genesis_hash,network_name) 
+			do update set lastupdated = $1, status = $2, blockfrom = $3, blockto = $4, mode = $5, channel_genesis_hash =$6,network_name= $7 `,
+			[new Date(), "SUCCESS", blockFrom, blockTo, purgeMode, channel_genesis_hash, network_name]);
+		logger.info(" Data added to explorer_audit table", updateReponse);
+	}
+
 }
 
 /**
