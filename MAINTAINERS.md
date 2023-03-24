@@ -23,6 +23,8 @@ Maintainers are busy and delegate many decisions to other trusted contributors. 
 | Name | GitHub |
 |------|--------|
 | Arun S M | [arsulegai][arsulegai] |
+| Saundarya Saurabh| [saundarya-saurabh][saundarya-saurabh] |
+| Sunny Ajin | [SunnyAjin][SunnyAjin] |
 
 
 **Release Managers**
