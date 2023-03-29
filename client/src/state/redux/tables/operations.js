@@ -199,12 +199,33 @@ const transactionList = (channel,params) => dispatch =>
 		.catch(error => {
 			console.error(error);
 		});
+
+const chaincodeMetaData = (query) => dispatch =>
+	get(`/api/metadata/${query}`)
+		.then(resp => {
+			if (resp.status === 500) {
+				dispatch(
+					actions.getErroMessage(
+						'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+					)
+				);
+			} else if (resp.status === 400) {
+				dispatch(actions.getErroMessage(resp.error));
+			} else {
+				dispatch(actions.getChaincodeMetaData(resp));
+			}
+		})
+		.catch(error => {
+			console.error(error);
+		});
+	
 export default {
 	chaincodeList,
 	channels,
 	peerList,
 	txnList, 
 	blockSearch, 
+	chaincodeMetaData,
 	transaction,
 	transactionList,
 	transactionListSearch,

@@ -44,6 +44,11 @@ const getBlockSearch = resp =>  ({
   payload: resp.data,
 });
 
+const getChaincodeMetaData = resp => ({
+	type: types.CHAINCODE_META_DATA,
+	payload: resp.data
+});
+
 const getTransaction = transaction => ({
   type: types.TRANSACTION,
   payload: transaction,
@@ -65,6 +70,7 @@ export default {
   getBlockRangeSearch,
   getTxnList,
   getBlockSearch,
+  getChaincodeMetaData,
   getTransaction,
   getTransactionList,
   getBlockListSearch,

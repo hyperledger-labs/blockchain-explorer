@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { arrayOf, shape, number, string, func } from 'prop-types';
+import { arrayOf, shape, number, string, func, any } from 'prop-types';
 
 export const blockHashType = shape({
 	blockhash: string,
@@ -121,6 +121,7 @@ export const getPeerListType = func;
 export const getTxnListType = func;
 export const getBlockSearchType = func;
 export const getPeerStatusType = func;
+export const getChaincodeMetaDataType = func;
 export const getTransactionInfoType = func;
 export const getTransactionListType = func;
 export const getTransactionType = func;
@@ -165,6 +166,7 @@ export const peerStatusType = arrayOf(
 		status: string
 	})
 );
+export const chaincodeMetaDataType = any;
 
 export const refreshType = func;
 

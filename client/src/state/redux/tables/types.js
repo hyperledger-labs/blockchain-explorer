@@ -8,8 +8,9 @@ const BLOCK_LIST = `${namespaces}/BLOCK_LIST`;
 const CHAINCODE_LIST = `${namespaces}/CHAINCODE_LIST`;
 const CHANNELS = `${namespaces}/CHANNELS`;
 const PEER_LIST = `${namespaces}/PEER_LIST`;
-const TXN_LIST = "TXN_LISt";
+const TXN_LIST = "TXN_LIST";
 const BLOCK_SEARCH = "BLOCK_SEARCH";
+const CHAINCODE_META_DATA = 'CHAINCODE_META_DATA';
 const TRANSACTION = `${namespaces}/TRANSACTION`;
 const TRANSACTION_LIST = `${namespaces}/TRANSACTION_LIST`;
 const BLOCK_LIST_SEARCH = `${namespaces}/BLOCK_LIST_SEARCH`;
@@ -25,6 +26,7 @@ export default {
   PEER_LIST,
   TXN_LIST, 
   BLOCK_SEARCH,
+  CHAINCODE_META_DATA,
   TRANSACTION,
   TRANSACTION_LIST,
   BLOCK_LIST_SEARCH,
