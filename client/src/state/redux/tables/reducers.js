@@ -98,6 +98,18 @@ const blockSearchReducer = (state = initialState, action = {}) => {
   }
 };
 
+const chaincodeMetaDataReducer = (state = initialState, action = {}) => {
+	if (action.type === types.CHAINCODE_META_DATA) {
+		return {
+			rows: action.payload,
+			loaded: true,
+			errors: action.error
+		};
+	} else {
+		return state;
+	}
+};
+
 const transactionReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION) {
     return {
@@ -145,6 +157,7 @@ const reducer = combineReducers({
 	blockRangeSearch: blockRangeSearchReducer,
   txnList: txnListReducer,
   blockSearch: blockSearchReducer,
+  chaincodeMetaData: chaincodeMetaDataReducer,
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,

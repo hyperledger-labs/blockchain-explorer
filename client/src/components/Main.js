@@ -27,6 +27,7 @@ import {
 	peerStatusType,
 	blockRangeSearchType,
 	blockListSearchType,
+	chaincodeMetaDataType,
 	transactionType,
 	transactionByOrgType,
 	transactionListType
@@ -50,6 +51,7 @@ const {
 	peerListSelector,
 	txnListSelector,
 	blockSearchSelector,
+	chaincodeMetaDataSelector,
 	transactionSelector,
 	transactionListSelector,
 	blockRangeSearchSelector,
@@ -88,7 +90,8 @@ export const Main = props => {
 		txnList,
 		blockSearch,
 		peerStatus,
-		txnList,//s
+		chaincodeMetaData,
+		getChaincodeMetaData,
 		transaction,
 		transactionByOrg,
 		transactionList,
@@ -126,7 +129,9 @@ export const Main = props => {
 		transaction
 	};
 	const chaincodeViewProps = {
-		chaincodeList
+		chaincodeList,
+		chaincodeMetaData,
+		getChaincodeMetaData
 	};
 
 	const channelsViewProps = {
@@ -253,6 +258,7 @@ Main.propTypes = {
 	txnList: txnListType.isRequired,
 	blockSearch: blockSearchType.isRequired,
 	peerStatus: peerStatusType.isRequired,
+	chaincodeMetaData: chaincodeMetaDataType.isRequired,
 	transaction: transactionType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired,
 	transactionList: transactionListType.isRequired
@@ -269,6 +275,7 @@ const connectedComponent = connect(
 		txnList: txnListSelector(state),
 		blockSearch: blockSearchSelector(state),
 		peerStatus: peerStatusSelector(state),
+		chaincodeMetaData: chaincodeMetaDataSelector(state),
 		transaction: transactionSelector(state),
 		transactionByOrg: transactionByOrgSelector(state),
 		transactionList: transactionListSelector(state),
@@ -290,7 +297,8 @@ const connectedComponent = connect(
 		getBlockListSearch: tableOperations.blockListSearch,
 		getBlockRangeSearch: tableOperations.blockRangeSearch,
 		getTransactionListSearch: tableOperations.transactionListSearch,
-		getTxnList: tableOperations.txnList
+		getTxnList: tableOperations.txnList,
+		getChaincodeMetaData: tableOperations.chaincodeMetaData,
 	}
 )(Main);
 export default withStyles(styles)(connectedComponent);

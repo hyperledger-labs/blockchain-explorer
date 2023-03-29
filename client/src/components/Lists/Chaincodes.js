@@ -7,19 +7,49 @@ import { withStyles } from '@material-ui/core/styles';
 import matchSorter from 'match-sorter';
 import Dialog from '@material-ui/core/Dialog';
 import ReactTable from '../Styled/Table';
-import ChaincodeForm from '../Forms/ChaincodeForm';
-import ChaincodeModal from '../View/ChaincodeModal';
 import { chaincodeListType } from '../types';
+import ChaincodeMetaDataView from '../View/ChaincodeMetaDataView';
 
-const styles = theme => ({
-	hash: {
-		whiteSpace: 'nowrap',
-		overflow: 'hidden',
-		textOverflow: 'ellipsis',
-		maxWidth: 60,
-		letterSpacing: '2px'
-	}
-});
+const styles = theme => {
+	const { type } = theme.palette;
+	const dark = type === 'dark';
+	return {
+		hash: {
+			'&, & li, & ul': {
+				overflow: 'visible !important'
+			}
+		},
+		partialHash: {
+			textAlign: 'center',
+			position: 'relative !important',
+			'&:hover $fullHash': {
+				display: 'block',
+				position: 'absolute !important',
+				padding: '4px 4px',
+				backgroundColor: dark ? '#5e558e' : '#000000',
+				marginTop: -30,
+				marginLeft: -215,
+				borderRadius: 8,
+				color: '#ffffff',
+				opacity: dark ? 1 : undefined
+			},
+			'&:hover $lastFullHash': {
+				display: 'block',
+				position: 'absolute !important',
+				padding: '4px 4px',
+				backgroundColor: dark ? '#5e558e' : '#000000',
+				marginTop: -30,
+				marginLeft: -415,
+				borderRadius: 8,
+				color: '#ffffff',
+				opacity: dark ? 1 : undefined
+			}
+		},
+		fullHash: {
+			display: 'none'
+		}
+	};
+};
 
 export class Chaincodes extends Component {
 	constructor(props) {
@@ -31,7 +61,8 @@ export class Chaincodes extends Component {
 		};
 	}
 
-	handleDialogOpen = () => {
+	handleDialogOpen = async tid => {
+		await this.props.getChaincodeMetaData(tid);
 		this.setState({ dialogOpen: true });
 	};
 
@@ -39,19 +70,22 @@ export class Chaincodes extends Component {
 		this.setState({ dialogOpen: false });
 	};
 
-	sourceDialogOpen = chaincode => {
-		this.setState({ chaincode });
-		this.setState({ sourceDialog: true });
-	};
-
-	sourceDialogClose = () => {
-		this.setState({ sourceDialog: false });
-	};
-
 	reactTableSetup = classes => [
 		{
 			Header: 'Chaincode Name',
 			accessor: 'chaincodename',
+			className: classes.hash,
+			Cell: row => (
+				<span>
+					<a
+						data-command="transaction-partial-hash"
+						className={classes.partialHash}
+						onClick={() => this.handleDialogOpen(row.value)}
+						href="#/chaincodes"
+					>{row.value}
+					</a>
+				</span>
+			),
 			filterMethod: (filter, rows) =>
 				matchSorter(
 					rows,
@@ -112,13 +146,10 @@ export class Chaincodes extends Component {
 	];
 
 	render() {
-		const { chaincodeList, classes } = this.props;
+		const { chaincodeList, chaincodeMetaData, classes } = this.props;
 		const { dialogOpen, sourceDialog, chaincode } = this.state;
 		return (
 			<div>
-				{/* <Button className="button" onClick={() => this.handleDialogOpen()}>
-          Add Chaincode
-          </Button> */}
 				<ReactTable
 					data={chaincodeList}
 					columns={this.reactTableSetup(classes)}
@@ -133,18 +164,9 @@ export class Chaincodes extends Component {
 					fullWidth
 					maxWidth="md"
 				>
-					<ChaincodeForm />
-				</Dialog>
-				<Dialog
-					open={sourceDialog}
-					onClose={this.sourceDialogClose}
-					fullWidth
-					maxWidth="md"
-				>
-					<ChaincodeModal
-						chaincode={chaincode}
-						classes={classes}
-						onClose={this.sourceDialogClose}
+					<ChaincodeMetaDataView
+						chaincodeMetaData={chaincodeMetaData}
+						onClose={this.handleDialogClose}
 					/>
 				</Dialog>
 			</div>
