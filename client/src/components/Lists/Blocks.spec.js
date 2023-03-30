@@ -6,6 +6,8 @@ import ReactTable from '../Styled/Table';
 import { Blocks } from './Blocks';
 import TransactionView from '../View/TransactionView';
 import moment from 'moment';
+import { TablePagination } from '@mui/material';
+import { E001, E002, E003, E004 } from './constants';
 
 const setup = prop => {
 	const propsbase = {
@@ -15,6 +17,7 @@ const setup = prop => {
 			fullHash: 'fullHash',
 			lastFullHash: 'lastFullHash'
 		},
+		channelhash: 'xyz',
 		blockList: [
 			{
 				blockhash:
@@ -194,11 +197,11 @@ const setup = prop => {
 				creator_msp_id: 'Org1MSP'
 			}
 		],
-		getBlockList: jest.fn(),
+		getblockListSearch: jest.fn(),
 		removeTransactionInfo: jest.fn(),
 		getTransactionInfo: jest.fn(),
 		getTransaction: jest.fn().mockImplementationOnce(() => Promise.resolve()),
-		getBlockListSearch: jest.fn(),
+		getblockListSearch: jest.fn(),
 		getOrgs: jest.fn().mockImplementationOnce(() => Promise.resolve())
 	};
 	const props = { ...propsbase, ...prop };
@@ -510,11 +513,11 @@ describe('Blocks', () => {
 		const { wrapper } = setup();
 		wrapper
 			.find('a[data-command="block-partial-hash"]')
-			.at(0)
+			.at(1)
 			.simulate('click');
 		expect(wrapper.state('dialogOpenBlockHash')).toBe(true);
 		expect(wrapper.state('blockHash')).toMatchObject({
-			blockhash: '6880fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539129f'
+			blockhash: '1234fc2e3fcebbe7964335ee4f617c94ba9afb176fade022aa6573d85539ffff'
 		});
 	});
 
@@ -526,22 +529,18 @@ describe('Blocks', () => {
   })
   */
 
-	test('pagination when blockList is greater than 4', () => {
+	test('pagination when blockListSearch is greater than 0', () => {
 		const { wrapper, props } = setup();
-		const { blockList } = props;
-		const blocks = blockList;
-		const block = blockList[0];
-		Array.prototype.push.apply(blocks, [block, block, block]);
-		expect(wrapper.find('.pagination-bottom').exists()).toBe(false);
-		wrapper.setProps({ blockList: blocks });
-		expect(wrapper.find('.pagination-bottom').exists()).toBe(true);
+		expect(wrapper.find(TablePagination).exists()).toBe(true);
+		wrapper.setProps({ blockListSearch: [] });
+		expect(wrapper.find(TablePagination).exists()).toBe(false);
 	});
 
-	test('searchBlockList gets called in componentDidUpdate when a new prop is set', () => {
+	test('searchblockList gets called in componentDidUpdate when a new prop is set', () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
 		wrapper.setState({ search: true });
-		const spy = jest.spyOn(instance, 'searchBlockList');
+		const spy = jest.spyOn(instance, 'searchblockList');
 		const currentChannel = {
 			currentChannel: 'MyChannel'
 		};
@@ -554,7 +553,7 @@ describe('Blocks', () => {
 		const instance = wrapper.instance();
 		instance.interval = 1;
 		wrapper.setState({ search: true });
-		const spy = jest.spyOn(instance, 'searchBlockList');
+		const spy = jest.spyOn(instance, 'searchblockList');
 
 		const currentChannel = {
 			currentChannel: 'MyChannel'
@@ -584,9 +583,9 @@ describe('Blocks', () => {
 
 	test('handleSearch should work properly', async () => {
 		const { wrapper, props } = setup();
-		await wrapper.instance().searchBlockList();
+		await wrapper.instance().searchblockList();
 		wrapper.update();
-		expect(props.getBlockListSearch).toHaveBeenCalled();
+		expect(props.getblockListSearch).toHaveBeenCalled();
 		// jest.runOnlyPendingTimers();
 		// expect(wrapper.state('search')).toBe(false);
 	});
@@ -595,21 +594,21 @@ describe('Blocks', () => {
 		const { wrapper } = setup();
 		wrapper.setState({ search: false });
 		const instance = wrapper.instance();
-		instance.searchBlockList = jest.fn();
+		instance.searchblockList = jest.fn();
 
 		await wrapper.find('.btn-success').simulate('click');
 		wrapper.update();
 
 		expect(setInterval).toHaveBeenCalled();
-		expect(instance.searchBlockList).toHaveBeenCalled();
+		expect(instance.searchblockList).toHaveBeenCalled();
 		expect(wrapper.state('search')).toBe(true);
 	});
 
-	test('searchBlockList gets scheduled when a search button is clicked first time', async () => {
+	test('searchblockList gets scheduled when a search button is clicked first time', async () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
 		instance.interval = 1;
-		const spy = jest.spyOn(instance, 'searchBlockList');
+		const spy = jest.spyOn(instance, 'searchblockList');
 
 		await wrapper.find('.btn-success').simulate('click');
 		wrapper.update();
@@ -626,8 +625,8 @@ describe('Blocks', () => {
 	test('Simulate onClick when a clear button is clicked', async () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
-		instance.searchBlockList = jest.fn();
-		wrapper.setState({ search: true });
+		instance.searchblockList = jest.fn();
+		wrapper.setState({ search: true, orgs: ['org_a', 'org_b'] });
 		instance.interval = undefined;
 
 		clearInterval.mockClear();
@@ -636,7 +635,7 @@ describe('Blocks', () => {
 		wrapper.update();
 
 		expect(clearInterval).not.toHaveBeenCalled();
-		expect(wrapper.state('search')).toBe(false);
+		expect(wrapper.state('search')).toBe(true);
 		expect(wrapper.state('orgs').length).toBe(0);
 	});
 
@@ -652,7 +651,7 @@ describe('Blocks', () => {
 		wrapper.update();
 
 		expect(clearInterval).toHaveBeenCalled();
-		expect(wrapper.state('search')).toBe(false);
+		expect(wrapper.state('search')).toBe(true);
 		expect(wrapper.state('orgs').length).toBe(0);
 	});
 
@@ -686,7 +685,7 @@ describe('Blocks', () => {
 		const { props, wrapper } = setup();
 		const instance = wrapper.instance();
 		wrapper.setState({ orgs: ['org_a', 'org_b'] });
-		wrapper.setState({ search: true });
+		wrapper.setState({ search: true, queryFlag:true });
 		const spy = jest.spyOn(instance, 'searchBlockList');
 
 		const currentChannel = {
@@ -694,9 +693,9 @@ describe('Blocks', () => {
 		};
 		wrapper.setProps(currentChannel);
 		expect(spy).toHaveBeenCalledTimes(1);
-		expect(props.getBlockListSearch).toHaveBeenCalled();
-		expect(props.getBlockListSearch.mock.calls[0][1]).toContain(
-			'&&orgs=org_a&&orgs=org_b'
+		expect(props.getblockListSearch).toHaveBeenCalled();
+		expect(props.getblockListSearch.mock.calls[1][1]).toContain(
+			'orgs=org_a&orgs=org_b'
 		);
 	});
 
@@ -744,9 +743,9 @@ describe('Blocks', () => {
 		expect(wrapper.state('orgs')).toStrictEqual(['org_a', 'org_b']);
 	});
 
-	test('rendered table when blocklist is empty', () => {
-		const incomplete_blockList = {
-			blockList: [
+	test('rendered table when blockListSearch is empty', () => {
+		const incomplete_blockListSearch = {
+			blockListSearch: [
 				{
 					blockhash: '',
 					blocknum: 20,
@@ -764,12 +763,12 @@ describe('Blocks', () => {
 				}
 			]
 		};
-		const { props, wrapper } = setup(incomplete_blockList);
+		const { props, wrapper } = setup(incomplete_blockListSearch);
 	});
 
-	test('rendered table when txhash array in blockList is empty', () => {
-		const incomplete_blockList = {
-			blockList: [
+	test('rendered table when txhash array in blockListSearch is empty', () => {//hlf
+		const incomplete_blockListSearch = {
+			blockListSearch: [
 				{
 					blockhash: '',
 					blocknum: 20,
@@ -784,7 +783,7 @@ describe('Blocks', () => {
 				}
 			]
 		};
-		const { props, wrapper } = setup(incomplete_blockList);
+		const { props, wrapper } = setup(incomplete_blockListSearch);
 		const table = wrapper.find('ReactTable');
 		expect(table.exists()).toBe(true);
 		const hashFields = table.find('.partialHash');
@@ -819,5 +818,41 @@ describe('Blocks', () => {
 				.text()
 				.trim()
 		).toBe('null'); // TX Hash
+	});
+	test('Test block range search from and to fields', () => {
+		const { wrapper } = setup();
+		const startBlock = wrapper.find('input#startBlock');
+		const endBlock = wrapper.find('input#endBlock');
+		const blockRangeSearh = wrapper.find('#blockRangeSearchIcon');
+		expect(startBlock.exists()).toBe(true);
+		expect(wrapper.state('rangeErr')).toBe("");
+		//'To' field is empty
+		startBlock.simulate('change',{target:{name:'startBlock',value:'21'}});
+		blockRangeSearh.simulate('click');
+		expect(wrapper.state('rangeErr')).toBe(E001);
+		//'To' < 'From
+		endBlock.simulate('change',{target:{name:'endBlock',value:'10'}});
+		expect(wrapper.state('rangeErr')).toBe("");
+		blockRangeSearh.simulate('click');
+		expect(wrapper.state('rangeErr')).toBe(E002);
+		//'From' - 'To' > rangeLimit
+		endBlock.simulate('change',{target:{name:'endBlock', value:'40'}});
+		expect(wrapper.state('rangeErr')).toBe("");
+		blockRangeSearh.simulate('click');
+		expect(wrapper.state('rangeErr')).toBe(E004(10));
+		//change rangeLimit to 100 && 'From' - 'To' > rangeLimit
+		wrapper.setState({rangeLimit:100});
+		expect(wrapper.state('rangeLimit')).toBe(100);
+		endBlock.simulate('change',{target:{name:'endBlock',value:'130'}});
+		expect(wrapper.state('rangeErr')).toBe("");
+		blockRangeSearh.simulate('click');
+		expect(wrapper.state('rangeErr')).toBe(E003);
+		//valid From and To, will make api call
+		endBlock.simulate('change',{target:{name:'endBlock',value:'120'}});
+		expect(wrapper.state('rangeErr')).toBe("");
+		expect(wrapper.state('brs')).toBe(false);
+		blockRangeSearh.simulate('click');
+		expect(wrapper.state('rangeErr')).toBe("");
+		expect(wrapper.state('brs')).toBe(true);
 	});
 });

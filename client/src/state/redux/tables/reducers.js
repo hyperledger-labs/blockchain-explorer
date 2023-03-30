@@ -7,28 +7,19 @@ import types from './types';
 
 const initialState = {};
 
-const blockListReducer = (state = initialState, action = {}) => {
-  if (action.type === types.BLOCK_LIST) {
-    return {
-      rows: action.payload.rows,
-      loaded: true,
-      errors: action.error,
-    };
-  } else {
-    return state;
-  }
-};
-
 const blockListSearchReducer = (state = initialState, action = {}) => {
-  if (action.type === types.BLOCK_LIST_SEARCH) {
-    return {
-      rows: action.payload.rows,
-      loaded: true,
-      errors: action.error,
-    };
-  } else {
-    return state;
-  }
+	if (action.type === types.BLOCK_LIST_SEARCH) {
+		return {
+			rows: action.payload.rows.blocksData,
+			loaded: true,
+			errors: action.error,
+			noOfpages: action.payload.rows?.noOfpages || state.noOfpages,
+			query: action.payload.query,
+			pageParams: action.payload.pageParams
+		};
+	} else {
+		return state;
+	}
 };
 
 const chaincodeListReducer = (state = initialState, action = {}) => {
@@ -67,7 +58,21 @@ const peerListReducer = (state = initialState, action = {}) => {
     return state;
   }
 };
-
+const blockRangeSearchReducer = (state = initialState, action = {}) => {
+	if (action.type === types.BLOCK_RANGE_SEARCH) {
+		return {
+			rows: action.payload,
+			loaded: true,
+			errors: action.error
+		};
+	} else if(action.type === types.BLOCK_RANGE_LOADED) {
+		return {
+			loaded: action.payload
+		}
+	} else {
+		return state;
+	}
+};
 const transactionReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION) {
     return {
@@ -109,10 +114,10 @@ const transactionListSearchReducer = (state = initialState, action = {}) => {
 };
 
 const reducer = combineReducers({
-  blockList: blockListReducer,
   chaincodeList: chaincodeListReducer,
   channels: channelsReducer,
   peerList: peerListReducer,
+	blockRangeSearch: blockRangeSearchReducer,
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,

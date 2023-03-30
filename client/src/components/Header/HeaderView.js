@@ -42,7 +42,6 @@ import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
 	channelsType,
-	getBlockListType,
 	getBlocksPerHourType,
 	getBlocksPerMinType,
 	getChaincodeListType,
@@ -54,7 +53,8 @@ import {
 	getTransactionByOrgType,
 	getTransactionPerHourType,
 	getTransactionPerMinType,
-	refreshType
+	refreshType,
+	getBlockListSearchType
 } from '../types';
 
 const {
@@ -70,7 +70,7 @@ const {
 } = chartOperations;
 
 const {
-	blockList,
+	blockListSearch,
 	chaincodeList,
 	channels,
 	peerList,
@@ -79,7 +79,9 @@ const {
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { channelsSelector, transactionListSearchPageParamSelector, transactionListSearchQuerySelector } = tableSelectors;
+const { channelsSelector, transactionListSearchPageParamSelector, 
+		transactionListSearchQuerySelector,
+		blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -449,7 +451,9 @@ export class HeaderView extends Component {
 
 	async syncData(currentChannel) {
 		const {
-			getBlockList,
+			getBlockListSearch,
+			blockListSearchPageParam,
+			blockListSearchQuery,
 			getBlocksPerHour,
 			getBlocksPerMin,
 			getChaincodeList,
@@ -468,7 +472,7 @@ export class HeaderView extends Component {
 		} = this.props;
 
 		await Promise.all([
-			getBlockList(currentChannel),
+			getBlockListSearch( currentChannel, blockListSearchQuery, blockListSearchPageParam),
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
@@ -670,7 +674,7 @@ export class HeaderView extends Component {
 HeaderView.propTypes = {
 	currentChannel: currentChannelType.isRequired,
 	channels: channelsType.isRequired,
-	getBlockList: getBlockListType.isRequired,
+	getBlockListSearch: getBlockListSearchType.isRequired,
 	getBlocksPerHour: getBlocksPerHourType.isRequired,
 	getBlocksPerMin: getBlocksPerMinType.isRequired,
 	getChangeChannel: getChangeChannelType.isRequired,
@@ -694,11 +698,13 @@ const mapStateToProps = state => {
 		mode: modeSelector(state),
 		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),
 		transactionListSearchQuery: transactionListSearchQuerySelector(state),
+		blockListSearchPageParam: blockListSearchPageParamSelector(state),
+		blockListSearchQuery: blockListSearchQuerySelector(state)
 	};
 };
 
 const mapDispatchToProps = {
-	getBlockList: blockList,
+	getBlockListSearch: blockListSearch, 
 	getBlocksPerHour: blockPerHour,
 	getBlocksPerMin: blockPerMin,
 	getChaincodeList: chaincodeList,

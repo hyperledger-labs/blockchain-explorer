@@ -12,7 +12,6 @@ import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
-	getBlockListType,
 	getBlocksPerHourType,
 	getBlocksPerMinType,
 	getChaincodeListType,
@@ -26,7 +25,8 @@ import {
 	getTransactionListType,
 	getTransactionPerHourType,
 	getTransactionPerMinType,
-	getUserListType
+	getUserListType,
+	getBlockListSearchType
 } from '../types';
 
 const {
@@ -44,7 +44,7 @@ const {
 } = chartOperations;
 
 const {
-	blockList,
+	blockListSearch,
 	chaincodeList,
 	channels,
 	peerList,
@@ -55,7 +55,8 @@ const {
 const { userlist } = authOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { transactionListSearchPageParamSelector, transactionListSearchQuerySelector} = tableSelectors;//transactionListSearchPageParamSelector, transactionListSearchQuerySelector  //vimp
+const { transactionListSearchPageParamSelector, transactionListSearchQuerySelector,
+	blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -107,7 +108,9 @@ export class LandingPage extends Component {
 
 	async componentDidMount() {
 		const {
-			getBlockList,
+			getBlockListSearch,
+			blockListSearchPageParam,
+			blockListSearchQuery,
 			getBlocksPerHour,
 			getBlocksPerMin,
 			getChaincodeList,
@@ -136,7 +139,11 @@ export class LandingPage extends Component {
 		}, 60000);
 
 		await Promise.all([
-			getBlockList(currentChannel),
+			getBlockListSearch(
+				currentChannel,
+				blockListSearchQuery,
+				blockListSearchPageParam
+			),
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
@@ -199,7 +206,7 @@ export class LandingPage extends Component {
 
 LandingPage.propTypes = {
 	currentChannel: currentChannelType,
-	getBlockList: getBlockListType.isRequired,
+	getBlockListSearch: getBlockListSearchType.isRequired,
 	getBlocksPerHour: getBlocksPerHourType.isRequired,
 	getBlocksPerMin: getBlocksPerMinType.isRequired,
 	getChaincodeList: getChaincodeListType.isRequired,
@@ -224,12 +231,14 @@ const mapStateToProps = state => {
 	return {
 		currentChannel: currentChannelSelector(state),
 		pageParams: transactionListSearchPageParamSelector(state),
-		query: transactionListSearchQuerySelector(state)
+		query: transactionListSearchQuerySelector(state),
+		blockListSearchPageParam: blockListSearchPageParamSelector(state),
+		blockListSearchQuery: blockListSearchQuerySelector(state)
 	};
 };
 
 const mapDispatchToProps = {
-	getBlockList: blockList,
+	getBlockListSearch: blockListSearch,
 	getBlocksPerHour: blockPerHour,
 	getBlocksPerMin: blockPerMin,
 	getChaincodeList: chaincodeList,

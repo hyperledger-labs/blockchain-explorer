@@ -376,6 +376,7 @@ export class Transactions extends Component {
 							selected={this.state.from}
 							showTimeSelect
 							timeIntervals={5}
+							maxDate={this.state.to}
 							dateFormat="LLL"
 							popperPlacement='bottom'
 							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }}
@@ -395,6 +396,7 @@ export class Transactions extends Component {
 							selected={this.state.to}
 							showTimeSelect
 							timeIntervals={5}
+							minDate={this.state.from}
 							dateFormat="LLL"
 							popperPlacement='bottom'
 							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }} 
