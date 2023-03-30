@@ -426,7 +426,7 @@ describe('Transactions', () => {
 
 		jest.advanceTimersByTime(70000);
 
-		expect(spy).toHaveBeenCalledTimes(2);
+		expect(spy).toHaveBeenCalledTimes(3);
 	});
 
 	test('calls componentWillUnmount', () => {

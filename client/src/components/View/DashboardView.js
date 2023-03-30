@@ -13,7 +13,7 @@ import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import {
-	blockListType,
+	blockListSearchType,
 	dashStatsType,
 	peerStatusType,
 	transactionByOrgType
@@ -107,14 +107,14 @@ export class DashboardView extends Component {
 
 	componentWillMount() {
 		const {
-			blockList,
+			blockListSearch,
 			dashStats,
 			peerStatus,
 			transactionByOrg,
 			blockActivity
 		} = this.props;
 		if (
-			blockList === undefined ||
+			blockListSearch === undefined ||
 			dashStats === undefined ||
 			peerStatus === undefined ||
 			blockActivity === undefined ||
@@ -266,7 +266,7 @@ export class DashboardView extends Component {
 }
 
 DashboardView.propTypes = {
-	blockList: blockListType.isRequired,
+	blockListSearch: blockListSearchType.isRequired,
 	dashStats: dashStatsType.isRequired,
 	peerStatus: peerStatusType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired

@@ -5,8 +5,11 @@ import actions from './actions';
 import { get } from '../../../services/request';
 
 /* istanbul ignore next */
-const blockList = channel => dispatch =>
-	get(`/api/blockAndTxList/${channel}/0`)
+const blockListSearch = (channel, query, pageParams) => dispatch =>
+	get(
+		`/api/blockAndTxList/${channel}/0?${query ? query : ''
+		}&page=${pageParams?.page || 1}&size=${pageParams?.size || 10}`
+	)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -17,20 +20,13 @@ const blockList = channel => dispatch =>
 			} else if (resp.status === 400) {
 				dispatch(actions.getErroMessage(resp.error));
 			} else {
-				dispatch(actions.getBlockList(resp));
+				let params = { page: pageParams?.page || 1, size: pageParams?.size || 10 };
+				dispatch( actions.getBlockListSearch({ ...resp, query, pageParams: params }) );
 			}
 		})
 		.catch(error => {
 			console.error(error);
-		});
-const blockListSearch = (channel, query) => dispatch =>
-	get(`/api/blockAndTxList/${channel}/0?${query}`)
-		.then(resp => {
-			dispatch(actions.getBlockListSearch(resp));
 		})
-		.catch(error => {
-			console.error(error);
-		});
 
 /* istanbul ignore next */
 const chaincodeList = channel => dispatch =>
@@ -44,7 +40,6 @@ const chaincodeList = channel => dispatch =>
 				);
 			} else if (resp.status === 400) {
 				dispatch(actions.getErroMessage(resp.error));
-			} else {
 				dispatch(actions.getChaincodeList(resp));
 			}
 		})
@@ -123,7 +118,28 @@ const transactionListSearch = (channel, query, pageParams) => dispatch =>
 		.catch(error => {
 			console.error(error);
 		});
-
+const blockRangeSearch = (channel, query1, query2) => dispatch =>
+		{
+			dispatch(actions.getLoaded(false));
+			get(`/api/fetchDataByBlockRange/${channel}/${query1}/${query2}`)
+			.then(resp => {
+				console.log('response-got', resp);
+				if (resp.status === 500) {
+					dispatch(
+						actions.getErroMessage(
+							'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+						)
+					);
+				} else if (resp.status === 400) {
+					dispatch(actions.getErroMessage(resp.error));
+				} else {
+					dispatch(actions.getBlockRangeSearch(resp));
+				}
+			})
+			.catch(error => {
+				console.error(error);
+			}).finally(()=>{actions.getLoaded(true);})
+	}
 /* istanbul ignore next */
 const transactionList = (channel,params) => dispatch =>
 	get(`/api/txList/${channel}/0/0/?page=${params.page}&size=${params.size}`)
@@ -144,12 +160,12 @@ const transactionList = (channel,params) => dispatch =>
 			console.error(error);
 		});
 export default {
-	blockList,
 	chaincodeList,
 	channels,
 	peerList,
 	transaction,
 	transactionList,
 	transactionListSearch,
-	blockListSearch
+	blockListSearch,
+	blockRangeSearch
 };

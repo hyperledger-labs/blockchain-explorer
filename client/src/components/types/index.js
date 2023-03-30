@@ -28,6 +28,19 @@ export const blockListType = arrayOf(
 	})
 );
 
+export const blockListSearchType = arrayOf(
+	shape({
+		blockhash: string,
+		blocknum: number,
+		channelname: string,
+		createdt: string,
+		datahash: string,
+		prehash: string,
+		txcount: number,
+		txhash: arrayOf(string)
+	})
+);
+
 export const blockPerHourType = arrayOf(
 	shape({
 		count: string,
@@ -113,6 +126,10 @@ export const getTransactionByOrgType = func;
 export const getTransactionPerHourType = func;
 export const getTransactionPerMinType = func;
 export const getUserListType = func;
+export const getBlockRangeSearchType = func;
+export const getBlockListSearchType = func;
+
+export const blockRangeSearchType = any;
 
 export const notificationsType = arrayOf(
 	shape({
