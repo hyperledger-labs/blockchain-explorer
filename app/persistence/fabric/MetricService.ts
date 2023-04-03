@@ -701,7 +701,7 @@ export class MetricService {
 	getTxByOrgs(network_name: any, channel_genesis_hash: any) {
 		const sqlPerOrg = ` select count(creator_msp_id), creator_msp_id
       from transactions
-      where channel_genesis_hash =$1 and network_name=$2
+      where Trim(creator_msp_id) > '' and channel_genesis_hash =$1 and network_name=$2
       group by  creator_msp_id`;
 
 		return this.sql.getRowsBySQlQuery(sqlPerOrg, [
