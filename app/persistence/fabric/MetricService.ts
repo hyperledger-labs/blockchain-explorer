@@ -27,7 +27,7 @@ export class MetricService {
 	 */
 	getChaincodeCount(network_name: any, channel_genesis_hash: any) {
 		return this.sql.getRowsBySQlCase(
-			'select count(1) c from chaincodes where channel_genesis_hash=$1 and network_name=$2 ',
+			'select count(DISTINCT name) c from chaincodes where channel_genesis_hash=$1 and network_name=$2 ',
 			[channel_genesis_hash, network_name]
 		);
 	}
