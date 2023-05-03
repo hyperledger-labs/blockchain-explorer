@@ -35,8 +35,8 @@ spec:
             items:
               - key: config.json
                 path: config.json
-              - key: test-network.json
-                path: test-network.json
+              - key: fabric-network.json
+                path: fabric-network.json
 
       containers:
         - name: {{ .Release.Name }}-app
@@ -55,6 +55,6 @@ spec:
             - mountPath: /opt/explorer/app/platform/fabric/config.json
               name: explorer-config
               subPath: config.json
-            - mountPath: /opt/explorer/app/platform/fabric/test-network.json
+            - mountPath: /opt/explorer/app/platform/fabric/fabric-network.json
               name: explorer-config
-              subPath: test-network.json
+              subPath: fabric-network.json
