@@ -8,6 +8,14 @@ import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Add from '@material-ui/icons/Add';
+import Avatar from '@material-ui/core/Avatar';
+import Email from '@material-ui/icons/Email';
+import Lock from '@material-ui/icons/Lock';
+import Person from '@material-ui/icons/Person';
+import Translate from '@material-ui/icons/Translate';
+import { Box } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -35,6 +43,14 @@ const styles = theme => ({
 	form: {
 		width: '100%', // Fix IE 11 issue.
 		marginTop: theme.spacing.unit
+	},
+	icons: {
+		marginRight: '5px',
+		marginBottom: '10px'
+	},
+	avatar: {
+		margin: theme.spacing.unit,
+		backgroundColor: theme.palette.secondary.main
 	},
 	title: {
 		marginTop: theme.spacing.unit * 2
@@ -258,6 +274,9 @@ export class Register extends Component {
 		return (
 			<Container>
 				<Paper className={classes.paper}>
+					<Avatar className={classes.avatar}>
+						<Add />
+					</Avatar>
 					<Typography className={classes.title} component="h5" variant="headline">
 						Register User
 					</Typography>
@@ -274,34 +293,43 @@ export class Register extends Component {
 					</MuiDialogTitle>
 					<form className={classes.form} onSubmit={this.submitForm}>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								required
-								fullWidth
-								id="user"
-								name="user"
-								label="User"
-								disabled={isLoading}
-								value={user.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
-							{user.error && (
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<AccountCircle
+									sx={{ color: 'action.active' }}
+									className={classes.icons}
+								/>
+								<TextField
+									required
+									fullWidth
+									id="user"
+									name="user"
+									label="User"
+									disabled={isLoading}
+									value={user.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
+							{!user.error && (
 								<FormHelperText id="component-error-text" error>
 									{user.error}
 								</FormHelperText>
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								fullWidth
-								id="firstname"
-								name="firstname"
-								label="First name"
-								disabled={isLoading}
-								value={firstname.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Translate sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									fullWidth
+									id="firstname"
+									name="firstname"
+									label="First name"
+									disabled={isLoading}
+									value={firstname.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
 							{firstname.error && (
 								<FormHelperText id="component-error-text" error>
 									{firstname.error}
@@ -309,16 +337,19 @@ export class Register extends Component {
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								fullWidth
-								id="lastname"
-								name="lastname"
-								label="Last name"
-								disabled={isLoading}
-								value={lastname.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Translate sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									fullWidth
+									id="lastname"
+									name="lastname"
+									label="Last name"
+									disabled={isLoading}
+									value={lastname.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
 							{lastname.error && (
 								<FormHelperText id="component-error-text" error>
 									{lastname.error}
@@ -326,16 +357,19 @@ export class Register extends Component {
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								fullWidth
-								id="email"
-								name="email"
-								label="E-mail address"
-								disabled={isLoading}
-								value={email.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Email sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									fullWidth
+									id="email"
+									name="email"
+									label="E-mail address"
+									disabled={isLoading}
+									value={email.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
 							{email.error && (
 								<FormHelperText id="component-error-text" error>
 									{email.error}
@@ -343,19 +377,22 @@ export class Register extends Component {
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								required
-								fullWidth
-								error={!!password.error}
-								id="password"
-								type="password"
-								name="password"
-								label="Password"
-								disabled={isLoading}
-								value={password.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Lock sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									required
+									fullWidth
+									error={!!password.error}
+									id="password"
+									type="password"
+									name="password"
+									label="Password"
+									disabled={isLoading}
+									value={password.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
 							{password.error && (
 								<FormHelperText id="component-error-text" error>
 									{password.error}
@@ -363,19 +400,22 @@ export class Register extends Component {
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								error={!!password2.error}
-								required
-								fullWidth
-								id="password2"
-								type="password"
-								name="password2"
-								label="Password(confirm)"
-								disabled={isLoading}
-								value={password2.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							/>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Lock sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									error={!!password2.error}
+									required
+									fullWidth
+									id="password2"
+									type="password"
+									name="password2"
+									label="Password(confirm)"
+									disabled={isLoading}
+									value={password2.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								/>
+							</Box>
 							{password2.error && (
 								<FormHelperText id="component-error-text" error>
 									{password2.error}
@@ -383,26 +423,29 @@ export class Register extends Component {
 							)}
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
-							<TextField
-								required
-								fullWidth
-								select
-								error={!!roles.error}
-								id="roles"
-								type="roles"
-								name="roles"
-								label="Roles"
-								disabled={isLoading}
-								value={roles.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-							>
-								{rolesList.map(item => (
-									<MenuItem key={item} value={item}>
-										{item}
-									</MenuItem>
-								))}
-							</TextField>
+							<Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+								<Person sx={{ color: 'action.active' }} className={classes.icons} />
+								<TextField
+									required
+									fullWidth
+									select
+									error={!!roles.error}
+									id="roles"
+									type="roles"
+									name="roles"
+									label="Roles"
+									disabled={isLoading}
+									value={roles.value}
+									onChange={e => this.handleChange(e)}
+									margin="normal"
+								>
+									{rolesList.map(item => (
+										<MenuItem key={item} value={item}>
+											{item}
+										</MenuItem>
+									))}
+								</TextField>
+							</Box>
 							{roles.error && (
 								<FormHelperText id="component-error-text" error>
 									{roles.error}
@@ -428,7 +471,7 @@ export class Register extends Component {
 							container
 							spacing={16}
 							direction="row"
-							justify="flex-end"
+							justifyContent="space-between"
 							className={classes.actions}
 						>
 							<Grid item>
