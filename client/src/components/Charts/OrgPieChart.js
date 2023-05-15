@@ -98,8 +98,8 @@ export class OrgPieChart extends Component {
 		const { classes } = this.props;
 		return (
 			<div className={classes.container}>
-				<PieChart width={485} height={290} className={classes.chart}>
-					<Legend align="right" height={10} />
+				<PieChart width={250} height={290} className={classes.chart}>
+					<Legend align="right" />
 					<Pie
 						data={data}
 						dataKey="value"
