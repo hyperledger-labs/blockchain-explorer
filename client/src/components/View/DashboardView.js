@@ -56,8 +56,13 @@ const styles = theme => {
 			boxShadow: dark ? '1px 2px 2px rgb(215, 247, 247)' : undefined
 		},
 		count: {
-			marginTop: '55%',
-			color: dark ? '#ffffff' : undefined
+			color: dark ? '#ffffff' : undefined,
+			[theme.breakpoints.down('md')]: {
+				marginTop: '35%'
+			},
+			[theme.breakpoints.up('md')]: {
+				marginTop: '55%'
+			}
 		},
 		statistic: {
 			display: 'block',
@@ -65,8 +70,13 @@ const styles = theme => {
 			height: '100%',
 			width: '25%',
 			textAlign: 'center',
-			fontSize: '18pt',
-			color: dark ? '#ffffff' : '#000000'
+			color: dark ? '#ffffff' : '#000000',
+			[theme.breakpoints.down('md')]: {
+				fontSize: '8pt'
+			},
+			[theme.breakpoints.up('md')]: {
+				fontSize: '18pt'
+			}
 		},
 		vdivide: {
 			'&::after': {
@@ -80,8 +90,14 @@ const styles = theme => {
 		},
 		avatar: {
 			justifyContent: 'center',
-			marginLeft: '60%',
-			marginTop: '65%'
+			[theme.breakpoints.down('md')]: {
+				marginLeft: '25%',
+				marginTop: '15%'
+			},
+			[theme.breakpoints.up('md')]: {
+				marginLeft: '60%',
+				marginTop: '65%'
+			}
 		},
 		node: {
 			color: dark ? '#183a37' : '#21295c',
@@ -107,6 +123,11 @@ const styles = theme => {
 		},
 		center: {
 			textAlign: 'center'
+		},
+		pie: {
+			[theme.breakpoints.up('md')]: {
+				marginLeft: '25%'
+			}
 		}
 	};
 };
@@ -281,7 +302,9 @@ export class DashboardView extends Component {
 							<Card className={`${classes.section} ${classes.center}`}>
 								<h5>Transactions by Organization</h5>
 								<hr />
-								<OrgPieChart transactionByOrg={transactionByOrg} />
+								<div className={classes.pie}>
+									<OrgPieChart transactionByOrg={transactionByOrg} />
+								</div>
 							</Card>
 						</Col>
 					</Row>
