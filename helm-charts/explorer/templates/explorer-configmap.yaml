@@ -15,7 +15,7 @@ data:
 
   fabric-network.json: |-
       {
-      "name": "basic-network",
+      "name": "fabric-network",
       "version": "1.0.0",
       "client": {
         "tlsEnable": true,
@@ -78,8 +78,8 @@ data:
   config.json: |- 
       {
       "network-configs": {
-        "basic-network": {
-          "name": "basic-network",
+        "fabric-network": {
+          "name": "fabric-network",
           "profile": "./fabric-network.json"
         }
       },
