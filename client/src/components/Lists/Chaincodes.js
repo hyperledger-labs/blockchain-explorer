@@ -156,7 +156,7 @@ export class Chaincodes extends Component {
 					defaultPageSize={5}
 					filterable
 					minRows={0}
-					showPagination={chaincodeList.length >= 5}
+					showPagination={chaincodeList?.length >= 5}
 				/>
 				<Dialog
 					open={dialogOpen}

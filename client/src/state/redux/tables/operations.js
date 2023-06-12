@@ -40,6 +40,7 @@ const chaincodeList = channel => dispatch =>
 				);
 			} else if (resp.status === 400) {
 				dispatch(actions.getErroMessage(resp.error));
+			} else {
 				dispatch(actions.getChaincodeList(resp));
 			}
 		})
