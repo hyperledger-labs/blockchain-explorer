@@ -58,6 +58,9 @@ const styles = theme => ({
 			backgroundColor: 'transparent !important',
 			color: '#fff'
 		}
+	},
+	readset_null: {
+		display: 'none'
 	}
 });
 
@@ -76,35 +79,6 @@ export class TransactionView extends Component {
 
 	render() {
 		const { transaction, classes } = this.props;
-		if (transaction && !(transaction.read_set || transaction.readSet)) {//zvv
-			return (
-				<Modal>
-					{modalClasses => (
-						<div>
-							<CardTitle className={modalClasses.title}>
-								<FontAwesome name="list-alt" className={classes.listIcon} />
-								Transaction Details
-								<button
-									type="button"
-									onClick={this.handleClose}
-									className={modalClasses.closeBtn}
-								>
-									<FontAwesome name="close" />
-								</button>
-							</CardTitle>
-							<div align="center">
-								<CardBody className={modalClasses.body}>
-									<span>
-										{' '}
-										<FontAwesome name="circle-o-notch" size="3x" spin />
-									</span>
-								</CardBody>
-							</div>
-						</div>
-					)}
-				</Modal>
-			);
-		}
 		if (transaction) {
 			let baseUrl =
 				window.location.protocol +
@@ -187,7 +161,7 @@ export class TransactionView extends Component {
 													</button>
 												</td>
 											</tr>
-											<tr>
+											<tr className={!transaction.read_set && classes.readset_null}>
 												<th style={reads}>Reads:</th>
 												<td className={classes.JSONtree}>
 													<JSONTree
@@ -197,7 +171,7 @@ export class TransactionView extends Component {
 													/>
 												</td>
 											</tr>
-											<tr>
+											<tr className={!transaction.read_set && classes.readset_null}>
 												<th style={writes}>Writes:</th>
 												<td className={classes.JSONtree}>
 													<JSONTree
