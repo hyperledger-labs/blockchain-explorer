@@ -255,7 +255,7 @@ $ cd blockchain-explorer/app
   * Change `fabric-path` to your fabric network disk path in the test-network.json file:
   * Provide the full disk path to the adminPrivateKey config option. It usually ends with `_sk`, for example:
     `/fabric-path/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk`
-  * `adminUser` and `adminPassword` is the credential for the user of Explorer to log in to the dashboard
+  * `exploreradmin` and `exploreradminpw` is the credential for the user of Explorer to log in to the dashboard
   * `enableAuthentication` is a flag to enable authentication using a login page. Setting to false will skip authentication.
 
 ## Run `create` database script:
