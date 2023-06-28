@@ -61,8 +61,8 @@ export class Chaincodes extends Component {
 		};
 	}
 
-	handleDialogOpen = async tid => {
-		await this.props.getChaincodeMetaData(tid);
+	handleDialogOpen = async (channelhash,tid) => {
+		await this.props.getChaincodeMetaData(channelhash,tid);
 		this.setState({ dialogOpen: true });
 	};
 
@@ -80,7 +80,7 @@ export class Chaincodes extends Component {
 					<a
 						data-command="transaction-partial-hash"
 						className={classes.partialHash}
-						onClick={() => this.handleDialogOpen(row.value)}
+						onClick={() => this.handleDialogOpen(this.props.currentChannel,row.value)}
 						href="#/chaincodes"
 					>{row.value}
 					</a>

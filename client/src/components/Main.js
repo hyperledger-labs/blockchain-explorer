@@ -131,7 +131,8 @@ export const Main = props => {
 	const chaincodeViewProps = {
 		chaincodeList,
 		chaincodeMetaData,
-		getChaincodeMetaData
+		getChaincodeMetaData,
+		currentChannel
 	};
 
 	const channelsViewProps = {
