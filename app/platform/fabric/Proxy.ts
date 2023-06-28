@@ -603,13 +603,13 @@ export class Proxy {
 	 * @returns
 	 * @memberof Proxy
 	 */
-	async getContractMetadata(network_id, contract_name) {
+	async getContractMetadata(network_id, contract_name, channel_genesis_hash) {
 		const client = this.platform.getClient(network_id);
-		const channel_name = Object.keys(client.fabricGateway.config.channels)[0];
+		const channel_name =  client.getChannelNameByHash(channel_genesis_hash);
 		let metadata;
 		try {
-			metadata = await client.fabricGateway.queryContractMetadata(channel_name, contract_name);
-		} catch (e) {
+			metadata = await client.fabricGateway.queryContractMetadata(channel_name, contract_name, channel_genesis_hash);
+			} catch (e) {
 			logger.debug('getContractMetadata >> ', e);
 		} if (metadata) {
 			return metadata;
