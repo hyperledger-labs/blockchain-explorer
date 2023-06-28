@@ -24,42 +24,14 @@ describe('Tables', () => {
 		const channel = 'mychannel';
 		const query = 'query';
 		const pageParams = {page:1,size:10};
-		test('blockList', () => {
-			nock(/\w*(\W)/g)
-				.get(`/api/blockAndTxList/${channel}/0`)
-				.reply(200, {
-					rows: [{ test: 'rows' }]
-				});
-
-			const expectedActions = [{ type: types.BLOCK_LIST }];
-			const store = mockStore(initialState, expectedActions);
-
-			return store.dispatch(operations.blockList(channel)).then(() => {
-				const action = store.getActions();
-				expect(action[0].type).toEqual(types.BLOCK_LIST);
-			});
-		});
-
-		test('blockList catch error', () => {
-			jest.spyOn(console, 'error');
-			nock(/\w*(\W)/g)
-				.get(`/api/blockAndTxList/${channel}/0`)
-				.replyWithError({ code: 'ECONNREFUSED' });
-
-			const expectedActions = [{ type: types.BLOCK_LIST }];
-			const store = mockStore(initialState, expectedActions);
-
-			return store.dispatch(operations.blockList(channel)).then(() => {
-				const action = store.getActions();
-				expect(action).toEqual([]);
-			});
-		});
 
 		test('blockListSearch', () => {
 			nock(/\w*(\W)/g)
-				.get(`/api/blockAndTxList/${channel}/0?${query}`)
+				.get(
+					`/api/blockAndTxList/${channel}/0?${query}&page=${pageParams?.page}&size=${pageParams?.size}`
+				)
 				.reply(200, {
-					rows: [{ test: 'rows' }]
+					rows: { blocksData: [{ test: 'rows' }] }
 				});
 
 			const expectedActions = [{ type: types.BLOCK_LIST_SEARCH }];
@@ -282,14 +254,6 @@ describe('Tables', () => {
 	});
 
 	describe('Reducers', () => {
-		test('blockListReducer', () => {
-			const payload = { rows: 'test' };
-			const action = actions.getBlockList(payload);
-
-			const newState = reducers(initialState, action);
-			expect(newState.blockList.rows).toBe('test');
-		});
-
 		test('chaincodeListReducer', () => {
 			const payload = { chaincode: 'test' };
 			const action = actions.getChaincodeList(payload);
@@ -331,7 +295,7 @@ describe('Tables', () => {
 		});
 
 		test('blockListSearchReducer', () => {
-			const payload = { rows: 'test' };
+			const payload = { rows: { blocksData: 'test' } }; 
 			const action = actions.getBlockListSearch(payload);
 
 			const newState = reducers(initialState, action);
@@ -348,11 +312,6 @@ describe('Tables', () => {
 	});
 
 	describe('selectors', () => {
-		test('blockListSelector', () => {
-			const state = { tables: { blockList: { rows: 'test' } } };
-			const blockList = selectors.blockListSelector(state);
-			expect(blockList).toBe('test');
-		});
 
 		test('chaincodeListSelector', () => {
 			const state = { tables: { chaincodeList: { rows: 'test' } } };

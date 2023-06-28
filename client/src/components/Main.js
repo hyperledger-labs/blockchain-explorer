@@ -16,14 +16,18 @@ import ChannelsView from './View/ChannelsView';
 import { chartSelectors } from '../state/redux/charts';
 import { tableOperations, tableSelectors } from '../state/redux/tables';
 import {
-	blockListType,
 	chaincodeListType,
 	channelsType,
 	currentChannelType,
 	dashStatsType,
 	getTransactionType,
 	peerListType,
+	txnListType,
+	blockSearchType,
 	peerStatusType,
+	blockRangeSearchType,
+	blockListSearchType,
+	chaincodeMetaDataType,
 	transactionType,
 	transactionByOrgType,
 	transactionListType
@@ -42,13 +46,20 @@ const {
 } = chartSelectors;
 
 const {
-	blockListSelector,
 	chaincodeListSelector,
 	channelsSelector,
 	peerListSelector,
+	txnListSelector,
+	blockSearchSelector,
+	chaincodeMetaDataSelector,
 	transactionSelector,
 	transactionListSelector,
+	blockRangeSearchSelector,
+	blockRangeLoadedSelector,
 	blockListSearchSelector,
+	blockListSearchTotalPagesSelector,
+	blockListSearchPageParamSelector,
+	blockListSearchQuerySelector,
 	transactionListSearchSelector,
 	transactionListTotalPagesSelector,
 	transactionListSearchTotalPagesSelector,
@@ -69,7 +80,6 @@ const styles = theme => {
 export const Main = props => {
 	const {
 		classes,
-		blockList,
 		blockActivity,
 		chaincodeList,
 		channels,
@@ -77,31 +87,51 @@ export const Main = props => {
 		dashStats,
 		getTransaction,
 		peerList,
+		txnList,
+		blockSearch,
 		peerStatus,
+		chaincodeMetaData,
+		getChaincodeMetaData,
 		transaction,
 		transactionByOrg,
 		transactionList,
 		blockListSearch,
+		blockRangeSearch,
+		blockRangeLoaded,
+		blockListSearchTotalPages,
+		blockListSearchQuery,
+		blockListSearchPageParam,
 		transactionListSearch,
 		getBlockListSearch,
 		getTransactionListSearch,
+		getBlockRangeSearch,
 		transactionListSearchTotalPages,
 		transactionListTotalPages,
 		transactionListSearchQuery,
-		transactionListSearchPageParam
+		transactionListSearchPageParam,
+		getTxnList
 	} = props;
 
 	const blocksViewProps = {
-		blockList,
 		blockListSearch,
 		getBlockListSearch,
+		getBlockRangeSearch,
+		blockRangeLoaded,
+		blockListSearchTotalPages,
+		blockListSearchPageParam,
+		blockListSearchQuery,
+		blockRangeSearch,
+		txnList,
+		getTxnList,
 		transactionByOrg,
 		currentChannel,
 		getTransaction,
 		transaction
 	};
 	const chaincodeViewProps = {
-		chaincodeList
+		chaincodeList,
+		chaincodeMetaData,
+		getChaincodeMetaData
 	};
 
 	const channelsViewProps = {
@@ -109,9 +139,11 @@ export const Main = props => {
 	};
 
 	const dashboardViewProps = {
-		blockList,
+		blockListSearch,
 		dashStats,
 		peerStatus,
+		txnList,
+		blockSearch,
 		transactionByOrg,
 		blockActivity
 	};
@@ -215,14 +247,18 @@ export const Main = props => {
 };
 
 Main.propTypes = {
-	blockList: blockListType.isRequired,
+	blockListSearch: blockListSearchType.isRequired,
+	blockRangeSearch: blockRangeSearchType.isRequired,
 	chaincodeList: chaincodeListType.isRequired,
 	channels: channelsType.isRequired,
 	currentChannel: currentChannelType.isRequired,
 	dashStats: dashStatsType.isRequired,
 	getTransaction: getTransactionType.isRequired,
 	peerList: peerListType.isRequired,
+	txnList: txnListType.isRequired,
+	blockSearch: blockSearchType.isRequired,
 	peerStatus: peerStatusType.isRequired,
+	chaincodeMetaData: chaincodeMetaDataType.isRequired,
 	transaction: transactionType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired,
 	transactionList: transactionListType.isRequired
@@ -230,29 +266,39 @@ Main.propTypes = {
 
 const connectedComponent = connect(
 	state => ({
-		blockList: blockListSelector(state),
 		chaincodeList: chaincodeListSelector(state),
 		channelList: channelListSelector(state),
 		channels: channelsSelector(state),
 		currentChannel: currentChannelSelector(state),
 		dashStats: dashStatsSelector(state),
 		peerList: peerListSelector(state),
+		txnList: txnListSelector(state),
+		blockSearch: blockSearchSelector(state),
 		peerStatus: peerStatusSelector(state),
+		chaincodeMetaData: chaincodeMetaDataSelector(state),
 		transaction: transactionSelector(state),
 		transactionByOrg: transactionByOrgSelector(state),
 		transactionList: transactionListSelector(state),
 		blockListSearch: blockListSearchSelector(state),
+		blockListSearchTotalPages: blockListSearchTotalPagesSelector(state),
+		blockListSearchPageParam: blockListSearchPageParamSelector(state),
+		blockListSearchQuery: blockListSearchQuerySelector(state),
+		blockRangeSearch: blockRangeSearchSelector(state),
+		blockRangeLoaded: blockRangeLoadedSelector(state),
 		transactionListSearch: transactionListSearchSelector(state),
 		transactionListTotalPages: transactionListTotalPagesSelector(state),
 		transactionListSearchTotalPages: transactionListSearchTotalPagesSelector(state),
-		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),//vimp
+		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),
 		transactionListSearchQuery: transactionListSearchQuerySelector(state),
 		blockActivity: blockActivitySelector(state)
 	}),
 	{
 		getTransaction: tableOperations.transaction,
 		getBlockListSearch: tableOperations.blockListSearch,
-		getTransactionListSearch: tableOperations.transactionListSearch
+		getBlockRangeSearch: tableOperations.blockRangeSearch,
+		getTransactionListSearch: tableOperations.transactionListSearch,
+		getTxnList: tableOperations.txnList,
+		getChaincodeMetaData: tableOperations.chaincodeMetaData,
 	}
 )(Main);
 export default withStyles(styles)(connectedComponent);

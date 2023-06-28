@@ -13,11 +13,19 @@ import PeersHealth from '../Lists/PeersHealth';
 import TimelineStream from '../Lists/TimelineStream';
 import OrgPieChart from '../Charts/OrgPieChart';
 import {
-	blockListType,
+	blockListSearchType,
 	dashStatsType,
 	peerStatusType,
+	txnListType,
+	blockSearchType,
 	transactionByOrgType
 } from '../types';
+import SearchByQuery from '../Lists/SearchByQuery';
+import { connect } from 'react-redux';
+import { currentChannelSelector } from '../../state/redux/charts/selectors';
+import { tableOperations } from '../../state/redux/tables';
+
+const {txnList, blockSearch} =tableOperations
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -33,6 +41,13 @@ const styles = theme => {
 			width: '80%',
 			marginLeft: '10%',
 			marginRight: '10%'
+		},
+		dashboardSearch:{
+			position: 'absolute',
+			width: '80%'
+		},
+		search :{
+			marginLeft:'10px'
 		},
 		blocks: {
 			height: 175,
@@ -107,14 +122,14 @@ export class DashboardView extends Component {
 
 	componentWillMount() {
 		const {
-			blockList,
+			blockListSearch,
 			dashStats,
 			peerStatus,
 			transactionByOrg,
 			blockActivity
 		} = this.props;
 		if (
-			blockList === undefined ||
+			blockListSearch === undefined ||
 			dashStats === undefined ||
 			peerStatus === undefined ||
 			blockActivity === undefined ||
@@ -155,8 +170,11 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
+		const { dashStats, peerStatus, txnList, blockSearch, blockActivity, transactionByOrg } = this.props;
 		const { hasDbError, notifications } = this.state;
+		var searchError = ''
+		if(typeof txnList==='string'){searchError='Txn not found'; }
+		else if(typeof blockSearch==='string'){searchError='Block not found'}
 		if (hasDbError) {
 			return (
 				<div
@@ -177,6 +195,14 @@ export class DashboardView extends Component {
 		const { classes } = this.props;
 		return (
 			<div className={classes.background}>
+				<div className={classes.view}>
+					<div className={classes.dashboardSearch}>
+						<SearchByQuery getTxnList={this.props.getTxnList} getBlockSearch={this.props.getBlockSearch}
+							currentChannel={this.props.currentChannel}
+							txnList={txnList} blockSearch={blockSearch}
+							searchError={searchError} />
+					</div>
+				</div>
 				<div className={classes.view}>
 					<Row>
 						<Col sm="12">
@@ -266,10 +292,25 @@ export class DashboardView extends Component {
 }
 
 DashboardView.propTypes = {
-	blockList: blockListType.isRequired,
+	blockListSearch: blockListSearchType.isRequired,
 	dashStats: dashStatsType.isRequired,
 	peerStatus: peerStatusType.isRequired,
+	txnList: txnListType.isRequired,
+	blockSearch: blockSearchType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired
 };
 
-export default withStyles(styles)(DashboardView);
+const mapStateToProps = state => {
+	return {
+		currentChannel: currentChannelSelector(state)
+	}
+}
+const mapDispatchToProps = {
+	getTxnList: txnList,
+	getBlockSearch: blockSearch
+};
+const connectedComponent = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(DashboardView)
+export default withStyles(styles)(connectedComponent);

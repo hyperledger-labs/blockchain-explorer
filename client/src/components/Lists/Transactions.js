@@ -126,11 +126,11 @@ export class Transactions extends Component {
 			getTransaction('ChannelNotSpecified', this.props.transactionId);
 			this.setState({ directLinkSearchResultsFlag: true });
 		}
-		const { transactionList } = this.props;
+		// const { transactionList } = this.props;
 		const selection = {};
-		transactionList.forEach(element => {
-			selection[element.blocknum] = false;
-		});
+		// transactionList.forEach(element => {
+		// 	selection[element.blocknum] = false;
+		// });
 		const opts = [];
 		this.props.transactionByOrg.forEach(val => {
 			opts.push({ label: val.creator_msp_id, value: val.creator_msp_id });
@@ -139,22 +139,21 @@ export class Transactions extends Component {
 		this.handleSearch();
 	}
 
-	componentWillReceiveProps(nextProps) {
+	componentDidUpdate(prevProps,prevState) {
 		if (
 			this.state.search &&
-			nextProps.currentChannel !== this.props.currentChannel
+			this.props.currentChannel !== prevProps.currentChannel
 		) {
 			if (this.interval !== undefined) {
 				clearInterval(this.interval);
 			}
 			this.interval = setInterval(() => {
-				this.searchTransactionList(nextProps.currentChannel);
+				this.searchTransactionList(this.props.currentChannel);
 			}, 60000);
-			this.searchTransactionList(nextProps.currentChannel);
+			this.searchTransactionList(this.props.currentChannel);
 		}
-	}
-	componentDidUpdate(prevProps,prevState) {
 		if(prevState.page!=this.state.page || prevState.rowsPerPage!=this.state.rowsPerPage || this.state.searchClick){
+			this.setState({ searchClick: false });
 			this.handleSearch();
 		}
 	}
@@ -226,7 +225,7 @@ export class Transactions extends Component {
 			this.searchTransactionList();
 		}, 60000);
 		await this.searchTransactionList();
-		this.setState({ search: true, searchClick: false });
+		this.setState({ search: true });
 		if (this.props.transactionId) {
 			this.setState({ directLinkSearchResultsFlag: false });
 			const { getTransaction } = this.props;
@@ -376,6 +375,7 @@ export class Transactions extends Component {
 							selected={this.state.from}
 							showTimeSelect
 							timeIntervals={5}
+							maxDate={this.state.to}
 							dateFormat="LLL"
 							popperPlacement='bottom'
 							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }}
@@ -395,6 +395,7 @@ export class Transactions extends Component {
 							selected={this.state.to}
 							showTimeSelect
 							timeIntervals={5}
+							minDate={this.state.from}
 							dateFormat="LLL"
 							popperPlacement='bottom'
 							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }} 
@@ -434,7 +435,7 @@ export class Transactions extends Component {
 							className={classes.searchButton}
 							color="success"
 							disabled={this.state.err || (!this.state.from != !this.state.to)}
-							onClick={async () => {
+							onClick={() => {
 								this.setState({page:0, searchClick:true, queryFlag: true, defaultQuery: false })
 							}}
 						>

@@ -4,13 +4,14 @@
 
 import types from './types';
 
-const getBlockList = blockList => ({
-  type: types.BLOCK_LIST,
-  payload: blockList,
-});
 const getBlockListSearch = blockList => ({
   type: types.BLOCK_LIST_SEARCH,
   payload: blockList,
+});
+
+const getLoaded = loaded => ({
+	type: types.BLOCK_RANGE_LOADED,
+	payload: loaded
 });
 
 const getChaincodeList = chaincodeList => ({
@@ -28,6 +29,26 @@ const getPeerList = peerList => ({
   payload: peerList,
 });
 
+const getBlockRangeSearch = resp => ({
+	type: types.BLOCK_RANGE_SEARCH,
+	payload: resp.data
+});
+
+const getTxnList = resp =>  ({
+  type: types.TXN_LIST,
+  payload: resp.data,
+});
+
+const getBlockSearch = resp =>  ({
+  type: types.BLOCK_SEARCH,
+  payload: resp.data,
+});
+
+const getChaincodeMetaData = resp => ({
+	type: types.CHAINCODE_META_DATA,
+	payload: resp.data
+});
+
 const getTransaction = transaction => ({
   type: types.TRANSACTION,
   payload: transaction,
@@ -43,12 +64,16 @@ const getTransactionListSearch = transactionList => ({
 });
 
 export default {
-  getBlockList,
   getChaincodeList,
   getChannels,
   getPeerList,
+  getBlockRangeSearch,
+  getTxnList,
+  getBlockSearch,
+  getChaincodeMetaData,
   getTransaction,
   getTransactionList,
   getBlockListSearch,
+  getLoaded,
   getTransactionListSearch,
 };

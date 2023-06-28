@@ -7,28 +7,19 @@ import types from './types';
 
 const initialState = {};
 
-const blockListReducer = (state = initialState, action = {}) => {
-  if (action.type === types.BLOCK_LIST) {
-    return {
-      rows: action.payload.rows,
-      loaded: true,
-      errors: action.error,
-    };
-  } else {
-    return state;
-  }
-};
-
 const blockListSearchReducer = (state = initialState, action = {}) => {
-  if (action.type === types.BLOCK_LIST_SEARCH) {
-    return {
-      rows: action.payload.rows,
-      loaded: true,
-      errors: action.error,
-    };
-  } else {
-    return state;
-  }
+	if (action.type === types.BLOCK_LIST_SEARCH) {
+		return {
+			rows: action.payload.rows.blocksData,
+			loaded: true,
+			errors: action.error,
+			noOfpages: action.payload.rows?.noOfpages || state.noOfpages,
+			query: action.payload.query,
+			pageParams: action.payload.pageParams
+		};
+	} else {
+		return state;
+	}
 };
 
 const chaincodeListReducer = (state = initialState, action = {}) => {
@@ -66,6 +57,57 @@ const peerListReducer = (state = initialState, action = {}) => {
   } else {
     return state;
   }
+};
+const blockRangeSearchReducer = (state = initialState, action = {}) => {
+	if (action.type === types.BLOCK_RANGE_SEARCH) {
+		return {
+			rows: action.payload,
+			loaded: true,
+			errors: action.error
+		};
+	} else if(action.type === types.BLOCK_RANGE_LOADED) {
+		return {
+			loaded: action.payload
+		}
+	} else {
+		return state;
+	}
+};
+
+const txnListReducer = (state = initialState, action = {}) => {
+  if (action.type === types.TXN_LIST) {
+    return {
+      rows: action.payload,
+      loaded: true,
+      errors: action.error,
+    };
+  } else {
+    return state;
+  }
+};
+
+const blockSearchReducer = (state = initialState, action = {}) => {
+  if (action.type === types.BLOCK_SEARCH) {
+    return {
+      rows: action.payload,
+      loaded: true,
+      errors: action.error,
+    };
+  } else {
+    return state;
+  }
+};
+
+const chaincodeMetaDataReducer = (state = initialState, action = {}) => {
+	if (action.type === types.CHAINCODE_META_DATA) {
+		return {
+			rows: action.payload,
+			loaded: true,
+			errors: action.error
+		};
+	} else {
+		return state;
+	}
 };
 
 const transactionReducer = (state = initialState, action = {}) => {
@@ -109,10 +151,13 @@ const transactionListSearchReducer = (state = initialState, action = {}) => {
 };
 
 const reducer = combineReducers({
-  blockList: blockListReducer,
   chaincodeList: chaincodeListReducer,
   channels: channelsReducer,
   peerList: peerListReducer,
+	blockRangeSearch: blockRangeSearchReducer,
+  txnList: txnListReducer,
+  blockSearch: blockSearchReducer,
+  chaincodeMetaData: chaincodeMetaDataReducer,
   transaction: transactionReducer,
   transactionList: transactionListReducer,
   blockListSearch: blockListSearchReducer,
