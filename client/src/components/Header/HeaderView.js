@@ -42,7 +42,6 @@ import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
 	channelsType,
-	getBlockListType,
 	getBlocksPerHourType,
 	getBlocksPerMinType,
 	getChaincodeListType,
@@ -54,7 +53,8 @@ import {
 	getTransactionByOrgType,
 	getTransactionPerHourType,
 	getTransactionPerMinType,
-	refreshType
+	refreshType,
+	getBlockListSearchType
 } from '../types';
 
 const {
@@ -70,15 +70,18 @@ const {
 } = chartOperations;
 
 const {
-	blockList,
+	blockListSearch,
 	chaincodeList,
 	channels,
 	peerList,
-	transactionList
+	transactionList,
+	transactionListSearch
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { channelsSelector } = tableSelectors;
+const { channelsSelector, transactionListSearchPageParamSelector, 
+		transactionListSearchQuerySelector,
+		blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -448,7 +451,9 @@ export class HeaderView extends Component {
 
 	async syncData(currentChannel) {
 		const {
-			getBlockList,
+			getBlockListSearch,
+			blockListSearchPageParam,
+			blockListSearchQuery,
 			getBlocksPerHour,
 			getBlocksPerMin,
 			getChaincodeList,
@@ -458,13 +463,16 @@ export class HeaderView extends Component {
 			getPeerStatus,
 			getTransactionByOrg,
 			getTransactionList,
+			getTransactionListSearch,
+			transactionListSearchPageParam,
+			transactionListSearchQuery,
 			getTransactionPerHour,
 			getTransactionPerMin,
 			getBlockActivity
 		} = this.props;
 
 		await Promise.all([
-			getBlockList(currentChannel),
+			getBlockListSearch( currentChannel, blockListSearchQuery, blockListSearchPageParam),
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
@@ -474,7 +482,7 @@ export class HeaderView extends Component {
 			getPeerList(currentChannel),
 			getPeerStatus(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionList(currentChannel),
+			getTransactionListSearch(currentChannel,transactionListSearchQuery,transactionListSearchPageParam),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel)
 		]);
@@ -666,7 +674,7 @@ export class HeaderView extends Component {
 HeaderView.propTypes = {
 	currentChannel: currentChannelType.isRequired,
 	channels: channelsType.isRequired,
-	getBlockList: getBlockListType.isRequired,
+	getBlockListSearch: getBlockListSearchType.isRequired,
 	getBlocksPerHour: getBlocksPerHourType.isRequired,
 	getBlocksPerMin: getBlocksPerMinType.isRequired,
 	getChangeChannel: getChangeChannelType.isRequired,
@@ -687,12 +695,16 @@ const mapStateToProps = state => {
 	return {
 		currentChannel: currentChannelSelector(state),
 		channels: channelsSelector(state),
-		mode: modeSelector(state)
+		mode: modeSelector(state),
+		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),
+		transactionListSearchQuery: transactionListSearchQuerySelector(state),
+		blockListSearchPageParam: blockListSearchPageParamSelector(state),
+		blockListSearchQuery: blockListSearchQuerySelector(state)
 	};
 };
 
 const mapDispatchToProps = {
-	getBlockList: blockList,
+	getBlockListSearch: blockListSearch, 
 	getBlocksPerHour: blockPerHour,
 	getBlocksPerMin: blockPerMin,
 	getChaincodeList: chaincodeList,
@@ -704,6 +716,7 @@ const mapDispatchToProps = {
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
 	getTransactionList: transactionList,
+	getTransactionListSearch:transactionListSearch,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
 	logout: authOperations.logout

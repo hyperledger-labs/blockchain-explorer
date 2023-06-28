@@ -42,7 +42,8 @@ const setup = prop => {
 		currentChannel:
 			'f3ed9c95452b184a4d5d66e25ba47f866ad6907a31f28f8067ca5596f64d8e0f',
 		notification: {},
-		getBlockList: jest.fn(),
+		getBlockListSearch: jest.fn(),
+		getTransactionListSearch: jest.fn(),
 		getBlocksPerHour: jest.fn(),
 		getBlocksPerMin: jest.fn(),
 		getChaincodeList: jest.fn(),

@@ -9,4 +9,4 @@
 # - Install python, pip and virtualenv
 
 npm install
-npm run e2e-test
+npm run e2e-api-test

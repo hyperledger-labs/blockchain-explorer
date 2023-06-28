@@ -523,4 +523,14 @@ export class FabricGateway {
 			return null;
 		}
 	}
+	async queryContractMetadata(channel_name, contract_name) {
+		const network = await this.gateway.getNetwork(channel_name);
+		// Get the contract from the network.        
+		const contract = network.getContract(contract_name);
+		// Get the contract metadata from the network.
+		const result = await contract.evaluateTransaction('org.hyperledger.fabric:GetMetadata');
+		const metadata = JSON.parse(result.toString('utf8'));
+		logger.debug('queryContractMetadata', metadata)
+		return metadata;
+	}
 }

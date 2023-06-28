@@ -6,6 +6,7 @@
 import React from 'react';
 import ReactTable from '../Styled/Table';
 import { Chaincodes } from './Chaincodes';
+import ChaincodeMetaDataView from '../View/ChaincodeMetaDataView';//s
 
 jest.useFakeTimers();
 
@@ -33,6 +34,7 @@ const setup = () => {
       txCount: '36',
     },
     getChaincodes: jest.fn(),
+    getChaincodeMetaData: jest.fn()
   };
 
   const chaincode = {
@@ -149,18 +151,38 @@ describe('Chaincodes', () => {
     expect(wrapper.find(ReactTable).find('TrGroupComponent').length).toBe(1);
   });
 
-  test('handleDialogOpen sets state to true', () => {
-    const { wrapper } = setup();
-    wrapper.instance().handleDialogOpen();
-    expect(wrapper.state('dialogOpen')).toBe(true);
-  });
+  test('Modal for ChaincodeMetaDataView View should not exist', () => {
+		const { wrapper } = setup();
+		expect(wrapper.find(ChaincodeMetaDataView).exists()).toBe(false);
+	});
 
-  test('handleDialogClose sets state to false', () => {
-    const { wrapper } = setup();
-    wrapper.setState({ dialogOpen: true });
-    wrapper.instance().handleDialogClose();
-    expect(wrapper.state('dialogOpen')).toBe(false);
-  });
+	test('Modal for ChaincodeMetaDataView View should exist', () => {
+		const { wrapper } = setup();
+		wrapper.setState({ dialogOpen: true });
+		wrapper.update();
+		expect(wrapper.find(ChaincodeMetaDataView).exists()).toBe(true);
+	});
+
+	test('handleDialogOpen should set dialogOpen to true', async () => {
+		const { wrapper } = setup();
+		await wrapper
+			.instance()
+			.handleDialogOpen(
+				'basic'
+			);
+		expect(wrapper.state('dialogOpen')).toBe(true);
+		wrapper.update();
+		expect(wrapper.find(ChaincodeMetaDataView).exists()).toBe(true);
+	});
+
+	test('handleDialogClose should set dialogOpen to false', () => {
+		const { wrapper } = setup();
+		wrapper.setState({ dialogOpen: true });
+		wrapper.update();
+		wrapper.instance().handleDialogClose();
+		wrapper.update();
+		expect(wrapper.state('dialogOpen')).toBe(false);
+	});
 
   test('sourceDialogOpen', () => {
     const { wrapper, chaincode } = setup();

@@ -7,7 +7,7 @@ import Enzyme, { shallow, mount } from 'enzyme';
 import { unwrap } from '@material-ui/core/test-utils';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import Adapter from 'enzyme-adapter-react-16';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createTheme } from '@material-ui/core/styles';
 import { LandingPage } from './LandingPage';
 
 Enzyme.configure({ adapter: new Adapter() });
@@ -22,7 +22,7 @@ describe('<LandingPage />', () => {
 	it('with mount', () => {
 		const { props } = setup();
 		const wrapper = mount(
-			<MuiThemeProvider theme={createMuiTheme()}>
+			<MuiThemeProvider theme={createTheme()}>
 				<LandingPage classes={{}} {...props} />
 			</MuiThemeProvider>
 		);
@@ -32,7 +32,7 @@ describe('<LandingPage />', () => {
 	it('Check if dark theme is applied correctly', () => {
 		const { props } = setup();
 		const wrapper = mount(
-			<MuiThemeProvider theme={createMuiTheme({ palette: { type: 'dark' } })}>
+			<MuiThemeProvider theme={createTheme({ palette: { type: 'dark' } })}>
 				<LandingPage classes={{}} {...props} />
 			</MuiThemeProvider>
 		);

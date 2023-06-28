@@ -41,7 +41,7 @@ export const localLoginStrategy = function(platform) {
 				network: reqUser.network
 			};
 
-			const token = await jwtSignAsync(payload, config.jwt.secret, {
+			const token: any = await jwtSignAsync(payload, config.jwt.secret, {
 				expiresIn: config.jwt.expiresIn
 			});
 			const data = {

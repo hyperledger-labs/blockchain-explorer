@@ -4,6 +4,8 @@
 
 import * as requtil from './requestutils';
 
+
+
 /**
  *
  *
@@ -190,15 +192,18 @@ export async function platformroutes(
 	router.get('/fetchDataByBlockNo/:channel_genesis_hash/:blockNo', (req, res) => {
 		const blockNo = parseInt(req.params.blockNo);
 		const channel_genesis_hash = req.params.channel_genesis_hash;
+		if (!isNaN(blockNo) && channel_genesis_hash) {
 		proxy.fetchDataByBlockNo(req.network, channel_genesis_hash, blockNo).then((data: any) => {
 			if (data != "response_payloads is null") {
 				res.send({ status: 200, data: data });
-			}
-			else{
+			} else {
 				res.send({ status: 404, data: "Block not found" });
 			}
 		});
-	});
+	    } else {
+			return requtil.invalidRequest(req, res);
+	    }
+    });
 
 	/**
 	 * *
@@ -210,21 +215,25 @@ export async function platformroutes(
 		const startBlockNo = parseInt(req.params.startBlockNo);
 		const endBlockNo = parseInt(req.params.endBlockNo);
 		const channel_genesis_hash = req.params.channel_genesis_hash;
-		if (startBlockNo < endBlockNo) {
+		if (
+			startBlockNo <= endBlockNo &&
+			startBlockNo >= 0 &&
+			endBlockNo >= 0 &&
+			!isNaN(startBlockNo) &&
+			!isNaN(endBlockNo) &&
+			channel_genesis_hash
+		) {
 			proxy.fetchDataByBlockRange(req.network, channel_genesis_hash, startBlockNo, endBlockNo).then((data: any) => {
 				if (data != "response_payloads is null") {
 					res.send({ status: 200, data: data });
-				}
-				else{
+				} else {
 					res.send({ status: 404, data: "Block(s) not found" });
 				}
 			});
-		}
-		else {
+		} else {
 			return requtil.invalidRequest(req, res);
 		}
-
-	});
+    });
 
 
 	/**
@@ -245,6 +254,21 @@ export async function platformroutes(
 			}
 		});
 	});
-
+	
+	/**
+	 * Return channel metadata
+	 * GET /metadata
+	 * curl -i 'http://<host>:<port>/metadata/<chaincode>'
+	 */
+	router.get('/metadata/:chaincode', (req, res) => {
+		const chaincode = req.params.chaincode;
+		if (chaincode) {
+			proxy.getContractMetadata(req.network, chaincode).then((data: any) => {
+				res.send({ status: 200, data: data });
+			});
+		} else {
+			return requtil.invalidRequest(req, res);
+		}
+	});
 
 } // End platformroutes()

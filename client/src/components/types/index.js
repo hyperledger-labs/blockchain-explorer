@@ -2,7 +2,7 @@
  *    SPDX-License-Identifier: Apache-2.0
  */
 
-import { arrayOf, shape, number, string, func } from 'prop-types';
+import { arrayOf, shape, number, string, func, any } from 'prop-types';
 
 export const blockHashType = shape({
 	blockhash: string,
@@ -16,6 +16,19 @@ export const blockHashType = shape({
 });
 
 export const blockListType = arrayOf(
+	shape({
+		blockhash: string,
+		blocknum: number,
+		channelname: string,
+		createdt: string,
+		datahash: string,
+		prehash: string,
+		txcount: number,
+		txhash: arrayOf(string)
+	})
+);
+
+export const blockListSearchType = arrayOf(
 	shape({
 		blockhash: string,
 		blocknum: number,
@@ -105,7 +118,10 @@ export const getChannelListType = func;
 export const getChannelsType = func;
 export const getDashStatsType = func;
 export const getPeerListType = func;
+export const getTxnListType = func;
+export const getBlockSearchType = func;
 export const getPeerStatusType = func;
+export const getChaincodeMetaDataType = func;
 export const getTransactionInfoType = func;
 export const getTransactionListType = func;
 export const getTransactionType = func;
@@ -113,6 +129,10 @@ export const getTransactionByOrgType = func;
 export const getTransactionPerHourType = func;
 export const getTransactionPerMinType = func;
 export const getUserListType = func;
+export const getBlockRangeSearchType = func;
+export const getBlockListSearchType = func;
+
+export const blockRangeSearchType = any;
 
 export const notificationsType = arrayOf(
 	shape({
@@ -136,12 +156,17 @@ export const peerListType = arrayOf(
 	})
 );
 
+export const txnListType = any;
+
+export const blockSearchType = any;
+
 export const peerStatusType = arrayOf(
 	shape({
 		server_hostname: string,
 		status: string
 	})
 );
+export const chaincodeMetaDataType = any;
 
 export const refreshType = func;
 

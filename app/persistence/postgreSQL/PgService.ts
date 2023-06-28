@@ -562,4 +562,28 @@ export class PgService {
 			});
 		});
 	}
+
+	/**
+	 *
+	 *
+	 * @param {*} sql
+	 * @param {*} values
+	 * @returns
+	 * @memberof PgService
+	 */
+	getRowsCountBySQlQuery(sql, values): Promise<number> {
+		return new Promise((resolve, reject) => {
+			this.client.query(sql, values, (err, res) => {
+				if (err) {
+					reject(err);
+					return;
+				}
+				logger.debug(`the getRowsCountBySQlQuery ${res}`);
+				if (res) {
+					resolve(res.rows[0].count);
+				}
+			});
+		});
+	}
+	
 }

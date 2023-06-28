@@ -82,31 +82,51 @@ export class CRUDService {
 	 * @param {*} txid
 	 * @param {*} from
 	 * @param {*} to
+	 * @param {*} page
+	 * @param {*} size
 	 * @param {*} orgs
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	getTxList(
+	async getTxList(
 		network_name: any,
 		channel_genesis_hash: any,
 		blockNum: any,
 		txid: any,
 		from: any,
 		to: any,
-		orgs: string
+		orgs: string,
+		page: number,
+		size: number
 	) {
+		var countOfTxns: number;
 		let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
        inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name where  t.blockid >= $1 and t.id >= $2 and
 							t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `;
-		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to];
-
+		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to, page, size];
+		if (page == 1) {
+			let sqlTxCount: string;
+			const filterValues = [blockNum, txid, channel_genesis_hash, network_name, from, to];
+			sqlTxCount = ` select count(*) from transactions as t inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name
+			where t.blockid >= $1 and t.id >= $2 and t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `
+			if (orgs && orgs.length > 0) {
+				sqlTxCount += ' and t.creator_msp_id = ANY($7)';
+				filterValues.push(orgs);
+			}
+			countOfTxns = await this.sql.getRowsCountBySQlQuery(sqlTxCount, filterValues)
+		}
 		if (orgs && orgs.length > 0) {
-			sqlTxList += ' and t.creator_msp_id = ANY($7)';
+			sqlTxList += ' and t.creator_msp_id = ANY($9)';
 			values.push(orgs);
 		}
-		sqlTxList += ' order by t.createdt desc';
+		sqlTxList += ' order by t.createdt desc LIMIT $8 OFFSET (($7 - 1) * $8)';
+		let txnsData = await this.sql.getRowsBySQlQuery(sqlTxList, values);
+		let response = {
+			txnsData: txnsData,
+			noOfpages: Math.ceil(countOfTxns / size)
+		}
 
-		return this.sql.getRowsBySQlQuery(sqlTxList, values);
+		return response;
 	}
 
 	/**
@@ -115,40 +135,89 @@ export class CRUDService {
 	 *
 	 * @param {*} channel_genesis_hash
 	 * @param {*} blockNum
+	 * @param {*} txid
 	 * @param {*} from
 	 * @param {*} to
+	 * @param {*} page
+	 * @param {*} size
 	 * @param {*} orgs
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	getBlockAndTxList(
+	async getBlockAndTxList(
 		network_name: any,
 		channel_genesis_hash: any,
 		blockNum: any,
 		from: any,
 		to: any,
-		orgs: string[]
+		orgs: string[],
+		page: number,
+		size: number
 	) {
-		const values = [channel_genesis_hash, network_name, from, to];
-		let byOrgs = '';
+		var countOfBlocks: number;
+		let byOrgs = ' ';
+		const values = [channel_genesis_hash, network_name, from, to, page, size];
 		if (orgs && orgs.length > 0) {
 			values.push(orgs);
-			byOrgs = ' and creator_msp_id = ANY($5)';
+			byOrgs = ' and creator_msp_id = ANY($7)';
 		}
-
-		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
-
-		const sqlBlockTxList = `select a.* from  (
-	  select (select c.name from channel c where c.channel_genesis_hash =$1 and c.network_name = $2) 
-	  	as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
-        SELECT  array_agg(txhash) as txhash FROM transactions where blockid = blocks.blocknum ${byOrgs} and 
-         channel_genesis_hash = $1 and network_name = $2 and createdt between $3 and $4) from blocks where
-         blocks.channel_genesis_hash =$1 and blocks.network_name = $2 and blocknum >= 0 and blocks.createdt between $3 and $4
-									order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
-
-		logger.debug('sqlBlockTxList ', sqlBlockTxList);
-
-		return this.sql.getRowsBySQlQuery(sqlBlockTxList, values);
+		let sqlBlockTxList;
+		if(orgs == null || orgs.length == 0 ) {
+			sqlBlockTxList = `SELECT a.* FROM  (
+								SELECT (SELECT c.name FROM channel c WHERE c.channel_genesis_hash =$1 AND c.network_name = $2) 
+									as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
+								SELECT array_agg(txhash) as txhash FROM transactions WHERE blockid = blocks.blocknum ${byOrgs} AND 
+									channel_genesis_hash = $1 AND network_name = $2 AND createdt between $3 AND $4) FROM blocks WHERE
+									blocks.channel_genesis_hash =$1 AND blocks.network_name = $2 AND blocknum >= 0 AND blocks.createdt between $3 AND $4
+								ORDER BY blocks.blocknum desc) a WHERE a.txhash IS NOT NULL LIMIT $6 OFFSET (($5 - 1) * $6)`;
+		} else {
+			sqlBlockTxList =`SELECT c.name AS channelname, 
+								b.blocknum, b.txcount, b.datahash, b.blockhash, b.prehash,b.createdt, b.blksize,
+								array_agg(t.txhash) AS txhash
+							FROM channel c
+							INNER JOIN blocks b ON b.channel_genesis_hash = c.channel_genesis_hash AND
+								b.network_name = c.network_name
+							INNER JOIN transactions t ON t.blockid = b.blocknum AND t.channel_genesis_hash = c.channel_genesis_hash
+								AND t.network_name = c.network_name AND t.createdt between $3 and $4 = c.createdt between $3 and $4
+								AND t.creator_msp_id IS NOT NULL AND t.creator_msp_id != ' ' AND length(t.creator_msp_id) > 0
+							WHERE c.channel_genesis_hash =$1 AND c.network_name = $2 AND b.blocknum >= 0 ${byOrgs} AND b.createdt between $3 and $4
+							GROUP BY c.name, b.blocknum, b.txcount, b.datahash, b.blockhash, b.prehash,b.createdt, b.blksize
+							ORDER BY b.blocknum DESC
+							LIMIT $6 OFFSET (($5 - 1) * $6)`;
+		}
+		if (page == 1) {
+			let sqlBlockTxCount: string;
+			let byOrgs = ' ';
+			const filterValues = [channel_genesis_hash, network_name, from, to];
+			if (orgs && orgs.length > 0) {
+				filterValues.push(orgs);
+				byOrgs = ' and creator_msp_id = ANY($5)';
+			}
+			if(orgs == null || orgs.length == 0 ) {
+				sqlBlockTxCount = `SELECT COUNT(DISTINCT blocks.blocknum) FROM blocks
+										JOIN transactions ON blocks.blocknum = transactions.blockid 
+										WHERE blockid = blocks.blocknum ${byOrgs} AND 
+										blocknum >= 0 AND blocks.channel_genesis_hash = $1 AND blocks.network_name = $2 AND 
+										blocks.createdt between $3 AND $4`
+			} else {
+				sqlBlockTxCount = `SELECT COUNT(DISTINCT blocks.blocknum) FROM blocks
+										JOIN transactions ON blocks.blocknum = transactions.blockid 
+										WHERE blockid = blocks.blocknum ${byOrgs}  
+										AND blocks.channel_genesis_hash = $1 and blocks.network_name = $2 AND blocks.createdt between $3 AND $4
+										AND transactions.creator_msp_id IS NOT NULL AND transactions.creator_msp_id != ' ' AND length(creator_msp_id) > 0`
+			}
+			countOfBlocks = await this.sql.getRowsCountBySQlQuery(
+				sqlBlockTxCount,
+				filterValues
+			);
+		}
+		let blocksData = await this.sql.getRowsBySQlQuery(sqlBlockTxList, values);
+		let noOfpages = Math.ceil(countOfBlocks / size);
+		let response = {
+			blocksData: blocksData,
+			noOfpages: noOfpages
+		};
+		return response;
 	}
 
 	/**
@@ -485,7 +554,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	async getBlockByBlocknum(network_name:any, channel_genesis_hash:any, blockNo:any) {
+	async getBlockByBlocknum(network_name: any, channel_genesis_hash: any, blockNo: any) {
 		const sqlBlockTxList = `select a.* from  (
 				select (select c.name from channel c where c.channel_genesis_hash =$1 and c.network_name = $2) 
 					as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (

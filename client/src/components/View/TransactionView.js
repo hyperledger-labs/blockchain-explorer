@@ -76,7 +76,7 @@ export class TransactionView extends Component {
 
 	render() {
 		const { transaction, classes } = this.props;
-		if (transaction && !transaction.read_set) {
+		if (transaction && !(transaction.read_set || transaction.readSet)) {//zvv
 			return (
 				<Modal>
 					{modalClasses => (

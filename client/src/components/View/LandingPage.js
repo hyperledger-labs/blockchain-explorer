@@ -8,11 +8,10 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Logo from '../../static/images/Explorer_Logo.svg';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
-import { tableOperations } from '../../state/redux/tables';
+import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { authOperations } from '../../state/redux/auth';
 import {
 	currentChannelType,
-	getBlockListType,
 	getBlocksPerHourType,
 	getBlocksPerMinType,
 	getChaincodeListType,
@@ -26,7 +25,8 @@ import {
 	getTransactionListType,
 	getTransactionPerHourType,
 	getTransactionPerMinType,
-	getUserListType
+	getUserListType,
+	getBlockListSearchType
 } from '../types';
 
 const {
@@ -44,16 +44,19 @@ const {
 } = chartOperations;
 
 const {
-	blockList,
+	blockListSearch,
 	chaincodeList,
 	channels,
 	peerList,
-	transactionList
+	transactionList,
+	transactionListSearch
 } = tableOperations;
 
 const { userlist } = authOperations;
 
 const { currentChannelSelector } = chartSelectors;
+const { transactionListSearchPageParamSelector, transactionListSearchQuerySelector,
+	blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -105,7 +108,9 @@ export class LandingPage extends Component {
 
 	async componentDidMount() {
 		const {
-			getBlockList,
+			getBlockListSearch,
+			blockListSearchPageParam,
+			blockListSearchQuery,
 			getBlocksPerHour,
 			getBlocksPerMin,
 			getChaincodeList,
@@ -118,9 +123,11 @@ export class LandingPage extends Component {
 			getBlockActivity,
 			getTransactionByOrg,
 			getTransactionList,
+			getTransactionListSearch,
 			getTransactionPerHour,
 			getTransactionPerMin,
 			updateLoadStatus,
+			query,pageParams,
 			userlist: userlistData
 			// getUserList
 		} = this.props;
@@ -132,7 +139,11 @@ export class LandingPage extends Component {
 		}, 60000);
 
 		await Promise.all([
-			getBlockList(currentChannel),
+			getBlockListSearch(
+				currentChannel,
+				blockListSearchQuery,
+				blockListSearchPageParam
+			),
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
@@ -143,7 +154,7 @@ export class LandingPage extends Component {
 			getPeerStatus(currentChannel),
 			getBlockActivity(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionList(currentChannel),
+			getTransactionListSearch(currentChannel,query,pageParams),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel),
 			userlistData()
@@ -195,7 +206,7 @@ export class LandingPage extends Component {
 
 LandingPage.propTypes = {
 	currentChannel: currentChannelType,
-	getBlockList: getBlockListType.isRequired,
+	getBlockListSearch: getBlockListSearchType.isRequired,
 	getBlocksPerHour: getBlocksPerHourType.isRequired,
 	getBlocksPerMin: getBlocksPerMinType.isRequired,
 	getChaincodeList: getChaincodeListType.isRequired,
@@ -218,12 +229,16 @@ LandingPage.defaultProps = {
 
 const mapStateToProps = state => {
 	return {
-		currentChannel: currentChannelSelector(state)
+		currentChannel: currentChannelSelector(state),
+		pageParams: transactionListSearchPageParamSelector(state),
+		query: transactionListSearchQuerySelector(state),
+		blockListSearchPageParam: blockListSearchPageParamSelector(state),
+		blockListSearchQuery: blockListSearchQuerySelector(state)
 	};
 };
 
 const mapDispatchToProps = {
-	getBlockList: blockList,
+	getBlockListSearch: blockListSearch,
 	getBlocksPerHour: blockPerHour,
 	getBlocksPerMin: blockPerMin,
 	getChaincodeList: chaincodeList,
@@ -235,7 +250,7 @@ const mapDispatchToProps = {
 	getPeerStatus: peerStatus,
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
-	getTransactionList: transactionList,
+	getTransactionListSearch: transactionListSearch,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
 	userlist: userlist
