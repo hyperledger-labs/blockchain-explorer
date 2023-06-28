@@ -260,10 +260,11 @@ export async function platformroutes(
 	 * GET /metadata
 	 * curl -i 'http://<host>:<port>/metadata/<chaincode>'
 	 */
-	router.get('/metadata/:chaincode', (req, res) => {
+	router.get('/metadata/:channel_genesis_hash/:chaincode', (req, res) => {
 		const chaincode = req.params.chaincode;
-		if (chaincode) {
-			proxy.getContractMetadata(req.network, chaincode).then((data: any) => {
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+		if (chaincode && channel_genesis_hash) {
+			proxy.getContractMetadata(req.network, chaincode, channel_genesis_hash).then((data: any) => {
 				res.send({ status: 200, data: data });
 			});
 		} else {
