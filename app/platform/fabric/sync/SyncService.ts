@@ -537,6 +537,7 @@ export class SyncServices {
 			let chaincodeID;
 			let status;
 			let mspId = [];
+			let chaincodeversion: String;
 
 			this.convertFormatOfValue(
 				'value',
@@ -577,6 +578,9 @@ export class SyncServices {
 				chaincodeID = new Uint8Array(
 					txObj.payload.data.actions[0].payload.action.proposal_response_payload.extension
 				);
+				chaincodeversion =
+					txObj.payload.data.actions[0].payload.action.proposal_response_payload
+						.extension.chaincode_id.version;
 				status =
 					txObj.payload.data.actions[0].payload.action.proposal_response_payload
 						.extension.response.status;
@@ -689,7 +693,7 @@ export class SyncServices {
 
 			const res = await this.persistence
 				.getCrudService()
-				.saveTransaction(network_id, transaction_row);
+				.saveTransaction(network_id, transaction_row, chaincodeversion);
 			logger.debug('saveTransaction ', res);
 		}
 

@@ -337,7 +337,7 @@ export class FabricGateway {
 
 	async queryInstantiatedChaincodes(channelName) {
 		logger.info('queryInstantiatedChaincodes', channelName);
-		const network = await this.gateway.getNetwork(this.defaultChannelName);
+		const network = await this.gateway.getNetwork(channelName);
 		let contract = network.getContract('lscc');
 		let result = await contract.evaluateTransaction('GetChaincodes');
 		let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
