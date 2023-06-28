@@ -310,7 +310,7 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	async saveTransaction(network_name, transaction) {
+	async saveTransaction(network_name, transaction, chaincodeversion) {
 		const c = await this.sql.getRowByPkOne(
 			'select count(1) as c from transactions where blockid=$1 and txhash=$2 and channel_genesis_hash=$3 and network_name = $4 ',
 			[
@@ -325,8 +325,8 @@ export class CRUDService {
 			transaction.network_name = network_name;
 			await this.sql.saveRow('transactions', transaction);
 			await this.sql.updateBySql(
-				'update chaincodes set txcount =txcount+1 where channel_genesis_hash=$1 and network_name = $2 and name=$3',
-				[transaction.channel_genesis_hash, network_name, transaction.chaincodename]
+				'update chaincodes set txcount =txcount+1 where channel_genesis_hash=$1 and network_name = $2 and name=$3 and version=$4',
+				[transaction.channel_genesis_hash, network_name, transaction.chaincodename, chaincodeversion]
 			);
 			await this.sql.updateBySql(
 				'update channel set trans =trans+1 where channel_genesis_hash=$1 and network_name = $2 ',
