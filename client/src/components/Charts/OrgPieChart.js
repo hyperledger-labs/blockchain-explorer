@@ -14,7 +14,6 @@ const styles = theme => {
 	const dark = type === 'dark';
 	return {
 		container: {
-			paddingLeft: '10%',
 			'& .recharts-layer': {
 				fill: dark ? 'rgb(42, 173, 230) !important' : '#5bc5c2 !important'
 			},
