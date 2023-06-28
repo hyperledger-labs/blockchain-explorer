@@ -201,8 +201,8 @@ const transactionList = (channel,params) => dispatch =>
 			console.error(error);
 		});
 
-const chaincodeMetaData = (query) => dispatch =>
-	get(`/api/metadata/${query}`)
+const chaincodeMetaData = (channel,query) => dispatch =>
+	get(`/api/metadata/${channel}/${query}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
