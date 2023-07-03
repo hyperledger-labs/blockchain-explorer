@@ -12,6 +12,6 @@ metadata:
   annotations: 
     {{- toYaml .Values.annotations | nindent 6 }} 
 data:
-  DATABASE_DATABASE: {{ $.Values.db.database | default "fabricexplorer" }}
-  DATABASE_USERNAME: {{ $.Values.db.database_username | default "hppoc" }}
-  DATABASE_PASSWORD: {{ $.Values.db.database_password | default "password" }}
+  DATABASE_DATABASE: {{ $.Values.db.name | default "fabricexplorer" }}
+  DATABASE_USERNAME: {{ $.Values.db.username | default "hppoc" }}
+  DATABASE_PASSWORD: {{ $.Values.db.password | default "password" }}

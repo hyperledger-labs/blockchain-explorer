@@ -39,6 +39,18 @@ spec:
           {{- toYaml .Values.resources | nindent 12 }}
       
         ports:
-        - containerPort: {{ .Values.db.service.port }}
+        - containerPort: {{ .Values.db.service.port | default 5432 }}
+        volumeMounts:
+        - name: {{ .Release.Name }}-db
+          mountPath: /var/lib/postgresql/data
 
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Release.Name }}-db
+      spec:
+        storageClassName: {{ .Values.db.storage.class | default "standard" | quote }}
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .Values.db.storage.capacity | default "5Gi" }}
 

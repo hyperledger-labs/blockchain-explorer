@@ -83,14 +83,14 @@ explorer:
 db:
 #Provide the database for explorer-db, by default database name is fabricexplorer
 #Eg. database: fabricexplorer
-  database: 
-#Provide the database_username for explorer-db, by default database_username is hppoc
-#Eg. database_username: hppoc
-  database_username: 
-#Provide the database_password for explorer-db, by default database_password is password
-#Eg. database_password: password
-  database_password: 
-#Provide the  service.port & service.type for a explorer-db 
+  name: 
+#Provide the username for explorer-db, by default username is hppoc
+#Eg. username: hppoc
+  username: 
+#Provide the password for explorer-db, by default password is password
+#Eg. password: password
+  password: 
+#Provide the service.port & service.type for a explorer-db 
 #Eg. port: 5432
 #Eg. type: ClusterIP
   service:
@@ -100,3 +100,7 @@ db:
   image:
     repository: hyperledger/explorer-db
     tag: latest 
+#Provide the storage.capacity & storage.class for a explorer-db 
+  storage:
+     capacity: 5Gi
+     class: standard        # kubernetes storage class

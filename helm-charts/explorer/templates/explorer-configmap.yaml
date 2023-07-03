@@ -111,4 +111,4 @@ data:
   LOG_LEVEL_DB: {{ $.Values.explorer.logging.db_log | default "debug" }}
   LOG_CONSOLE_STDOUT: "{{ $.Values.explorer.logging.log_console_stdout | default "true" }}"
   DISCOVERY_AS_LOCALHOST: "{{ $.Values.explorer.logging.discovery_as_localhost  | default "false" }}" 
-  PORT: {{ .Values.db.service.port }}
+  PORT: {{ .Values.db.service.port | default 5432 }}

@@ -16,5 +16,5 @@ spec:
   selector:
     app: {{ .Release.Name }}-db
   ports:
-  - port: {{ .Values.db.service.port }}
-    targetPort: {{ .Values.db.service.port }}
+  - port: {{ .Values.db.service.port | default 5432 }}
+    targetPort: {{ .Values.db.service.port | default 5432 }}

@@ -23,7 +23,7 @@ spec:
               service:
                 name: {{ .Release.Name }}-app
                 port:
-                  number: {{ .Values.explorer.service.port }}
-            path: {{ .Values.explorer.ingress.path }}
+                  number: {{ .Values.explorer.service.port | default 8080 }}
+            path: {{ .Values.explorer.ingress.path | default ("/")}}
             pathType: Prefix        
 {{- end }}              
