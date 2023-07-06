@@ -21,11 +21,11 @@ export DISCOVERY_AS_LOCALHOST=${DISCOVERY_AS_LOCALHOST:-true}
 export EXPLORER_APP_ROOT=${EXPLORER_APP_ROOT:-dist}
 export PORT=${PORT:-8080}
 
-function log_exit() {
+log_exit() {
   echo "Server stopped"
   exit
 }
-trap log_exit SIGINT EXIT
+trap log_exit INT EXIT
 echo "Server running..."
 
 node ${EXPLORER_APP_ROOT}/main.js name - hyperledger-explorer
