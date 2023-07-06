@@ -87,17 +87,6 @@ const notificationReducer = (state = initialState, action = {}) => {
   }
 };
 
-const peerStatusReducer = (state = initialState, action = {}) => {
-  if (action.type === types.PEER_STATUS) {
-    return {
-      list: action.payload.peers,
-      loaded: true,
-      errors: action.errors,
-    };
-  } else {
-    return state;
-  }
-};
 
 const transactionByOrgReducer = (state = initialState, action = {}) => {
   if (action.type === types.TRANSACTION_CHART_ORG) {
@@ -142,7 +131,6 @@ const reducer = combineReducers({
   channelList: channelListReducer,
   dashStats: dashStatsReducer,
   notification: notificationReducer,
-  peerStatus: peerStatusReducer,
   transactionByOrg: transactionByOrgReducer,
   transactionPerHour: transactionPerHourReducer,
   transactionPerMin: transactionPerMinReducer,

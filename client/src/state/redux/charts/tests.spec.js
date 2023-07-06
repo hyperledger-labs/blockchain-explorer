@@ -218,37 +218,6 @@ describe('Charts', () => {
 			expect(actions[0].type).toBe(types.NOTIFICATION_LOAD);
 		});
 
-		test('peerStatus', () => {
-			nock(/\w*(\W)/g)
-				.get(`/api/peersStatus/${channel}`)
-				.reply(200, {
-					rows: [{ test: 'rows' }]
-				});
-
-			const expectedActions = [{ type: types.PEER_STATUS }];
-			const store = mockStore(initialState, expectedActions);
-
-			return store.dispatch(operations.peerStatus(channel)).then(() => {
-				const actions = store.getActions();
-				expect(actions[0].type).toBe(types.PEER_STATUS);
-			});
-		});
-
-		test('peerStatus catch error', () => {
-			jest.spyOn(console, 'error');
-			nock(/\w*(\W)/g)
-				.get(`/api/peersStatus/${channel}`)
-				.replyWithError({ code: 'ECONNREFUSED' });
-
-			const expectedActions = [{ type: types.peerStatus }];
-			const store = mockStore(initialState, expectedActions);
-
-			return store.dispatch(operations.peerStatus(channel)).then(() => {
-				const actions = store.getActions();
-				expect(actions).toEqual([]);
-			});
-		});
-
 		test('transactionByOrg', () => {
 			nock(/\w*(\W)/g)
 				.get(`/api/txByOrg/${channel}`)
@@ -433,13 +402,6 @@ describe('Charts', () => {
 			expect(newState.notification).toBe('test');
 		});
 
-		test('peerStatusReducer', () => {
-			const payload = { peers: 'test' };
-			const action = actions.getPeerStatus(payload);
-
-			const newState = reducers(initialState, action);
-			expect(newState.peerStatus.list).toBe('test');
-		});
 
 		test('transactionByOrgReducer', () => {
 			const payload = { rows: 'test' };
@@ -520,11 +482,6 @@ describe('Charts', () => {
 		expect(notification).toBe('test');
 	});
 
-	test('peerStatusSelector', () => {
-		const state = { charts: { peerStatus: { list: 'test' } } };
-		const peerStatus = selectors.peerStatusSelector(state);
-		expect(peerStatus).toBe('test');
-	});
 
 	test('transactionByOrgSelector', () => {
 		const state = { charts: { transactionByOrg: { rows: 'test' } } };
