@@ -49,7 +49,6 @@ import {
 	getChangeChannelType,
 	getDashStatsType,
 	getPeerListType,
-	getPeerStatusType,
 	getTransactionByOrgType,
 	getTransactionPerHourType,
 	getTransactionPerMinType,
@@ -66,7 +65,6 @@ const {
 	dashStats,
 	changeChannel,
 	blockActivity,
-	peerStatus
 } = chartOperations;
 
 const {
@@ -460,7 +458,6 @@ export class HeaderView extends Component {
 			getChannels,
 			getDashStats,
 			getPeerList,
-			getPeerStatus,
 			getTransactionByOrg,
 			getTransactionList,
 			getTransactionListSearch,
@@ -480,7 +477,6 @@ export class HeaderView extends Component {
 			getDashStats(currentChannel),
 			getBlockActivity(currentChannel),
 			getPeerList(currentChannel),
-			getPeerStatus(currentChannel),
 			getTransactionByOrg(currentChannel),
 			getTransactionListSearch(currentChannel,transactionListSearchQuery,transactionListSearchPageParam),
 			getTransactionPerHour(currentChannel),
@@ -682,7 +678,6 @@ HeaderView.propTypes = {
 	getChannels: getChannelsType.isRequired,
 	getDashStats: getDashStatsType.isRequired,
 	getPeerList: getPeerListType.isRequired,
-	getPeerStatus: getPeerStatusType.isRequired,
 	getTransactionByOrg: getTransactionByOrgType.isRequired,
 	getTransactionPerHour: getTransactionPerHourType.isRequired,
 	getTransactionPerMin: getTransactionPerMinType.isRequired,
@@ -712,7 +707,6 @@ const mapDispatchToProps = {
 	getChannels: channels,
 	getDashStats: dashStats,
 	getPeerList: peerList,
-	getPeerStatus: peerStatus,
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
 	getTransactionList: transactionList,

@@ -151,25 +151,6 @@ const notification = notificationObj => dispatch => {
 	dispatch(actions.getNotification(notify));
 };
 
-/* istanbul ignore next */
-const peerStatus = channelName => dispatch =>
-	get(`/api/peersStatus/${channelName}`)
-		.then(resp => {
-			if (resp.status === 500) {
-				dispatch(
-					actions.getErroMessage(
-						'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
-					)
-				);
-			} else if (resp.status === 400) {
-				dispatch(actions.getErroMessage(resp.error));
-			} else {
-				dispatch(actions.getPeerStatus(resp));
-			}
-		})
-		.catch(error => {
-			console.error(error);
-		});
 
 /* istanbul ignore next */
 const transactionByOrg = channelName => dispatch =>
@@ -242,6 +223,5 @@ export default {
 	channel,
 	channelList,
 	changeChannel,
-	peerStatus,
 	blockActivity
 };

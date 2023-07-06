@@ -15,7 +15,7 @@ import OrgPieChart from '../Charts/OrgPieChart';
 import {
 	blockListSearchType,
 	dashStatsType,
-	peerStatusType,
+	peerListType,
 	txnListType,
 	blockSearchType,
 	transactionByOrgType
@@ -124,14 +124,14 @@ export class DashboardView extends Component {
 		const {
 			blockListSearch,
 			dashStats,
-			peerStatus,
+			peerList,
 			transactionByOrg,
 			blockActivity
 		} = this.props;
 		if (
 			blockListSearch === undefined ||
 			dashStats === undefined ||
-			peerStatus === undefined ||
+			peerList === undefined ||
 			blockActivity === undefined ||
 			transactionByOrg === undefined
 		) {
@@ -170,7 +170,7 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, txnList, blockSearch, blockActivity, transactionByOrg } = this.props;
+		const { dashStats, peerList, txnList, blockSearch, blockActivity, transactionByOrg } = this.props;
 		const { hasDbError, notifications } = this.state;
 		var searchError = ''
 		if(typeof txnList==='string'){searchError='Txn not found'; }
@@ -265,7 +265,7 @@ export class DashboardView extends Component {
 					<Row>
 						<Col sm="6">
 							<Card className={classes.section}>
-								<PeersHealth peerStatus={peerStatus} />
+								<PeersHealth peerStatus={peerList} />
 							</Card>
 							<Card className={classes.section}>
 								<TimelineStream
@@ -294,7 +294,7 @@ export class DashboardView extends Component {
 DashboardView.propTypes = {
 	blockListSearch: blockListSearchType.isRequired,
 	dashStats: dashStatsType.isRequired,
-	peerStatus: peerStatusType.isRequired,
+	peerList: peerListType.isRequired,
 	txnList: txnListType.isRequired,
 	blockSearch: blockSearchType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired

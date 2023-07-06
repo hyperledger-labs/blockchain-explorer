@@ -53,7 +53,6 @@ const setup = prop => {
 		getDashStats: jest.fn(),
 		getNotification: jest.fn(),
 		getPeerList: jest.fn(),
-		getPeerStatus: jest.fn(),
 		getBlockActivity: jest.fn(),
 		getTransactionByOrg: jest.fn(),
 		getTransactionList: jest.fn(),
