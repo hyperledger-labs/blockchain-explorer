@@ -1012,6 +1012,215 @@
 					}
 				]
 			}
+		},
+		"/api/fetchDataByTxnId/{channel_genesis_hash}/{txnId}": {
+			"get": {
+				"tags": ["Transactions"],
+				"summary": "Query to fetch transaction by txnId",
+				"operationId": "fetchDataByTxnId",
+				"parameters": [
+					{
+						"name": "channel_genesis_hash",
+						"in": "path",
+						"description": "Please provide Hash Value",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "txnId",
+						"in": "path",
+						"description": "Please provide transaction id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
+		},
+		"/api/fetchDataByBlockNo/{channel_genesis_hash}/{blockNo}": {
+			"get": {
+				"tags": ["Blocks"],
+				"summary": "Query to fetch block details",
+				"operationId": "fetchDataByBlockNo",
+				"parameters": [
+					{
+						"name": "channel_genesis_hash",
+						"in": "path",
+						"description": "Please provide channel hash value",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "blockNo",
+						"in": "path",
+						"description": "Please provide blockNo",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
+		},
+		"/api/fetchDataByBlockRange/{channel_genesis_hash}/{startBlockNo}/{endBlockNo}": {
+			"get": {
+				"tags": ["Blocks"],
+				"summary": "Query to fetch block details",
+				"operationId": "fetchDataByBlockNo",
+				"parameters": [
+					{
+						"name": "channel_genesis_hash",
+						"in": "path",
+						"description": "Please provide channel hash value",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "startBlockNo",
+						"in": "path",
+						"description": "Please provide startBlockNo",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					},
+					{
+						"name": "endBlockNo",
+						"in": "path",
+						"description": "Please provide endBlockNo",
+						"required": true,
+						"schema": {
+							"type": "integer"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
+		},
+		"/api/metadata/{channel_genesis_hash}/{chaincode}": {
+			"get": {
+				"tags": ["Chaincodes"],
+				"summary": "Query to fetch Chaincode metadata",
+				"operationId": "getContractMetadata",
+				"parameters": [
+					{
+						"name": "channel_genesis_hash",
+						"in": "path",
+						"description": "Please provide channel hash value",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "chaincode",
+						"in": "path",
+						"description": "Please provide chaincode",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {}
+					},
+					"400": {
+						"description": "Bad Request",
+						"content": {}
+					},
+					"401": {
+						"description": "UnAuthorized",
+						"content": {}
+					},
+					"404": {
+						"description": "Not found",
+						"content": {}
+					}
+				},
+				"security": [
+					{
+						"bearer": []
+					}
+				]
+			}
 		}
 	},
 	"components": {
