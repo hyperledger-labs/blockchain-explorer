@@ -55,7 +55,7 @@ const styles = theme => ({
 	closeButton: {
 		position: 'absolute',
 		right: theme.spacing.unit,
-		top: theme.spacing.unit,
+		top: 0,
 		color: theme.palette.grey[500]
 	}
 });
@@ -273,7 +273,7 @@ export class Register extends Component {
 						) : null}
 					</MuiDialogTitle>
 					<form className={classes.form} onSubmit={this.submitForm}>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								required
 								fullWidth
@@ -283,7 +283,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={user.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{user.error && (
 								<FormHelperText id="component-error-text" error>
@@ -291,7 +291,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								fullWidth
 								id="firstname"
@@ -300,7 +300,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={firstname.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{firstname.error && (
 								<FormHelperText id="component-error-text" error>
@@ -308,7 +308,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								fullWidth
 								id="lastname"
@@ -317,7 +317,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={lastname.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{lastname.error && (
 								<FormHelperText id="component-error-text" error>
@@ -325,7 +325,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								fullWidth
 								id="email"
@@ -334,7 +334,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={email.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{email.error && (
 								<FormHelperText id="component-error-text" error>
@@ -342,7 +342,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								required
 								fullWidth
@@ -354,7 +354,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={password.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{password.error && (
 								<FormHelperText id="component-error-text" error>
@@ -362,7 +362,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								error={!!password2.error}
 								required
@@ -374,7 +374,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={password2.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							/>
 							{password2.error && (
 								<FormHelperText id="component-error-text" error>
@@ -382,7 +382,7 @@ export class Register extends Component {
 								</FormHelperText>
 							)}
 						</FormControl>
-						<FormControl margin="normal" required fullWidth>
+						<FormControl margin="dense" required fullWidth>
 							<TextField
 								required
 								fullWidth
@@ -395,7 +395,7 @@ export class Register extends Component {
 								disabled={isLoading}
 								value={roles.value}
 								onChange={e => this.handleChange(e)}
-								margin="normal"
+								margin="dense"
 							>
 								{rolesList.map(item => (
 									<MenuItem key={item} value={item}>
@@ -428,7 +428,7 @@ export class Register extends Component {
 							container
 							spacing={16}
 							direction="row"
-							justify="flex-end"
+							justifyContent="space-around"
 							className={classes.actions}
 						>
 							<Grid item>

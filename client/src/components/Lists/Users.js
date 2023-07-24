@@ -48,16 +48,14 @@ const styles = theme => {
 		closeButton: {
 			position: 'absolute',
 			right: theme.spacing.unit,
-			top: theme.spacing.unit,
+			top: 0,
 			color: theme.palette.grey[500]
 		},
 		adminIcon: {
-			color: dark ? '#1f1a33' : '#004d6b',
-			backgroundColor: dark ? '#6a9cf8' : '#b9d6e1'
+			color: dark ? '#1f1a33' : '#004d6b'
 		},
 		userIcon: {
-			color: dark ? '#79536d' : '#407b20',
-			backgroundColor: dark ? '#f7cdea' : '#d0ecda'
+			color: dark ? '#79536d' : '#407b20'
 		},
 		deleteButton: {
 			color: '#e33e19'

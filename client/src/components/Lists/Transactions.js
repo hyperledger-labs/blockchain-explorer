@@ -89,13 +89,12 @@ const tablePaginationStyle = {
 	display: 'flex',
 	justifyContent: 'end',
 	padding: '0px 15px',
-	marginBottom: '15px',
 	alignItems: 'baseline',
 	'.MuiToolbar-root': {
-		alignItems: 'baseline',
+		alignItems: 'baseline'
 	}
-}
-const rowsPerPageOptions=[5,10,25,50,100];
+};
+const rowsPerPageOptions = [5, 10, 25, 50, 100];
 export class Transactions extends Component {
 	constructor(props) {
 		super(props);
@@ -113,7 +112,7 @@ export class Transactions extends Component {
 			directLinkSearchResultsFlag: false,
 			directLinkDialogDoneFlag: false,
 			page: 0,
-			rowsPerPage:10,
+			rowsPerPage: 10,
 			searchClick: false,
 			queryFlag: false,
 			defaultQuery: true
@@ -139,7 +138,7 @@ export class Transactions extends Component {
 		this.handleSearch();
 	}
 
-	componentDidUpdate(prevProps,prevState) {
+	componentDidUpdate(prevProps, prevState) {
 		if (
 			this.state.search &&
 			this.props.currentChannel !== prevProps.currentChannel
@@ -152,7 +151,11 @@ export class Transactions extends Component {
 			}, 60000);
 			this.searchTransactionList(this.props.currentChannel);
 		}
-		if(prevState.page!=this.state.page || prevState.rowsPerPage!=this.state.rowsPerPage || this.state.searchClick){
+		if (
+			prevState.page != this.state.page ||
+			prevState.rowsPerPage != this.state.rowsPerPage ||
+			this.state.searchClick
+		) {
 			this.setState({ searchClick: false });
 			this.handleSearch();
 		}
@@ -176,22 +179,23 @@ export class Transactions extends Component {
 	}
 
 	searchTransactionList = async channel => {
-		let pageParams = { page: this.state.page + 1, size: this.state.rowsPerPage }
+		let pageParams = { page: this.state.page + 1, size: this.state.rowsPerPage };
 		let query = '';
 		if (this.state.queryFlag) {
-			query = this.state.from ? `from=${new Date(this.state.from).toString()}&to=${new Date(
-				this.state.to
-			).toString()}` : ``;
+			query = this.state.from
+				? `from=${new Date(this.state.from).toString()}&to=${new Date(
+						this.state.to
+				  ).toString()}`
+				: ``;
 			for (let i = 0; i < this.state.orgs.length; i++) {
 				query += `&orgs=${this.state.orgs[i]}`;
 			}
 			this.setState({ queryFlag: false });
-		}
-		else if (this.state.defaultQuery) {
+		} else if (this.state.defaultQuery) {
 			query = '';
-			this.setState({ defaultQuery: false })
+			this.setState({ defaultQuery: false });
 		} else {
-			query = this.props.transactionListSearchQuery
+			query = this.props.transactionListSearchQuery;
 		}
 		let channelhash = this.props.currentChannel;
 		if (channel !== undefined) {
@@ -247,9 +251,13 @@ export class Transactions extends Component {
 		const data = Object.assign({}, selection, { [row.index]: !val });
 		this.setState({ selection: data });
 	};
-	handlePageChange = (_e,page)=>{this.setState({page:page})}
-	handleRowsChange = (e)=>{this.setState({page: 0, rowsPerPage: e.target.value});}
-	
+	handlePageChange = (_e, page) => {
+		this.setState({ page: page });
+	};
+	handleRowsChange = e => {
+		this.setState({ page: 0, rowsPerPage: e.target.value });
+	};
+
 	render() {
 		const { classes } = this.props;
 		const columnHeaders = [
@@ -377,8 +385,12 @@ export class Transactions extends Component {
 							timeIntervals={5}
 							maxDate={this.state.to}
 							dateFormat="LLL"
-							popperPlacement='bottom'
-							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }}
+							popperPlacement="bottom"
+							popperModifiers={{
+								flip: { behavior: ['bottom'] },
+								preventOverflow: { enabled: false },
+								hide: { enabled: false }
+							}}
 							onChange={date => {
 								if (date > this.state.to) {
 									this.setState({ err: true, from: date });
@@ -397,8 +409,12 @@ export class Transactions extends Component {
 							timeIntervals={5}
 							minDate={this.state.from}
 							dateFormat="LLL"
-							popperPlacement='bottom'
-							popperModifiers={{ flip: { behavior: ["bottom"] }, preventOverflow: { enabled: false }, hide: { enabled: false } }} 
+							popperPlacement="bottom"
+							popperModifiers={{
+								flip: { behavior: ['bottom'] },
+								preventOverflow: { enabled: false },
+								hide: { enabled: false }
+							}}
 							onChange={date => {
 								if (date < this.state.from) {
 									this.setState({ err: true, to: date });
@@ -434,9 +450,14 @@ export class Transactions extends Component {
 						<Button
 							className={classes.searchButton}
 							color="success"
-							disabled={this.state.err || (!this.state.from != !this.state.to)}
+							disabled={this.state.err || !this.state.from != !this.state.to}
 							onClick={() => {
-								this.setState({page:0, searchClick:true, queryFlag: true, defaultQuery: false })
+								this.setState({
+									page: 0,
+									searchClick: true,
+									queryFlag: true,
+									defaultQuery: false
+								});
 							}}
 						>
 							Search
@@ -481,21 +502,25 @@ export class Transactions extends Component {
 					style={{ height: '750px' }}
 					showPaginationBottom={false}
 				/>
-				{transactionList.length > 0 && <TablePagination page={this.state.page}
-					sx={tablePaginationStyle}
-					rowsPerPage={this.state.rowsPerPage}
-					labelDisplayedRows={() => `Page ${this.state.page + 1} of ${noOfPages}`}
-					rowsPerPageOptions={rowsPerPageOptions}
-					onRowsPerPageChange={this.handleRowsChange}
-					onPageChange={this.handlePageChange}
-					backIconButtonProps={{
-						disabled: this.state.page === 0,
-					}}
-					nextIconButtonProps={{
-						disabled: this.state.page + 1 === noOfPages,
-					}}
-					className={classes.tablePagination}
-					labelRowsPerPage={'Items per page'} />}
+				{transactionList.length > 0 && (
+					<TablePagination
+						page={this.state.page}
+						sx={tablePaginationStyle}
+						rowsPerPage={this.state.rowsPerPage}
+						labelDisplayedRows={() => `Page ${this.state.page + 1} of ${noOfPages}`}
+						rowsPerPageOptions={rowsPerPageOptions}
+						onRowsPerPageChange={this.handleRowsChange}
+						onPageChange={this.handlePageChange}
+						backIconButtonProps={{
+							disabled: this.state.page === 0
+						}}
+						nextIconButtonProps={{
+							disabled: this.state.page + 1 === noOfPages
+						}}
+						className={classes.tablePagination}
+						labelRowsPerPage={'Items per page'}
+					/>
+				)}
 				<Dialog
 					open={dialogOpen}
 					onClose={this.handleDialogClose}
