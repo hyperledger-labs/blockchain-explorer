@@ -25,7 +25,7 @@ import { connect } from 'react-redux';
 import { currentChannelSelector } from '../../state/redux/charts/selectors';
 import { tableOperations } from '../../state/redux/tables';
 
-const {txnList, blockSearch} =tableOperations
+const { txnList, blockSearch } = tableOperations;
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -42,37 +42,55 @@ const styles = theme => {
 			marginLeft: '10%',
 			marginRight: '10%'
 		},
-		dashboardSearch:{
+		dashboardSearch: {
 			position: 'absolute',
 			width: '80%'
 		},
-		search :{
-			marginLeft:'10px'
+		search: {
+			marginLeft: '10px'
 		},
 		blocks: {
-			height: 175,
+			[theme.breakpoints.only('xs')]: {
+				height: '175px !important'
+			},
+			[theme.breakpoints.down('md')]: {
+				height: 145
+			},
+			[theme.breakpoints.up('md')]: {
+				height: 175
+			},
+			[theme.breakpoints.up('lg')]: {
+				height: 185
+			},
+			minWidth: 280,
 			marginBottom: 20,
+			paddingBottom: 20,
 			backgroundColor: dark ? '#453e68' : '#ffffff',
 			boxShadow: dark ? '1px 2px 2px rgb(215, 247, 247)' : undefined
 		},
 		count: {
 			color: dark ? '#ffffff' : undefined,
-			[theme.breakpoints.down('md')]: {
-				marginTop: '35%'
+			[theme.breakpoints.only('xs')]: {
+				marginTop: '10% !important'
 			},
-			[theme.breakpoints.up('md')]: {
+			[theme.breakpoints.up('xs')]: {
 				marginTop: '55%'
 			}
 		},
 		statistic: {
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
 			display: 'block',
 			float: 'left',
 			height: '100%',
 			width: '25%',
 			textAlign: 'center',
 			color: dark ? '#ffffff' : '#000000',
+			[theme.breakpoints.only('xs')]: {
+				fontSize: '8pt !important'
+			},
 			[theme.breakpoints.down('md')]: {
-				fontSize: '8pt'
+				fontSize: '12pt'
 			},
 			[theme.breakpoints.up('md')]: {
 				fontSize: '18pt'
@@ -90,11 +108,11 @@ const styles = theme => {
 		},
 		avatar: {
 			justifyContent: 'center',
-			[theme.breakpoints.down('md')]: {
-				marginLeft: '25%',
-				marginTop: '15%'
+			[theme.breakpoints.only('xs')]: {
+				marginLeft: '35% !important',
+				marginTop: '25% !important'
 			},
-			[theme.breakpoints.up('md')]: {
+			[theme.breakpoints.up('xs')]: {
 				marginLeft: '60%',
 				marginTop: '65%'
 			}
@@ -116,6 +134,7 @@ const styles = theme => {
 			backgroundColor: dark ? 'rgb(252, 224, 174)' : '#ffeed8'
 		},
 		section: {
+			minWidth: 280,
 			height: 335,
 			marginBottom: '2%',
 			color: dark ? '#ffffff' : undefined,
@@ -191,11 +210,21 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerList, txnList, blockSearch, blockActivity, transactionByOrg } = this.props;
+		const {
+			dashStats,
+			peerList,
+			txnList,
+			blockSearch,
+			blockActivity,
+			transactionByOrg
+		} = this.props;
 		const { hasDbError, notifications } = this.state;
-		var searchError = ''
-		if(typeof txnList==='string'){searchError='Txn not found'; }
-		else if(typeof blockSearch==='string'){searchError='Block not found'}
+		var searchError = '';
+		if (typeof txnList === 'string') {
+			searchError = 'Txn not found';
+		} else if (typeof blockSearch === 'string') {
+			searchError = 'Block not found';
+		}
 		if (hasDbError) {
 			return (
 				<div
@@ -217,14 +246,18 @@ export class DashboardView extends Component {
 		return (
 			<div className={classes.background}>
 				<div className={classes.view}>
-					<div className={classes.dashboardSearch}>
-						<SearchByQuery getTxnList={this.props.getTxnList} getBlockSearch={this.props.getBlockSearch}
-							currentChannel={this.props.currentChannel}
-							txnList={txnList} blockSearch={blockSearch}
-							searchError={searchError} />
-					</div>
-				</div>
-				<div className={classes.view}>
+					<Row>
+						<Col sm="12" md="6" style={{ margin: '10px auto 0px' }}>
+							<SearchByQuery
+								getTxnList={this.props.getTxnList}
+								getBlockSearch={this.props.getBlockSearch}
+								currentChannel={this.props.currentChannel}
+								txnList={txnList}
+								blockSearch={blockSearch}
+								searchError={searchError}
+							/>
+						</Col>
+					</Row>
 					<Row>
 						<Col sm="12">
 							<Card className={classes.blocks}>
@@ -326,8 +359,8 @@ DashboardView.propTypes = {
 const mapStateToProps = state => {
 	return {
 		currentChannel: currentChannelSelector(state)
-	}
-}
+	};
+};
 const mapDispatchToProps = {
 	getTxnList: txnList,
 	getBlockSearch: blockSearch
@@ -335,5 +368,5 @@ const mapDispatchToProps = {
 const connectedComponent = connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(DashboardView)
+)(DashboardView);
 export default withStyles(styles)(connectedComponent);
