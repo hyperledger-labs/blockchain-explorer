@@ -32,6 +32,7 @@ const styles = theme => {
 			left: 0,
 			bottom: 0,
 			right: 0,
+			overflow: 'auto',
 			'& ol, & ul': {
 				listStyle: 'none'
 			}

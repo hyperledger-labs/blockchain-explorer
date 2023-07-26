@@ -53,23 +53,27 @@ const {
 const { userlist } = authOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { transactionListSearchPageParamSelector, transactionListSearchQuerySelector,
-	blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
+const {
+	transactionListSearchPageParamSelector,
+	transactionListSearchQuerySelector,
+	blockListSearchPageParamSelector,
+	blockListSearchQuerySelector
+} = tableSelectors;
 
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	/* eslint-disable */
 	dark
-		? (document.body.style.backgroundColor = '#242036')
+		? (document.body.style.backgroundColor = '#4d4575')
 		: (document.body.style.backgroundColor = '#f0f5f9');
 	return {
 		background: {
-			backgroundColor: '#f0f5f9'
+			backgroundColor: 'transparent'
 		},
 		content: {
-			marginTop: 450,
-			marginLeft: 550,
+			position: 'absolute',
+			top: '50%',
 			'& > h1': {
 				fontSize: '40pt'
 			},
@@ -124,7 +128,8 @@ export class LandingPage extends Component {
 			getTransactionPerHour,
 			getTransactionPerMin,
 			updateLoadStatus,
-			query,pageParams,
+			query,
+			pageParams,
 			userlist: userlistData
 			// getUserList
 		} = this.props;
@@ -150,7 +155,7 @@ export class LandingPage extends Component {
 			getPeerList(currentChannel),
 			getBlockActivity(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionListSearch(currentChannel,query,pageParams),
+			getTransactionListSearch(currentChannel, query, pageParams),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel),
 			userlistData()
