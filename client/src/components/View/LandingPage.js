@@ -65,11 +65,11 @@ const styles = theme => {
 	const dark = type === 'dark';
 	/* eslint-disable */
 	dark
-		? (document.body.style.backgroundColor = '#242036')
+		? (document.body.style.backgroundColor = '#4d4575')
 		: (document.body.style.backgroundColor = '#f0f5f9');
 	return {
 		background: {
-			backgroundColor: '#f0f5f9'
+			backgroundColor: 'transparent'
 		},
 		content: {
 			position: 'absolute',
