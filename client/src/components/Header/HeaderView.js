@@ -64,7 +64,7 @@ const {
 	transactionByOrg,
 	dashStats,
 	changeChannel,
-	blockActivity,
+	blockActivity
 } = chartOperations;
 
 const {
@@ -77,9 +77,13 @@ const {
 } = tableOperations;
 
 const { currentChannelSelector } = chartSelectors;
-const { channelsSelector, transactionListSearchPageParamSelector, 
-		transactionListSearchQuerySelector,
-		blockListSearchPageParamSelector, blockListSearchQuerySelector} = tableSelectors;
+const {
+	channelsSelector,
+	transactionListSearchPageParamSelector,
+	transactionListSearchQuerySelector,
+	blockListSearchPageParamSelector,
+	blockListSearchQuerySelector
+} = tableSelectors;
 /* istanbul ignore next */
 const styles = theme => {
 	const { type } = theme.palette;
@@ -203,7 +207,7 @@ const styles = theme => {
 		},
 		logoutIcon: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
-			fontSize: '18pt',
+			fontSize: '16pt',
 			float: 'none',
 			'&:hover': {
 				color: dark ? '#c1d7f0' : '#24272a'
@@ -213,7 +217,7 @@ const styles = theme => {
 		},
 		userIcon: {
 			color: dark ? 'rgb(139, 143, 148)' : '#5f6164',
-			fontSize: '18pt',
+			fontSize: '16pt',
 			float: 'none',
 			'&:hover': {
 				color: dark ? '#c1d7f0' : '#24272a'
@@ -469,7 +473,11 @@ export class HeaderView extends Component {
 		} = this.props;
 
 		await Promise.all([
-			getBlockListSearch( currentChannel, blockListSearchQuery, blockListSearchPageParam),
+			getBlockListSearch(
+				currentChannel,
+				blockListSearchQuery,
+				blockListSearchPageParam
+			),
 			getBlocksPerHour(currentChannel),
 			getBlocksPerMin(currentChannel),
 			getChaincodeList(currentChannel),
@@ -478,7 +486,11 @@ export class HeaderView extends Component {
 			getBlockActivity(currentChannel),
 			getPeerList(currentChannel),
 			getTransactionByOrg(currentChannel),
-			getTransactionListSearch(currentChannel,transactionListSearchQuery,transactionListSearchPageParam),
+			getTransactionListSearch(
+				currentChannel,
+				transactionListSearchQuery,
+				transactionListSearchPageParam
+			),
 			getTransactionPerHour(currentChannel),
 			getTransactionPerMin(currentChannel)
 		]);
@@ -595,19 +607,18 @@ export class HeaderView extends Component {
 													</div>
 												</DropdownItem>
 												<DropdownItem>
-													<div className={classes.userIcon}>
-														<FontAwesome
-															name="user-plus"
-															onClick={() => this.registerOpen()}
-														/>{' '}
+													<div
+														className={classes.userIcon}
+														onClick={() => this.registerOpen()}
+													>
+														<FontAwesome name="user-plus" />
 														User management
 													</div>
 												</DropdownItem>
 												<DropdownItem divider />
 												<DropdownItem>
-													<div className={classes.logoutIcon}>
-														<FontAwesome name="sign-out" onClick={() => this.logout()} /> Sign
-														out
+													<div className={classes.logoutIcon} onClick={() => this.logout()}>
+														<FontAwesome name="sign-out" /> Sign out
 													</div>
 												</DropdownItem>
 											</DropdownMenu>
@@ -699,7 +710,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-	getBlockListSearch: blockListSearch, 
+	getBlockListSearch: blockListSearch,
 	getBlocksPerHour: blockPerHour,
 	getBlocksPerMin: blockPerMin,
 	getChaincodeList: chaincodeList,
@@ -710,7 +721,7 @@ const mapDispatchToProps = {
 	getBlockActivity: blockActivity,
 	getTransactionByOrg: transactionByOrg,
 	getTransactionList: transactionList,
-	getTransactionListSearch:transactionListSearch,
+	getTransactionListSearch: transactionListSearch,
 	getTransactionPerHour: transactionPerHour,
 	getTransactionPerMin: transactionPerMin,
 	logout: authOperations.logout

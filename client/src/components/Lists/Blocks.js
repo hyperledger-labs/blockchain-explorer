@@ -15,7 +15,7 @@ import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
 import MultiSelect from '../Styled/MultiSelect';
 import DatePicker from '../Styled/DatePicker';
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from '@material-ui/icons/Search';
 import {
 	blockListSearchType,
 	blockRangeSearchType,
@@ -26,12 +26,19 @@ import {
 	txnListType
 } from '../types';
 import { FormHelperText, TablePagination, TextField } from '@mui/material';
+import { MenuItem, Select } from '@material-ui/core';
 import {
-	MenuItem,
-	Select
-} from "@material-ui/core";
-import { reg, rowsPerPageOptions, rangeLimitOptions, defaultRangeLimit, E001, E002, E003, E004, E005 } from "./constants";
-import { Info } from "@material-ui/icons";
+	reg,
+	rowsPerPageOptions,
+	rangeLimitOptions,
+	defaultRangeLimit,
+	E001,
+	E002,
+	E003,
+	E004,
+	E005
+} from './constants';
+import { Info } from '@material-ui/icons';
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -44,19 +51,19 @@ const styles = theme => {
 			}
 		},
 		htinputs: {
-			display: "flex",
-			marginBottom: "15px",
-			position: "relative"
+			display: 'flex',
+			marginBottom: '15px',
+			position: 'relative'
 		},
 		errorText: {
-			width: "100%",
-			position: "absolute",
-			left: "0px",
-			bottom: "-20px",
+			width: '100%',
+			position: 'absolute',
+			left: '0px',
+			bottom: '-20px',
 			cursor: 'default'
 		},
 		startBlock: {
-			marginRight: "5px"
+			marginRight: '5px'
 		},
 		partialHash: {
 			textAlign: 'center',
@@ -120,12 +127,12 @@ const styles = theme => {
 			'& > div': {
 				width: '100% !important',
 				marginTop: 20
-			},
+			}
 		},
 		blockRangeRow: {
 			marginBottom: '10px !important',
 			marginLeft: '10px !important',
-			minWidth: "25vw",
+			minWidth: '25vw',
 			// justifyContent: 'space-around',
 			'& > div': {
 				marginRight: '10px'
@@ -145,8 +152,8 @@ const styles = theme => {
 			}
 		},
 		iconButton: {
-			color: "#21295c",
-			alignSelf: "center"
+			color: '#21295c',
+			alignSelf: 'center'
 		}
 	};
 };
@@ -154,7 +161,6 @@ const tablePaginationStyle = {
 	display: 'flex',
 	justifyContent: 'end',
 	padding: '0px 15px',
-	marginBottom: '15px',
 	alignItems: 'baseline',
 	'.MuiToolbar-root': {
 		alignItems: 'baseline'
@@ -225,14 +231,14 @@ export class Blocks extends Component {
 			this.handleSearch();
 		}
 
-		if(prevProps.blockRangeLoaded!=this.props.blockRangeLoaded){
-			if(this.props.blockRangeLoaded){
-				if (typeof this.props.blockRangeSearch === 'string') {this.setState({ rangeErr: this.props.blockRangeSearch})}
+		if (prevProps.blockRangeLoaded != this.props.blockRangeLoaded) {
+			if (this.props.blockRangeLoaded) {
+				if (typeof this.props.blockRangeSearch === 'string') {
+					this.setState({ rangeErr: this.props.blockRangeSearch });
+				}
 			} else {
-				if(this.state.rangeErr)
-				this.setState({ rangeErr: '' })
+				if (this.state.rangeErr) this.setState({ rangeErr: '' });
 			}
-
 		}
 	}
 
@@ -275,18 +281,14 @@ export class Blocks extends Component {
 		if (channel !== undefined) {
 			channelhash = channel;
 		}
-		await this.props.getBlockListSearch(
-			channelhash,
-			query,
-			pageParams
-		);
+		await this.props.getBlockListSearch(channelhash, query, pageParams);
 	};
 
 	handleDialogOpen = async tid => {
 		const { getTransaction, getTxnList, currentChannel } = this.props;
 		if (this.state.brs) {
-			await getTxnList(currentChannel, tid); 
-		} else await getTransaction(currentChannel, tid); 
+			await getTxnList(currentChannel, tid);
+		} else await getTransaction(currentChannel, tid);
 		this.setState({ dialogOpen: true });
 	};
 
@@ -314,7 +316,11 @@ export class Blocks extends Component {
 		if (channel !== undefined) {
 			channelhash = channel;
 		}
-		await this.props.getBlockRangeSearch(channelhash, this.state.startBlock, this.state.endBlock);
+		await this.props.getBlockRangeSearch(
+			channelhash,
+			this.state.startBlock,
+			this.state.endBlock
+		);
 	};
 
 	handleRangeChange = e => {
@@ -364,9 +370,12 @@ export class Blocks extends Component {
 	};
 
 	handleDialogOpenBlockHash = blockHash => {
-		const blockList =  this.state.brs ? 
-			(typeof this.props.blockRangeSearch!=='string' && this.props.blockRangeLoaded ? this.props.blockRangeSearch : [])
-			  : this.props.blockListSearch
+		const blockList = this.state.brs
+			? typeof this.props.blockRangeSearch !== 'string' &&
+			  this.props.blockRangeLoaded
+				? this.props.blockRangeSearch
+				: []
+			: this.props.blockListSearch;
 		const data = find(blockList, item => item.blockhash === blockHash);
 
 		this.setState({
@@ -566,7 +575,7 @@ export class Blocks extends Component {
 
 	render() {
 		const reversedBlockRangeList =
-			typeof this.props.blockRangeSearch !== "string" &&
+			typeof this.props.blockRangeSearch !== 'string' &&
 			this.props.blockRangeLoaded
 				? this.props.blockRangeSearch
 						.slice()
@@ -574,17 +583,17 @@ export class Blocks extends Component {
 						.reverse()
 				: [];
 		const blockList = this.state.brs
-				? reversedBlockRangeList.slice(
-						this.state.page * this.state.rowsPerPage,
-						(this.state.page + 1) * this.state.rowsPerPage
-				  )
-				: this.props.blockListSearch;
+			? reversedBlockRangeList.slice(
+					this.state.page * this.state.rowsPerPage,
+					(this.state.page + 1) * this.state.rowsPerPage
+			  )
+			: this.props.blockListSearch;
 		const noOfPages = this.state.brs
-				? typeof this.props.blockRangeSearch !== "string" &&
-				  this.props.blockRangeLoaded &&
-				  Math.ceil(this.props.blockRangeSearch.length / this.state.rowsPerPage)
-				: this.props.blockListSearchTotalPages;
-			const { transaction, txnList, classes } = this.props;
+			? typeof this.props.blockRangeSearch !== 'string' &&
+			  this.props.blockRangeLoaded &&
+			  Math.ceil(this.props.blockRangeSearch.length / this.state.rowsPerPage)
+			: this.props.blockListSearchTotalPages;
+		const { transaction, txnList, classes } = this.props;
 		const { blockHash, dialogOpen, dialogOpenBlockHash } = this.state;
 		return (
 			<div>
@@ -702,24 +711,21 @@ export class Blocks extends Component {
 					<div className={`${classes.filter} row searchRow`}>
 						<span className={classes.text}>
 							No of Blocks
-							<sup title={E005} style={{ padding: "3px" }}>
-								<Info style={{ fontSize: "medium" }} />
+							<sup title={E005} style={{ padding: '3px' }}>
+								<Info style={{ fontSize: 'medium' }} />
 							</sup>
 						</span>
 						<Select
-							id='rangeLimitDropdown'
-							className='rangeLimitDropdown'
+							id="rangeLimitDropdown"
+							className="rangeLimitDropdown"
 							value={this.state.rangeLimit}
 							onChange={e => this.setState({ rangeLimit: e.target.value })}
 							displayEmpty
-							inputProps={{ "aria-label": "Without label" }}
+							inputProps={{ 'aria-label': 'Without label' }}
 							disableUnderline
 						>
 							{rangeLimitOptions.map(opt => (
-								<MenuItem
-									key={opt}
-									value={opt}
-								>
+								<MenuItem key={opt} value={opt}>
 									{opt}
 								</MenuItem>
 							))}
@@ -727,9 +733,9 @@ export class Blocks extends Component {
 
 						<div
 							className={`${classes.filterElement}  ${classes.blockRangeRow}`}
-							style={{ width: "50vw" }}
+							style={{ width: '50vw' }}
 						>
-							<div style={{ whiteSpace: "no-wrap", alignSelf: "center" }}>
+							<div style={{ whiteSpace: 'no-wrap', alignSelf: 'center' }}>
 								Block No:
 							</div>
 							<div className={classes.htinputs}>
@@ -737,8 +743,8 @@ export class Blocks extends Component {
 									type="text"
 									name="startBlock"
 									className={classes.startBlock}
-									id='startBlock'
-									style={{ marginRight: "5px" }}
+									id="startBlock"
+									style={{ marginRight: '5px' }}
 									value={this.state.startBlock}
 									onChange={e => this.handleRangeChange(e)}
 									variant="standard"
@@ -750,7 +756,7 @@ export class Blocks extends Component {
 								<TextField
 									type="text"
 									name="endBlock"
-									id='endBlock'
+									id="endBlock"
 									value={this.state.endBlock}
 									onChange={e => this.handleRangeChange(e)}
 									variant="standard"
@@ -761,8 +767,14 @@ export class Blocks extends Component {
 								/>
 								<div className={`${classes.errorText}`}>
 									{
-										<FormHelperText title={this.state.rangeErr}
-											style={{ color: "rgb(211, 47, 47)", whiteSpace: "nowrap", overflow:'hidden', textOverflow:'ellipsis' }}
+										<FormHelperText
+											title={this.state.rangeErr}
+											style={{
+												color: 'rgb(211, 47, 47)',
+												whiteSpace: 'nowrap',
+												overflow: 'hidden',
+												textOverflow: 'ellipsis'
+											}}
 										>
 											{this.state.rangeErr}
 										</FormHelperText>
@@ -770,7 +782,7 @@ export class Blocks extends Component {
 								</div>
 							</div>
 							<div
-								id='blockRangeSearchIcon'
+								id="blockRangeSearchIcon"
 								className={classes.iconButton}
 								type="submit"
 								onClick={e => this.handleRangeSubmit(e)}
@@ -786,10 +798,10 @@ export class Blocks extends Component {
 					pageSize={
 						this.state.brs
 							? this.props.blockRangeLoaded &&
-							  typeof this.props.blockRangeSearch !== "string" &&
+							  typeof this.props.blockRangeSearch !== 'string' &&
 							  this.props.blockRangeSearch.length
 							: this.state.rowsPerPage
-					}				
+					}
 					list
 					filterable
 					sorted={this.state.sorted}
@@ -831,7 +843,7 @@ export class Blocks extends Component {
 					maxWidth="md"
 				>
 					<TransactionView
-						transaction={this.state.brs ? txnList: transaction}
+						transaction={this.state.brs ? txnList : transaction}
 						onClose={this.handleDialogClose}
 					/>
 				</Dialog>
