@@ -33,7 +33,7 @@ spec:
         image: "{{ .Values.db.image.repository }}:{{ .Values.db.image.tag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         envFrom:
-        - configMapRef:
+        - secretRef:
             name: explorer-db-env
         resources:
           {{- toYaml .Values.resources | nindent 12 }}

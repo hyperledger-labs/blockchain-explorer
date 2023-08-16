@@ -37,13 +37,22 @@ spec:
                 path: config.json
               - key: fabric-network.json
                 path: fabric-network.json
+        - name: config-adminprivatekey
+          secret:
+            secretName: adminprivatekey
+        - name: config-signedcert
+          secret:
+            secretName: signedcert
+        - name: config-tlscacerts
+          secret:
+            secretName: tlscacerts
 
       containers:
         - name: {{ .Release.Name }}-app
           image: "{{ .Values.explorer.image.repository }}:{{ .Values.explorer.image.tag }}"
           imagePullPolicy: {{ .Values.pullPolicy }}
           envFrom:
-          - configMapRef:
+          - secretRef:
               name: explorer-env
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -58,3 +67,9 @@ spec:
             - mountPath: /opt/explorer/app/platform/fabric/fabric-network.json
               name: explorer-config
               subPath: fabric-network.json
+            - name: config-adminprivatekey
+              mountPath: /etc/adminprivatekey
+            - name: config-signedcert
+              mountPath: /etc/signedcert 
+            - name: config-tlscacerts
+              mountPath: /etc/tlscacerts  
