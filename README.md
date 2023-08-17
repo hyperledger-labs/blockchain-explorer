@@ -4,13 +4,13 @@
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
-![node-current](https://img.shields.io/node/v/fabric-network?color=blue)<br />
-[![Build Status](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/build.yaml/badge.svg
-)](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/build.yaml/badge.svg
+![node-current](https://img.shields.io/badge/node-v12.13.1-blue)<br />
+[![Build Status](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/build.yaml/badge.svg
+)](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/build.yaml/badge.svg
 )
 [![CII Best Practice](https://bestpractices.coreinfrastructure.org/projects/2710/badge)](https://bestpractices.coreinfrastructure.org/projects/2710)
 [![Documentation Status](https://readthedocs.org/projects/blockchain-explorer/badge/?version=main)](https://blockchain-explorer.readthedocs.io/en/main/?badge=main)
-[![Test](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/test.yaml/badge.svg)](https://github.com/adityajoshi12/blockchain-explorer/actions/workflows/test.yaml/badge.svg)
+[![Test](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/test.yaml/badge.svg)](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/test.yaml/badge.svg)
 <!-- badges -->
 
 
@@ -19,7 +19,15 @@ Explorer is a simple, powerful, easy-to-use, well-maintained, open-source utilit
 **Update!** Explorer now can be used with [**Hyperledger Iroha**](https://github.com/hyperledger/iroha). For Iroha support, please switch to [iroha-integration](../../tree/iroha-integration) branch and read this [README](../../tree/iroha-integration/iroha) for instructions on how to use it.
 
 
-# Release Notes
+# Current Release
+
+| Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
+| --                                                          | --                                                               | --                                                |
+| <b>[v2.0.0](release_notes/v2.0.0.md)</b> (Sep 06, 2023)  | [v2.2, v2.4, v2.5](https://hyperledger-fabric.readthedocs.io/en/release-2.5) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
+
+---
+
+# Legacy Releases (NOT SUPPORTED)
 
 | Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
@@ -42,7 +50,13 @@ And if you want to know more about each configuration, please refer [README-CONF
 
 * Docker
 * Docker Compose
-  * **Note:**
+  * **Note(for v2.0.0 and above):**
+    The following docker images are automatically pulled from **GHCR instead of Docker Hub** when starting docker-compose.
+
+    * [Hyperledger Explorer ghcr repository](https://github.com/hyperledger-labs/blockchain-explorer/pkgs/container/explorer)
+    * [Hyperledger Explorer PostgreSQL ghcr repository](https://github.com/hyperledger-labs/blockchain-explorer/pkgs/container/explorer-db)
+
+  * **Note(for v1.1.8 and below):**
     The following docker images are automatically pulled from Docker Hub when starting docker-compose.
 
     * [Hyperledger Explorer docker repository](https://hub.docker.com/r/hyperledger/explorer/)
@@ -97,7 +111,7 @@ This guide assumes that you've already started the test network by following [Hy
         networks:
         mynetwork.com:
             external:
-                name: net_test
+                name: fabric_test
 
         ...
 
@@ -181,7 +195,7 @@ This guide assumes that you've already started the test network by following [Hy
 
 ## Prerequisites
 
-* Nodejs 10 and 12 (10.19 and 12.16 tested)
+* Nodejs 12, 14 and 16 (12.22.12, 14.21.3, 16.20.1 tested)
 * PostgreSQL 9.5 or greater
 * [jq](https://stedolan.github.io/jq)
 * Linux-based operating system, such as Ubuntu or MacOS

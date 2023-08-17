@@ -3,6 +3,24 @@
 
 ## Troubleshooting TechNotes - Hyperledger Explorer
 
+#### Problem Information:
+    
+
+#### Problem Description: Node modules Dependancy peer conflicts
+
+##### Background Information:
+```
+Error:
+    npm ERR! Fix the upstream dependency conflict, or retry
+    npm ERR! this command with --force, or --legacy-peer-deps
+    npm ERR! to accept an incorrect (and potentially broken) dependency resolution. 
+
+```
+##### Possible solution:
+     Use legacy-peer-deps flag, issue command: $ npm install --legacy-peer-deps
+
+##### Related Information:
+
 #### Problem Description: Hyperledger explorer application fails to start
 
 ##### Background Information:
