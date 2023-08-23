@@ -213,7 +213,7 @@ describe('getDiscoveryResult', () => {
 
 	it('should return without error', async () => {
 		await gw.getDiscoveryResult('testChannel');
-		expect(stubSetupDiscoveryRequest.calledOnce).be.equal(false);
+		expect(stubSetupDiscoveryRequest.calledOnce).be.equal(true);
 	});
 
 	it('should return without error if discover service has not been allocated yet', async () => {
