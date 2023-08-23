@@ -20,7 +20,7 @@
 		"ejs": "^2.5.6",
 		"enum": "^2.5.0",
 		"eslint": "^7.26.0",
-		"express": "^4.15.3",
+		"express": "^4.17.3",
 		"express-rate-limit": "^5.0.0",
 		"fabric-ca-client": "^2.2.11",
 		"fabric-network": "^2.2.11",
