@@ -19,12 +19,12 @@
 		"immutable": "^3.8.1",
 		"jquery": "^3.5.0",
 		"js-beautify": "^1.7.5",
+		"js-sha256": "^0.9.0",
 		"lodash": "^4.17.19",
 		"match-sorter": "^2.2.1",
 		"moment": "^2.22.2",
 		"moment-timezone": "^0.5.16",
 		"nock": "^9.3.3",
-		"pg": "^7.4.1",
 		"prop-types": "^15.6.2",
 		"react": "^16.14.0",
 		"react-copy-to-clipboard": "^5.0.1",
@@ -56,6 +56,11 @@
 		"slick-carousel": "^1.8.1",
 		"superagent": "^5.0.5",
 		"typeface-roboto": "0.0.50"
+	},
+	"overrides": {
+		"react": "^16.14.0",
+		"react-dom": "^16.14.0",
+		"redux": "^3.7.2"
 	},
 	"scripts": {
 		"start": "react-scripts start",
