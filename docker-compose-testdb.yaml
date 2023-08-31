@@ -6,7 +6,7 @@ volumes:
 
 services:
   explorerdb.mynetwork.com:
-    image: hyperledger/explorer-db:latest
+    image: ghcr.io/hyperledger-labs/explorer-db:latest
     container_name: explorerdb.mynetwork.com
     hostname: explorerdb.mynetwork.com
     # network_mode: "host"
