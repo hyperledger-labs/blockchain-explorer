@@ -372,6 +372,73 @@ $ npm run build
 
 ## Run Hyperledger Explorer
 
+### Bootup Mode
+
+The Bootup Mode feature allows you to specify how many blocks should be loaded when starting the Hyperledger Explorer. You can choose from the below two modes:
+
+-   **ALL**: Load all available blocks.
+-   **CUSTOM**: Load a specific number of blocks as configured in the `config.json` file.
+
+To set the Bootup Mode, update the `app/platform/fabric/config.json` file in your project with the desired mode.
+
+-   **ALL**
+      ```json
+        {
+            "network-configs": {
+                "test-network": {
+                    "name": "Test Network",
+                    "profile": "./connection-profile/test-network.json",
+                    "enableAuthentication": false,
+                    "bootMode": "ALL",
+                    "noOfBlocks": 0
+                }
+            },
+            "license": "Apache-2.0"
+        }
+      ```
+**Note:** In ALL Mode, Please make sure that `noOfBlocks` paramater is set to `0`
+
+-   **CUSTOM**
+
+    The `noOfBlocks` parameter allows you to specify the number of blocks that the Hyperledger Explorer will use when booting up. If you are using custom mode and want to control the number of blocks, make sure to pass your desired value to the `noOfBlocks` parameter.
+
+      ```json
+        {
+            "network-configs": {
+                "test-network": {
+                    "name": "Test Network",
+                    "profile": "./connection-profile/test-network.json",
+                    "enableAuthentication": false,
+                    "bootMode": "CUSTOM",
+                    "noOfBlocks": 5
+                }
+            },
+            "license": "Apache-2.0"
+        }
+      ```
+
+**Note:** Setting `noOfBlocks` to `0` will load Hyperledger Explorer with the latest block.
+
+### Bootup Mode example for reference 
+
+Let's say your blockchain network consists of a total of 20 blocks, numbered from 1 to 20. You are interested in loading only the latest 5 blocks, which are blocks 20, 19, 18, 17, and 16.
+
+Here is an example of how you can configure Hyperledger Explorer to achieve this:
+  ```json
+        {
+            "network-configs": {
+                "test-network": {
+                    "name": "Test Network",
+                    "profile": "./connection-profile/test-network.json",
+                    "enableAuthentication": false,
+                    "bootMode": "CUSTOM",
+                    "noOfBlocks": 5
+                }
+            },
+            "license": "Apache-2.0"
+        }
+  ```
+
 ### Run Locally in the Same Location
 
 * Modify `app/explorerconfig.json` to update sync settings.

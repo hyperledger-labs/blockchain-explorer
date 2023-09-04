@@ -546,6 +546,21 @@ export class CRUDService {
 	// Orderer BE-303
 
 	/**
+	 * Returns whether the block is available in the DB or not
+	 *
+	 * @param {*} blockHeight
+	 * @returns
+	 * @memberof CRUDService
+	 */
+	async isBlockAvailableInDB(channel_genesis_hash: string, blockHeight: number) {
+		const count: any = await this.sql.getRowsBySQlCase(
+			`SELECT COUNT(*) FROM blocks WHERE channel_genesis_hash= $1 AND blocknum = $2`,
+			[channel_genesis_hash, blockHeight]
+		);
+		return count.count > 0;
+	}
+
+	/**
 	 *
 	 * Returns the block by block number.
 	 *

@@ -5,6 +5,10 @@
 import fabprotos from 'fabric-protos';
 import includes from 'lodash/includes';
 import * as sha from 'js-sha256';
+
+import * as PATH from 'path';
+import * as fs from 'fs';
+
 import { helper } from '../../../common/helper';
 
 import { ExplorerError } from '../../../common/ExplorerError';
@@ -15,6 +19,12 @@ import * as FabricUtils from '../../../platform/fabric/utils/FabricUtils';
 const logger = helper.getLogger('SyncServices');
 
 const fabric_const = FabricConst.fabric.const;
+
+const config_path = PATH.resolve(__dirname, '../config.json');
+const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
+
+const boot_modes = FabricConst.BootModes;
 
 // Transaction validation code
 const _validation_codes = {};
@@ -356,52 +366,123 @@ export class SyncServices {
 			.saveChaincodPeerRef(network_id, chaincode_peer_row);
 	}
 
+	/**
+	 *
+	 *
+	 * @param {*} channel_name
+	 * @memberof SyncServices
+	 */
 	async syncBlocks(client, channel_name, noDiscovery) {
 		const network_id = client.getNetworkId();
-
-		// Get channel information from ledger
-		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
-
-		if (!channelInfo) {
-			logger.info(`syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`);
-			return;
-		}
 		const synch_key = `${network_id}_${channel_name}`;
-		logger.info(`syncBlocks: Start >> ${synch_key}`);
+
+		// Check if block synchronization is already in process
 		if (this.synchInProcess.includes(synch_key)) {
 			logger.info(`syncBlocks: Block sync in process for >> ${synch_key}`);
 			return;
 		}
-		this.synchInProcess.push(synch_key);
+		try {
+			// Get channel information from ledger
+			const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
+			if (!channelInfo) {
+				logger.info(
+					`syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`
+				);
+				return;
+			}
 
-		const channel_genesis_hash = client.getChannelGenHash(channel_name);
-		const blockHeight = parseInt(channelInfo.height.low) - 1;
-		// Query missing blocks from DB
-		const results = await this.persistence
-			.getMetricService()
-			.findMissingBlockNumber(network_id, channel_genesis_hash, blockHeight);
+			// Getting necessary information from configuration file
+			const bootMode = network_configs[network_id].bootMode.toUpperCase();
+			const channel_genesis_hash = client.getChannelGenHash(channel_name);
+			const latestBlockHeight = parseInt(channelInfo.height.low) - 1;
 
-		if (results) {
-			for (const result of results) {
-				// Get block by number
-				try {
-					const block = await client.fabricGateway.queryBlock(
-						channel_name,
-						result.missing_id
+			// Get the value of noOfBlocks from configuration file
+			let noOfBlocks = 0;
+
+			if (bootMode === boot_modes[0]) {
+				// Sync all available blocks
+				noOfBlocks = latestBlockHeight + 1;
+			} else if (bootMode === boot_modes[1]) {
+				// Get the value of noOfBlocks from configuration file
+				noOfBlocks = parseInt(network_configs[network_id].noOfBlocks);
+
+				if (isNaN(noOfBlocks)) {
+					logger.error(
+						'Invalid noOfBlocks configuration, please either provide in numeric eg: (1) or ("1")'
 					);
-					if (block) {
-						await this.processBlockEvent(client, block, noDiscovery);
-					}
-				} catch {
-					logger.error(`Failed to process Block # ${result.missing_id}`);
+					return;
 				}
 			}
-		} else {
-			logger.debug('Missing blocks not found for %s', channel_name);
+
+			// Calculate the starting block height for sync
+			const startingBlockHeight = Math.max(0, latestBlockHeight - noOfBlocks + 1);
+
+			// Syncing Details
+			logger.info(
+				`Syncing blocks from ${startingBlockHeight} to ${latestBlockHeight}`
+			);
+
+			// Load the latest blocks as per the configuration
+			for (
+				let blockHeight = latestBlockHeight;
+				blockHeight >= startingBlockHeight;
+				blockHeight--
+			) {
+				try {
+					const [block, isBlockAvailable] = await Promise.all([
+						client.fabricGateway.queryBlock(channel_name, blockHeight),
+						this.persistence
+							.getCrudService()
+							.isBlockAvailableInDB(channel_genesis_hash, blockHeight)
+					]);
+
+					if (block && !isBlockAvailable) {
+						await this.processBlockEvent(client, block, noDiscovery);
+					}
+					logger.info(`Synced block #${blockHeight}`);
+				} catch {
+					logger.error(`Failed to process Block # ${blockHeight}`);
+				}
+			}
+
+			const missingBlocks = await this.persistence
+				.getMetricService()
+				.findMissingBlockNumber(
+					network_id,
+					channel_genesis_hash,
+					latestBlockHeight
+				);
+
+			if (missingBlocks) {
+				// Filter missing blocks to start syncing from 'startingBlockHeight'
+				const missingBlocksToSync = missingBlocks.filter(
+					missingBlock => missingBlock.missing_id >= startingBlockHeight
+				);
+				for (const missingBlock of missingBlocksToSync) {
+					try {
+						const block = await client.fabricGateway.queryBlock(
+							channel_name,
+							missingBlock.missing_id
+						);
+						if (block) {
+							await this.processBlockEvent(client, block, noDiscovery);
+						}
+						logger.info(`Synced missing block #${missingBlock.missing_id}`);
+					} catch {
+						logger.error(
+							`Failed to process Missing Block # ${missingBlock.missing_id}`
+						);
+					}
+				}
+			} else {
+				logger.debug('Missing blocks not found for %s', channel_name);
+			}
+			const index = this.synchInProcess.indexOf(synch_key);
+			this.synchInProcess.splice(index, 1);
+			logger.info(`syncBlocks: Finish >> ${synch_key}`);
+		} catch (error) {
+			logger.error(`Error in syncBlocks: ${error}`);
 		}
-		const index = this.synchInProcess.indexOf(synch_key);
-		this.synchInProcess.splice(index, 1);
-		logger.info(`syncBlocks: Finish >> ${synch_key}`);
 	}
 
 	async updateDiscoveredChannel(client, channel_name, channel_genesis_hash) {

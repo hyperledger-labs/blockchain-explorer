@@ -226,23 +226,40 @@ export class Proxy {
 	 * @memberof Proxy
 	 */
 	async getChannelsInfo(network_id) {
-		const client = this.platform.getClient(network_id);
-		const channels = await this.persistence
-			.getCrudService()
-			.getChannelsInfo(network_id);
-		const currentchannels = [];
-		for (const channel of channels) {
-			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
-			let agoBlockTimes = this.getLatestBlockTime(channel);
-			if (
-				channel_genesis_hash &&
-				channel_genesis_hash === channel.channel_genesis_hash
-			) {
-				currentchannels.push({ ...channel, agoBlockTimes });
+		try {
+			const client = this.platform.getClient(network_id);
+			const channels = await this.persistence.getCrudService().getChannelsInfo(network_id);
+			const updatedChannels = [];
+	
+			for (const channel of channels) {
+				const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
+				let agoBlockTimes = this.getLatestBlockTime(channel);
+	
+				try {
+					const chainInfo = await client.fabricGateway.queryChainInfo(channel.channelname);
+	
+					if (chainInfo && chainInfo.height && chainInfo.height.low >= 0) {
+						const totalBlocks = chainInfo.height.low;
+	
+						if (channel_genesis_hash && channel_genesis_hash === channel.channel_genesis_hash) {
+							updatedChannels.push({ ...channel, totalBlocks, agoBlockTimes });
+						} else {
+							updatedChannels.push({ ...channel, totalBlocks });
+						}
+					} else {
+						logger.warn(`Invalid chain information for channel: ${channel.channelname}`);
+					}
+				} catch (error) {
+					logger.error(`Error querying chain information for channel: ${channel.channelname}`, error);
+				}
 			}
+	
+			logger.debug('getChannelsInfo %j', updatedChannels);
+			return updatedChannels;
+		} catch (error) {
+			logger.error("Error querying channel information:", error);
+			return null;
 		}
-		logger.debug('getChannelsInfo >> %j', currentchannels);
-		return currentchannels;
 	}
 
 	/**
