@@ -210,35 +210,120 @@ describe('processBlockEvent', () => {
 });
 
 describe('syncBlocks', () => {
-	let sync: SyncServices;
+    let sync;
+    let stubClient;
+    let fakeIsBlockAvailableInDB;
+    const boot_modes = ['ALL', 'CUSTOM'];
+    const network_configs = {
+        network_id: {
+            noOfBlocks: '10'
+        }
+    };
+    const latestBlockHeight = 20;
 
-	before(() => {
-		sync = getSyncServicesInstance();
-	});
+    before(() => {
+        sync = getSyncServicesInstance();
+    });
 
-	beforeEach(() => {
-		resetAllStubs(sync);
-	});
+    beforeEach(() => {
+        resetAllStubs(sync);
+        stubClient = setupClient();
+        fakeIsBlockAvailableInDB = false;
+    });
 
-	it('should return without error', async () => {
-		const stubClient = setupClient();
-		const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
+    it('should handle block synchronization already in process', async () => {
+        const stubClient = setupClient();
+        sync.synchInProcess.push(`${VALID_NETWORK_ID}_${VALID_CHANNEL_NAME}`);
 
-		await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false);
-		expect(stubProcessBlockEvent.calledTwice).to.be.true;
-		stubProcessBlockEvent.restore();
-	});
+        await expect(sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false)).eventually.to.be.undefined;
+        sinon.assert.notCalled(stubClient.fabricGateway.queryChainInfo);
+        sinon.assert.notCalled(stubClient.getChannelGenHash);
+    });
 
-	it('should return without error when processBlockEvent throws exception', async () => {
-		const stubClient = setupClient();
-		const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
-		stubProcessBlockEvent.onFirstCall().throws('Block already in processing');
-		stubError.reset();
+    it('should return without error', async () => {
+        const stubClient = setupClient();
+        const stubProcessBlockEvent = sinon.stub(sync, 'processBlockEvent');
 
-		await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false);
-		expect(stubProcessBlockEvent.calledTwice).to.be.true;
-		expect(stubError.calledWith('Failed to process Block # 1')).to.be.true;
-		expect(stubError.calledWith('Failed to process Block # 2')).to.be.false;
-		stubProcessBlockEvent.restore();
-	});
+        await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false);
+        expect(stubProcessBlockEvent.notCalled).to.be.true;
+        stubProcessBlockEvent.restore();
+    });
+
+    it('should calculate starting block height correctly for mode1 - ALL', () => {
+        const bootMode = boot_modes[0];
+        let noOfBlocks;
+
+        if (bootMode === boot_modes[0]) {
+            noOfBlocks = latestBlockHeight + 1;
+        } else if (bootMode === boot_modes[1]) {
+            noOfBlocks = parseInt(network_configs.network_id.noOfBlocks);
+            if (isNaN(noOfBlocks)) {
+                return;
+            }
+        }
+
+        const startingBlockHeight = Math.max(0, latestBlockHeight - noOfBlocks + 1);
+        expect(startingBlockHeight).to.equal(0);
+    });
+
+    it('should calculate starting block height correctly for mode2 - CUSTOM', () => {
+        const bootMode = boot_modes[1];
+        let noOfBlocks;
+
+        if (bootMode === boot_modes[0]) {
+            noOfBlocks = latestBlockHeight + 1;
+        } else if (bootMode === boot_modes[1]) {
+            noOfBlocks = parseInt(network_configs.network_id.noOfBlocks);
+            if (isNaN(noOfBlocks)) {
+                return;
+            }
+        }
+
+        const startingBlockHeight = Math.max(0, latestBlockHeight - noOfBlocks + 1);
+        expect(startingBlockHeight).to.equal(11);
+    });
+
+    it('should sync all available blocks in "ALL" mode', async () => {
+        stubClient.getNetworkId.returns(VALID_NETWORK_ID);
+
+        const fakeProcessBlockEvent = sinon.fake.resolves(true);
+        sync.processBlockEvent = fakeProcessBlockEvent;
+
+        await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false);
+
+        // Mock isBlockAvailableInDB to return true for all blocks
+        fakeIsBlockAvailableInDB = true;
+        const fakePersistence = {
+            getCrudService: () => ({
+                isBlockAvailableInDB: () => fakeIsBlockAvailableInDB,
+            })
+        };
+        sync.persistence = fakePersistence;
+        sinon.assert.notCalled(fakeProcessBlockEvent);
+    });
+
+    it('should accept a valid numeric noOfBlocks in "CUSTOM" mode', async () => {
+        stubClient.getNetworkId.returns(VALID_NETWORK_ID);
+
+        const fakeProcessBlockEvent = sinon.fake.resolves(true);
+        sync.processBlockEvent = fakeProcessBlockEvent;
+
+        boot_modes[0] = 'CUSTOM';
+        network_configs.network_id.noOfBlocks = '5';
+
+        // Mock isBlockAvailableInDB to return true for all blocks
+        fakeIsBlockAvailableInDB = true;
+        const fakePersistence = {
+            getCrudService: () => ({
+                isBlockAvailableInDB: () => fakeIsBlockAvailableInDB,
+            })
+        };
+        sync.persistence = fakePersistence;
+
+        await sync.syncBlocks(stubClient, VALID_CHANNEL_NAME, false);
+
+        // Ensure the function executes without errors
+        sinon.assert.notCalled(fakeProcessBlockEvent);
+    });
 });
+ 

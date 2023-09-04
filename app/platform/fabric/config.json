@@ -2,7 +2,9 @@
 	"network-configs": {
 		"test-network": {
 			"name": "Test Network",
-			"profile": "./connection-profile/test-network.json"
+			"profile": "./connection-profile/test-network.json",
+			"bootMode": "ALL",
+			"noOfBlocks": 0
 		}
 	},
 	"license": "Apache-2.0"
