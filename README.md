@@ -23,7 +23,7 @@ Explorer is a simple, powerful, easy-to-use, well-maintained, open-source utilit
 
 | Explorer Version                                | Fabric Version Supported                                         | NodeJS Version Supported                          |
 | --                                                          | --                                                               | --                                                |
-| <b>[v2.0.0](release_notes/v2.0.0.md)</b> (Sep 06, 2023)  | [v2.2, v2.4, v2.5](https://hyperledger-fabric.readthedocs.io/en/release-2.5) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
+| <b>[v2.0.0](release_notes/v2.0.0.md)</b> (Sep 05, 2023)  | [v2.2, v2.4, v2.5](https://hyperledger-fabric.readthedocs.io/en/release-2.5) | [^12.13.1, ^14.13.1, ^16.14.1](https://nodejs.org/en/download/releases) |
 
 ---
 
