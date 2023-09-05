@@ -2,8 +2,7 @@
 
 # Blockchain Explorer
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger/blockchain-explorer?sort=semver)](https://github.com/hyperledger/blockchain-explorer/releases)
-[![Docker Pulls](https://img.shields.io/docker/pulls/hyperledger/explorer)](https://hub.docker.com/r/hyperledger/explorer)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/hyperledger-labs/blockchain-explorer?sort=semver)](https://github.com/hyperledger-labs/blockchain-explorer/releases)
 ![node-current](https://img.shields.io/badge/node-v12.13.1-blue)<br />
 [![Build Status](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/build.yaml/badge.svg
 )](https://github.com/hyperledger-labs/blockchain-explorer/actions/workflows/build.yaml/badge.svg
