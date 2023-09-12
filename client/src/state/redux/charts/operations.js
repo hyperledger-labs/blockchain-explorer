@@ -7,7 +7,7 @@ import { get } from '../../../services/request';
 
 /* istanbul ignore next */
 const blockPerHour = channelName => dispatch =>
-	get(`/api/blocksByHour/${channelName}/1`)
+	get(`api/blocksByHour/${channelName}/1`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -27,7 +27,7 @@ const blockPerHour = channelName => dispatch =>
 
 /* istanbul ignore next */
 const blockPerMin = channelName => dispatch =>
-	get(`/api/blocksByMinute/${channelName}/1`)
+	get(`api/blocksByMinute/${channelName}/1`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -47,7 +47,7 @@ const blockPerMin = channelName => dispatch =>
 
 /* istanbul ignore next */
 const changeChannel = channelName => dispatch =>
-	get(`/api/changeChannel/${channelName}`)
+	get(`api/changeChannel/${channelName}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -67,7 +67,7 @@ const changeChannel = channelName => dispatch =>
 
 /* istanbul ignore next */
 const channel = () => dispatch =>
-	get('/api/curChannel')
+	get('api/curChannel')
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -87,7 +87,7 @@ const channel = () => dispatch =>
 
 /* istanbul ignore next */
 const channelList = () => dispatch =>
-	get('/api/channels')
+	get('api/channels')
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -107,7 +107,7 @@ const channelList = () => dispatch =>
 
 /* istanbul ignore next */
 const dashStats = channelName => dispatch =>
-	get(`/api/status/${channelName}`)
+	get(`api/status/${channelName}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -127,7 +127,7 @@ const dashStats = channelName => dispatch =>
 
 /* istanbul ignore next */
 const blockActivity = channelName => dispatch =>
-	get(`/api/blockActivity/${channelName}`)
+	get(`api/blockActivity/${channelName}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -154,7 +154,7 @@ const notification = notificationObj => dispatch => {
 
 /* istanbul ignore next */
 const transactionByOrg = channelName => dispatch =>
-	get(`/api/txByOrg/${channelName}`)
+	get(`api/txByOrg/${channelName}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -174,7 +174,7 @@ const transactionByOrg = channelName => dispatch =>
 
 /* istanbul ignore next */
 const transactionPerHour = channelName => dispatch =>
-	get(`/api/txByHour/${channelName}/1`)
+	get(`api/txByHour/${channelName}/1`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -194,7 +194,7 @@ const transactionPerHour = channelName => dispatch =>
 
 /* istanbul ignore next */
 const transactionPerMin = channelName => dispatch =>
-	get(`/api/txByMinute/${channelName}/1`)
+	get(`api/txByMinute/${channelName}/1`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
