@@ -216,9 +216,12 @@ describe('HeaderView', () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
 		const spy = jest.spyOn(instance, 'syncData');
-		expect(setInterval).toHaveBeenCalled();
+		const setIntervalSpy = jest.spyOn(window, 'setInterval');
+		wrapper.instance().componentDidMount();
+		expect(setIntervalSpy).toHaveBeenCalled();
 		jest.runOnlyPendingTimers();
 		expect(spy).toHaveBeenCalled();
+		setIntervalSpy.mockRestore();
 	});
 
 	test('switch calls handleThemeChange', () => {
@@ -250,11 +253,12 @@ describe('HeaderView', () => {
 		const { wrapper } = setup();
 		const instance = wrapper.instance();
 		const spy = jest.spyOn(instance, 'componentWillUnmount');
-
+		const clearIntervalSpy = jest.spyOn(window, 'clearInterval');
 		wrapper.unmount();
 
 		expect(spy).toHaveBeenCalledTimes(1);
-		expect(clearInterval).toHaveBeenCalled();
+		expect(clearIntervalSpy).toHaveBeenCalled();
+		clearIntervalSpy.mockRestore();
 	});
 
 	test('channels / selectedChannel state are left empty when componentWillReceiveProps gets called with empty channel list', () => {
@@ -365,7 +369,7 @@ describe('HeaderView', () => {
 
 	test('handleChange does nothing when channel list has only a single entry or nothing', () => {
 		const { wrapper } = setup();
-
+		const clearIntervalSpy = jest.spyOn(window, 'clearInterval');
 		wrapper.setState({
 			channels: [
 				{
@@ -382,12 +386,12 @@ describe('HeaderView', () => {
 			]
 		});
 
-		clearInterval.mockClear();
 		wrapper.instance().handleChange({
 			value: '5e02f3535193eafeb084ea68e61b6ab73b6b9123e317499be2b428c37c24c46e',
 			label: 'mychannels'
 		});
-		expect(clearInterval).not.toHaveBeenCalled();
+		expect(clearIntervalSpy).not.toHaveBeenCalled();
+		clearIntervalSpy.mockRestore();
 	});
 
 	test('registerOpen does update a state', () => {
@@ -449,7 +453,9 @@ describe('HeaderView', () => {
 
 		const instance = wrapper.instance();
 		const spy = jest.spyOn(instance, 'registerOpen');
-		fa.first().prop('onClick')();
+		if (fa.first().prop('onClick')) {
+			fa.first().prop('onClick')();
+		}
 		expect(spy).toHaveBeenCalledTimes(1);
 	});
 });
