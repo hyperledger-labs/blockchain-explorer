@@ -26,8 +26,10 @@ Maintainers are busy and delegate many decisions to other trusted contributors. 
 | Arun S M | [arsulegai][arsulegai] |
 | Anusha-Padmanabhan | [Anusha-Padmanabhan][Anusha-Padmanabhan] |
 | Archana Arige | [ArchanaArige][ArchanaArige] |
+| Manish Das | [manishdas12][manishdas12] |
 | Satyanarayana Arigela | [arigelas][arigelas] |
 | Sunny Ajin | [SunnyAjin][SunnyAjin] |
+| Udhaya Kumari | [Udhayakumari][Udhayakumari] |
 | Vineeth Boppudi | [vineeth2328][vineeth2328] |
 
 **Release Managers**
@@ -67,3 +69,5 @@ Maintainers are busy and delegate many decisions to other trusted contributors. 
 [SunnyAjin]: https://github.com/SunnyAjin
 [Anusha-Padmanabhan]: https://github.com/Anusha-Padmanabhan
 [adityajoshi12]: https://github.com/adityajoshi12
+[manishdas12]: https://github.com/manishdas12
+[Udhayakumari]: https://github.com/Udhayakumari
