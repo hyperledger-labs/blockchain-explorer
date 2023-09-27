@@ -189,8 +189,39 @@ export class Proxy {
 	}
 
 	/**
+	 * Returns the latest block time of the channel
 	 *
-	 *
+	 * @param {*} channel
+	 * @returns
+	 * @memberof Proxy
+	 */
+	getLatestBlockTime(channel) {
+		let latestBlockEntry: Date;
+		let agoBlockTime: string;
+		latestBlockEntry = channel.latestdate;
+		const latestBlockEntryTime = latestBlockEntry.getTime();
+		const currentBlockDate = Date.now();
+		const agoBlockTimeDiff = currentBlockDate - latestBlockEntryTime;
+		const seconds = Math.floor(agoBlockTimeDiff / 1000);
+		const minutes = Math.floor(seconds / 60);
+		const hours = Math.floor(minutes / 60);
+		const days = Math.floor(hours / 24);
+		if (days > 0) {
+			agoBlockTime = days + 'day(s)';
+		} else if (hours > 0) {
+			agoBlockTime = hours + 'hour(s)';
+		} else if (minutes > 0) {
+			agoBlockTime = minutes + 'minute(s)';
+		} else if (seconds > 0) {
+			agoBlockTime = seconds + 'second(s)';
+		}
+		return agoBlockTime;
+	}
+
+	/**
+	 * Returns the channel data with latest block time
+	 * 
+	 * @param {*} network_id
 	 * @returns
 	 * @memberof Proxy
 	 */
@@ -202,11 +233,12 @@ export class Proxy {
 		const currentchannels = [];
 		for (const channel of channels) {
 			const channel_genesis_hash = client.getChannelGenHash(channel.channelname);
+			let agoBlockTimes = this.getLatestBlockTime(channel);
 			if (
 				channel_genesis_hash &&
 				channel_genesis_hash === channel.channel_genesis_hash
 			) {
-				currentchannels.push(channel);
+				currentchannels.push({ ...channel, agoBlockTimes });
 			}
 		}
 		logger.debug('getChannelsInfo >> %j', currentchannels);
