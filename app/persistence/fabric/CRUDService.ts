@@ -505,19 +505,24 @@ export class CRUDService {
 	}
 
 	/**
+	 * Returns the channels data
 	 *
-	 *
-	 * @param {*} peerid
+	 * @param {*} network_name
 	 * @returns
 	 * @memberof CRUDService
 	 */
 	async getChannelsInfo(network_name) {
 		const channels = await this.sql.getRowsBySQlNoCondition(
-			` select c.id as id,c.name as channelName,c.blocks as blocks ,c.channel_genesis_hash as channel_genesis_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c,
-		peer_ref_channel pc where c.channel_genesis_hash = pc.channelid and c.network_name = $1 group by c.id ,c.name ,c.blocks  ,c.trans ,c.createdt ,c.channel_hash,c.channel_genesis_hash order by c.name `,
+			` SELECT c.id as id, c.name as channelName, c.blocks as blocks, c.channel_genesis_hash as channel_genesis_hash,
+			c.trans as transactions, c.createdt as createdat, c.channel_hash as channel_hash, MAX(blocks.createdt) 
+			as latestDate FROM channel c 
+			INNER JOIN blocks ON c.channel_genesis_hash = blocks.channel_genesis_hash AND c.network_name = blocks.network_name 
+			INNER JOIN peer_ref_channel pc ON c.channel_genesis_hash = blocks.channel_genesis_hash AND c.network_name = pc.network_name 
+			WHERE c.network_name = $1 
+			GROUP BY c.id, c.name, c.blocks, c.trans, c.createdt, c.channel_hash, c.channel_genesis_hash 
+			ORDER BY c.name `,
 			[network_name]
 		);
-
 		return channels;
 	}
 
