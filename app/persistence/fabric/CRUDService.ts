@@ -103,17 +103,36 @@ export class CRUDService {
 		let sqlTxList = ` select t.creator_msp_id,t.txhash,t.type,t.chaincodename,t.createdt,channel.name as channelName from transactions as t
        inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name where  t.blockid >= $1 and t.id >= $2 and
 							t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `;
-		const values = [blockNum, txid, channel_genesis_hash, network_name, from, to, page, size];
+		const values = [
+			blockNum,
+			txid,
+			channel_genesis_hash,
+			network_name,
+			from,
+			to,
+			page,
+			size
+		];
 		if (page == 1) {
 			let sqlTxCount: string;
-			const filterValues = [blockNum, txid, channel_genesis_hash, network_name, from, to];
+			const filterValues = [
+				blockNum,
+				txid,
+				channel_genesis_hash,
+				network_name,
+				from,
+				to
+			];
 			sqlTxCount = ` select count(*) from transactions as t inner join channel on t.channel_genesis_hash=channel.channel_genesis_hash and t.network_name = channel.network_name
-			where t.blockid >= $1 and t.id >= $2 and t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `
+			where t.blockid >= $1 and t.id >= $2 and t.channel_genesis_hash = $3 and t.network_name = $4 and t.createdt between $5 and $6 `;
 			if (orgs && orgs.length > 0) {
 				sqlTxCount += ' and t.creator_msp_id = ANY($7)';
 				filterValues.push(orgs);
 			}
-			countOfTxns = await this.sql.getRowsCountBySQlQuery(sqlTxCount, filterValues)
+			countOfTxns = await this.sql.getRowsCountBySQlQuery(
+				sqlTxCount,
+				filterValues
+			);
 		}
 		if (orgs && orgs.length > 0) {
 			sqlTxList += ' and t.creator_msp_id = ANY($9)';
@@ -124,7 +143,7 @@ export class CRUDService {
 		let response = {
 			txnsData: txnsData,
 			noOfpages: Math.ceil(countOfTxns / size)
-		}
+		};
 
 		return response;
 	}
@@ -162,7 +181,7 @@ export class CRUDService {
 			byOrgs = ' and creator_msp_id = ANY($7)';
 		}
 		let sqlBlockTxList;
-		if(orgs == null || orgs.length == 0 ) {
+		if (orgs == null || orgs.length == 0) {
 			sqlBlockTxList = `SELECT a.* FROM  (
 								SELECT (SELECT c.name FROM channel c WHERE c.channel_genesis_hash =$1 AND c.network_name = $2) 
 									as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
@@ -188,18 +207,18 @@ export class CRUDService {
 				filterValues.push(orgs);
 				byOrgs = ' and creator_msp_id = ANY($5)';
 			}
-			if(orgs == null || orgs.length == 0 ) {
+			if (orgs == null || orgs.length == 0) {
 				sqlBlockTxCount = `SELECT COUNT(DISTINCT blocks.blocknum) FROM blocks
 										JOIN transactions ON blocks.blocknum = transactions.blockid 
 										WHERE blockid = blocks.blocknum ${byOrgs} AND 
 										blocknum >= 0 AND blocks.channel_genesis_hash = $1 AND blocks.network_name = $2 AND 
-										blocks.createdt between $3 AND $4`
+										blocks.createdt between $3 AND $4`;
 			} else {
 				sqlBlockTxCount = `SELECT COUNT(DISTINCT blocks.blocknum) FROM blocks
 										JOIN transactions ON blocks.blocknum = transactions.blockid 
 										WHERE blockid = blocks.blocknum ${byOrgs}  
 										AND blocks.channel_genesis_hash = $1 and blocks.network_name = $2 AND blocks.createdt between $3 AND $4
-										AND transactions.creator_msp_id IS NOT NULL AND transactions.creator_msp_id != ' ' AND length(creator_msp_id) > 0`
+										AND transactions.creator_msp_id IS NOT NULL AND transactions.creator_msp_id != ' ' AND length(creator_msp_id) > 0`;
 			}
 			countOfBlocks = await this.sql.getRowsCountBySQlQuery(
 				sqlBlockTxCount,
@@ -326,7 +345,12 @@ export class CRUDService {
 			await this.sql.saveRow('transactions', transaction);
 			await this.sql.updateBySql(
 				'update chaincodes set txcount =txcount+1 where channel_genesis_hash=$1 and network_name = $2 and name=$3 and version=$4',
-				[transaction.channel_genesis_hash, network_name, transaction.chaincodename, chaincodeversion]
+				[
+					transaction.channel_genesis_hash,
+					network_name,
+					transaction.chaincodename,
+					chaincodeversion
+				]
 			);
 			await this.sql.updateBySql(
 				'update channel set trans =trans+1 where channel_genesis_hash=$1 and network_name = $2 ',
@@ -513,11 +537,16 @@ export class CRUDService {
 	 */
 	async getChannelsInfo(network_name) {
 		const channels = await this.sql.getRowsBySQlNoCondition(
-			` select c.id as id,c.name as channelName,c.blocks as blocks ,c.channel_genesis_hash as channel_genesis_hash,c.trans as transactions,c.createdt as createdat,c.channel_hash as channel_hash from channel c,
-		peer_ref_channel pc where c.channel_genesis_hash = pc.channelid and c.network_name = $1 group by c.id ,c.name ,c.blocks  ,c.trans ,c.createdt ,c.channel_hash,c.channel_genesis_hash order by c.name `,
+			` SELECT c.id as id, c.name as channelName, c.blocks as blocks, c.channel_genesis_hash as channel_genesis_hash,
+			c.trans as transactions, c.createdt as createdat, c.channel_hash as channel_hash, MAX(blocks.createdt) 
+			as latestDate FROM channel c 
+			INNER JOIN blocks ON c.channel_genesis_hash = blocks.channel_genesis_hash AND c.network_name = blocks.network_name 
+			INNER JOIN peer_ref_channel pc ON c.channel_genesis_hash = blocks.channel_genesis_hash AND c.network_name = pc.network_name 
+			WHERE c.network_name = $1 
+			GROUP BY c.id, c.name, c.blocks, c.trans, c.createdt, c.channel_hash, c.channel_genesis_hash 
+			ORDER BY c.name `,
 			[network_name]
 		);
-
 		return channels;
 	}
 
@@ -549,7 +578,11 @@ export class CRUDService {
 	 * @returns
 	 * @memberof CRUDService
 	 */
-	async getBlockByBlocknum(network_name: any, channel_genesis_hash: any, blockNo: any) {
+	async getBlockByBlocknum(
+		network_name: any,
+		channel_genesis_hash: any,
+		blockNo: any
+	) {
 		const sqlBlockTxList = `select a.* from  (
 				select (select c.name from channel c where c.channel_genesis_hash =$1 and c.network_name = $2) 
 					as channelname, blocks.blocknum,blocks.txcount ,blocks.datahash ,blocks.blockhash ,blocks.prehash,blocks.createdt, blocks.blksize, (
@@ -557,12 +590,13 @@ export class CRUDService {
 				   channel_genesis_hash = $1 and network_name = $2) from blocks where
 				   blocks.channel_genesis_hash =$1 and blocks.network_name = $2 and blocknum = $3)  a where  a.txhash IS NOT NULL`;
 
-		const row: any = await this.sql.getRowsBySQlCase(
-			sqlBlockTxList,
-			[channel_genesis_hash, network_name, blockNo]);
+		const row: any = await this.sql.getRowsBySQlCase(sqlBlockTxList, [
+			channel_genesis_hash,
+			network_name,
+			blockNo
+		]);
 		return row;
 	}
-
 }
 
 /**
