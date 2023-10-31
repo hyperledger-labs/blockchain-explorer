@@ -205,6 +205,26 @@ CREATE TABLE users
 );
 ALTER table users owner to :user;
 
+-- ---------------------------
+--  Table structure for `explorer audit`
+-- ----------------------------
+DROP TABLE IF EXISTS explorer_audit;
+CREATE TYPE purgeMode AS ENUM('TIME','BLOCKCOUNT');
+CREATE TABLE explorer_audit
+(
+  id SERIAL PRIMARY KEY,
+  lastupdated Timestamp DEFAULT NULL,
+  status varchar(255) DEFAULT NULL,
+  blockfrom integer DEFAULT NULL,
+  blockto integer DEFAULT NULL,
+  mode purgeMode DEFAULT NULL,
+  channel_genesis_hash character varying(256) DEFAULT NULL,
+  network_name varchar(255)
+);
+CREATE UNIQUE INDEX exp_audit_id
+ON explorer_audit (network_name,mode,channel_genesis_hash);
+ALTER table explorer_audit owner to :user;
+
 DROP TABLE IF EXISTS write_lock;
 CREATE TABLE write_lock
 (

@@ -2,7 +2,10 @@
 	"network-configs": {
 		"test-network": {
 			"name": "Test Network",
-			"profile": "./connection-profile/test-network.json"
+			"profile": "./connection-profile/test-network.json",
+			"blockCount": 5,
+			"purgeMode":"NONE",
+			"daysToPurge": 7
 		}
 	},
 	"license": "Apache-2.0"

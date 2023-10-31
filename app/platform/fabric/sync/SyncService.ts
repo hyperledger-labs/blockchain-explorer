@@ -12,9 +12,16 @@ import { explorerError } from '../../../common/ExplorerMessage';
 import * as FabricConst from '../../../platform/fabric/utils/FabricConst';
 import * as FabricUtils from '../../../platform/fabric/utils/FabricUtils';
 
+import * as path from 'path';
+import * as fs from 'fs';
+
 const logger = helper.getLogger('SyncServices');
 
 const fabric_const = FabricConst.fabric.const;
+const purge_mode = FabricConst.PurgeModes;
+const config_path = path.resolve(__dirname, '../config.json');
+const all_config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+const network_configs = all_config[fabric_const.NETWORK_CONFIGS];
 
 // Transaction validation code
 const _validation_codes = {};
@@ -361,6 +368,10 @@ export class SyncServices {
 
 		// Get channel information from ledger
 		const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
+		//Get purge configuration from config.json
+		const purgeMode = network_configs[network_id].purgeMode.toUpperCase();
+		const daysToPurge = network_configs[network_id].daysToPurge;
+		const blockCount = network_configs[network_id].blockCount;
 
 		if (!channelInfo) {
 			logger.info(`syncBlocks: Failed to retrieve channelInfo >> ${channel_name}`);
@@ -390,7 +401,20 @@ export class SyncServices {
 						result.missing_id
 					);
 					if (block) {
-						await this.processBlockEvent(client, block, noDiscovery);
+						if (this.validatePurgemode(purgeMode)) {
+							const lastBlockTo = await this.persistence.getCrudService()
+								.fetchLastBlockToFromExplorerAudit(purgeMode, channel_genesis_hash, network_id);
+							if (result.missing_id > lastBlockTo) {
+								await this.processBlockEvent(client, block, noDiscovery);
+							}
+							else {
+								logger.info(`Not saving this block to DB since we are keeping only recent data # ${result.missing_id}`);
+							}
+						}
+						else {
+							await this.processBlockEvent(client, block, noDiscovery);
+							logger.debug("Purge unsuccessful since purge inputs are not matching");
+						}
 					}
 				} catch {
 					logger.error(`Failed to process Block # ${result.missing_id}`);
@@ -398,6 +422,24 @@ export class SyncServices {
 			}
 		} else {
 			logger.debug('Missing blocks not found for %s', channel_name);
+		}
+		if (this.validatePurgemode(purgeMode)) {
+			let response: boolean;
+			switch (purgeMode) {
+				case purge_mode[0]: {
+					response = await this.persistence.
+						getCrudService().
+						deleteOldData(channel_genesis_hash, network_id, daysToPurge);
+					break;
+				}
+				case purge_mode[1]: {
+					response = await this.persistence
+						.getCrudService()
+						.deleteBlock(network_id, channel_genesis_hash, blockCount);
+					break;
+				}
+			}
+			logger.info(`Result of Purging based on ${purgeMode} :`, response);
 		}
 		const index = this.synchInProcess.indexOf(synch_key);
 		this.synchInProcess.splice(index, 1);
@@ -744,6 +786,13 @@ export class SyncServices {
 				}
 			});
 		}
+	}
+
+	validatePurgemode(purgeMode: string) {
+		if (Object.values(purge_mode).includes(purgeMode)) {
+			return true;
+		}
+		else return false;
 	}
 
 	/**
