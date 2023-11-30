@@ -6,6 +6,13 @@ import React, { Component } from 'react';
 import matchSorter from 'match-sorter';
 import ReactTable from '../Styled/Table';
 import { channelsType } from '../types';
+import {
+	E006,
+	E007,
+	E008
+} from './constants';
+import { Info } from '@material-ui/icons';
+import moment from 'moment';
 
 class Channels extends Component {
 	reactTableSetup = () => [
@@ -35,7 +42,29 @@ class Channels extends Component {
 			filterAll: true
 		},
 		{
-			Header: 'Blocks',
+			Header: <span>
+			Total Blocks
+			<sup title={E006} style={{ padding: '3px' }}>
+				<Info style={{ fontSize: 'medium',marginTop:'5px' }} />
+			</sup>
+		</span>,
+			accessor: 'totalBlocks',
+			filterMethod: (filter, rows) =>
+				matchSorter(
+					rows,
+					filter.value,
+					{ keys: ['totalBlocks'] },
+					{ threshold: matchSorter.rankings.SIMPLEMATCH }
+				),
+			filterAll: true
+		},
+		{
+			Header: <span>
+			Blocks
+			<sup title={E007} style={{ padding: '3px' }}>
+				<Info style={{ fontSize: 'medium',marginTop:'5px' }} />
+			</sup>
+		</span>,
 			accessor: 'blocks',
 			filterMethod: (filter, rows) =>
 				matchSorter(
@@ -48,7 +77,12 @@ class Channels extends Component {
 			width: 125
 		},
 		{
-			Header: 'Transactions',
+			Header: <span>
+			Transactions
+			<sup title={E008} style={{ padding: '3px' }}>
+				<Info style={{ fontSize: 'medium',marginTop:'5px' }} />
+			</sup>
+		</span>,
 			accessor: 'transactions',
 			filterMethod: (filter, rows) =>
 				matchSorter(
@@ -64,13 +98,15 @@ class Channels extends Component {
 			Header: 'Timestamp',
 			accessor: 'createdat',
 			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['createdat'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
+			  matchSorter(
+				rows,
+				filter.value,
+				{ keys: ['createdat'] },
+				{ threshold: matchSorter.rankings.SIMPLEMATCH }
+			  ),
+			filterAll: true,
+			Cell: ({ value }) =>
+			moment.utc(value).format('YYYY-MM-DD, HH:mm:ss UTC')
 		}
 	];
 
