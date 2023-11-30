@@ -9,6 +9,10 @@ import Dialog from '@material-ui/core/Dialog';
 import ReactTable from '../Styled/Table';
 import { chaincodeListType } from '../types';
 import ChaincodeMetaDataView from '../View/ChaincodeMetaDataView';
+import {
+	E009
+} from './constants';
+import { Info } from '@material-ui/icons';
 
 const styles = theme => {
 	const { type } = theme.palette;
@@ -120,7 +124,12 @@ export class Chaincodes extends Component {
 			filterAll: true
 		},
 		{
-			Header: 'Transaction Count',
+			Header: <span>
+			Transaction Count
+			<sup title={E009} style={{ padding: '3px' }}>
+				<Info style={{ fontSize: 'medium',marginTop:'5px' }} />
+			</sup>
+		</span>,
 			accessor: 'txCount',
 			filterMethod: (filter, rows) =>
 				matchSorter(
