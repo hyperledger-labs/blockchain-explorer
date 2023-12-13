@@ -1,0 +1,21 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-app
+    app.kubernetes.io/name: {{ .Release.Name }}-app
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }} 
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }}     
+spec:
+  type: {{ .Values.explorer.service.type }}
+  selector:
+    app: {{ .Release.Name }}-app
+  ports:
+    - port: {{ .Values.explorer.service.port }}
+      targetPort: {{ .Values.explorer.service.port }}

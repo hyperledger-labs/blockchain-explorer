@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-app
+  namespace: {{ $.Values.namespace }}
+  labels:
+    name: {{ .Release.Name }}-app
+    app.kubernetes.io/name: {{ .Release.Name }}-app
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations: 
+    {{- toYaml .Values.annotations | nindent 6 }}      
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-app
+      app.kubernetes.io/name: {{ .Release.Name }}-app
+      helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-app
+        app.kubernetes.io/name: {{ .Release.Name }}-app
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: explorer-config
+          configMap:
+            name: explorer-config
+            items:
+              - key: config.json
+                path: config.json
+              - key: fabric-network.json
+                path: fabric-network.json
+        - name: config-adminprivatekey
+          secret:
+            secretName: adminprivatekey
+        - name: config-signedcert
+          secret:
+            secretName: signedcert
+        - name: config-tlscacerts
+          secret:
+            secretName: tlscacerts
+
+      containers:
+        - name: {{ .Release.Name }}-app
+          image: "{{ .Values.explorer.image.repository }}:{{ .Values.explorer.image.tag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          envFrom:
+          - secretRef:
+              name: explorer-env
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          ports:
+            - containerPort: {{ .Values.explorer.service.port | default (8080) }}
+          
+          volumeMounts:
+            - mountPath: /opt/explorer/app/platform/fabric/config.json
+              name: explorer-config
+              subPath: config.json
+            - mountPath: /opt/explorer/app/platform/fabric/fabric-network.json
+              name: explorer-config
+              subPath: fabric-network.json
+            - name: config-adminprivatekey
+              mountPath: /etc/adminprivatekey
+            - name: config-signedcert
+              mountPath: /etc/signedcert 
+            - name: config-tlscacerts
+              mountPath: /etc/tlscacerts  

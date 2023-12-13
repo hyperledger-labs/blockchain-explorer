@@ -1,0 +1,20 @@
+apiVersion: v2
+name: blockchain-explorer
+description: A Helm chart for blockchain explorer
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.16.0"
+
+keywords:
+  - blockchain
+  - hyperledger
+  - explorer
+  - explorer-db  
+
+sources:
+  - https://github.com/hyperledger-labs/blockchain-explorer
+
+
