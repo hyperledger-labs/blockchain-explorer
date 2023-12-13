@@ -151,18 +151,35 @@ This guide assumes that you've already started the test network by following [Hy
 
     Before:
     ```json
-    "adminPrivateKey": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk"
+    {
+        "organizations": {
+            "Org1MSP": {
+                "adminPrivateKey": {
+                    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk"
+                },
+                "signedCert": {
+                    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem"
+                }
+            }
+        }
     }
     ```
 
     After:
     ```json
-    "adminPrivateKey": {
-        "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+    {
+        "organizations": {
+            "Org1MSP": {
+                "adminPrivateKey": {
+                    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/priv_sk"
+                },
+                "signedCert": {
+                    "path": "/tmp/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+                }
+            }
+        }
     }
     ```
-    **Make sure you replace all paths.**
 
 ## Start container services
 
