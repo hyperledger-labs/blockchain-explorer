@@ -18,7 +18,7 @@ import actions from '../charts/actions';
 import Auth from '../../Auth';
 
 const login = ({ user, password }, networkObj) => dispatch =>
-	post('/auth/login', { user, password, network: networkObj })
+	post('auth/login', { user, password, network: networkObj })
 		.then(resp => {
 			Auth.authenticateUser(resp.token);
 			dispatch(errorAction(null));
@@ -33,7 +33,7 @@ const login = ({ user, password }, networkObj) => dispatch =>
 		});
 
 const network = () => dispatch =>
-	get('/auth/networklist', {})
+	get('auth/networklist', {})
 		.then(({ networkList }) => {
 			dispatch(networkAction({ networks: networkList }));
 		})
@@ -44,7 +44,7 @@ const network = () => dispatch =>
 		});
 
 const register = user => dispatch =>
-	post('/api/register', { ...user })
+	post('api/register', { ...user })
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -67,7 +67,7 @@ const register = user => dispatch =>
 		});
 
 const userlist = () => dispatch =>
-	get('/api/userlist')
+	get('api/userlist')
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -90,7 +90,7 @@ const userlist = () => dispatch =>
 		});
 
 const unregister = user => dispatch =>
-	post('/api/unregister', { ...user })
+	post('api/unregister', { ...user })
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -113,7 +113,7 @@ const unregister = user => dispatch =>
 		});
 
 const logout = () => dispatch =>
-	post('/auth/logout', {})
+	post('auth/logout', {})
 		.then(resp => {
 			console.log(resp);
 			Auth.deauthenticateUser();

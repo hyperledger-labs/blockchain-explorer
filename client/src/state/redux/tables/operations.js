@@ -7,7 +7,7 @@ import { get } from '../../../services/request';
 /* istanbul ignore next */
 const blockListSearch = (channel, query, pageParams) => dispatch =>
 	get(
-		`/api/blockAndTxList/${channel}/0?${query ? query : ''
+		`api/blockAndTxList/${channel}/0?${query ? query : ''
 		}&page=${pageParams?.page || 1}&size=${pageParams?.size || 10}`
 	)
 		.then(resp => {
@@ -30,7 +30,7 @@ const blockListSearch = (channel, query, pageParams) => dispatch =>
 
 /* istanbul ignore next */
 const chaincodeList = channel => dispatch =>
-	get(`/api/chaincode/${channel}`)
+	get(`api/chaincode/${channel}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -52,7 +52,7 @@ const chaincodeList = channel => dispatch =>
 
 /* istanbul ignore next */
 const channels = () => dispatch =>
-	get('/api/channels/info')
+	get('api/channels/info')
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -72,7 +72,7 @@ const channels = () => dispatch =>
 
 /* istanbul ignore next */
 const peerList = channel => dispatch =>
-	get(`/api/peersStatus/${channel}`)
+	get(`api/peersStatus/${channel}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -91,7 +91,7 @@ const peerList = channel => dispatch =>
 		});
 
 const txnList = (channel, query) => dispatch =>
-	get(`/api/fetchDataByTxnId/${channel}/${query}`)
+	get(`api/fetchDataByTxnId/${channel}/${query}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -111,7 +111,7 @@ const txnList = (channel, query) => dispatch =>
 		});
 
 const blockSearch = (channel, query) => dispatch =>
-	get(`/api/fetchDataByBlockNo/${channel}/${query}`)
+	get(`api/fetchDataByBlockNo/${channel}/${query}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -132,7 +132,7 @@ const blockSearch = (channel, query) => dispatch =>
 
 /* istanbul ignore next */
 const transaction = (channel, transactionId) => dispatch =>
-	get(`/api/transaction/${channel}/${transactionId}`)
+	get(`api/transaction/${channel}/${transactionId}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -151,7 +151,7 @@ const transaction = (channel, transactionId) => dispatch =>
 		});
 
 const transactionListSearch = (channel, query, pageParams) => dispatch =>
-	get(`/api/txList/${channel}/0/0?${query?query:''}&page=${pageParams?.page||1}&size=${pageParams?.size||10}`)
+	get(`api/txList/${channel}/0/0?${query?query:''}&page=${pageParams?.page||1}&size=${pageParams?.size||10}`)
 		.then(resp => {
 			let params={page:pageParams?.page||1,size:pageParams?.size ||10}
 			dispatch(actions.getTransactionListSearch({...resp,query,pageParams:params}));
@@ -162,7 +162,7 @@ const transactionListSearch = (channel, query, pageParams) => dispatch =>
 const blockRangeSearch = (channel, query1, query2) => dispatch =>
 		{
 			dispatch(actions.getLoaded(false));
-			get(`/api/fetchDataByBlockRange/${channel}/${query1}/${query2}`)
+			get(`api/fetchDataByBlockRange/${channel}/${query1}/${query2}`)
 			.then(resp => {
 				console.log('response-got', resp);
 				if (resp.status === 500) {
@@ -183,7 +183,7 @@ const blockRangeSearch = (channel, query1, query2) => dispatch =>
 	}
 /* istanbul ignore next */
 const transactionList = (channel,params) => dispatch =>
-	get(`/api/txList/${channel}/0/0/?page=${params.page}&size=${params.size}`)
+	get(`api/txList/${channel}/0/0/?page=${params.page}&size=${params.size}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -202,7 +202,7 @@ const transactionList = (channel,params) => dispatch =>
 		});
 
 const chaincodeMetaData = (channel,query) => dispatch =>
-	get(`/api/metadata/${channel}/${query}`)
+	get(`api/metadata/${channel}/${query}`)
 		.then(resp => {
 			if (resp.status === 500) {
 				dispatch(
@@ -219,13 +219,13 @@ const chaincodeMetaData = (channel,query) => dispatch =>
 		.catch(error => {
 			console.error(error);
 		});
-	
+
 export default {
 	chaincodeList,
 	channels,
 	peerList,
-	txnList, 
-	blockSearch, 
+	txnList,
+	blockSearch,
 	chaincodeMetaData,
 	transaction,
 	transactionList,
