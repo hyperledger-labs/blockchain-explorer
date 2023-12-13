@@ -97,10 +97,27 @@ export class PgService {
 	 * @memberof PgService
 	 */
 	getUserModel(attributes, options) {
-		const sequelize = new Sequelize(
-			`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
-			{ logging: false }
-		);
+		
+		// Add SSL option for PostGresql- Issue #404
+		const isPostgresSslEnabled = process.env.DATABASE_SSL_ENABLED || false;
+		let sequelize;
+
+		if (isPostgresSslEnabled) {
+			logger.info('SSL to Postgresql enabled: set dialect SSL option');
+			sequelize = new Sequelize(
+				`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
+				{ logging: false, dialectOptions: { ssl: true, }, }
+			);
+		}else{
+			logger.info('SSL to Postgresql disabled: dialect options not set');
+			sequelize = new Sequelize(
+				`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
+				{ logging: false }
+			);
+
+		}
+
+
 		this.userModel = sequelize.define('users', attributes, options);
 		return this.userModel;
 	}
