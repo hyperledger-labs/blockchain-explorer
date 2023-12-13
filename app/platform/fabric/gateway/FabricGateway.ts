@@ -342,16 +342,27 @@
 		 let resultJson = fabprotos.protos.ChaincodeQueryResponse.decode(result);
 		 if (resultJson.chaincodes.length <= 0) {
 			 resultJson = { chaincodes: [], toJSON: null };
-			 contract = network.getContract('_lifecycle');
-			 result = await contract.evaluateTransaction('QueryChaincodeDefinitions', '');
-			 const decodedReult = fabprotos.lifecycle.QueryChaincodeDefinitionsResult.decode(
-				 result
-			 );
-			 for (const cc of decodedReult.chaincode_definitions) {
-				 resultJson.chaincodes = concat(resultJson.chaincodes, {
-					 name: cc.name,
-					 version: cc.version
-				 });
+			 try {
+				 contract = network.getContract('_lifecycle');
+				 result = await contract.evaluateTransaction('QueryChaincodeDefinitions', '');
+					 const decodedReult = fabprotos.lifecycle.QueryChaincodeDefinitionsResult.decode(
+					 result
+				 );
+				 for (const cc of decodedReult.chaincode_definitions) {
+					 resultJson.chaincodes = concat(resultJson.chaincodes, {
+						 name: cc.name,
+						 version: cc.version
+					 });
+				 }
+			 } catch (error) {
+				 if (
+					 typeof error['message'] === 'string' &&
+					 error['message'].includes('is not running chaincode _lifecycle')
+				 ) {
+					 logger.debug('_lifecycle chaincode is not running');
+				 } else {
+					 throw error;
+				 }
 			 }
 		 }
 		 logger.debug('queryInstantiatedChaincodes', resultJson);
