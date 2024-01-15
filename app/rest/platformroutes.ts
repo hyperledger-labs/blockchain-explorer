@@ -87,10 +87,10 @@ export async function platformroutes(
 	 * }
 	 * ]
 	 */
-	router.get('/peersStatus/:channel', (req, res) => {
-		const channelName = req.params.channel;
+	router.get('/peersStatus/:channel_genesis_hash', (req, res) => {
+		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (channelName) {
-			proxy.getPeersStatus(req.network, channelName).then((data: any) => {
+			proxy.getPeersStatus(req.network, channel_genesis_hash).then((data: any) => {
 				res.send({ status: 200, peers: data });
 			});
 		} else {
