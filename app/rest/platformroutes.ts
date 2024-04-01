@@ -4,8 +4,6 @@
 
 import * as requtil from './requestutils';
 
-
-
 /**
  *
  *
@@ -189,52 +187,67 @@ export async function platformroutes(
 	 * GET /fetchDataByBlockNo
 	 * curl -i 'http://<host>:<port>/fetchDataByBlockNo/<channel_genesis_hash>/<blockNo>'
 	 */
-	router.get('/fetchDataByBlockNo/:channel_genesis_hash/:blockNo', (req, res) => {
-		const blockNo = parseInt(req.params.blockNo);
-		const channel_genesis_hash = req.params.channel_genesis_hash;
-		if (!isNaN(blockNo) && channel_genesis_hash) {
-		proxy.fetchDataByBlockNo(req.network, channel_genesis_hash, blockNo).then((data: any) => {
-			if (data != "response_payloads is null") {
-				res.send({ status: 200, data: data });
+	router.get(
+		'/fetchDataByBlockNo/:channel_genesis_hash/:blockNo',
+		(req, res) => {
+			const blockNo = parseInt(req.params.blockNo);
+			const channel_genesis_hash = req.params.channel_genesis_hash;
+			if (!isNaN(blockNo) && channel_genesis_hash) {
+				proxy
+					.fetchDataByBlockNo(req.network, channel_genesis_hash, blockNo)
+					.then((data: any) => {
+						if (data != 'response_payloads is null') {
+							res.send({ status: 200, data: data });
+						} else {
+							res.send({ status: 404, data: 'Block not found' });
+						}
+					});
 			} else {
-				res.send({ status: 404, data: "Block not found" });
+				return requtil.invalidRequest(req, res);
 			}
-		});
-	    } else {
-			return requtil.invalidRequest(req, res);
-	    }
-    });
+		}
+	);
 
 	/**
 	 * *
 	 * Blocks by block range
 	 * GET /fetchDataByBlockRange
 	 * curl -i 'http://<host>:<port>/fetchDataByBlockRange/<channel_genesis_hash>/<startBlockNo>/<endBlockNo>'
-	 */	
-	router.get('/fetchDataByBlockRange/:channel_genesis_hash/:startBlockNo/:endBlockNo', (req, res) => {
-		const startBlockNo = parseInt(req.params.startBlockNo);
-		const endBlockNo = parseInt(req.params.endBlockNo);
-		const channel_genesis_hash = req.params.channel_genesis_hash;
-		if (
-			startBlockNo <= endBlockNo &&
-			startBlockNo >= 0 &&
-			endBlockNo >= 0 &&
-			!isNaN(startBlockNo) &&
-			!isNaN(endBlockNo) &&
-			channel_genesis_hash
-		) {
-			proxy.fetchDataByBlockRange(req.network, channel_genesis_hash, startBlockNo, endBlockNo).then((data: any) => {
-				if (data != "response_payloads is null") {
-					res.send({ status: 200, data: data });
-				} else {
-					res.send({ status: 404, data: "Block(s) not found" });
-				}
-			});
-		} else {
-			return requtil.invalidRequest(req, res);
-		}
-    });
+	 */
 
+	router.get(
+		'/fetchDataByBlockRange/:channel_genesis_hash/:startBlockNo/:endBlockNo',
+		(req, res) => {
+			const startBlockNo = parseInt(req.params.startBlockNo);
+			const endBlockNo = parseInt(req.params.endBlockNo);
+			const channel_genesis_hash = req.params.channel_genesis_hash;
+			if (
+				startBlockNo <= endBlockNo &&
+				startBlockNo >= 0 &&
+				endBlockNo >= 0 &&
+				!isNaN(startBlockNo) &&
+				!isNaN(endBlockNo) &&
+				channel_genesis_hash
+			) {
+				proxy
+					.fetchDataByBlockRange(
+						req.network,
+						channel_genesis_hash,
+						startBlockNo,
+						endBlockNo
+					)
+					.then((data: any) => {
+						if (data != 'response_payloads is null') {
+							res.send({ status: 200, data: data });
+						} else {
+							res.send({ status: 404, data: 'Block(s) not found' });
+						}
+					});
+			} else {
+				return requtil.invalidRequest(req, res);
+			}
+		}
+	);
 
 	/**
 	 * *
@@ -245,16 +258,17 @@ export async function platformroutes(
 	router.get('/fetchDataByTxnId/:channel_genesis_hash/:txnId', (req, res) => {
 		const txnId = req.params.txnId;
 		const channel_genesis_hash = req.params.channel_genesis_hash;
-		proxy.fetchDataByTxnId(req.network, channel_genesis_hash, txnId).then((data: any) => {
-			if (data != null) {
-				res.send({ status: 200, data: data });
-			}
-			else{
-				res.send({ status: 404, data: "Transaction not found" });
-			}
-		});
+		proxy
+			.fetchDataByTxnId(req.network, channel_genesis_hash, txnId)
+			.then((data: any) => {
+				if (data != null) {
+					res.send({ status: 200, data: data });
+				} else {
+					res.send({ status: 404, data: 'Transaction not found' });
+				}
+			});
 	});
-	
+
 	/**
 	 * Return channel metadata
 	 * GET /metadata
@@ -264,12 +278,72 @@ export async function platformroutes(
 		const chaincode = req.params.chaincode;
 		const channel_genesis_hash = req.params.channel_genesis_hash;
 		if (chaincode && channel_genesis_hash) {
-			proxy.getContractMetadata(req.network, chaincode, channel_genesis_hash).then((data: any) => {
-				res.send({ status: 200, data: data });
-			});
+			proxy
+				.getContractMetadata(req.network, chaincode, channel_genesis_hash)
+				.then((data: any) => {
+					res.send({ status: 200, data: data });
+				});
 		} else {
 			return requtil.invalidRequest(req, res);
 		}
 	});
 
+	router.get('/fetchBlockByTxId/:channel_genesis_hash/:txnId', (req, res) => {
+		const txnId = req.params.txnId;
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+
+		if (txnId && channel_genesis_hash) {
+			proxy
+				.fetchBlockByTxId(req.network, channel_genesis_hash, txnId)
+				.then((data: any) => {
+					if (data) {
+						res.send({ status: 200, data: data });
+					} else {
+						res.send({ status: 404, data: 'Transaction details not found' });
+					}
+				});
+		} else {
+			return requtil.invalidRequest(req, res);
+		}
+	});
+
+	router.get(
+		'/fetchBlockByHash/:channel_genesis_hash/:block_hash',
+		(req, res) => {
+			const blockHash = req.params.block_hash;
+			const channel_genesis_hash = req.params.channel_genesis_hash;
+
+			if (blockHash && channel_genesis_hash) {
+				proxy
+					.fetchBlockByHash(req.network, channel_genesis_hash, blockHash)
+					.then((data: any) => {
+						if (data) {
+							res.send({ status: 200, data: data });
+						} else {
+							res.send({ status: 404, data: 'Transaction details not found' });
+						}
+					});
+			} else {
+				return requtil.invalidRequest(req, res);
+			}
+		}
+	);
+
+	router.get('/fetchEndorsersCommitter/:channel_genesis_hash', (req, res) => {
+		const channel_genesis_hash = req.params.channel_genesis_hash;
+
+		if (channel_genesis_hash) {
+			proxy
+				.fetchEndorsersCommitter(req.network, channel_genesis_hash)
+				.then((data: any) => {
+					if (data) {
+						res.send({ status: 200, data: data });
+					} else {
+						res.send({ status: 404, data: 'Data not found' });
+					}
+				});
+		} else {
+			return requtil.invalidRequest(req, res);
+		}
+	});
 } // End platformroutes()
