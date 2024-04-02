@@ -5,8 +5,8 @@
 import types from './types';
 
 const getBlockListSearch = blockList => ({
-  type: types.BLOCK_LIST_SEARCH,
-  payload: blockList,
+	type: types.BLOCK_LIST_SEARCH,
+	payload: blockList
 });
 
 const getLoaded = loaded => ({
@@ -15,18 +15,18 @@ const getLoaded = loaded => ({
 });
 
 const getChaincodeList = chaincodeList => ({
-  type: types.CHAINCODE_LIST,
-  payload: chaincodeList,
+	type: types.CHAINCODE_LIST,
+	payload: chaincodeList
 });
 
 const getChannels = channels => ({
-  type: types.CHANNELS,
-  payload: channels,
+	type: types.CHANNELS,
+	payload: channels
 });
 
 const getPeerList = peerList => ({
-  type: types.PEER_LIST,
-  payload: peerList,
+	type: types.PEER_LIST,
+	payload: peerList
 });
 
 const getBlockRangeSearch = resp => ({
@@ -34,14 +34,22 @@ const getBlockRangeSearch = resp => ({
 	payload: resp.data
 });
 
-const getTxnList = resp =>  ({
-  type: types.TXN_LIST,
-  payload: resp.data,
+const getTxnList = resp => ({
+	type: types.TXN_LIST,
+	payload: resp.data
 });
 
-const getBlockSearch = resp =>  ({
-  type: types.BLOCK_SEARCH,
-  payload: resp.data,
+const getBlockHash = resp => ({
+	type: types.BLOCK_HASH,
+	payload: resp.data
+});
+const getBlockByTxnId = resp => ({
+	type: types.BLOCK_TXN,
+	payload: resp.data
+});
+const getBlockSearch = resp => ({
+	type: types.BLOCK_SEARCH,
+	payload: resp.data
 });
 
 const getChaincodeMetaData = resp => ({
@@ -49,31 +57,39 @@ const getChaincodeMetaData = resp => ({
 	payload: resp.data
 });
 
+const getChannelPeerData = resp => ({
+	type: types.CHANNEL_PEER_DATA,
+	payload: resp.data
+});
+
 const getTransaction = transaction => ({
-  type: types.TRANSACTION,
-  payload: transaction,
+	type: types.TRANSACTION,
+	payload: transaction
 });
 
 const getTransactionList = transactionList => ({
-  type: types.TRANSACTION_LIST,
-  payload: transactionList,
+	type: types.TRANSACTION_LIST,
+	payload: transactionList
 });
 const getTransactionListSearch = transactionList => ({
-  type: types.TRANSACTION_LIST_SEARCH,
-  payload: transactionList,
+	type: types.TRANSACTION_LIST_SEARCH,
+	payload: transactionList
 });
 
 export default {
-  getChaincodeList,
-  getChannels,
-  getPeerList,
-  getBlockRangeSearch,
-  getTxnList,
-  getBlockSearch,
-  getChaincodeMetaData,
-  getTransaction,
-  getTransactionList,
-  getBlockListSearch,
-  getLoaded,
-  getTransactionListSearch,
+	getChaincodeList,
+	getChannels,
+	getPeerList,
+	getBlockRangeSearch,
+	getTxnList,
+	getBlockHash,
+	getBlockByTxnId,
+	getBlockSearch,
+	getChaincodeMetaData,
+	getChannelPeerData,
+	getTransaction,
+	getTransactionList,
+	getBlockListSearch,
+	getLoaded,
+	getTransactionListSearch
 };

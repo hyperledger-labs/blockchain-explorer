@@ -18,6 +18,8 @@ import {
 	peerListType,
 	txnListType,
 	blockSearchType,
+	blockHashTypee,
+	blockTxnIdType,
 	transactionByOrgType
 } from '../types';
 import SearchByQuery from '../Lists/SearchByQuery';
@@ -25,7 +27,7 @@ import { connect } from 'react-redux';
 import { currentChannelSelector } from '../../state/redux/charts/selectors';
 import { tableOperations } from '../../state/redux/tables';
 
-const { txnList, blockSearch } = tableOperations;
+const { txnList, blockSearch, blockHashList, blockTxnIdList } = tableOperations;
 
 /* istanbul ignore next */
 const styles = theme => {
@@ -215,6 +217,8 @@ export class DashboardView extends Component {
 			peerList,
 			txnList,
 			blockSearch,
+			blockHashList,
+			blockTxnIdList,
 			blockActivity,
 			transactionByOrg
 		} = this.props;
@@ -223,6 +227,10 @@ export class DashboardView extends Component {
 		if (typeof txnList === 'string') {
 			searchError = 'Txn not found';
 		} else if (typeof blockSearch === 'string') {
+			searchError = 'Block not found';
+		} else if (typeof blockHashList === 'string') {
+			searchError = 'Block not found';
+		} else if (typeof blockTxnIdList === 'string') {
 			searchError = 'Block not found';
 		}
 		if (hasDbError) {
@@ -251,9 +259,13 @@ export class DashboardView extends Component {
 							<SearchByQuery
 								getTxnList={this.props.getTxnList}
 								getBlockSearch={this.props.getBlockSearch}
+								getBlockHash={this.props.getBlockHash}
+								getBlockByTxnId={this.props.getBlockByTxnId}
 								currentChannel={this.props.currentChannel}
 								txnList={txnList}
 								blockSearch={blockSearch}
+								blockHashList={blockHashList}
+								blockTxnIdList={blockTxnIdList}
 								searchError={searchError}
 							/>
 						</Col>
@@ -353,6 +365,8 @@ DashboardView.propTypes = {
 	peerList: peerListType.isRequired,
 	txnList: txnListType.isRequired,
 	blockSearch: blockSearchType.isRequired,
+	blockHashList: blockHashTypee.isRequired,
+	blockTxnIdList: blockTxnIdType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired
 };
 
@@ -363,7 +377,9 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = {
 	getTxnList: txnList,
-	getBlockSearch: blockSearch
+	getBlockSearch: blockSearch,
+	getBlockHash: blockHashList,
+	getBlockByTxnId: blockTxnIdList
 };
 const connectedComponent = connect(
 	mapStateToProps,
