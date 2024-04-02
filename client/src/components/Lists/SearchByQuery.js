@@ -4,6 +4,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { txnListType } from '../types';
+import { blockHashTypee } from '../types';
+import { blockTxnIdType } from '../types';
 import {
 	IconButton,
 	TextField,
@@ -17,6 +19,8 @@ import { withRouter } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import TransactionView from '../View/TransactionView';
 import BlockView from '../View/BlockView';
+import BlockHashView from '../View/BlockHashView';
+import BlockTxIdView from '../View/BlockTxIdView';
 
 const useStyles = makeStyles(theme => ({
 	searchField: {
@@ -51,11 +55,13 @@ const useStyles = makeStyles(theme => ({
 
 const SearchByQuery = props => {
 	let { txnList } = props;
+	let { blockHashList } = props;
+	let { blockTxnIdList } = props;
 	let { blockSearch } = props;
 	const classes = useStyles();
-	const options = ['Txn Hash', 'Block No'];
+	const options = ['Txn Hash', 'Block No', 'Block Hash', 'Block By Txn ID'];
 	const [search, setSearch] = useState('');
-	const [selectedOption, setSelectedOption] = useState('Txn Hash');
+	const [selectedOp, setSelectedOp] = useState('Txn Hash');
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [error, setError] = useState('');
 	const [searchClick, setSearchClick] = useState(false);
@@ -69,21 +75,25 @@ const SearchByQuery = props => {
 	}, [searchClick]);
 
 	const searchData = async () => {
-		if (selectedOption === 'Txn Hash') {
+		if (selectedOp === 'Txn Hash') {
 			await props.getTxnList(props.currentChannel, search);
-		} else if (selectedOption === 'Block No') {
+		} else if (selectedOp === 'Block No') {
 			await props.getBlockSearch(props.currentChannel, search);
+		} else if (selectedOp === 'Block Hash') {
+			await props.getBlockHash(props.currentChannel, search);
+		} else if (selectedOp === 'Block By Txn ID') {
+			console.log('entered');
+			await props.getBlockByTxnId(props.currentChannel, search);
 		}
 		setSearchClick(true);
 	};
-
 	const handleSubmit = async e => {
 		e.preventDefault();
 		if (
 			!search ||
-			(selectedOption === 'Block No' && (isNaN(search) || search.length > 9))
+			(selectedOp === 'Block No' && (isNaN(search) || search.length > 9))
 		) {
-			setError('Please enter valid txn hash/block no');
+			setError('Please enter valid txn hash/block no/block hash/block by txn Id');
 			return;
 		}
 		searchData();
@@ -112,7 +122,7 @@ const SearchByQuery = props => {
 					}
 				}}
 				onKeyPress={e => e.key === 'Enter' && handleSubmit(e)}
-				label=" Search by Txn Hash / Block"
+				label=" Search by Txn Hash / Block no / BlockHash / Block by Txn Id"
 				variant="outlined"
 				fullWidth
 				error={error}
@@ -122,10 +132,10 @@ const SearchByQuery = props => {
 					startAdornment: (
 						<InputAdornment position="start">
 							<Select
-								value={selectedOption}
+								value={selectedOp}
 								className={classes.selectInput}
 								onChange={e => {
-									setSelectedOption(e.target.value);
+									setSelectedOp(e.target.value);
 									if (error) {
 										setDialogOpen(false);
 										setError('');
@@ -163,17 +173,26 @@ const SearchByQuery = props => {
 				fullWidth
 				maxWidth="md"
 			>
-				{!error && selectedOption === 'Block No' ? (
+				{!error && selectedOp === 'Block No' ? (
 					<BlockView blockHash={blockSearch} onClose={handleDialogClose} />
-				) : (
+				) : !error && selectedOp === 'Txn Hash' ? (
 					<TransactionView transaction={txnList} onClose={handleDialogClose} />
+				) : !error && selectedOp === 'Block By Txn ID' ? (
+					<BlockTxIdView blockByTxId={blockTxnIdList} onClose={handleDialogClose} />
+				) : (
+					<BlockHashView
+						blockByBlockHash={blockHashList}
+						onClose={handleDialogClose}
+					/>
 				)}
 			</Dialog>
 		</div>
 	);
 };
 SearchByQuery.propTypes = {
-	txnList: txnListType.isRequired
+	txnList: txnListType.isRequired,
+	blockHashList: blockHashTypee.isRequired,
+	blockTxnIdList: blockTxnIdType.isRequired
 };
 
 export default withRouter(SearchByQuery);

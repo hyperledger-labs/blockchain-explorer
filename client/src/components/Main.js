@@ -10,6 +10,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import BlocksView from './View/BlocksView';
 import NetworkView from './View/NetworkView';
 import TransactionsView from './View/TransactionsView';
+import ChannelView from './View/ChannelView';
 import ChaincodeView from './View/ChaincodeView';
 import DashboardView from './View/DashboardView';
 import ChannelsView from './View/ChannelsView';
@@ -23,10 +24,13 @@ import {
 	getTransactionType,
 	peerListType,
 	txnListType,
+	blockHashTypee,
+	blockTxnIdType,
 	blockSearchType,
 	blockRangeSearchType,
 	blockListSearchType,
 	chaincodeMetaDataType,
+	channelPeerDataType,
 	transactionType,
 	transactionByOrgType,
 	transactionListType
@@ -48,8 +52,11 @@ const {
 	channelsSelector,
 	peerListSelector,
 	txnListSelector,
+	blockHashSelector,
+	blockTxnIdSelector,
 	blockSearchSelector,
 	chaincodeMetaDataSelector,
+	channelPeerDataSelector,
 	transactionSelector,
 	transactionListSelector,
 	blockRangeSearchSelector,
@@ -86,9 +93,13 @@ export const Main = props => {
 		getTransaction,
 		peerList,
 		txnList,
+		blockHashList,
+		blockTxnIdList,
 		blockSearch,
 		chaincodeMetaData,
+		channelPeerData,
 		getChaincodeMetaData,
+		getChannelPeerData,
 		transaction,
 		transactionByOrg,
 		transactionList,
@@ -106,7 +117,9 @@ export const Main = props => {
 		transactionListTotalPages,
 		transactionListSearchQuery,
 		transactionListSearchPageParam,
-		getTxnList
+		getTxnList,
+		getBlockHash,
+		getBlockByTxnId
 	} = props;
 
 	const blocksViewProps = {
@@ -119,7 +132,11 @@ export const Main = props => {
 		blockListSearchQuery,
 		blockRangeSearch,
 		txnList,
+		blockHashList,
+		blockTxnIdList,
 		getTxnList,
+		getBlockHash,
+		getBlockByTxnId,
 		transactionByOrg,
 		currentChannel,
 		getTransaction,
@@ -133,14 +150,24 @@ export const Main = props => {
 	};
 
 	const channelsViewProps = {
-		channels
+		channels,
+		getChannelPeerData,
+		channelPeerData,
+		currentChannel
 	};
-
+	const channelViewProps = {
+		channels,
+		getChannelPeerData,
+		channelPeerData,
+		currentChannel
+	};
 	const dashboardViewProps = {
 		blockListSearch,
 		dashStats,
 		peerList,
 		txnList,
+		blockHashList,
+		blockTxnIdList,
 		blockSearch,
 		transactionByOrg,
 		blockActivity
@@ -216,6 +243,13 @@ export const Main = props => {
 						exact
 						path="/channels"
 						render={routeprops => (
+							<ChannelView {...{ ...channelViewProps, ...routeprops }} />
+						)}
+					/>
+					<Private
+						exact
+						path="/channels"
+						render={routeprops => (
 							<ChannelsView {...{ ...channelsViewProps, ...routeprops }} />
 						)}
 					/>
@@ -254,8 +288,11 @@ Main.propTypes = {
 	getTransaction: getTransactionType.isRequired,
 	peerList: peerListType.isRequired,
 	txnList: txnListType.isRequired,
+	blockHashList: blockHashTypee.isRequired,
+	blockTxnIdList: blockTxnIdType.isRequired,
 	blockSearch: blockSearchType.isRequired,
 	chaincodeMetaData: chaincodeMetaDataType.isRequired,
+	channelPeerData: channelPeerDataType.isRequired,
 	transaction: transactionType.isRequired,
 	transactionByOrg: transactionByOrgType.isRequired,
 	transactionList: transactionListType.isRequired
@@ -270,8 +307,11 @@ const connectedComponent = connect(
 		dashStats: dashStatsSelector(state),
 		peerList: peerListSelector(state),
 		txnList: txnListSelector(state),
+		blockHashList: blockHashSelector(state),
+		blockTxnIdList: blockTxnIdSelector(state),
 		blockSearch: blockSearchSelector(state),
 		chaincodeMetaData: chaincodeMetaDataSelector(state),
+		channelPeerData: channelPeerDataSelector(state),
 		transaction: transactionSelector(state),
 		transactionByOrg: transactionByOrgSelector(state),
 		transactionList: transactionListSelector(state),
@@ -283,7 +323,9 @@ const connectedComponent = connect(
 		blockRangeLoaded: blockRangeLoadedSelector(state),
 		transactionListSearch: transactionListSearchSelector(state),
 		transactionListTotalPages: transactionListTotalPagesSelector(state),
-		transactionListSearchTotalPages: transactionListSearchTotalPagesSelector(state),
+		transactionListSearchTotalPages: transactionListSearchTotalPagesSelector(
+			state
+		),
 		transactionListSearchPageParam: transactionListSearchPageParamSelector(state),
 		transactionListSearchQuery: transactionListSearchQuerySelector(state),
 		blockActivity: blockActivitySelector(state)
@@ -294,7 +336,10 @@ const connectedComponent = connect(
 		getBlockRangeSearch: tableOperations.blockRangeSearch,
 		getTransactionListSearch: tableOperations.transactionListSearch,
 		getTxnList: tableOperations.txnList,
+		getBlockHash: tableOperations.blockHashList,
+		getBlockByTxnId: tableOperations.blockTxnIdList,
 		getChaincodeMetaData: tableOperations.chaincodeMetaData,
+		getChannelPeerData: tableOperations.channelPeerData
 	}
 )(Main);
 export default withStyles(styles)(connectedComponent);

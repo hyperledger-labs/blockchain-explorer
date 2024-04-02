@@ -4,6 +4,27 @@
 
 import { arrayOf, shape, number, string, func, any } from 'prop-types';
 
+export const blockbyTxIdType = shape({
+	blockhash: string,
+	blocknum: number,
+	channelname: string,
+	creatdt: string,
+	datahash: string,
+	prehash: string,
+	txcount: number,
+	txhash: arrayOf(string)
+});
+
+export const blockbyBlockHashType = shape({
+	blockhash: string,
+	blocknum: number,
+	channelname: string,
+	creatdt: string,
+	datahash: string,
+	prehash: string,
+	txcount: number,
+	txhash: arrayOf(string)
+});
 export const blockHashType = shape({
 	blockhash: string,
 	blocknum: number,
@@ -157,6 +178,8 @@ export const peerListType = arrayOf(
 );
 
 export const txnListType = any;
+export const blockHashTypee = any;
+export const blockTxnIdType = any;
 
 export const blockSearchType = any;
 
@@ -169,6 +192,11 @@ export const peerStatusType = arrayOf(
 export const chaincodeMetaDataType = any;
 
 export const refreshType = func;
+
+export const channelPeerDataType = shape({
+	committers: arrayOf(string),
+	endorsers: arrayOf(string)
+});
 
 export const transactionType = shape({
 	chaincodename: string,
