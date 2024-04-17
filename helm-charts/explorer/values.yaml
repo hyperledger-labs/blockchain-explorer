@@ -1,0 +1,142 @@
+# Default values for explorer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+pullPolicy: IfNotPresent
+#Provide the namespace for explorer
+#Eg. namespace: explorer
+namespace: default
+
+annotations: {}
+# Set limits and requests of pod
+resources: 
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi  
+# Default values of HLF network.
+network: 
+#Provide the channel name
+#Eg. channel: mychannel
+  channel:  
+#Provide the MSPID
+#Eg. mspid: org1MSP  
+  mspid: 
+#Provide the peername
+#Eg. peername: peer0org1   
+  peername: 
+#Provide the peerurl
+#Eg. peerurl: grpcs://peer0-org1:7051   
+  peerurl:  
+#Provide the adminPrivateKey
+#Eg. adminPrivateKey: 
+#        -----BEGIN PRIVATE KEY-----
+#        MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgBPH7Q9lnmKhXtAzX
+#        jmCsrmMMvRo0aRQe5i+OTsRmkXahRANCAAQBBQvYoBfGoTNlvs68Z6hJNCmgvK4L
+#        jnu8zso8QTrNSObUBxeT573b+jSkVExOdlQIxImb7IVc23PYiK4fnBug
+#        -----END PRIVATE KEY-----
+
+  adminPrivateKey:  
+  
+#Provide the signedCert
+#Eg. signedCert: 
+#      -----BEGIN CERTIFICATE-----
+#      MIICBTCCAaygAwIBAgIQUjBfhw8n4IvIIatpZBUhozAKBggqhkjOPQQDAjBbMQsw
+#      CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy
+#      YW5jaXNjbzENMAsGA1UEChMEb3JnMTEQMA4GA1UEAxMHY2Eub3JnMTAeFw0yMzA4
+#      MTYwMjU0MDBaFw0zMzA4MTMwMjU0MDBaMGAxCzAJBgNVBAYTAlVTMRMwEQYDVQQI
+#      EwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJhbmNpc2NvMQ8wDQYDVQQLEwZj
+#      bGllbnQxEzARBgNVBAMMClVzZXIxQG9yZzEwWTATBgcqhkjOPQIBBggqhkjOPQMB
+#      BwNCAAQBBQvYoBfGoTNlvs68Z6hJNCmgvK4Ljnu8zso8QTrNSObUBxeT573b+jSk
+#      VExOdlQIxImb7IVc23PYiK4fnBugo00wSzAOBgNVHQ8BAf8EBAMCB4AwDAYDVR0T
+#      AQH/BAIwADArBgNVHSMEJDAigCAbwRqqxtjmQ4NftB5KvqVo4NLYJJXznjf7Iai0
+#      a1x1gTAKBggqhkjOPQQDAgNHADBEAiBNvZR9wlNdq8groibiD34loshXYIlftzLm
+#      VXBqDG80ggIgdQZ+s662ksAEXj5mTUQSJr4A10ngScL7hkq6fkYaYIM=
+#      -----END CERTIFICATE-----
+
+  signedCert:  
+
+
+#Provide the tlsCACerts
+#Eg. tlsCACerts: 
+#      -----BEGIN CERTIFICATE-----
+#      MIICJzCCAc2gAwIBAgIQImLle3wGU1KgOjZ0cvdCjjAKBggqhkjOPQQDAjBeMQsw
+#      CQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy
+#      YW5jaXNjbzENMAsGA1UEChMEb3JnMTETMBEGA1UEAxMKdGxzY2Eub3JnMTAeFw0y
+#      MzA4MTYwMjU0MDBaFw0zMzA4MTMwMjU0MDBaMF4xCzAJBgNVBAYTAlVTMRMwEQYD
+#      VQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1TYW4gRnJhbmNpc2NvMQ0wCwYDVQQK
+#      EwRvcmcxMRMwEQYDVQQDEwp0bHNjYS5vcmcxMFkwEwYHKoZIzj0CAQYIKoZIzj0D
+#      AQcDQgAE8Hog//gxg9pWEJABLDuoNqQyqOK7sUIROy6kqPhMSyLrko/Jf4xu0jQR
+#      MH4FdjkEljvagxY4vx7I7KacJmBbaaNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud
+#      JQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud
+#      DgQiBCB56qmv734kBk/XT56WRjhIENpUd/SI4Y0FU3V3BltXxzAKBggqhkjOPQQD
+#      AgNIADBFAiBVLXpCE3+mpVjU+DbSyqPFJIGzFJm3TerX73smKSQqOgIhAJT1Y9za
+#      k2/vdhtMIUohaQbkx2AYU3T1EqHFp8MuKkC3
+#      -----END CERTIFICATE-----
+  tlsCACerts: 
+
+explorer:
+#Provide the username for explorer, by default username is exploreradmin
+#Eg. username: exploreradmin 
+  username: 
+#Provide the password for explorer, by default password is exploreradminpw
+#Eg. password: exploreradminpw   
+  password: 
+#Provide the logging values, below are the values by default.  
+#Eg. app_log: debug  & db_log: debug & log_console_stdout: true & discovery_as_localhost: false  
+  logging:
+     app_log:  
+     db_log: 
+     log_console_stdout: 
+     discovery_as_localhost: 
+
+#Provide the valid image name and version for explorer
+  image:
+    repository: hyperledger/explorer
+    tag: latest
+#Provide the  service.port & service.type for a explorer
+#Eg. port: 8080
+#Eg. type: ClusterIP
+  service:
+    type: LoadBalancer
+    port: 8080
+  ingress:
+#Provide the enabled value either true or false  
+#Eg.  enabled: false
+    enabled: false
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+
+#This field contains the hosts for explorer 
+#Eg. hosts: explorer.com    
+    hosts: ""
+    path: / 
+    
+# Default values for explorer-db.
+db:
+#Provide the database for explorer-db, by default database name is fabricexplorer
+#Eg. database: fabricexplorer
+  name: 
+#Provide the username for explorer-db, by default username is hppoc
+#Eg. username: hppoc
+  username: 
+#Provide the password for explorer-db, by default password is password
+#Eg. password: password
+  password: 
+#Provide the service.port & service.type for a explorer-db 
+#Eg. port: 5432
+#Eg. type: ClusterIP
+  service:
+    port: 5432
+    type: ClusterIP
+#Provide the valid image name and version for explorer-db    
+  image:
+    repository: hyperledger/explorer-db
+    tag: latest 
+#Provide the storage.capacity & storage.class for a explorer-db 
+  storage:
+     capacity: 5Gi
+     class: standard        # kubernetes storage class
