@@ -505,3 +505,6 @@ Please visit the [TROUBLESHOOT.md](TROUBLESHOOT.md) to view the Troubleshooting 
 # License
 
 Hyperledger Explorer Project source code is released under the Apache 2.0 license. The README.md, CONTRIBUTING.md files, and files in the "images", "__snapshots__" folders are licensed under the Creative Commons Attribution 4.0 International License. You may obtain a copy of the license, titled CC-BY-4.0, at http://creativecommons.org/licenses/by/4.0/.
+
+## Build Notes
+- Confirm Node.js LTS and Fabric binaries in PATH.
