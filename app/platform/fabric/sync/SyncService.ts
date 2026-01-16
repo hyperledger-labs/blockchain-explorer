@@ -381,6 +381,10 @@ export class SyncServices {
 			logger.info(`syncBlocks: Block sync in process for >> ${synch_key}`);
 			return;
 		}
+
+		// Acquire the sync lock
+		this.synchInProcess.push(synch_key);
+
 		try {
 			// Get channel information from ledger
 			const channelInfo = await client.fabricGateway.queryChainInfo(channel_name);
@@ -477,11 +481,15 @@ export class SyncServices {
 			} else {
 				logger.debug('Missing blocks not found for %s', channel_name);
 			}
-			const index = this.synchInProcess.indexOf(synch_key);
-			this.synchInProcess.splice(index, 1);
 			logger.info(`syncBlocks: Finish >> ${synch_key}`);
 		} catch (error) {
 			logger.error(`Error in syncBlocks: ${error}`);
+		} finally {
+			// Release the sync lock - use guard to prevent array corruption from splice(-1, 1)
+			const index = this.synchInProcess.indexOf(synch_key);
+			if (index > -1) {
+				this.synchInProcess.splice(index, 1);
+			}
 		}
 	}
 
