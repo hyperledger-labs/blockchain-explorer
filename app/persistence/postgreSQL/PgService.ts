@@ -55,33 +55,47 @@ export class PgService {
 		this.userModel = null;
 
 		const isPostgresSslEnabled = process.env.DATABASE_SSL_ENABLED || false;
+		const isDatabaseCertEnabled = process.env.DATABASE_CERT_ENABLED !== 'false'; // default true if unset
 
 		if (isPostgresSslEnabled) {
-			const dbCertsPath =
-				process.env.DATABASE_CERTS_PATH ||
-				`${process.env.EXPLORER_APP_PATH}/db-certs`;
+			if (isDatabaseCertEnabled) {
+				const dbCertsPath =
+					process.env.DATABASE_CERTS_PATH ||
+					`${process.env.EXPLORER_APP_PATH}/db-certs`;
 
-			this.pgconfig.ssl = {
-				rejectUnauthorized: false,
-				requestCert: true,
-				ca: fs.readFileSync(`${dbCertsPath}/db-certs/server-ca.pem`).toString(),
-				key: fs.readFileSync(`${dbCertsPath}/db-certs/client-key.pem`).toString(),
-				cert: fs.readFileSync(`${dbCertsPath}/db-certs/client-cert.pem`).toString()
-			};
+				this.pgconfig.ssl = {
+					rejectUnauthorized: false,
+					requestCert: true,
+					ca: fs.readFileSync(`${dbCertsPath}/db-certs/server-ca.pem`).toString(),
+					key: fs.readFileSync(`${dbCertsPath}/db-certs/client-key.pem`).toString(),
+					cert: fs.readFileSync(`${dbCertsPath}/db-certs/client-cert.pem`).toString()
+				};
 
-			/*
-			 * don't log entire config, it contains sensitive information!
-			 * Value this.pgconfig.ssl.key is private key
-			 */
-			const { rejectUnauthorized, requestCert } = this.pgconfig.ssl;
-			const printConfig = { rejectUnauthorized, requestCert };
-			logger.info('SSL to Postgresql enabled with settings: ', printConfig);
+				/*
+				 * don't log entire config, it contains sensitive information!
+				 * Value this.pgconfig.ssl.key is private key
+				 */
+				const { rejectUnauthorized, requestCert } = this.pgconfig.ssl;
+				const printConfig = { rejectUnauthorized, requestCert };
+				logger.info('SSL to Postgresql enabled with certificates (controlled by DATABASE_CERT_ENABLED): ', printConfig);
+			} else {
+				// For Azure/AWS RDS: SSL enabled, accept self-signed certs
+				this.pgconfig.ssl = { rejectUnauthorized: false };
+				logger.info('SSL to Postgresql enabled (accept self-signed certificates, e.g., for Azure/AWS RDS, controlled by DATABASE_CERT_ENABLED)');
+			}
 		} else {
 			logger.info('SSL to Postgresql disabled');
 		}
 
+		// don't log password or private key
+		const safePgConfig = { ...this.pgconfig };
+		if (safePgConfig.password) safePgConfig.password = '******';
+		if (safePgConfig.passwd) safePgConfig.passwd = '******';
+		if (safePgConfig.ssl && safePgConfig.ssl.key) safePgConfig.ssl.key = '******';
+		logger.info('PgService effective pgconfig:', safePgConfig);
+
 		// don't log password
-		const connectionString = `postgres://${this.pgconfig.username}:******@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
+		const connectionString = `postgres://${this.pgconfig.user}:******@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`;
 
 		logger.info(`connecting to Postgresql ${connectionString}`);
 
@@ -99,7 +113,12 @@ export class PgService {
 	getUserModel(attributes, options) {
 		const sequelize = new Sequelize(
 			`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
-			{ logging: false }
+			{
+				logging: false,
+				dialectOptions: {
+					ssl: this.pgconfig.ssl
+				}
+			}
 		);
 		this.userModel = sequelize.define('users', attributes, options);
 		return this.userModel;
@@ -585,5 +604,5 @@ export class PgService {
 			});
 		});
 	}
-	
+
 }
