@@ -111,14 +111,13 @@ export class PgService {
 	 * @memberof PgService
 	 */
 	getUserModel(attributes, options) {
+		const sequelizeOptions: any = { logging: false };
+		if (this.pgconfig.ssl) {
+			sequelizeOptions.dialectOptions = { ssl: this.pgconfig.ssl };
+		}
 		const sequelize = new Sequelize(
 			`postgres://${this.pgconfig.user}:${this.pgconfig.password}@${this.pgconfig.host}:${this.pgconfig.port}/${this.pgconfig.database}`,
-			{
-				logging: false,
-				dialectOptions: {
-					ssl: this.pgconfig.ssl
-				}
-			}
+			sequelizeOptions
 		);
 		this.userModel = sequelize.define('users', attributes, options);
 		return this.userModel;
